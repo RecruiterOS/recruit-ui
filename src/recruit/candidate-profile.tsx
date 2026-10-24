@@ -1,0 +1,143 @@
+import { cn } from "@/components/recruit-ui/core/lib/utils";
+import { ContactHeader } from "@/components/recruit-ui/core/primitives/contact-header";
+import { PanelSection } from "@/components/recruit-ui/core/primitives/panel-section";
+import { Stack } from "@/components/recruit-ui/core/primitives/stack";
+import { Text } from "@/components/recruit-ui/core/primitives/text";
+import type { HTMLAttributes, ReactNode } from "react";
+
+import { CandidateCoverHeader } from "./candidate-cover-header";
+
+export interface CandidateProfileProps
+  extends Omit<HTMLAttributes<HTMLElement>, "title"> {
+  header?: ReactNode;
+  children: ReactNode;
+  footer?: ReactNode;
+}
+
+/** Structural profile composition. Data loading and record policy stay outside. */
+export function CandidateProfile({
+  header,
+  children,
+  footer,
+  className,
+  ...props
+}: CandidateProfileProps) {
+  return (
+    <Stack
+      as="article"
+      data-slot="candidate-profile"
+      gap="none"
+      surface="card"
+      radius="xl"
+      overflow="hidden"
+      className={className}
+      {...props}
+    >
+      {header}
+      {children}
+      {footer}
+    </Stack>
+  );
+}
+
+export interface CandidateProfileHeaderProps
+  extends HTMLAttributes<HTMLDivElement> {
+  name: ReactNode;
+  avatar?: ReactNode;
+  cover?: ReactNode;
+  eyebrow?: ReactNode;
+  status?: ReactNode;
+  meta?: ReactNode;
+  summary?: ReactNode;
+  actions?: ReactNode;
+}
+
+export function CandidateProfileHeader({
+  name,
+  avatar,
+  cover,
+  eyebrow,
+  status,
+  meta,
+  summary,
+  actions,
+  className,
+  ...props
+}: CandidateProfileHeaderProps) {
+  return (
+    <CandidateCoverHeader
+      cover={cover}
+      padding="lg"
+      data-slot="candidate-profile-header"
+      className={className}
+      {...props}
+    >
+      <Stack gap="sm">
+        {eyebrow != null ? (
+          <Text variant="eyebrow">{eyebrow}</Text>
+        ) : null}
+        <ContactHeader
+          avatar={avatar}
+          name={name}
+          status={status}
+          meta={meta}
+          actions={actions}
+          spacing="none"
+        />
+        {summary != null ? (
+          <Text variant="muted" size="sm">
+            {summary}
+          </Text>
+        ) : null}
+      </Stack>
+    </CandidateCoverHeader>
+  );
+}
+
+export interface CandidateProfileBodyProps
+  extends HTMLAttributes<HTMLDivElement> {
+  children: ReactNode;
+  divided?: boolean;
+}
+
+export function CandidateProfileBody({
+  children,
+  divided = false,
+  className,
+  ...props
+}: CandidateProfileBodyProps) {
+  return (
+    <PanelSection
+      as="div"
+      data-slot="candidate-profile-body"
+      border="top"
+      className={cn(divided && "divide-y", className)}
+      {...props}
+    >
+      {children}
+    </PanelSection>
+  );
+}
+
+export interface CandidateProfileFooterProps
+  extends HTMLAttributes<HTMLElement> {
+  children: ReactNode;
+}
+
+export function CandidateProfileFooter({
+  children,
+  ...props
+}: CandidateProfileFooterProps) {
+  return (
+    <PanelSection
+      as="footer"
+      data-slot="candidate-profile-footer"
+      border="top"
+      layout="row"
+      gap="sm"
+      {...props}
+    >
+      {children}
+    </PanelSection>
+  );
+}

@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "name": "recruit-core",
+  "sourceVersion": "0.127.0+patched.2",
+  "dependencies": [
+    "@radix-ui/react-aspect-ratio",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-collapsible",
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-separator",
+    "@radix-ui/react-slot",
+    "class-variance-authority",
+    "clsx",
+    "lucide-react",
+    "react-responsive",
+    "tailwind-merge",
+    "vaul"
+  ],
+  "files": [
+    {
+      "path": "files/src/lib/utils.ts",
+      "target": "components/recruit-ui/core/lib/utils.ts",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/anchor.tsx",
+      "target": "components/recruit-ui/core/primitives/anchor.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/aspect-ratio.tsx",
+      "target": "components/recruit-ui/core/primitives/aspect-ratio.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/avatar.tsx",
+      "target": "components/recruit-ui/core/primitives/avatar.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/badge.tsx",
+      "target": "components/recruit-ui/core/primitives/badge.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/button.tsx",
+      "target": "components/recruit-ui/core/primitives/button.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/connection-status-bar.tsx",
+      "target": "components/recruit-ui/core/primitives/connection-status-bar.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/contact-header.tsx",
+      "target": "components/recruit-ui/core/primitives/contact-header.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/count-badge.tsx",
+      "target": "components/recruit-ui/core/primitives/count-badge.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/decision-actions.tsx",
+      "target": "components/recruit-ui/core/primitives/decision-actions.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/definition-list.tsx",
+      "target": "components/recruit-ui/core/primitives/definition-list.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/dialog.tsx",
+      "target": "components/recruit-ui/core/primitives/dialog.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/drawer.tsx",
+      "target": "components/recruit-ui/core/primitives/drawer.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/empty-state.tsx",
+      "target": "components/recruit-ui/core/primitives/empty-state.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/eyebrow.tsx",
+      "target": "components/recruit-ui/core/primitives/eyebrow.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/flex-item.tsx",
+      "target": "components/recruit-ui/core/primitives/flex-item.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/grid.tsx",
+      "target": "components/recruit-ui/core/primitives/grid.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/heading.tsx",
+      "target": "components/recruit-ui/core/primitives/heading.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/icon.tsx",
+      "target": "components/recruit-ui/core/primitives/icon.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/image.tsx",
+      "target": "components/recruit-ui/core/primitives/image.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/input.tsx",
+      "target": "components/recruit-ui/core/primitives/input.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/interactive-card.tsx",
+      "target": "components/recruit-ui/core/primitives/interactive-card.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/list.tsx",
+      "target": "components/recruit-ui/core/primitives/list.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/panel-section.tsx",
+      "target": "components/recruit-ui/core/primitives/panel-section.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/person-avatar.tsx",
+      "target": "components/recruit-ui/core/primitives/person-avatar.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/responsive-dialog.tsx",
+      "target": "components/recruit-ui/core/primitives/responsive-dialog.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/section-header.tsx",
+      "target": "components/recruit-ui/core/primitives/section-header.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/separator.tsx",
+      "target": "components/recruit-ui/core/primitives/separator.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/skeleton.tsx",
+      "target": "components/recruit-ui/core/primitives/skeleton.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/spacer.tsx",
+      "target": "components/recruit-ui/core/primitives/spacer.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/stack.tsx",
+      "target": "components/recruit-ui/core/primitives/stack.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/status-icon.tsx",
+      "target": "components/recruit-ui/core/primitives/status-icon.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/text.tsx",
+      "target": "components/recruit-ui/core/primitives/text.tsx",
+      "type": "registry:ui"
+    },
+    {
+      "path": "files/src/primitives/timeline.tsx",
+      "target": "components/recruit-ui/core/primitives/timeline.tsx",
+      "type": "registry:ui"
+    }
+  ]
+}

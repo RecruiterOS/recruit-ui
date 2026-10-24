@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "namespace": "core",
+  "name": "recruit-core",
+  "title": "Recruit UI core support",
+  "description": "Generated, allowlisted UI primitives used by Recruit UI workflows.",
+  "vendorManifest": "vendor/core/export.json",
+  "licenseFiles": ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"]
+}

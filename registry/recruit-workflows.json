@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "namespace": "recruit",
+  "name": "recruit-workflows",
+  "title": "Recruit UI candidate workflows",
+  "description": "Slot-driven candidate review, profile, assessment, decision, and destination compositions.",
+  "registryDependencies": ["RecruiterOS/recruit-ui/recruit-core"],
+  "files": [
+    "src/core/calendar-date.ts",
+    "src/recruit/candidate-assessment.tsx",
+    "src/recruit/candidate-card-activation.ts",
+    "src/recruit/candidate-career-history-timeline.tsx",
+    "src/recruit/candidate-cover-header.tsx",
+    "src/recruit/candidate-decision-bar.tsx",
+    "src/recruit/candidate-destination-status.tsx",
+    "src/recruit/candidate-grade.tsx",
+    "src/recruit/candidate-inline-card.tsx",
+    "src/recruit/candidate-profile-dialog.tsx",
+    "src/recruit/candidate-profile.tsx",
+    "src/recruit/candidate-quote.tsx",
+    "src/recruit/candidate-review-card.tsx",
+    "src/recruit/current-company-label.tsx"
+  ]
+}
