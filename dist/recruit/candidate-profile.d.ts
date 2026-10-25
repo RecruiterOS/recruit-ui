@@ -1,5 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
+import { CandidateCoverHeaderPadding } from './candidate-cover-header.js';
 
 interface CandidateProfileProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
     header?: ReactNode;
@@ -17,8 +18,13 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
     meta?: ReactNode;
     summary?: ReactNode;
     actions?: ReactNode;
+    /**
+     * `lg` (the default) pads the header like a card's; `none` sits it flush in
+     * a container the host already pads, such as a drawer body.
+     */
+    padding?: Extract<CandidateCoverHeaderPadding, "lg" | "none">;
 }
-declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
+declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, padding, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
     divided?: boolean;

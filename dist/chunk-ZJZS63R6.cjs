@@ -33,11 +33,12 @@ function CandidateCoverHeader({
   className,
   ...props
 }) {
+  const clip = cover != null || padding !== "none";
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     "div",
     {
       "data-slot": "candidate-cover-header",
-      className: _utils.cn.call(void 0, "overflow-hidden", className),
+      className: _utils.cn.call(void 0, clip && "overflow-hidden", className),
       ...props,
       children: [
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateCoverImage, { softenUntilHover: softenCoverUntilHover, children: cover }),
@@ -45,7 +46,7 @@ function CandidateCoverHeader({
           _panelsection.PanelSection,
           {
             as: "div",
-            padding: padding === "compact" ? "compact" : "default",
+            padding: padding === "none" ? "none" : padding === "compact" ? "compact" : "default",
             className: _utils.cn.call(void 0, padding === "card-header" && "pb-3 pt-5"),
             children
           }

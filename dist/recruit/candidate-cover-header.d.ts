@@ -11,10 +11,17 @@ declare function CandidateCoverImage({ children, softenUntilHover, className, ..
 interface CandidateCoverHeaderProps extends HTMLAttributes<HTMLDivElement> {
     cover?: ReactNode;
     children: ReactNode;
-    padding?: "compact" | "card-header" | "lg";
+    /**
+     * Space around the identity. `none` sits it flush in a container the host
+     * pads; with no cover the header then doesn't clip, so a focus ring at its
+     * edge stays whole.
+     */
+    padding?: CandidateCoverHeaderPadding;
     softenCoverUntilHover?: boolean;
 }
+/** The space a CandidateCoverHeader leaves around the identity. */
+type CandidateCoverHeaderPadding = "compact" | "card-header" | "lg" | "none";
 /** One cover-and-identity hierarchy shared by candidate cards and profiles. */
 declare function CandidateCoverHeader({ cover, children, padding, softenCoverUntilHover, className, ...props }: CandidateCoverHeaderProps): react.JSX.Element;
 
-export { CandidateCoverHeader, type CandidateCoverHeaderProps, CandidateCoverImage, type CandidateCoverImageProps };
+export { CandidateCoverHeader, type CandidateCoverHeaderPadding, type CandidateCoverHeaderProps, CandidateCoverImage, type CandidateCoverImageProps };

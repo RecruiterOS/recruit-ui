@@ -84,4 +84,53 @@ describe("candidate card activation", () => {
     await user.click(screen.getByText("Fictional Candidate"));
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
+
+  it("lays an inline card out as one dense row when compact", async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    const { rerender } = render(
+      <CandidateInlineCard
+        name="Fictional Candidate"
+        headline="Example Role · Fictional North"
+        meta="Last touched two weeks ago"
+        avatar={<span data-testid="avatar" />}
+      />,
+    );
+
+    const card = document.querySelector('[data-slot="candidate-inline-card"]');
+    const content = document.querySelector('[data-slot="candidate-inline-card-content"]');
+    expect(card).toHaveAttribute("data-density", "comfortable");
+    expect(content).toHaveClass("px-5", "py-4");
+    expect(content).not.toHaveClass("h-full");
+    expect(screen.getByRole("heading", { name: "Fictional Candidate" })).toHaveClass("font-semibold");
+
+    rerender(
+      <CandidateInlineCard
+        density="compact"
+        name="Fictional Candidate"
+        headline="Example Role · Fictional North"
+        meta="Last touched two weeks ago"
+        avatar={<span data-testid="avatar" />}
+        onSelect={onSelect}
+        selectLabel="Open Fictional Candidate"
+        actions={<button type="button">Profile</button>}
+      />,
+    );
+    expect(card).toHaveAttribute("data-density", "compact");
+    expect(content).toHaveClass("px-3", "py-2", "h-full");
+    expect(content).not.toHaveClass("px-5");
+    // Content centres in whatever height the host gives the row.
+    expect(content?.firstElementChild).toHaveClass("h-full", "items-center");
+    const heading = screen.getByRole("heading", { name: "Fictional Candidate" });
+    expect(heading).toHaveClass("text-sm", "font-medium", "truncate");
+    // Every line truncates and sits on snug leading, so the lines fit the row's height.
+    expect(screen.getByText("Example Role · Fictional North")).toHaveClass("text-xs", "truncate", "leading-snug");
+    expect(screen.getByText("Last touched two weeks ago")).toHaveClass("truncate", "leading-snug");
+    expect(screen.getByText("Example Role · Fictional North")).not.toHaveClass("leading-relaxed");
+
+    await user.click(screen.getByRole("button", { name: "Profile" }));
+    expect(onSelect).not.toHaveBeenCalled();
+    await user.click(screen.getByRole("button", { name: "Open Fictional Candidate" }));
+    expect(onSelect).toHaveBeenCalledTimes(1);
+  });
 });

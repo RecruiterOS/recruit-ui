@@ -1,6 +1,7 @@
 "use client";
 
 export * from "./call-reconcile-card";
+export * from "./candidate-activity-timeline";
 export * from "./candidate-assessment";
 export * from "./candidate-call-card";
 export * from "./candidate-call-list";
@@ -8,6 +9,7 @@ export * from "./candidate-card-columns-toggle";
 export * from "./candidate-card-list";
 export * from "./candidate-career-history-panel";
 export * from "./candidate-career-history-timeline";
+export * from "./candidate-channel-actions";
 export * from "./candidate-contact-channels-menu";
 export * from "./candidate-contact-details";
 export * from "./candidate-cover-header";

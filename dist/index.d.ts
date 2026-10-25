@@ -1,5 +1,6 @@
 export { CalendarDateValue, formatCalendarDate, parseCalendarDate } from './core/calendar-date.js';
-export { CallReconcileCard, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcileSuggestedPerson } from './recruit/call-reconcile-card.js';
+export { CallReconcileCard, CallReconcileCardBaseProps, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcilePickerProps, CallReconcileSearchProps, CallReconcileSuggestedPerson } from './recruit/call-reconcile-card.js';
+export { CandidateActivityDetailItem, CandidateActivityGroup, CandidateActivityItem, CandidateActivityLinkItem, CandidateActivityTimeline, CandidateActivityTimelineLabels, CandidateActivityTimelineProps } from './recruit/candidate-activity-timeline.js';
 export { CandidateAssessment, CandidateAssessmentFact, CandidateAssessmentLabels, CandidateAssessmentProps } from './recruit/candidate-assessment.js';
 export { CandidateCallCard, CandidateCallCardLabels, CandidateCallCardProps } from './recruit/candidate-call-card.js';
 export { CandidateCallList, CandidateCallListProps } from './recruit/candidate-call-list.js';
@@ -7,9 +8,10 @@ export { CandidateCardColumns, CandidateCardColumnsState, CandidateCardColumnsTo
 export { CandidateCardList, CandidateCardListProps } from './recruit/candidate-card-list.js';
 export { CandidateCareerHistoryPanel, CandidateCareerHistoryPanelProps } from './recruit/candidate-career-history-panel.js';
 export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, CareerDateRange, CareerDateRangeProps, CareerHistoryItem } from './recruit/candidate-career-history-timeline.js';
+export { CandidateChannel, CandidateChannelActions, CandidateChannelActionsProps } from './recruit/candidate-channel-actions.js';
 export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateContactChannelsMenuLabels, CandidateContactChannelsMenuProps } from './recruit/candidate-contact-channels-menu.js';
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './recruit/candidate-contact-details.js';
-export { CandidateCoverHeader, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './recruit/candidate-cover-header.js';
+export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './recruit/candidate-cover-header.js';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './recruit/candidate-decision-bar.js';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './recruit/candidate-decision-buttons.js';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './recruit/candidate-decision-reason-dialog.js';
@@ -22,7 +24,7 @@ export { CandidateFavouriteButton, CandidateFavouriteButtonLabels, CandidateFavo
 export { CandidateFilterChipOption, CandidateFilterChips, CandidateFilterChipsProps } from './recruit/candidate-filter-chips.js';
 export { CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './recruit/candidate-grade.js';
 export { CandidateHeaderActions, CandidateHeaderActionsProps, CandidateIconAction, CandidateIconActionProps } from './recruit/candidate-header-actions.js';
-export { CandidateInlineCard, CandidateInlineCardProps } from './recruit/candidate-inline-card.js';
+export { CandidateInlineCard, CandidateInlineCardDensity, CandidateInlineCardProps } from './recruit/candidate-inline-card.js';
 export { CandidateJobEvidence, CandidateJobEvidenceEntry, CandidateJobEvidenceFeedback, CandidateJobEvidenceProps } from './recruit/candidate-job-evidence.js';
 export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, CandidateNoteComposer, CandidateNoteComposerLabels, CandidateNoteComposerProps, CandidateNoteKind, CandidateNoteList, CandidateNoteListProps, CandidateNotePinned, CandidateNoteScope } from './recruit/candidate-notes.js';
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './recruit/candidate-outreach-composer.js';
@@ -30,7 +32,7 @@ export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNotePr
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './recruit/candidate-pipeline-card.js';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './recruit/candidate-pipeline-list.js';
 export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './recruit/candidate-profile.js';
-export { CandidateProfileDialog, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.js';
+export { CandidateProfileDialog, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.js';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './recruit/candidate-profile-link-button.js';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './recruit/candidate-quote.js';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './recruit/candidate-relationship-card.js';
@@ -53,10 +55,11 @@ export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCa
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './recruit/call-data.js';
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
 import 'react';
+import '@epicbagel/saas-kit/primitives/icon';
+import '@epicbagel/saas-kit/primitives/timeline';
 import '@epicbagel/saas-kit/primitives/resource-list';
 import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
-import '@epicbagel/saas-kit/primitives/icon';
 import '@epicbagel/saas-kit/primitives/select';

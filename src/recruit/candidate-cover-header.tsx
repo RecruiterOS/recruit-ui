@@ -40,9 +40,17 @@ export interface CandidateCoverHeaderProps
   extends HTMLAttributes<HTMLDivElement> {
   cover?: ReactNode;
   children: ReactNode;
-  padding?: "compact" | "card-header" | "lg";
+  /**
+   * Space around the identity. `none` sits it flush in a container the host
+   * pads; with no cover the header then doesn't clip, so a focus ring at its
+   * edge stays whole.
+   */
+  padding?: CandidateCoverHeaderPadding;
   softenCoverUntilHover?: boolean;
 }
+
+/** The space a CandidateCoverHeader leaves around the identity. */
+export type CandidateCoverHeaderPadding = "compact" | "card-header" | "lg" | "none";
 
 /** One cover-and-identity hierarchy shared by candidate cards and profiles. */
 export function CandidateCoverHeader({
@@ -53,10 +61,14 @@ export function CandidateCoverHeader({
   className,
   ...props
 }: CandidateCoverHeaderProps) {
+  // The clip keeps a cover inside the rounded frame; a flush header with no
+  // cover has nothing to clip, and clipping would cut its focus rings.
+  const clip = cover != null || padding !== "none";
+
   return (
     <div
       data-slot="candidate-cover-header"
-      className={cn("overflow-hidden", className)}
+      className={cn(clip && "overflow-hidden", className)}
       {...props}
     >
       <CandidateCoverImage softenUntilHover={softenCoverUntilHover}>
@@ -64,7 +76,7 @@ export function CandidateCoverHeader({
       </CandidateCoverImage>
       <PanelSection
         as="div"
-        padding={padding === "compact" ? "compact" : "default"}
+        padding={padding === "none" ? "none" : padding === "compact" ? "compact" : "default"}
         className={cn(padding === "card-header" && "pb-3 pt-5")}
       >
         {children}

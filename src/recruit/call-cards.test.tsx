@@ -411,4 +411,74 @@ describe("call reconcile card", () => {
     expect(within(seeded).getByPlaceholderText("Full name")).toHaveValue("Dana Example");
     expect(within(seeded).getByPlaceholderText("email@example.com")).toHaveValue("dana@example.com");
   });
+
+  it("shows the host's own suggestions in place of the guess buttons", async () => {
+    const user = userEvent.setup();
+    const onConfirm = vi.fn();
+    render(
+      <CallReconcileCard
+        {...base}
+        guesses={[MEI]}
+        suggestions={<button type="button" onClick={onConfirm}>Mei Example · Fictional North</button>}
+      />,
+    );
+
+    expect(screen.getByText("Possible matches")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Mei Example" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Mei Example · Fictional North" }));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText("Preview of Mei Example")).toBeNull();
+    // The card's own search is still there.
+    expect(screen.getByPlaceholderText("Search by name")).toBeInTheDocument();
+  });
+
+  it("hands picking a person to the host's picker, with its suggestions beside the button", async () => {
+    const user = userEvent.setup();
+    const onPickOther = vi.fn();
+    const onDismiss = vi.fn();
+    const onConfirm = vi.fn();
+    const { rerender } = render(
+      <CallReconcileCard
+        title="Call with Mei"
+        participants={participants}
+        transcript="Mei: Exploring a move next year."
+        timestamp="Two days ago"
+        source="Fictional notes"
+        onDismiss={onDismiss}
+        onPickOther={onPickOther}
+      />,
+    );
+
+    // No search, manual add or possible matches of its own.
+    expect(screen.queryByPlaceholderText("Search by name")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Manually add" })).toBeNull();
+    expect(screen.queryByText("Possible matches")).toBeNull();
+    expect(screen.getByText(/Pick who it was with/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Attach to…" }));
+    expect(onPickOther).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole("button", { name: "Dismiss" }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <CallReconcileCard
+        title="Call with Mei"
+        participants={participants}
+        onDismiss={onDismiss}
+        onPickOther={onPickOther}
+        suggestions={<button type="button" onClick={onConfirm}>Mei Example</button>}
+        labels={{ pickOther: (hasMatches) => (hasMatches ? "Not them" : "Find someone") }}
+      />,
+    );
+    expect(screen.getByText("Possible matches")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Mei Example" }));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole("button", { name: "Not them" }));
+    expect(onPickOther).toHaveBeenCalledTimes(2);
+
+
+    // The host's picker and the card's own search are one or the other.
+    // @ts-expect-error searchPeople belongs to the card's own search
+    const both = <CallReconcileCard onDismiss={onDismiss} onPickOther={onPickOther} searchPeople={base.searchPeople} />;
+    void both;
+  });
 });

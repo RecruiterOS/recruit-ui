@@ -9,6 +9,7 @@ import {
 } from "./candidate-destination-status";
 import { CandidateProfileDialog } from "./candidate-profile-dialog";
 import { ResponsiveDialogClose } from "@epicbagel/saas-kit/primitives/responsive-dialog";
+import { SheetClose } from "@epicbagel/saas-kit/primitives/sheet";
 
 function setDesktopViewport(isDesktop: boolean) {
   Object.defineProperty(window, "matchMedia", {
@@ -26,7 +27,14 @@ function setDesktopViewport(isDesktop: boolean) {
   });
 }
 
-afterEach(() => setDesktopViewport(true));
+function setViewportWidth(width: number) {
+  Object.defineProperty(window, "innerWidth", { writable: true, configurable: true, value: width });
+}
+
+afterEach(() => {
+  setDesktopViewport(true);
+  setViewportWidth(1024);
+});
 
 describe("candidate workflow compositions", () => {
   it("gives a controlled profile dialog an accessible title and close behavior", async () => {
@@ -99,6 +107,76 @@ describe("candidate workflow compositions", () => {
     expect(screen.queryByRole("button", { name: "Close candidate profile" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Close from profile header" }));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("opens the profile as a side sheet on desktop, with the same slots", async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    render(
+      <CandidateProfileDialog
+        presentation="sheet"
+        accessibleTitle="Fictional sheet profile"
+        accessibleDescription="A fictional profile beside the list."
+        header={<p>Sheet header</p>}
+        footer={<button type="button">Mark as touched</button>}
+        contentClassName="lg:max-w-5xl"
+        open
+        onOpenChange={onOpenChange}
+      >
+        <p>Sheet body</p>
+      </CandidateProfileDialog>,
+    );
+
+    const sheet = screen.getByRole("dialog", { name: "Fictional sheet profile" });
+    expect(sheet).toHaveAttribute("data-slot", "candidate-profile-dialog");
+    expect(sheet).toHaveAttribute("data-presentation", "sheet");
+    expect(sheet).toHaveAttribute("data-side", "right");
+    expect(sheet).toHaveClass("sm:max-w-2xl", "lg:max-w-5xl");
+    expect(sheet).toHaveAccessibleDescription("A fictional profile beside the list.");
+    expect(screen.getByText("Sheet header")).toBeInTheDocument();
+    expect(screen.getByText("Sheet body")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Mark as touched" }).parentElement).toHaveAttribute(
+      "data-slot",
+      "candidate-profile-dialog-footer",
+    );
+
+    // One close control: the kit sheet's own is hidden in favour of the profile's.
+    const close = screen.getByRole("button", { name: "Close candidate profile" });
+    expect(close).toHaveAttribute("data-slot", "candidate-profile-dialog-close");
+    expect(screen.queryByRole("button", { name: "Close" })).not.toBeInTheDocument();
+    await user.click(close);
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it("opens the sheet from the bottom on a phone, from its trigger", async () => {
+    setViewportWidth(390);
+    const user = userEvent.setup();
+    render(
+      <CandidateProfileDialog
+        presentation="sheet"
+        accessibleTitle="Fictional phone profile"
+        trigger={<button type="button">Open profile</button>}
+        closeLabel="Close contact"
+        showClose={false}
+        header={(
+          <SheetClose asChild>
+            <button type="button">Close from profile header</button>
+          </SheetClose>
+        )}
+      >
+        <p>Phone body</p>
+      </CandidateProfileDialog>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Open profile" }));
+    const sheet = await screen.findByRole("dialog", { name: "Fictional phone profile" });
+    await waitFor(() => expect(sheet).toHaveAttribute("data-side", "bottom"));
+    expect(sheet).toHaveClass("max-h-[92dvh]");
+    expect(screen.queryByRole("button", { name: "Close contact" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Close from profile header" }));
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: "Fictional phone profile" })).not.toBeInTheDocument();
+    });
   });
 
   it("forwards decisions and reflects the selected option", async () => {

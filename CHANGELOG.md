@@ -5,6 +5,56 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.10.0
+
+### Added
+
+- `CandidateProfileDialog` takes `presentation`: `dialog` (the default, as
+  before) or `sheet`, which opens the profile as the kit's Sheet from the
+  right on desktop and from the bottom below the kit's mobile breakpoint,
+  with the same title, header, body, footer and close slots. The surface
+  carries `data-presentation`, and a sheet `data-side`. A sheet is as wide as
+  the centred dialog unless `contentClassName` widens it. The two differ in
+  two ways: a dialog becomes a drawer below 1024px and a sheet moves to the
+  bottom below 768px, and a sheet's footer stays one right-aligned row on a
+  phone where a dialog's (`footerLayout="auto"`) becomes a two-column grid.
+- `CandidateInlineCard` takes `density`: `comfortable` (the default, as
+  before) or `compact`, one dense row with smaller padding, the name and
+  lines centred on the avatar and every line truncated, for fixed-height list
+  rows and board columns: give the card a height and its content centres in
+  it. The root carries `data-density`.
+- `CandidateActivityTimeline`: a person's history grouped by period, built
+  on the kit's Timeline. Each row has a glyph, a title clamped to two lines,
+  a line of context and a timestamp, and either a longer body behind a
+  toggle or a link or button that opens something. A period can show a
+  count beside its heading. Skeleton rows while loading and the kit's empty
+  state ("No activity yet") when there is nothing.
+- `CandidateChannelActions`: the host's ways to reach a person
+  (`{ kind, href, label, icon }`) as round icon links or a labelled bar.
+  Web links open in a new tab, and clicks never reach a surrounding card.
+  Two channels may share a `kind`, such as two phone numbers.
+- `CandidateCoverHeader` and `CandidateProfileHeader` take `padding="none"`,
+  for a header that sits flush in a host-padded container. With no cover the
+  header then doesn't clip, so focus rings at its edges stay whole.
+- `CallReconcileCard` takes `suggestions`, the host's own controls for the
+  people a call may be about, shown in place of the buttons `guesses`
+  renders, and `onPickOther`, which hands picking a person to the host: the
+  card then shows one button for the host's picker (labels `pickOther` and
+  `pickHint`) instead of its own search, manual add, preview and create
+  dialogs.
+
+### Breaking
+
+- `CallReconcileCardProps` is now a union: `CallReconcileCardBaseProps` with
+  either `CallReconcileSearchProps` (the card's own search, as before:
+  `searchPeople`, `onAttach`, `onCreateAttach` and `renderPreview` stay
+  required together) or `CallReconcilePickerProps` (`onPickOther`). Passing
+  props to the card works as before, but an interface can't extend a union,
+  so `interface X extends CallReconcileCardProps` no longer compiles. Extend
+  both halves instead: `interface X extends CallReconcileCardBaseProps,
+  CallReconcileSearchProps`, or `CallReconcilePickerProps` for a host-owned
+  picker.
+
 ## 0.9.0
 
 The first release after 0.2.0; there were no 0.3.0 to 0.8.0 releases.

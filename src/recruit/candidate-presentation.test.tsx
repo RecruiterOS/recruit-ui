@@ -3,7 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
 import { CandidateCareerHistoryTimeline } from "./candidate-career-history-timeline";
-import { CandidateCoverImage } from "./candidate-cover-header";
+import { CandidateCoverHeader, CandidateCoverImage } from "./candidate-cover-header";
+import { CandidateProfileHeader } from "./candidate-profile";
 import {
   candidateGradeDisplay,
   candidateGradeLabel,
@@ -24,6 +25,25 @@ describe("candidate presentation", () => {
     const frame = document.querySelector('[data-slot="candidate-cover-image"]');
     expect(frame).toBeInTheDocument();
     expect(frame?.parentElement).toHaveStyle({ paddingBottom: "25%" });
+  });
+
+  it("sits a header flush without clipping it unless a cover needs the clip", () => {
+    const { rerender } = render(<CandidateProfileHeader name="Mei Example" padding="none" />);
+    const header = () => document.querySelector('[data-slot="candidate-profile-header"]');
+    expect(header()).not.toHaveClass("overflow-hidden");
+    const padded = /(^|\s)p[xytb]?-/;
+    expect(header()?.firstElementChild?.className).not.toMatch(padded);
+
+    rerender(<CandidateProfileHeader name="Mei Example" />);
+    expect(header()).toHaveClass("overflow-hidden");
+    expect(header()?.firstElementChild?.className).toMatch(padded);
+
+    rerender(
+      <CandidateCoverHeader padding="none" cover={<img alt="Fictional landscape" />}>
+        Mei Example
+      </CandidateCoverHeader>,
+    );
+    expect(document.querySelector('[data-slot="candidate-cover-header"]')).toHaveClass("overflow-hidden");
   });
 
   it("renders quiet quotes without nested card treatment", () => {

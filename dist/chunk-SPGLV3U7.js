@@ -3,7 +3,7 @@ import {
 } from "./chunk-NBZS6VTO.js";
 import {
   CandidateCoverHeader
-} from "./chunk-G4E57GP4.js";
+} from "./chunk-IQFISO63.js";
 
 // src/recruit/candidate-review-card.tsx
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";

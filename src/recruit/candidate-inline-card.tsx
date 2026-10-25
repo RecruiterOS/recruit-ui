@@ -22,9 +22,24 @@ export interface CandidateInlineCardProps
   subdued?: boolean;
   onSelect?: () => void;
   selectLabel?: string;
+  /**
+   * `comfortable` (the default) gives the card room for an assessment;
+   * `compact` is a single dense row (smaller padding, the name and lines
+   * centred on the avatar, every line truncated) for fixed-height list rows
+   * and board columns: give the card a height and its content centres in it.
+   */
+  density?: CandidateInlineCardDensity;
 }
 
-/** A compact candidate trigger suitable for lists, messages, and previews. */
+/** How much room a CandidateInlineCard takes. */
+export type CandidateInlineCardDensity = "comfortable" | "compact";
+
+/**
+ * A compact candidate trigger suitable for lists, messages, and previews.
+ *
+ * The root is the kit InteractiveCard as an `article`, marked
+ * `data-slot="candidate-inline-card"` and `data-density`.
+ */
 export function CandidateInlineCard({
   name,
   avatar,
@@ -37,6 +52,7 @@ export function CandidateInlineCard({
   subdued = false,
   onSelect,
   selectLabel = "Open candidate profile",
+  density = "comfortable",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -44,11 +60,13 @@ export function CandidateInlineCard({
   const generatedId = useId();
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
+  const compact = density === "compact";
 
   return (
     <InteractiveCard
       as="article"
       data-slot="candidate-inline-card"
+      data-density={density}
       selected={selected}
       borderWidth="thin"
       padding="none"
@@ -74,7 +92,8 @@ export function CandidateInlineCard({
       ) : null}
       <div
         data-slot="candidate-inline-card-content"
-        className="px-5 py-4"
+        // Compact fills a fixed-height row and centres on it, as a virtualised list needs.
+        className={compact ? "h-full px-3 py-2" : "px-5 py-4"}
         onClick={
           onSelect
             ? (event: MouseEvent<HTMLDivElement>) => {
@@ -83,25 +102,43 @@ export function CandidateInlineCard({
             : undefined
         }
       >
-        <Stack direction="horizontal" gap="compact" align="start">
+        <Stack
+          direction="horizontal"
+          gap={compact ? "sm" : "compact"}
+          align={compact ? "center" : "start"}
+          height={compact ? "full" : "auto"}
+        >
           {avatar}
           <FlexItem grow minWidth="zero">
-            <Stack direction="horizontal" gap="sm" align="center" wrap>
-              <Heading id={nameId} level={5} truncate>{name}</Heading>
+            <Stack direction="horizontal" gap="sm" align="center" wrap={!compact}>
+              <Heading id={nameId} level={5} appearance={compact ? "compact" : "default"} truncate>{name}</Heading>
               {status}
             </Stack>
             {headline != null ? (
-              <Text variant="caption" size="sm" truncate marginTop="tight">
+              // A compact row is a fixed height: the caption's relaxed leading would push the lines apart.
+              <Text
+                variant="caption"
+                size={compact ? "xs" : "sm"}
+                leading={compact ? "snug" : "normal"}
+                truncate
+                marginTop={compact ? "none" : "tight"}
+              >
                 {headline}
               </Text>
             ) : null}
             {meta != null ? (
-              <Text variant="caption" size="xs" marginTop="xs">
+              <Text
+                variant="caption"
+                size="xs"
+                leading={compact ? "snug" : "normal"}
+                truncate={compact}
+                marginTop={compact ? "none" : "xs"}
+              >
                 {meta}
               </Text>
             ) : null}
             {assessment != null ? (
-              <Stack gap="none" marginTop="md">{assessment}</Stack>
+              <Stack gap="none" marginTop={compact ? "sm" : "md"}>{assessment}</Stack>
             ) : null}
           </FlexItem>
           {actions}

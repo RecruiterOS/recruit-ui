@@ -1,6 +1,6 @@
 import {
   CandidateCoverHeader
-} from "./chunk-G4E57GP4.js";
+} from "./chunk-IQFISO63.js";
 
 // src/recruit/candidate-profile.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
@@ -44,6 +44,7 @@ function CandidateProfileHeader({
   meta,
   summary,
   actions,
+  padding = "lg",
   className,
   ...props
 }) {
@@ -51,7 +52,7 @@ function CandidateProfileHeader({
     CandidateCoverHeader,
     {
       cover,
-      padding: "lg",
+      padding,
       "data-slot": "candidate-profile-header",
       className,
       ...props,

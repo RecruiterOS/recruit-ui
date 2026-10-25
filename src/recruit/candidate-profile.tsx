@@ -5,7 +5,7 @@ import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, ReactNode } from "react";
 
-import { CandidateCoverHeader } from "./candidate-cover-header";
+import { CandidateCoverHeader, type CandidateCoverHeaderPadding } from "./candidate-cover-header";
 
 export interface CandidateProfileProps
   extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -50,6 +50,11 @@ export interface CandidateProfileHeaderProps
   meta?: ReactNode;
   summary?: ReactNode;
   actions?: ReactNode;
+  /**
+   * `lg` (the default) pads the header like a card's; `none` sits it flush in
+   * a container the host already pads, such as a drawer body.
+   */
+  padding?: Extract<CandidateCoverHeaderPadding, "lg" | "none">;
 }
 
 export function CandidateProfileHeader({
@@ -61,13 +66,14 @@ export function CandidateProfileHeader({
   meta,
   summary,
   actions,
+  padding = "lg",
   className,
   ...props
 }: CandidateProfileHeaderProps) {
   return (
     <CandidateCoverHeader
       cover={cover}
-      padding="lg"
+      padding={padding}
       data-slot="candidate-profile-header"
       className={className}
       {...props}

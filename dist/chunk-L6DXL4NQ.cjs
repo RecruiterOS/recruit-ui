@@ -3,7 +3,7 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunk4OKOQUKVcjs = require('./chunk-4OKOQUKV.cjs');
+var _chunkZJZS63R6cjs = require('./chunk-ZJZS63R6.cjs');
 
 // src/recruit/candidate-review-card.tsx
 var _definitionlist = require('@epicbagel/saas-kit/primitives/definition-list');
@@ -75,7 +75,7 @@ function CandidateReviewCard({
             } : void 0,
             children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "none", height: "full", children: [
               /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minHeight: "zero", children: [
-                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk4OKOQUKVcjs.CandidateCoverHeader, { cover, padding: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkZJZS63R6cjs.CandidateCoverHeader, { cover, padding: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
                   _grid.Grid,
                   {
                     columns: null,

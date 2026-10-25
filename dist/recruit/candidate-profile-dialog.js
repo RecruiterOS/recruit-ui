@@ -1,7 +1,7 @@
 "use client";
 import {
   CandidateProfileDialog
-} from "../chunk-D2RDE4TV.js";
+} from "../chunk-WR3J2WJ2.js";
 export {
   CandidateProfileDialog
 };

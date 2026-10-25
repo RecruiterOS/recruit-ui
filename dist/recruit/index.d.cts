@@ -1,4 +1,5 @@
-export { CallReconcileCard, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcileSuggestedPerson } from './call-reconcile-card.cjs';
+export { CallReconcileCard, CallReconcileCardBaseProps, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcilePickerProps, CallReconcileSearchProps, CallReconcileSuggestedPerson } from './call-reconcile-card.cjs';
+export { CandidateActivityDetailItem, CandidateActivityGroup, CandidateActivityItem, CandidateActivityLinkItem, CandidateActivityTimeline, CandidateActivityTimelineLabels, CandidateActivityTimelineProps } from './candidate-activity-timeline.cjs';
 export { CandidateAssessment, CandidateAssessmentFact, CandidateAssessmentLabels, CandidateAssessmentProps } from './candidate-assessment.cjs';
 export { CandidateCallCard, CandidateCallCardLabels, CandidateCallCardProps } from './candidate-call-card.cjs';
 export { CandidateCallList, CandidateCallListProps } from './candidate-call-list.cjs';
@@ -6,9 +7,10 @@ export { CandidateCardColumns, CandidateCardColumnsState, CandidateCardColumnsTo
 export { CandidateCardList, CandidateCardListProps } from './candidate-card-list.cjs';
 export { CandidateCareerHistoryPanel, CandidateCareerHistoryPanelProps } from './candidate-career-history-panel.cjs';
 export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, CareerDateRange, CareerDateRangeProps, CareerHistoryItem } from './candidate-career-history-timeline.cjs';
+export { CandidateChannel, CandidateChannelActions, CandidateChannelActionsProps } from './candidate-channel-actions.cjs';
 export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateContactChannelsMenuLabels, CandidateContactChannelsMenuProps } from './candidate-contact-channels-menu.cjs';
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './candidate-contact-details.cjs';
-export { CandidateCoverHeader, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './candidate-cover-header.cjs';
+export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './candidate-cover-header.cjs';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './candidate-decision-bar.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './candidate-decision-reason-dialog.cjs';
@@ -21,7 +23,7 @@ export { CandidateFavouriteButton, CandidateFavouriteButtonLabels, CandidateFavo
 export { CandidateFilterChipOption, CandidateFilterChips, CandidateFilterChipsProps } from './candidate-filter-chips.cjs';
 export { CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './candidate-grade.cjs';
 export { CandidateHeaderActions, CandidateHeaderActionsProps, CandidateIconAction, CandidateIconActionProps } from './candidate-header-actions.cjs';
-export { CandidateInlineCard, CandidateInlineCardProps } from './candidate-inline-card.cjs';
+export { CandidateInlineCard, CandidateInlineCardDensity, CandidateInlineCardProps } from './candidate-inline-card.cjs';
 export { CandidateJobEvidence, CandidateJobEvidenceEntry, CandidateJobEvidenceFeedback, CandidateJobEvidenceProps } from './candidate-job-evidence.cjs';
 export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, CandidateNoteComposer, CandidateNoteComposerLabels, CandidateNoteComposerProps, CandidateNoteKind, CandidateNoteList, CandidateNoteListProps, CandidateNotePinned, CandidateNoteScope } from './candidate-notes.cjs';
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './candidate-outreach-composer.cjs';
@@ -29,7 +31,7 @@ export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNotePr
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './candidate-pipeline-card.cjs';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './candidate-pipeline-list.cjs';
 export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './candidate-profile.cjs';
-export { CandidateProfileDialog, CandidateProfileDialogProps } from './candidate-profile-dialog.cjs';
+export { CandidateProfileDialog, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './candidate-profile-dialog.cjs';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './candidate-profile-link-button.cjs';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './candidate-quote.cjs';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './candidate-relationship-card.cjs';
@@ -53,10 +55,11 @@ export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCal
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
 import '../core/calendar-date.cjs';
 import 'react';
+import '@epicbagel/saas-kit/primitives/icon';
+import '@epicbagel/saas-kit/primitives/timeline';
 import '@epicbagel/saas-kit/primitives/resource-list';
 import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
-import '@epicbagel/saas-kit/primitives/icon';
 import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import '@epicbagel/saas-kit/primitives/select';

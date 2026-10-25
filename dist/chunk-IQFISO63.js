@@ -33,11 +33,12 @@ function CandidateCoverHeader({
   className,
   ...props
 }) {
+  const clip = cover != null || padding !== "none";
   return /* @__PURE__ */ jsxs(
     "div",
     {
       "data-slot": "candidate-cover-header",
-      className: cn("overflow-hidden", className),
+      className: cn(clip && "overflow-hidden", className),
       ...props,
       children: [
         /* @__PURE__ */ jsx(CandidateCoverImage, { softenUntilHover: softenCoverUntilHover, children: cover }),
@@ -45,7 +46,7 @@ function CandidateCoverHeader({
           PanelSection,
           {
             as: "div",
-            padding: padding === "compact" ? "compact" : "default",
+            padding: padding === "none" ? "none" : padding === "compact" ? "compact" : "default",
             className: cn(padding === "card-header" && "pb-3 pt-5"),
             children
           }

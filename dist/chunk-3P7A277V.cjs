@@ -22,6 +22,7 @@ function CandidateInlineCard({
   subdued = false,
   onSelect,
   selectLabel = "Open candidate profile",
+  density = "comfortable",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -29,11 +30,13 @@ function CandidateInlineCard({
   const generatedId = _react.useId.call(void 0, );
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
+  const compact = density === "compact";
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     _interactivecard.InteractiveCard,
     {
       as: "article",
       "data-slot": "candidate-inline-card",
+      "data-density": density,
       selected,
       borderWidth: "thin",
       padding: "none",
@@ -59,23 +62,55 @@ function CandidateInlineCard({
           "div",
           {
             "data-slot": "candidate-inline-card-content",
-            className: "px-5 py-4",
+            className: compact ? "h-full px-3 py-2" : "px-5 py-4",
             onClick: onSelect ? (event) => {
               if (_chunkK3VUGGWHcjs.shouldActivateCandidateCard.call(void 0, event)) onSelect();
             } : void 0,
-            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "compact", align: "start", children: [
-              avatar,
-              /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
-                /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", wrap: true, children: [
-                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: nameId, level: 5, truncate: true, children: name }),
-                  status
-                ] }),
-                headline != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "caption", size: "sm", truncate: true, marginTop: "tight", children: headline }) : null,
-                meta != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "caption", size: "xs", marginTop: "xs", children: meta }) : null,
-                assessment != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { gap: "none", marginTop: "md", children: assessment }) : null
-              ] }),
-              actions
-            ] })
+            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+              _stack.Stack,
+              {
+                direction: "horizontal",
+                gap: compact ? "sm" : "compact",
+                align: compact ? "center" : "start",
+                height: compact ? "full" : "auto",
+                children: [
+                  avatar,
+                  /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
+                    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", wrap: !compact, children: [
+                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: nameId, level: 5, appearance: compact ? "compact" : "default", truncate: true, children: name }),
+                      status
+                    ] }),
+                    headline != null ? (
+                      // A compact row is a fixed height: the caption's relaxed leading would push the lines apart.
+                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                        _text.Text,
+                        {
+                          variant: "caption",
+                          size: compact ? "xs" : "sm",
+                          leading: compact ? "snug" : "normal",
+                          truncate: true,
+                          marginTop: compact ? "none" : "tight",
+                          children: headline
+                        }
+                      )
+                    ) : null,
+                    meta != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                      _text.Text,
+                      {
+                        variant: "caption",
+                        size: "xs",
+                        leading: compact ? "snug" : "normal",
+                        truncate: compact,
+                        marginTop: compact ? "none" : "xs",
+                        children: meta
+                      }
+                    ) : null,
+                    assessment != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { gap: "none", marginTop: compact ? "sm" : "md", children: assessment }) : null
+                  ] }),
+                  actions
+                ]
+              }
+            )
           }
         )
       ]

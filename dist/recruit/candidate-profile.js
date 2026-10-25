@@ -3,8 +3,8 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "../chunk-C522VUTO.js";
-import "../chunk-G4E57GP4.js";
+} from "../chunk-I264RN25.js";
+import "../chunk-IQFISO63.js";
 export {
   CandidateProfile,
   CandidateProfileBody,

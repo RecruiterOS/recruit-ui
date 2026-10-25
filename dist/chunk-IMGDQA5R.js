@@ -4,7 +4,7 @@ import {
 } from "./chunk-NBZS6VTO.js";
 import {
   CandidateCoverHeader
-} from "./chunk-G4E57GP4.js";
+} from "./chunk-IQFISO63.js";
 
 // src/recruit/candidate-relationship-card.tsx
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";

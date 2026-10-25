@@ -16,6 +16,10 @@ interface CallReconcileCardLabels {
     notFound: (name: string) => ReactNode;
     /** The rest of the hint under the heading. */
     hint: ReactNode;
+    /** The rest of the hint when the host picks the person (`onPickOther`). */
+    pickHint: ReactNode;
+    /** The button that hands picking a person to the host, worded by whether there are possible matches above it. */
+    pickOther: (hasMatches: boolean) => ReactNode;
     /** The eyebrow over the possible matches. */
     possibleMatches: ReactNode;
     /** The search field's placeholder, given the suggested person's name when there is one. */
@@ -54,7 +58,8 @@ interface CallReconcileNewPerson {
     name: string;
     email?: string;
 }
-interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson> {
+/** What every reconcile card shows, however the person is picked. */
+interface CallReconcileCardBaseProps {
     title?: ReactNode;
     source?: ReactNode;
     /** The gist of the call, clamped with a show-more toggle when long. */
@@ -69,14 +74,30 @@ interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson> {
     loadTranscript?: () => Promise<CallTranscript | null | undefined>;
     /** Whose call it is, as a badge in the header. */
     owner?: CallReconcileOwner;
-    /** People the call may be about, offered first. */
-    guesses?: readonly TPerson[];
+    /**
+     * The host's own controls for the people the call may be about, under the
+     * possible-matches eyebrow: buttons that confirm before attaching, say.
+     * Shown in place of the buttons `guesses` renders.
+     */
+    suggestions?: ReactNode;
     /** Named in the hint and the search, and seeds the create dialog. */
     suggestedPerson?: CallReconcileSuggestedPerson | null;
+    onDismiss: () => void;
+    labels?: Partial<CallReconcileCardLabels>;
+    /** Class for the card. Its root is the kit's CallCard, which takes no other attributes. */
+    className?: string;
+}
+/**
+ * The card picks the person itself: likely guesses and people found by name
+ * are previewed before the call attaches, and a person can be created from
+ * the call.
+ */
+interface CallReconcileSearchProps<TPerson extends CallPerson = CallPerson> {
+    /** People the call may be about, offered first. */
+    guesses?: readonly TPerson[];
     searchPeople: SearchCallPeople<TPerson>;
     /** Beside the search field, such as a button that looks the suggested person up elsewhere. */
     externalSearch?: ReactNode;
-    onDismiss: () => void;
     /** Attaches the call to a person picked from the guesses or the search, after the preview. */
     onAttach: (person: TPerson) => void;
     /** Creates a person from the create dialog and attaches the call to them. */
@@ -86,16 +107,33 @@ interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson> {
      * dismisses the preview without attaching.
      */
     renderPreview: (person: TPerson, close: () => void) => ReactNode;
-    labels?: Partial<CallReconcileCardLabels>;
-    /** Class for the card. Its root is the kit's CallCard, which takes no other attributes. */
-    className?: string;
+    onPickOther?: never;
 }
+/**
+ * The host picks the person: the card offers the host's `suggestions` and one
+ * button that opens the host's own people picker, and has no search, preview
+ * or create dialog of its own.
+ */
+interface CallReconcilePickerProps {
+    /** Opens the host's people picker. */
+    onPickOther: () => void;
+    guesses?: never;
+    searchPeople?: never;
+    externalSearch?: never;
+    onAttach?: never;
+    onCreateAttach?: never;
+    renderPreview?: never;
+}
+type CallReconcileCardProps<TPerson extends CallPerson = CallPerson> = CallReconcileCardBaseProps & (CallReconcileSearchProps<TPerson> | CallReconcilePickerProps);
 /**
  * A call nobody has been attached to yet, and the one decision it needs:
  * attach it to an existing person (a likely guess, or one found by name, each
  * previewed first), create a person from it, or dismiss it. The host owns
  * what each choice saves and removes the card afterwards.
+ *
+ * With `onPickOther` the host picks the person instead: the card shows the
+ * host's `suggestions` and one button for its own picker.
  */
-declare function CallReconcileCard<TPerson extends CallPerson>({ title, source, summary, timestamp, participants, transcript, segments, loadTranscript, owner, guesses, suggestedPerson, searchPeople, externalSearch, onDismiss, onAttach, onCreateAttach, renderPreview, labels, className, }: CallReconcileCardProps<TPerson>): react.JSX.Element;
+declare function CallReconcileCard<TPerson extends CallPerson>({ title, source, summary, timestamp, participants, transcript, segments, loadTranscript, owner, suggestions, guesses, suggestedPerson, searchPeople, externalSearch, onDismiss, onAttach, onCreateAttach, renderPreview, onPickOther, labels, className, }: CallReconcileCardProps<TPerson>): react.JSX.Element;
 
-export { CallReconcileCard, type CallReconcileCardLabels, type CallReconcileCardProps, type CallReconcileNewPerson, type CallReconcileOwner, type CallReconcileSuggestedPerson };
+export { CallReconcileCard, type CallReconcileCardBaseProps, type CallReconcileCardLabels, type CallReconcileCardProps, type CallReconcileNewPerson, type CallReconcileOwner, type CallReconcilePickerProps, type CallReconcileSearchProps, type CallReconcileSuggestedPerson };

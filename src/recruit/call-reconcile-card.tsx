@@ -5,6 +5,7 @@ import { Button } from "@epicbagel/saas-kit/primitives/button";
 import { CallCard, type CallParticipant } from "@epicbagel/saas-kit/primitives/call-card";
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Input } from "@epicbagel/saas-kit/primitives/input";
 import { InteractiveCard } from "@epicbagel/saas-kit/primitives/interactive-card";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
@@ -17,7 +18,7 @@ import {
 } from "@epicbagel/saas-kit/primitives/responsive-dialog";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
-import { UserSearch } from "lucide-react";
+import { UserPlus, UserSearch } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
 import type {
@@ -41,6 +42,10 @@ export interface CallReconcileCardLabels {
   notFound: (name: string) => ReactNode;
   /** The rest of the hint under the heading. */
   hint: ReactNode;
+  /** The rest of the hint when the host picks the person (`onPickOther`). */
+  pickHint: ReactNode;
+  /** The button that hands picking a person to the host, worded by whether there are possible matches above it. */
+  pickOther: (hasMatches: boolean) => ReactNode;
   /** The eyebrow over the possible matches. */
   possibleMatches: ReactNode;
   /** The search field's placeholder, given the suggested person's name when there is one. */
@@ -71,6 +76,8 @@ const DEFAULT_LABELS: CallReconcileCardLabels = {
   dismiss: "Dismiss",
   notFound: (name) => `We couldn't find ${name}.`,
   hint: "Search or add them below to attach the conversation and keep their history and future recommendations together.",
+  pickHint: "Pick who it was with to attach the conversation and keep their history and future recommendations together.",
+  pickOther: (hasMatches) => (hasMatches ? "Someone else" : "Attach to…"),
   possibleMatches: "Possible matches",
   searchPlaceholder: (name) => (name === undefined ? "Search by name" : `Search for ${name}`),
   addManually: "Manually add",
@@ -108,7 +115,8 @@ export interface CallReconcileNewPerson {
   email?: string;
 }
 
-export interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson> {
+/** What every reconcile card shows, however the person is picked. */
+export interface CallReconcileCardBaseProps {
   title?: ReactNode;
   source?: ReactNode;
   /** The gist of the call, clamped with a show-more toggle when long. */
@@ -123,14 +131,31 @@ export interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson>
   loadTranscript?: () => Promise<CallTranscript | null | undefined>;
   /** Whose call it is, as a badge in the header. */
   owner?: CallReconcileOwner;
-  /** People the call may be about, offered first. */
-  guesses?: readonly TPerson[];
+  /**
+   * The host's own controls for the people the call may be about, under the
+   * possible-matches eyebrow: buttons that confirm before attaching, say.
+   * Shown in place of the buttons `guesses` renders.
+   */
+  suggestions?: ReactNode;
   /** Named in the hint and the search, and seeds the create dialog. */
   suggestedPerson?: CallReconcileSuggestedPerson | null;
+  onDismiss: () => void;
+  labels?: Partial<CallReconcileCardLabels>;
+  /** Class for the card. Its root is the kit's CallCard, which takes no other attributes. */
+  className?: string;
+}
+
+/**
+ * The card picks the person itself: likely guesses and people found by name
+ * are previewed before the call attaches, and a person can be created from
+ * the call.
+ */
+export interface CallReconcileSearchProps<TPerson extends CallPerson = CallPerson> {
+  /** People the call may be about, offered first. */
+  guesses?: readonly TPerson[];
   searchPeople: SearchCallPeople<TPerson>;
   /** Beside the search field, such as a button that looks the suggested person up elsewhere. */
   externalSearch?: ReactNode;
-  onDismiss: () => void;
   /** Attaches the call to a person picked from the guesses or the search, after the preview. */
   onAttach: (person: TPerson) => void;
   /** Creates a person from the create dialog and attaches the call to them. */
@@ -140,16 +165,41 @@ export interface CallReconcileCardProps<TPerson extends CallPerson = CallPerson>
    * dismisses the preview without attaching.
    */
   renderPreview: (person: TPerson, close: () => void) => ReactNode;
-  labels?: Partial<CallReconcileCardLabels>;
-  /** Class for the card. Its root is the kit's CallCard, which takes no other attributes. */
-  className?: string;
+  onPickOther?: never;
 }
+
+/**
+ * The host picks the person: the card offers the host's `suggestions` and one
+ * button that opens the host's own people picker, and has no search, preview
+ * or create dialog of its own.
+ */
+export interface CallReconcilePickerProps {
+  /** Opens the host's people picker. */
+  onPickOther: () => void;
+  guesses?: never;
+  searchPeople?: never;
+  externalSearch?: never;
+  onAttach?: never;
+  onCreateAttach?: never;
+  renderPreview?: never;
+}
+
+export type CallReconcileCardProps<TPerson extends CallPerson = CallPerson> =
+  CallReconcileCardBaseProps & (CallReconcileSearchProps<TPerson> | CallReconcilePickerProps);
+
+const isShown = (node: ReactNode) =>
+  node != null && node !== false && node !== "" && !(Array.isArray(node) && node.length === 0);
+
+const noSearch: SearchCallPeople<never> = async () => [];
 
 /**
  * A call nobody has been attached to yet, and the one decision it needs:
  * attach it to an existing person (a likely guess, or one found by name, each
  * previewed first), create a person from it, or dismiss it. The host owns
  * what each choice saves and removes the card afterwards.
+ *
+ * With `onPickOther` the host picks the person instead: the card shows the
+ * host's `suggestions` and one button for its own picker.
  */
 export function CallReconcileCard<TPerson extends CallPerson>({
   title,
@@ -161,6 +211,7 @@ export function CallReconcileCard<TPerson extends CallPerson>({
   segments,
   loadTranscript,
   owner,
+  suggestions,
   guesses = [],
   suggestedPerson,
   searchPeople,
@@ -169,18 +220,33 @@ export function CallReconcileCard<TPerson extends CallPerson>({
   onAttach,
   onCreateAttach,
   renderPreview,
+  onPickOther,
   labels,
   className,
 }: CallReconcileCardProps<TPerson>) {
   const text = { ...DEFAULT_LABELS, ...labels };
   const call = useCallTranscript({ transcript, segments, loadTranscript });
   const [query, setQuery] = useState("");
-  const { results, searching } = useCallPeopleSearch<TPerson>(query, true, searchPeople);
+  const { results, searching } = useCallPeopleSearch<TPerson>(
+    query,
+    searchPeople != null,
+    searchPeople ?? noSearch,
+  );
   const [preview, setPreview] = useState<TPerson | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [newName, setNewName] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const closePreview = () => setPreview(null);
+  const picker = onPickOther != null;
+  // The host's suggestions, or else a button that previews each guess.
+  const matches = suggestions !== undefined
+    ? suggestions
+    : guesses.map((guess) => (
+      <Button key={guess.id} size="sm" variant="outline" onClick={() => setPreview(guess)}>
+        {guess.name}
+      </Button>
+    ));
+  const hasMatches = isShown(matches);
 
   return (
     <>
@@ -209,160 +275,176 @@ export function CallReconcileCard<TPerson extends CallPerson>({
               </Stack>
               <Text size="xs" tone="muted">
                 {suggestedPerson && <>{text.notFound(suggestedPerson.name)} </>}
-                {text.hint}
+                {picker ? text.pickHint : text.hint}
               </Text>
             </Stack>
 
-            {guesses.length > 0 && (
+            {picker ? (
               <Stack gap="xs" border="top" paddingTop="md">
-                <Text size="xs" tone="muted">{text.possibleMatches}</Text>
-                <Stack direction="horizontal" gap="sm" wrap>
-                  {guesses.map((guess) => (
-                    <Button key={guess.id} size="sm" variant="outline" onClick={() => setPreview(guess)}>
-                      {guess.name}
-                    </Button>
-                  ))}
+                {hasMatches && <Text size="xs" tone="muted">{text.possibleMatches}</Text>}
+                <Stack direction="horizontal" gap="sm" align="center" wrap>
+                  {matches}
+                  <Button variant="outline" size="sm" onClick={() => onPickOther?.()}>
+                    <Icon icon={UserPlus} size="sm" />
+                    {text.pickOther(hasMatches)}
+                  </Button>
                 </Stack>
               </Stack>
-            )}
-
-            <Stack direction="horizontal" gap="sm" align="center" wrap border="top" paddingTop="md">
-              <FlexItem grow minWidth="zero" basis="md">
-                <Input
-                  type="text"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={text.searchPlaceholder(suggestedPerson ? suggestedPerson.name : undefined)}
-                />
-              </FlexItem>
-              {externalSearch}
-              <Button
-                variant="outline"
-                size="sm"
-                shrink
-                onClick={() => {
-                  const seed = participants.find((participant) => participant.email) ?? participants[0];
-                  setNewName(suggestedPerson?.name ?? seed?.name ?? "");
-                  setNewEmail(suggestedPerson?.email ?? seed?.email ?? "");
-                  setCreateOpen(true);
-                }}
-              >
-                {text.addManually}
-              </Button>
-            </Stack>
-            {(results.length > 0 || searching) && (
-              <List surface="bordered" radius="md">
-                {searching && results.length === 0 && (
-                  <ListItem padding="md" textSize="xs" tone="soft">{text.searching}</ListItem>
+            ) : (
+              <>
+                {hasMatches && (
+                  <Stack gap="xs" border="top" paddingTop="md">
+                    <Text size="xs" tone="muted">{text.possibleMatches}</Text>
+                    <Stack direction="horizontal" gap="sm" wrap>
+                      {matches}
+                    </Stack>
+                  </Stack>
                 )}
-                {results.map((person) => (
-                  <ListItem key={person.id}>
-                    <InteractiveCard
-                      display="block"
-                      radius="none"
-                      border="none"
-                      padding="row"
-                      textSize="sm"
-                      onClick={() => setPreview(person)}
-                    >
-                      {person.name}
-                    </InteractiveCard>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-            {!searching && query.trim().length >= CALL_PEOPLE_SEARCH_MIN_LENGTH && results.length === 0 && (
-              <EmptyState
-                variant="search"
-                size="inline"
-                icon={UserSearch}
-                title={text.noMatchesTitle}
-                description={text.noMatchesDescription}
-              />
+
+                <Stack direction="horizontal" gap="sm" align="center" wrap border="top" paddingTop="md">
+                  <FlexItem grow minWidth="zero" basis="md">
+                    <Input
+                      type="text"
+                      value={query}
+                      onChange={(event) => setQuery(event.target.value)}
+                      placeholder={text.searchPlaceholder(suggestedPerson ? suggestedPerson.name : undefined)}
+                    />
+                  </FlexItem>
+                  {externalSearch}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    shrink
+                    onClick={() => {
+                      const seed = participants.find((participant) => participant.email) ?? participants[0];
+                      setNewName(suggestedPerson?.name ?? seed?.name ?? "");
+                      setNewEmail(suggestedPerson?.email ?? seed?.email ?? "");
+                      setCreateOpen(true);
+                    }}
+                  >
+                    {text.addManually}
+                  </Button>
+                </Stack>
+                {(results.length > 0 || searching) && (
+                  <List surface="bordered" radius="md">
+                    {searching && results.length === 0 && (
+                      <ListItem padding="md" textSize="xs" tone="soft">{text.searching}</ListItem>
+                    )}
+                    {results.map((person) => (
+                      <ListItem key={person.id}>
+                        <InteractiveCard
+                          display="block"
+                          radius="none"
+                          border="none"
+                          padding="row"
+                          textSize="sm"
+                          onClick={() => setPreview(person)}
+                        >
+                          {person.name}
+                        </InteractiveCard>
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+                {!searching && query.trim().length >= CALL_PEOPLE_SEARCH_MIN_LENGTH && results.length === 0 && (
+                  <EmptyState
+                    variant="search"
+                    size="inline"
+                    icon={UserSearch}
+                    title={text.noMatchesTitle}
+                    description={text.noMatchesDescription}
+                  />
+                )}
+              </>
             )}
           </Stack>
         )}
       />
 
-      <ResponsiveDialog open={createOpen} onOpenChange={setCreateOpen}>
-        <ResponsiveDialogContent>
-          <ResponsiveDialogHeader>
-            <ResponsiveDialogTitle>{text.createTitle}</ResponsiveDialogTitle>
-          </ResponsiveDialogHeader>
-          <ResponsiveDialogBody>
-            <Stack gap="sm">
-              {participants.length > 0 && (
-                <Stack gap="xs">
-                  <Text variant="small" tone="muted">{text.useParticipant}</Text>
-                  <Stack direction="horizontal" gap="sm" wrap>
-                    {participants.map((participant, index) => (
-                      <Button
-                        key={`${participant.email ?? participant.name}-${index}`}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setNewName(participant.name ?? "");
-                          setNewEmail(participant.email ?? "");
-                        }}
-                      >
-                        {participant.name || participant.email}
-                      </Button>
-                    ))}
+      {/* The host's picker replaces both dialogs, so picker mode mounts neither. */}
+      {picker ? null : (
+        <>
+          <ResponsiveDialog open={createOpen} onOpenChange={setCreateOpen}>
+            <ResponsiveDialogContent>
+              <ResponsiveDialogHeader>
+                <ResponsiveDialogTitle>{text.createTitle}</ResponsiveDialogTitle>
+              </ResponsiveDialogHeader>
+              <ResponsiveDialogBody>
+                <Stack gap="sm">
+                  {participants.length > 0 && (
+                    <Stack gap="xs">
+                      <Text variant="small" tone="muted">{text.useParticipant}</Text>
+                      <Stack direction="horizontal" gap="sm" wrap>
+                        {participants.map((participant, index) => (
+                          <Button
+                            key={`${participant.email ?? participant.name}-${index}`}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setNewName(participant.name ?? "");
+                              setNewEmail(participant.email ?? "");
+                            }}
+                          >
+                            {participant.name || participant.email}
+                          </Button>
+                        ))}
+                      </Stack>
+                    </Stack>
+                  )}
+                  <Stack gap="xs">
+                    <Text variant="small" tone="muted">{text.name}</Text>
+                    <Input value={newName} onChange={(event) => setNewName(event.target.value)} placeholder={text.namePlaceholder} />
+                  </Stack>
+                  <Stack gap="xs">
+                    <Text variant="small" tone="muted">{text.email}</Text>
+                    <Input type="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} placeholder={text.emailPlaceholder} />
+                  </Stack>
+                  <Button
+                    size="sm"
+                    disabled={!newName.trim()}
+                    onClick={() => {
+                      const name = newName.trim();
+                      const email = newEmail.trim();
+                      setCreateOpen(false);
+                      onCreateAttach?.({ name, email: email || undefined });
+                    }}
+                  >
+                    {text.createSubmit}
+                  </Button>
+                </Stack>
+              </ResponsiveDialogBody>
+            </ResponsiveDialogContent>
+          </ResponsiveDialog>
+
+          <ResponsiveDialog open={preview !== null} onOpenChange={(open) => !open && closePreview()}>
+            <ResponsiveDialogContent presentation="preview">
+              <ResponsiveDialogHeader visibility="screen-reader">
+                <ResponsiveDialogTitle>{text.previewTitle}</ResponsiveDialogTitle>
+              </ResponsiveDialogHeader>
+              {preview && (
+                <Stack gap="none" minHeight="zero" grow>
+                  <FlexItem grow minHeight="zero" overflow="hidden">
+                    {renderPreview?.(preview, closePreview)}
+                  </FlexItem>
+                  <Stack direction="horizontal" gap="sm" align="center" justify="end" border="top" surface="background" padding="action-row">
+                    <Button variant="outline" size="sm" onClick={closePreview}>{text.cancel}</Button>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const person = preview;
+                        setPreview(null);
+                        onAttach?.(person);
+                      }}
+                    >
+                      {text.attach}
+                    </Button>
                   </Stack>
                 </Stack>
               )}
-              <Stack gap="xs">
-                <Text variant="small" tone="muted">{text.name}</Text>
-                <Input value={newName} onChange={(event) => setNewName(event.target.value)} placeholder={text.namePlaceholder} />
-              </Stack>
-              <Stack gap="xs">
-                <Text variant="small" tone="muted">{text.email}</Text>
-                <Input type="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} placeholder={text.emailPlaceholder} />
-              </Stack>
-              <Button
-                size="sm"
-                disabled={!newName.trim()}
-                onClick={() => {
-                  const name = newName.trim();
-                  const email = newEmail.trim();
-                  setCreateOpen(false);
-                  onCreateAttach({ name, email: email || undefined });
-                }}
-              >
-                {text.createSubmit}
-              </Button>
-            </Stack>
-          </ResponsiveDialogBody>
-        </ResponsiveDialogContent>
-      </ResponsiveDialog>
-
-      <ResponsiveDialog open={preview !== null} onOpenChange={(open) => !open && closePreview()}>
-        <ResponsiveDialogContent presentation="preview">
-          <ResponsiveDialogHeader visibility="screen-reader">
-            <ResponsiveDialogTitle>{text.previewTitle}</ResponsiveDialogTitle>
-          </ResponsiveDialogHeader>
-          {preview && (
-            <Stack gap="none" minHeight="zero" grow>
-              <FlexItem grow minHeight="zero" overflow="hidden">
-                {renderPreview(preview, closePreview)}
-              </FlexItem>
-              <Stack direction="horizontal" gap="sm" align="center" justify="end" border="top" surface="background" padding="action-row">
-                <Button variant="outline" size="sm" onClick={closePreview}>{text.cancel}</Button>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    const person = preview;
-                    setPreview(null);
-                    onAttach(person);
-                  }}
-                >
-                  {text.attach}
-                </Button>
-              </Stack>
-            </Stack>
-          )}
-        </ResponsiveDialogContent>
-      </ResponsiveDialog>
+            </ResponsiveDialogContent>
+          </ResponsiveDialog>
+        </>
+      )}
     </>
   );
 }
