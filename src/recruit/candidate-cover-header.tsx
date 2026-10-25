@@ -1,6 +1,6 @@
-import { cn } from "@/components/recruit-ui/core/lib/utils";
-import { AspectRatio } from "@/components/recruit-ui/core/primitives/aspect-ratio";
-import { PanelSection } from "@/components/recruit-ui/core/primitives/panel-section";
+import { cn } from "@epicbagel/saas-kit/lib/utils";
+import { AspectRatio } from "@epicbagel/saas-kit/primitives/aspect-ratio";
+import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
 import type { HTMLAttributes, ReactNode } from "react";
 
 export interface CandidateCoverImageProps

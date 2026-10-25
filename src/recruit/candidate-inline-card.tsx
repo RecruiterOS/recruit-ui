@@ -1,10 +1,10 @@
 "use client";
 
-import { FlexItem } from "@/components/recruit-ui/core/primitives/flex-item";
-import { Heading } from "@/components/recruit-ui/core/primitives/heading";
-import { InteractiveCard } from "@/components/recruit-ui/core/primitives/interactive-card";
-import { Stack } from "@/components/recruit-ui/core/primitives/stack";
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Heading } from "@epicbagel/saas-kit/primitives/heading";
+import { InteractiveCard } from "@epicbagel/saas-kit/primitives/interactive-card";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";

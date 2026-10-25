@@ -1,20 +1,22 @@
 "use client";
 
-import { Button } from "@/components/recruit-ui/core/primitives/button";
-import { EmptyState } from "@/components/recruit-ui/core/primitives/empty-state";
-import { Heading } from "@/components/recruit-ui/core/primitives/heading";
-import { List, ListItem } from "@/components/recruit-ui/core/primitives/list";
-import { SectionHeader } from "@/components/recruit-ui/core/primitives/section-header";
-import { Separator } from "@/components/recruit-ui/core/primitives/separator";
-import { Skeleton } from "@/components/recruit-ui/core/primitives/skeleton";
-import { Stack } from "@/components/recruit-ui/core/primitives/stack";
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { Button } from "@epicbagel/saas-kit/primitives/button";
+import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
+import { Heading } from "@epicbagel/saas-kit/primitives/heading";
+import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
+import { SectionHeader } from "@epicbagel/saas-kit/primitives/section-header";
+import { Separator } from "@epicbagel/saas-kit/primitives/separator";
+import { Skeleton } from "@epicbagel/saas-kit/primitives/skeleton";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useState, type ReactNode } from "react";
 
 import {
   formatCalendarDate,
   type CalendarDateValue,
 } from "../core/calendar-date";
+
+import type { CandidateEmptyCopy } from "./candidate-empty-copy";
 
 export interface CareerHistoryItem {
   title: ReactNode;
@@ -192,7 +194,11 @@ function CareerRole({
 export interface CandidateCareerHistoryTimelineProps {
   items: readonly CareerHistoryItem[];
   loading?: boolean;
+  /** The blank slate's wording. Defaults to "No career history yet". */
+  empty?: CandidateEmptyCopy;
+  /** @deprecated Use `empty.title`. */
   emptyTitle?: string;
+  /** @deprecated Use `empty.description`. */
   emptyDescription?: string;
   earlierLabel?: ReactNode;
   presentLabel?: ReactNode;
@@ -204,8 +210,9 @@ export interface CandidateCareerHistoryTimelineProps {
 export function CandidateCareerHistoryTimeline({
   items,
   loading = false,
-  emptyTitle = "No career history yet",
-  emptyDescription = "Career history is not available.",
+  empty,
+  emptyTitle,
+  emptyDescription,
   earlierLabel = "Earlier",
   presentLabel = "Present",
   detailedCompanyGroups = 2,
@@ -226,8 +233,8 @@ export function CandidateCareerHistoryTimeline({
       <EmptyState
         variant="empty"
         size="inline"
-        title={emptyTitle}
-        description={emptyDescription}
+        title={empty?.title ?? emptyTitle ?? "No career history yet"}
+        description={empty ? empty.description : emptyDescription ?? "Career history is not available."}
         className={className}
       />
     );

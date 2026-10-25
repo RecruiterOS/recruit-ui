@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@/components/recruit-ui/core/primitives/button";
-import { Icon } from "@/components/recruit-ui/core/primitives/icon";
+import { Button } from "@epicbagel/saas-kit/primitives/button";
+import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import {
   ResponsiveDialog,
   ResponsiveDialogBody,
@@ -12,7 +12,7 @@ import {
   ResponsiveDialogHeader,
   ResponsiveDialogTitle,
   ResponsiveDialogTrigger,
-} from "@/components/recruit-ui/core/primitives/responsive-dialog";
+} from "@epicbagel/saas-kit/primitives/responsive-dialog";
 import { X } from "lucide-react";
 import type { ReactElement, ReactNode } from "react";
 

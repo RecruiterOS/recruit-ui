@@ -11,6 +11,6 @@ Before opening a change:
 5. Use only explicitly fictional test content. Never paste production data, private links, screenshots, environment files, or credentials.
 6. Run `pnpm verify`.
 
-Files in `dist/` are generated. Workflow registry files point directly at the canonical source in `src/`. `vendor/core/` is a checksum-verified import from the allowlisted core exporter; never patch it directly. Maintainers refresh it with `pnpm import:core --source <core-checkout> --script <export-script>` and must review the complete generated diff before accepting it.
+Files in `dist/` are generated. Workflow registry files point directly at the canonical source in `src/`. UI primitives come from the `@epicbagel/saas-kit` package (MIT): import them as `@epicbagel/saas-kit/primitives/<module>` or `@epicbagel/saas-kit/lib/<module>`, never through a path alias or a local copy. `pnpm check:imports` fails on an undeclared package, a path alias, or a kit module the pinned kit doesn't export. A primitive that is missing or needs changing belongs in the kit; bump the exact `devDependencies` pin (and the `peerDependencies` range if the new version requires it), then rebuild `dist/`.
 
 The root `registry.json` is the GitHub source manifest. Keep same-repository dependencies fully qualified (`RecruiterOS/recruit-ui/<item>`) and run both `pnpm validate:registry` and `pnpm validate:shadcn` after changing registry inputs.

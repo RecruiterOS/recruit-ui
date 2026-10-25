@@ -1,5 +1,7 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
+import { BadgeProps } from '@epicbagel/saas-kit/primitives/badge';
+import { Sentiment } from '@epicbagel/saas-kit/primitives/sentiment-dot';
 
 type CandidateGrade = "A" | "B" | "C" | "D";
 /** Host-owned wording for each display grade. */
@@ -20,7 +22,34 @@ interface CandidateGradeBadgeProps extends HTMLAttributes<HTMLDivElement> {
     /** Host-owned semantic treatment; no meaning is inferred from the letter. */
     tone?: CandidateGradeTone;
     showLabel?: boolean;
+    /** The kit badge size, such as `compact` for dense rows. */
+    size?: BadgeProps["size"];
+    /** Root element: a block-level `div` (default) or an inline `span`. */
+    as?: "div" | "span";
+    /** Keep the badge at its natural width in a flex row. */
+    shrink?: boolean;
+    /**
+     * `split` (default): the letter and the label as separate spans, the letter
+     * with an accessible name. `inline`: a single line of text, "A — Strong fit",
+     * for a host that names the grade in a tooltip or the surrounding text.
+     */
+    format?: "split" | "inline";
+    /**
+     * `badge` (default): the kit Badge in `tone`. `sentiment`: the kit's
+     * sentiment pill, a coloured dot and text, in `sentiment`. The pill takes
+     * only `className`; other attributes are not passed to it.
+     */
+    appearance?: "badge" | "sentiment";
+    /** Host-owned sentiment for `appearance="sentiment"`. */
+    sentiment?: CandidateGradeSentiment;
 }
-declare function CandidateGradeBadge({ grade, label, labels, tone, showLabel, className, ...props }: CandidateGradeBadgeProps): react.JSX.Element;
+/** The kit's sentiment scale, for `appearance="sentiment"`. */
+type CandidateGradeSentiment = Sentiment;
+/**
+ * The grade letter with an optional host label. The root is the kit Badge
+ * (or its sentiment pill) and keeps the kit's own `data-slot`, which theme
+ * stylesheets select on; `data-grade` names the grade, or `ungraded`.
+ */
+declare function CandidateGradeBadge({ grade, label, labels, tone, showLabel, size, as, shrink, format, appearance, sentiment, className, ...props }: CandidateGradeBadgeProps): react.JSX.Element;
 
-export { type CandidateGrade, CandidateGradeBadge, type CandidateGradeBadgeProps, type CandidateGradeLabels, type CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade };
+export { type CandidateGrade, CandidateGradeBadge, type CandidateGradeBadgeProps, type CandidateGradeLabels, type CandidateGradeSentiment, type CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade };

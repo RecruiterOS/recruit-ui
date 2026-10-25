@@ -8,7 +8,7 @@ import {
   type CandidateDestinationAction,
 } from "./candidate-destination-status";
 import { CandidateProfileDialog } from "./candidate-profile-dialog";
-import { ResponsiveDialogClose } from "@/components/recruit-ui/core/primitives/responsive-dialog";
+import { ResponsiveDialogClose } from "@epicbagel/saas-kit/primitives/responsive-dialog";
 
 function setDesktopViewport(isDesktop: boolean) {
   Object.defineProperty(window, "matchMedia", {

@@ -1,4 +1,4 @@
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, ReactNode } from "react";
 
 export interface CurrentCompanyLabelProps

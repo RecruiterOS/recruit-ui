@@ -1,8 +1,8 @@
-import { DefinitionItem, DefinitionList } from "@/components/recruit-ui/core/primitives/definition-list";
-import { PanelSection } from "@/components/recruit-ui/core/primitives/panel-section";
-import { SectionHeader } from "@/components/recruit-ui/core/primitives/section-header";
-import { Stack } from "@/components/recruit-ui/core/primitives/stack";
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
+import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
+import { SectionHeader } from "@epicbagel/saas-kit/primitives/section-header";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, ReactNode } from "react";
 
 export interface CandidateAssessmentFact {

@@ -5,6 +5,7 @@ import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node
 import { tmpdir } from "node:os";
 import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { KIT, missingKitSubpaths, pinnedKit } from "./imports.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const expectedStaticRoot = join(root, "dist/registry");
@@ -59,7 +60,21 @@ try {
   if (readFileSync(join(root, "registry.json"), "utf8") !== readFileSync(join(temporarySourceRoot, "registry.json"), "utf8")) {
     throw new Error("Root GitHub registry manifest is stale.");
   }
-  console.log("registry output is deterministic and current");
+
+  // A registry install resolves the kit from npm at the declared range, so
+  // every kit module an installed file or CSS entry imports must exist in
+  // the kit release this repository pins and tests against.
+  const kit = pinnedKit();
+  const staticRegistry = JSON.parse(readFileSync(join(expectedStaticRoot, "registry.json"), "utf8"));
+  const installed = staticRegistry.items.flatMap((item) => [
+    ...(item.files ?? []).map((file) => ({ label: `${item.name} ${file.target}`, content: file.content })),
+    ...Object.keys(item.css ?? {}).map((rule) => ({ label: `${item.name} css`, content: rule })),
+  ]);
+  const missing = missingKitSubpaths(installed, kit);
+  if (missing.length > 0) {
+    throw new Error(`Registry imports ${KIT} modules that ${KIT} ${kit.version} doesn't export:\n- ${missing.join("\n- ")}`);
+  }
+  console.log(`registry output is deterministic and current; every ${KIT} import exists in ${kit.version}`);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });
 }

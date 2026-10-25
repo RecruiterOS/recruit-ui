@@ -5,7 +5,7 @@ import {
   type ConnectionStatusBarAction,
   type ConnectionStatusBarFact,
   type ConnectionStatusBarState,
-} from "@/components/recruit-ui/core/primitives/connection-status-bar";
+} from "@epicbagel/saas-kit/primitives/connection-status-bar";
 import type { ReactNode } from "react";
 
 type CandidateDestinationActionBase = Omit<

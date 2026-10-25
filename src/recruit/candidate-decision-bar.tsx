@@ -3,7 +3,7 @@
 import {
   DecisionActions,
   type DecisionActionOption,
-} from "@/components/recruit-ui/core/primitives/decision-actions";
+} from "@epicbagel/saas-kit/primitives/decision-actions";
 import type { ReactNode } from "react";
 
 export type CandidateDecisionOption<TValue extends string = string> =

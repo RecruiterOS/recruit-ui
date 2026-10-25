@@ -4,193 +4,371 @@
   "homepage": "https://github.com/RecruiterOS/recruit-ui",
   "items": [
     {
-      "name": "recruit-core",
+      "name": "recruit-tokens",
+      "type": "registry:item",
+      "title": "Recruit UI tokens",
+      "description": "The theme variables Recruit UI reads, from the base kit's neutral palette. Appended only where your stylesheet doesn't already define them, so your palette wins.",
+      "cssVars": {
+        "light": {
+          "background": "0 0% 100%",
+          "foreground": "0 0% 0%",
+          "card": "0 0% 100%",
+          "card-foreground": "0 0% 0%",
+          "popover": "0 0% 100%",
+          "popover-foreground": "0 0% 0%",
+          "primary": "0 0% 0%",
+          "primary-foreground": "0 0% 100%",
+          "secondary": "0 0% 96.1%",
+          "secondary-foreground": "0 0% 0%",
+          "muted": "0 0% 96.1%",
+          "muted-foreground": "0 0% 40%",
+          "accent": "0 0% 96.1%",
+          "accent-foreground": "0 0% 0%",
+          "destructive": "357.5 79.2% 47.1%",
+          "destructive-foreground": "0 0% 100%",
+          "border": "0 0% 89.8%",
+          "input": "0 0% 89.8%",
+          "ring": "0 0% 0%",
+          "chart-1": "0 0% 20%",
+          "chart-2": "0 0% 30.2%",
+          "chart-3": "0 0% 40%",
+          "chart-4": "0 0% 50.2%",
+          "chart-5": "0 0% 60%",
+          "sidebar-background": "0 0% 98%",
+          "sidebar-foreground": "0 0% 0%",
+          "sidebar-primary": "0 0% 0%",
+          "sidebar-primary-foreground": "0 0% 100%",
+          "sidebar-accent": "0 0% 96.1%",
+          "sidebar-accent-foreground": "0 0% 0%",
+          "sidebar-border": "0 0% 89.8%",
+          "sidebar-ring": "0 0% 89.8%"
+        },
+        "dark": {
+          "background": "0 0% 0%",
+          "foreground": "0 0% 100%",
+          "card": "0 0% 0%",
+          "card-foreground": "0 0% 100%",
+          "popover": "0 0% 0%",
+          "popover-foreground": "0 0% 100%",
+          "primary": "0 0% 100%",
+          "primary-foreground": "0 0% 0%",
+          "secondary": "0 0% 10.2%",
+          "secondary-foreground": "0 0% 100%",
+          "muted": "0 0% 10.2%",
+          "muted-foreground": "0 0% 60%",
+          "accent": "0 0% 10.2%",
+          "accent-foreground": "0 0% 100%",
+          "destructive": "357.5 79.2% 47.1%",
+          "destructive-foreground": "0 0% 100%",
+          "border": "0 0% 20%",
+          "input": "0 0% 20%",
+          "ring": "0 0% 100%",
+          "chart-1": "0 0% 80%",
+          "chart-2": "0 0% 70.2%",
+          "chart-3": "0 0% 60%",
+          "chart-4": "0 0% 50.2%",
+          "chart-5": "0 0% 40%",
+          "sidebar-background": "0 0% 5.1%",
+          "sidebar-foreground": "0 0% 100%",
+          "sidebar-primary": "0 0% 100%",
+          "sidebar-primary-foreground": "0 0% 0%",
+          "sidebar-accent": "0 0% 10.2%",
+          "sidebar-accent-foreground": "0 0% 100%",
+          "sidebar-border": "0 0% 20%",
+          "sidebar-ring": "0 0% 20%"
+        }
+      }
+    },
+    {
+      "name": "recruit-workflows",
       "type": "registry:ui",
-      "title": "Recruit UI core support",
-      "description": "Generated, allowlisted UI primitives used by Recruit UI workflows.",
+      "title": "Recruit UI candidate workflows",
+      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and pipeline rows), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
       "dependencies": [
-        "@radix-ui/react-aspect-ratio@^1.1.7",
-        "@radix-ui/react-avatar@^1.1.10",
-        "@radix-ui/react-collapsible@^1.1.11",
-        "@radix-ui/react-dialog@^1.1.14",
-        "@radix-ui/react-separator@^1.1.7",
-        "@radix-ui/react-slot@^1.2.3",
-        "class-variance-authority@^0.7.1",
-        "clsx@^2.1.1",
-        "lucide-react@^0.400.0",
-        "react-responsive@^10.0.1",
-        "tailwind-merge@^2.4.0",
-        "vaul@^1.1.2"
+        "@epicbagel/saas-kit@^1.0.0",
+        "lucide-react@>=0.400.0 <2"
       ],
+      "registryDependencies": [
+        "RecruiterOS/recruit-ui/recruit-tokens"
+      ],
+      "css": {
+        "@import \"@epicbagel/saas-kit/styles/utilities.css\"": {},
+        "@import \"@epicbagel/saas-kit/styles/source.css\"": {}
+      },
       "files": [
         {
-          "path": "vendor/core/files/src/lib/utils.ts",
-          "target": "components/recruit-ui/core/lib/utils.ts",
+          "path": "src/core/calendar-date.ts",
+          "target": "components/recruit-ui/core/calendar-date.ts",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/anchor.tsx",
-          "target": "components/recruit-ui/core/primitives/anchor.tsx",
+          "path": "src/recruit/call-data.ts",
+          "target": "components/recruit-ui/recruit/call-data.ts",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/aspect-ratio.tsx",
-          "target": "components/recruit-ui/core/primitives/aspect-ratio.tsx",
+          "path": "src/recruit/call-hooks.ts",
+          "target": "components/recruit-ui/recruit/call-hooks.ts",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/avatar.tsx",
-          "target": "components/recruit-ui/core/primitives/avatar.tsx",
+          "path": "src/recruit/call-reconcile-card.tsx",
+          "target": "components/recruit-ui/recruit/call-reconcile-card.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/badge.tsx",
-          "target": "components/recruit-ui/core/primitives/badge.tsx",
+          "path": "src/recruit/candidate-assessment.tsx",
+          "target": "components/recruit-ui/recruit/candidate-assessment.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/button.tsx",
-          "target": "components/recruit-ui/core/primitives/button.tsx",
+          "path": "src/recruit/candidate-call-card.tsx",
+          "target": "components/recruit-ui/recruit/candidate-call-card.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/connection-status-bar.tsx",
-          "target": "components/recruit-ui/core/primitives/connection-status-bar.tsx",
+          "path": "src/recruit/candidate-call-list.tsx",
+          "target": "components/recruit-ui/recruit/candidate-call-list.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/contact-header.tsx",
-          "target": "components/recruit-ui/core/primitives/contact-header.tsx",
+          "path": "src/recruit/candidate-card-activation.ts",
+          "target": "components/recruit-ui/recruit/candidate-card-activation.ts",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/count-badge.tsx",
-          "target": "components/recruit-ui/core/primitives/count-badge.tsx",
+          "path": "src/recruit/candidate-card-columns-toggle.tsx",
+          "target": "components/recruit-ui/recruit/candidate-card-columns-toggle.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/decision-actions.tsx",
-          "target": "components/recruit-ui/core/primitives/decision-actions.tsx",
+          "path": "src/recruit/candidate-card-list.tsx",
+          "target": "components/recruit-ui/recruit/candidate-card-list.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/definition-list.tsx",
-          "target": "components/recruit-ui/core/primitives/definition-list.tsx",
+          "path": "src/recruit/candidate-career-history-panel.tsx",
+          "target": "components/recruit-ui/recruit/candidate-career-history-panel.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/dialog.tsx",
-          "target": "components/recruit-ui/core/primitives/dialog.tsx",
+          "path": "src/recruit/candidate-career-history-timeline.tsx",
+          "target": "components/recruit-ui/recruit/candidate-career-history-timeline.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/drawer.tsx",
-          "target": "components/recruit-ui/core/primitives/drawer.tsx",
+          "path": "src/recruit/candidate-contact-channels-menu.tsx",
+          "target": "components/recruit-ui/recruit/candidate-contact-channels-menu.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/empty-state.tsx",
-          "target": "components/recruit-ui/core/primitives/empty-state.tsx",
+          "path": "src/recruit/candidate-contact-details.tsx",
+          "target": "components/recruit-ui/recruit/candidate-contact-details.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/eyebrow.tsx",
-          "target": "components/recruit-ui/core/primitives/eyebrow.tsx",
+          "path": "src/recruit/candidate-cover-header.tsx",
+          "target": "components/recruit-ui/recruit/candidate-cover-header.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/flex-item.tsx",
-          "target": "components/recruit-ui/core/primitives/flex-item.tsx",
+          "path": "src/recruit/candidate-decision-bar.tsx",
+          "target": "components/recruit-ui/recruit/candidate-decision-bar.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/grid.tsx",
-          "target": "components/recruit-ui/core/primitives/grid.tsx",
+          "path": "src/recruit/candidate-decision-buttons.tsx",
+          "target": "components/recruit-ui/recruit/candidate-decision-buttons.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/heading.tsx",
-          "target": "components/recruit-ui/core/primitives/heading.tsx",
+          "path": "src/recruit/candidate-decision-reason-dialog.tsx",
+          "target": "components/recruit-ui/recruit/candidate-decision-reason-dialog.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/icon.tsx",
-          "target": "components/recruit-ui/core/primitives/icon.tsx",
+          "path": "src/recruit/candidate-decision-summary.tsx",
+          "target": "components/recruit-ui/recruit/candidate-decision-summary.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/image.tsx",
-          "target": "components/recruit-ui/core/primitives/image.tsx",
+          "path": "src/recruit/candidate-destination-status.tsx",
+          "target": "components/recruit-ui/recruit/candidate-destination-status.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/input.tsx",
-          "target": "components/recruit-ui/core/primitives/input.tsx",
+          "path": "src/recruit/candidate-detail-layout.tsx",
+          "target": "components/recruit-ui/recruit/candidate-detail-layout.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/interactive-card.tsx",
-          "target": "components/recruit-ui/core/primitives/interactive-card.tsx",
+          "path": "src/recruit/candidate-empty-copy.ts",
+          "target": "components/recruit-ui/recruit/candidate-empty-copy.ts",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/list.tsx",
-          "target": "components/recruit-ui/core/primitives/list.tsx",
+          "path": "src/recruit/candidate-fact-list.tsx",
+          "target": "components/recruit-ui/recruit/candidate-fact-list.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/panel-section.tsx",
-          "target": "components/recruit-ui/core/primitives/panel-section.tsx",
+          "path": "src/recruit/candidate-favourite-button.tsx",
+          "target": "components/recruit-ui/recruit/candidate-favourite-button.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/person-avatar.tsx",
-          "target": "components/recruit-ui/core/primitives/person-avatar.tsx",
+          "path": "src/recruit/candidate-filter-chips.tsx",
+          "target": "components/recruit-ui/recruit/candidate-filter-chips.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/responsive-dialog.tsx",
-          "target": "components/recruit-ui/core/primitives/responsive-dialog.tsx",
+          "path": "src/recruit/candidate-grade.tsx",
+          "target": "components/recruit-ui/recruit/candidate-grade.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/section-header.tsx",
-          "target": "components/recruit-ui/core/primitives/section-header.tsx",
+          "path": "src/recruit/candidate-header-actions.tsx",
+          "target": "components/recruit-ui/recruit/candidate-header-actions.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/separator.tsx",
-          "target": "components/recruit-ui/core/primitives/separator.tsx",
+          "path": "src/recruit/candidate-inline-card.tsx",
+          "target": "components/recruit-ui/recruit/candidate-inline-card.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/skeleton.tsx",
-          "target": "components/recruit-ui/core/primitives/skeleton.tsx",
+          "path": "src/recruit/candidate-job-evidence.tsx",
+          "target": "components/recruit-ui/recruit/candidate-job-evidence.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/spacer.tsx",
-          "target": "components/recruit-ui/core/primitives/spacer.tsx",
+          "path": "src/recruit/candidate-notes.tsx",
+          "target": "components/recruit-ui/recruit/candidate-notes.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/stack.tsx",
-          "target": "components/recruit-ui/core/primitives/stack.tsx",
+          "path": "src/recruit/candidate-outreach-composer.tsx",
+          "target": "components/recruit-ui/recruit/candidate-outreach-composer.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/status-icon.tsx",
-          "target": "components/recruit-ui/core/primitives/status-icon.tsx",
+          "path": "src/recruit/candidate-pending-note.tsx",
+          "target": "components/recruit-ui/recruit/candidate-pending-note.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/text.tsx",
-          "target": "components/recruit-ui/core/primitives/text.tsx",
+          "path": "src/recruit/candidate-pipeline-card.tsx",
+          "target": "components/recruit-ui/recruit/candidate-pipeline-card.tsx",
           "type": "registry:ui"
         },
         {
-          "path": "vendor/core/files/src/primitives/timeline.tsx",
-          "target": "components/recruit-ui/core/primitives/timeline.tsx",
+          "path": "src/recruit/candidate-pipeline-list.tsx",
+          "target": "components/recruit-ui/recruit/candidate-pipeline-list.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-profile-dialog.tsx",
+          "target": "components/recruit-ui/recruit/candidate-profile-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-profile-link-button.tsx",
+          "target": "components/recruit-ui/recruit/candidate-profile-link-button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-profile.tsx",
+          "target": "components/recruit-ui/recruit/candidate-profile.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-quote.tsx",
+          "target": "components/recruit-ui/recruit/candidate-quote.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-relationship-card.tsx",
+          "target": "components/recruit-ui/recruit/candidate-relationship-card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-review-action-row.tsx",
+          "target": "components/recruit-ui/recruit/candidate-review-action-row.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-review-card.tsx",
+          "target": "components/recruit-ui/recruit/candidate-review-card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-role-matches.tsx",
+          "target": "components/recruit-ui/recruit/candidate-role-matches.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-selectable-avatar.tsx",
+          "target": "components/recruit-ui/recruit/candidate-selectable-avatar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-shared-profile-button.tsx",
+          "target": "components/recruit-ui/recruit/candidate-shared-profile-button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-signal-list.tsx",
+          "target": "components/recruit-ui/recruit/candidate-signal-list.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-signal-menu.tsx",
+          "target": "components/recruit-ui/recruit/candidate-signal-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-stage-actions.tsx",
+          "target": "components/recruit-ui/recruit/candidate-stage-actions.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-stage-select.tsx",
+          "target": "components/recruit-ui/recruit/candidate-stage-select.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-suggested-roles-panel.tsx",
+          "target": "components/recruit-ui/recruit/candidate-suggested-roles-panel.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-voice-note.tsx",
+          "target": "components/recruit-ui/recruit/candidate-voice-note.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/current-company-label.tsx",
+          "target": "components/recruit-ui/recruit/current-company-label.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/current-company-popover.tsx",
+          "target": "components/recruit-ui/recruit/current-company-popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/job-client-badge.tsx",
+          "target": "components/recruit-ui/recruit/job-client-badge.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/job-summary-card.tsx",
+          "target": "components/recruit-ui/recruit/job-summary-card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/matched-call-card.tsx",
+          "target": "components/recruit-ui/recruit/matched-call-card.tsx",
           "type": "registry:ui"
         },
         {
@@ -207,87 +385,6 @@
           "path": "THIRD_PARTY_NOTICES.md",
           "target": "components/recruit-ui/THIRD_PARTY_NOTICES.md",
           "type": "registry:file"
-        }
-      ]
-    },
-    {
-      "name": "recruit-workflows",
-      "type": "registry:ui",
-      "title": "Recruit UI candidate workflows",
-      "description": "Slot-driven candidate review, profile, assessment, decision, and destination compositions.",
-      "registryDependencies": [
-        "RecruiterOS/recruit-ui/recruit-core"
-      ],
-      "files": [
-        {
-          "path": "src/core/calendar-date.ts",
-          "target": "components/recruit-ui/core/calendar-date.ts",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-assessment.tsx",
-          "target": "components/recruit-ui/recruit/candidate-assessment.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-card-activation.ts",
-          "target": "components/recruit-ui/recruit/candidate-card-activation.ts",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-career-history-timeline.tsx",
-          "target": "components/recruit-ui/recruit/candidate-career-history-timeline.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-cover-header.tsx",
-          "target": "components/recruit-ui/recruit/candidate-cover-header.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-decision-bar.tsx",
-          "target": "components/recruit-ui/recruit/candidate-decision-bar.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-destination-status.tsx",
-          "target": "components/recruit-ui/recruit/candidate-destination-status.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-grade.tsx",
-          "target": "components/recruit-ui/recruit/candidate-grade.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-inline-card.tsx",
-          "target": "components/recruit-ui/recruit/candidate-inline-card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-profile-dialog.tsx",
-          "target": "components/recruit-ui/recruit/candidate-profile-dialog.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-profile.tsx",
-          "target": "components/recruit-ui/recruit/candidate-profile.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-quote.tsx",
-          "target": "components/recruit-ui/recruit/candidate-quote.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/candidate-review-card.tsx",
-          "target": "components/recruit-ui/recruit/candidate-review-card.tsx",
-          "type": "registry:ui"
-        },
-        {
-          "path": "src/recruit/current-company-label.tsx",
-          "target": "components/recruit-ui/recruit/current-company-label.tsx",
-          "type": "registry:ui"
         }
       ]
     }

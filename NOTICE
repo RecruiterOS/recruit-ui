@@ -2,7 +2,6 @@ Recruit UI
 Copyright 2026 RecruiterOS
 
 RecruiterOS-authored portions are licensed under the Apache License,
-Version 2.0. The generated core primitives in vendor/core are contributed by
-their copyright holder under the Apache License, Version 2.0. Third-party
-source and runtime dependencies retain their own licenses and copyright
-notices. See THIRD_PARTY_NOTICES.md.
+Version 2.0. The UI primitives come from the separately installed
+@epicbagel/saas-kit package (MIT). Third-party runtime dependencies retain
+their own licenses and copyright notices. See THIRD_PARTY_NOTICES.md.

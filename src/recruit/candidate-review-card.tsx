@@ -1,14 +1,14 @@
 "use client";
 
-import { DefinitionItem, DefinitionList } from "@/components/recruit-ui/core/primitives/definition-list";
-import { FlexItem } from "@/components/recruit-ui/core/primitives/flex-item";
-import { Grid } from "@/components/recruit-ui/core/primitives/grid";
-import { Heading } from "@/components/recruit-ui/core/primitives/heading";
-import { InteractiveCard } from "@/components/recruit-ui/core/primitives/interactive-card";
-import { PanelSection } from "@/components/recruit-ui/core/primitives/panel-section";
-import { Spacer } from "@/components/recruit-ui/core/primitives/spacer";
-import { Stack } from "@/components/recruit-ui/core/primitives/stack";
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Grid } from "@epicbagel/saas-kit/primitives/grid";
+import { Heading } from "@epicbagel/saas-kit/primitives/heading";
+import { InteractiveCard } from "@epicbagel/saas-kit/primitives/interactive-card";
+import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
+import { Spacer } from "@epicbagel/saas-kit/primitives/spacer";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";

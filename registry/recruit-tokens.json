@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "namespace": "tokens",
+  "name": "recruit-tokens",
+  "type": "registry:item",
+  "title": "Recruit UI tokens",
+  "description": "The theme variables Recruit UI reads, from the base kit's neutral palette. Appended only where your stylesheet doesn't already define them, so your palette wins."
+}

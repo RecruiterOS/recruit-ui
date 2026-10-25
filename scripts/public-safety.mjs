@@ -79,17 +79,65 @@ const FORBIDDEN_CONTENT = [
   },
 ];
 
+function git(args, input) {
+  return spawnSync("git", args, {
+    cwd: root,
+    encoding: "utf8",
+    input,
+    maxBuffer: 128 * 1024 * 1024,
+  });
+}
+
 // Scoped packages are checked against an allowlist rather than a deny-list:
 // every scoped package that a file imports, or that a registry item installs,
-// must be this package or one it declares in package.json. The rule names no
+// must be this package or one that package.json declares in the same
+// snapshot. Working-tree files are held to the working-tree manifest, files
+// in the Git index to the index's manifest, and blobs reachable in history to
+// any manifest reachable in history, because a dependency that was declared
+// when a blob was written may since have been dropped. The rule names no
 // package that it rejects.
-const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-const DECLARED_PACKAGES = new Set([
-  manifest.name,
-  ...["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"].flatMap((field) =>
-    Object.keys(manifest[field] ?? {}),
-  ),
-]);
+const DEPENDENCY_FIELDS = ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"];
+
+function declaredPackages(manifestSources) {
+  const declared = new Set();
+  for (const source of manifestSources) {
+    let manifest;
+    try {
+      manifest = JSON.parse(source);
+    } catch {
+      continue;
+    }
+    if (typeof manifest.name === "string") declared.add(manifest.name);
+    for (const field of DEPENDENCY_FIELDS) {
+      for (const name of Object.keys(manifest[field] ?? {})) declared.add(name);
+    }
+  }
+  return declared;
+}
+
+const WORKING_TREE_DECLARED = declaredPackages([readFileSync(join(root, "package.json"), "utf8")]);
+const indexManifest = git(["show", ":package.json"]);
+const INDEX_DECLARED =
+  indexManifest.status === 0 ? declaredPackages([indexManifest.stdout]) : WORKING_TREE_DECLARED;
+const historyObjects = git(["rev-list", "--objects", "--all"]);
+const historyEntries =
+  historyObjects.status === 0 && historyObjects.stdout
+    ? historyObjects.stdout
+        .trim()
+        .split("\n")
+        .map((line) => {
+          const separator = line.indexOf(" ");
+          return separator < 0 ? null : { objectId: line.slice(0, separator), pathFromRoot: line.slice(separator + 1) };
+        })
+        .filter(Boolean)
+    : [];
+const HISTORY_DECLARED = declaredPackages(
+  historyEntries
+    .filter(({ pathFromRoot }) => pathFromRoot === "package.json")
+    .map(({ objectId }) => git(["cat-file", "blob", objectId]))
+    .filter((object) => object.status === 0)
+    .map((object) => object.stdout),
+);
 // Module specifiers in JS/TS (also JSON-escaped, as inlined in registry
 // payloads) and in CSS at-rules, plus installed-package paths such as a
 // Tailwind `@source` into node_modules. `@/…` path aliases have no scope and
@@ -117,11 +165,11 @@ function registryDependencies(value, found = []) {
   return found;
 }
 
-function hasUndeclaredPackage(source, pathFromRoot) {
+function hasUndeclaredPackage(source, pathFromRoot, declared) {
   if (basename(pathFromRoot) === LOCKFILE) return false;
   for (const pattern of SCOPED_SPECIFIERS) {
     for (const match of source.matchAll(pattern)) {
-      if (!DECLARED_PACKAGES.has(match[1])) return true;
+      if (!declared.has(match[1])) return true;
     }
   }
   if (extname(pathFromRoot).toLowerCase() !== ".json") return false;
@@ -133,7 +181,7 @@ function hasUndeclaredPackage(source, pathFromRoot) {
   }
   return registryDependencies(parsed).some((entry) => {
     const scoped = /^(@[^/@\s]+\/[^/@\s]+)/.exec(entry);
-    return scoped !== null && !DECLARED_PACKAGES.has(scoped[1]);
+    return scoped !== null && !declared.has(scoped[1]);
   });
 }
 
@@ -147,7 +195,7 @@ function filesUnder(directory) {
 
 const findings = new Set();
 
-function scanSource(source, pathFromRoot, origin = "working tree") {
+function scanSource(source, pathFromRoot, origin = "working tree", declared = WORKING_TREE_DECLARED) {
   if (source.includes("\0")) {
     findings.add(`${origin}:${pathFromRoot}: unexpected binary content`);
     return;
@@ -155,7 +203,7 @@ function scanSource(source, pathFromRoot, origin = "working tree") {
   for (const { label, pattern } of FORBIDDEN_CONTENT) {
     if (pattern.test(source)) findings.add(`${origin}:${pathFromRoot}: ${label}`);
   }
-  if (hasUndeclaredPackage(source, pathFromRoot)) {
+  if (hasUndeclaredPackage(source, pathFromRoot, declared)) {
     findings.add(`${origin}:${pathFromRoot}: ${UNDECLARED_PACKAGE}`);
   }
 }
@@ -172,16 +220,7 @@ for (const path of filesUnder(root)) {
   scanSource(readFileSync(path, "utf8"), pathFromRoot);
 }
 
-function git(args, input) {
-  return spawnSync("git", args, {
-    cwd: root,
-    encoding: "utf8",
-    input,
-    maxBuffer: 128 * 1024 * 1024,
-  });
-}
-
-function scanGitBlob(objectId, pathFromRoot, origin) {
+function scanGitBlob(objectId, pathFromRoot, origin, declared) {
   if (!pathFromRoot || pathFromRoot === "scripts/public-safety.mjs") return;
   const name = basename(pathFromRoot);
   if (FORBIDDEN_FILE_NAMES.some((pattern) => pattern.test(name))) {
@@ -191,7 +230,7 @@ function scanGitBlob(objectId, pathFromRoot, origin) {
   if (!TEXT_EXTENSIONS.has(extname(pathFromRoot).toLowerCase())) return;
   const object = git(["cat-file", "blob", objectId]);
   if (object.status !== 0) return;
-  scanSource(object.stdout, pathFromRoot, origin);
+  scanSource(object.stdout, pathFromRoot, origin, declared);
 }
 
 const staged = git(["ls-files", "-s", "-z"]);
@@ -199,19 +238,12 @@ if (staged.status === 0 && staged.stdout) {
   for (const entry of staged.stdout.split("\0")) {
     if (!entry) continue;
     const match = /^\d+ ([a-f0-9]+) \d+\t(.+)$/.exec(entry);
-    if (match) scanGitBlob(match[1], match[2], "git index");
+    if (match) scanGitBlob(match[1], match[2], "git index", INDEX_DECLARED);
   }
 }
 
-const reachable = git(["rev-list", "--objects", "--all"]);
-if (reachable.status === 0 && reachable.stdout) {
-  for (const line of reachable.stdout.trim().split("\n")) {
-    const separator = line.indexOf(" ");
-    if (separator < 0) continue;
-    const objectId = line.slice(0, separator);
-    const pathFromRoot = line.slice(separator + 1);
-    scanGitBlob(objectId, pathFromRoot, "git history");
-  }
+for (const { objectId, pathFromRoot } of historyEntries) {
+  scanGitBlob(objectId, pathFromRoot, "git history", HISTORY_DECLARED);
 }
 
 if (findings.size > 0) {

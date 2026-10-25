@@ -2,13 +2,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunk52XMFISVcjs = require('../chunk-52XMFISV.cjs');
-require('../chunk-5ZGBOOWM.cjs');
-require('../chunk-JIEUQ5CK.cjs');
-require('../chunk-52HKAJME.cjs');
-require('../chunk-RTB3COSU.cjs');
-require('../chunk-YMPXXC7B.cjs');
-require('../chunk-42BCVSWN.cjs');
+var _chunkAGPSIOVCcjs = require('../chunk-AGPSIOVC.cjs');
+require('../chunk-K3VUGGWH.cjs');
 
 
-exports.CandidateInlineCard = _chunk52XMFISVcjs.CandidateInlineCard;
+exports.CandidateInlineCard = _chunkAGPSIOVCcjs.CandidateInlineCard;

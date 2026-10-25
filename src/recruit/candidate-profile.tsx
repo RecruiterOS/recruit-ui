@@ -1,8 +1,8 @@
-import { cn } from "@/components/recruit-ui/core/lib/utils";
-import { ContactHeader } from "@/components/recruit-ui/core/primitives/contact-header";
-import { PanelSection } from "@/components/recruit-ui/core/primitives/panel-section";
-import { Stack } from "@/components/recruit-ui/core/primitives/stack";
-import { Text } from "@/components/recruit-ui/core/primitives/text";
+import { cn } from "@epicbagel/saas-kit/lib/utils";
+import { ContactHeader } from "@epicbagel/saas-kit/primitives/contact-header";
+import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, ReactNode } from "react";
 
 import { CandidateCoverHeader } from "./candidate-cover-header";

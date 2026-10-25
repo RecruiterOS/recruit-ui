@@ -1,6 +1,6 @@
 {
   "name": "@recruiteros/recruit-ui",
-  "version": "0.2.0",
+  "version": "0.9.0",
   "description": "Public, slot-driven recruiting workflow components for React.",
   "license": "Apache-2.0",
   "type": "module",
@@ -8,6 +8,7 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "SECURITY.md",
     "LICENSE",
     "NOTICE",
@@ -77,11 +78,9 @@
     }
   },
   "scripts": {
-    "build": "pnpm build:package && pnpm check:client-boundaries && pnpm check:package-consumers && pnpm build:registry",
+    "build": "pnpm check:imports && pnpm build:package && pnpm check:client-boundaries && pnpm check:package-consumers && pnpm build:registry",
     "build:package": "tsup && node scripts/preserve-client-boundaries.mjs",
     "build:registry": "node scripts/build-registry.mjs",
-    "import:core": "node scripts/import-core.mjs",
-    "verify:core": "node scripts/verify-core.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -91,29 +90,20 @@
     "check:dist": "node scripts/check-dist.mjs",
     "check:client-boundaries": "node scripts/check-client-boundaries.mjs",
     "check:package-consumers": "node scripts/check-package-consumers.mjs",
+    "check:imports": "node scripts/check-imports.mjs",
+    "check:empty-states": "node scripts/check-empty-states.mjs",
     "check:public": "node scripts/public-safety.mjs",
-    "verify": "pnpm verify:core && pnpm check:public && pnpm typecheck && pnpm test && pnpm check:dist && pnpm validate:registry && pnpm validate:shadcn && pnpm check:registry && pnpm check:public",
+    "verify": "pnpm check:imports && pnpm check:public && pnpm check:empty-states && pnpm typecheck && pnpm test && pnpm check:dist && pnpm validate:registry && pnpm validate:shadcn && pnpm check:registry && pnpm check:public",
     "prepublishOnly": "pnpm verify"
   },
-  "dependencies": {
-    "@radix-ui/react-aspect-ratio": "^1.1.7",
-    "@radix-ui/react-avatar": "^1.1.10",
-    "@radix-ui/react-collapsible": "^1.1.11",
-    "@radix-ui/react-dialog": "^1.1.14",
-    "@radix-ui/react-separator": "^1.1.7",
-    "@radix-ui/react-slot": "^1.2.3",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.400.0",
-    "react-responsive": "^10.0.1",
-    "tailwind-merge": "^2.4.0",
-    "vaul": "^1.1.2"
-  },
   "peerDependencies": {
+    "@epicbagel/saas-kit": "^1.0.0",
+    "lucide-react": ">=0.400.0 <2",
     "react": ">=18.2 <20",
     "react-dom": ">=18.2 <20"
   },
   "devDependencies": {
+    "@epicbagel/saas-kit": "1.0.0",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
@@ -122,6 +112,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
     "jsdom": "^25.0.1",
+    "lucide-react": "0.400.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "shadcn": "4.22.1",

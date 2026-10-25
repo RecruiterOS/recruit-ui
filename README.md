@@ -4,26 +4,37 @@ Recruit UI is an open-source shadcn registry containing production-quality recru
 
 ## Two delivery modes, one implementation
 
-The installable package and shadcn registry are generated from the same workflow files in `src/` and the same checksum-verified core artifact in `vendor/core/`.
+The installable package and shadcn registry are generated from the same workflow files in `src/`. Both depend on `@epicbagel/saas-kit` (MIT) for the UI primitives the workflows compose: layout, typography, buttons, badges, dialogs and drawers. Recruit UI contains no copy of them.
 
-- Package consumers currently pin `@recruiteros/recruit-ui` to an immutable GitHub commit and import from the root, `core`, or direct `recruit` subpaths. The generated core is bundled; no private registry access is required.
-- Registry consumers install source under `components/recruit-ui`. The `recruit-core` item supplies support primitives and `recruit-workflows` supplies the candidate workflows.
+- Package consumers currently pin `@recruiteros/recruit-ui` to an immutable GitHub commit and import from the root, `core`, or direct `recruit` subpaths. `@epicbagel/saas-kit` and `lucide-react` are peer dependencies: install them alongside, so the application and every library that renders a primitive share one copy of the kit, and with it one Dialog and Tooltip context, and one copy of the icon set.
+- Registry consumers install source under `components/recruit-ui`. The `recruit-workflows` item supplies the candidate workflows and installs `@epicbagel/saas-kit` as an npm dependency; the `recruit-tokens` item supplies the theme variables they read.
 
-`vendor/core/` is produced by an explicit allowlist exporter and guarded by `SHA256SUMS`; do not edit it. Workflow registry entries point directly at the canonical files in `src/`; their install-ready core alias is resolved to `vendor/core/` for package builds and to the installed core item for registry consumers. Static payloads in `dist/registry` are optional build artifacts. None is a separately maintained implementation.
+Workflow registry entries point directly at the canonical files in `src/`, and those files import the kit by package name, so a registry install needs no extra path alias. Static payloads in `dist/registry` are optional build artifacts. None is a separately maintained implementation.
 
 ## Package setup
 
 ```bash
-pnpm add github:RecruiterOS/recruit-ui#FULL_COMMIT_SHA react react-dom
+pnpm add github:RecruiterOS/recruit-ui#FULL_COMMIT_SHA @epicbagel/saas-kit lucide-react react react-dom
 ```
 
-Use the full commit SHA from the first public release; do not depend on a moving branch. A protected, immutable release tag may be used after one exists. The package is not published to npm; install it from GitHub as shown above.
+Use the full commit SHA from the first public release; do not depend on a moving branch. A protected, immutable release tag may be used after one exists. The package is not published to npm; install it from GitHub as shown above. `@epicbagel/saas-kit` and `lucide-react` must satisfy the `peerDependencies` ranges in `package.json`; any `lucide-react` from 0.400 up to, but not including, 2.0 works.
 
-The components use semantic Tailwind classes compatible with a standard shadcn theme. Tailwind v4 package consumers should add the built package to their stylesheet scan:
+The components use semantic Tailwind classes compatible with a standard shadcn theme. Tailwind v4 package consumers import the kit's source registration, so the classes its primitives use are generated, and add the built package to their stylesheet scan:
 
 ```css
+@import "@epicbagel/saas-kit/styles/source.css";
 @source "../node_modules/@recruiteros/recruit-ui/dist";
 ```
+
+If your stylesheet doesn't already import the kit's styles (`@epicbagel/saas-kit/styles/globals.css` brings everything), also import its palette-free utilities and keyframes, beside the other imports:
+
+```css
+@import "@epicbagel/saas-kit/styles/utilities.css";
+```
+
+Keep every `@import` above the first `@source` or other rule: Tailwind drops an `@import` that follows one.
+
+The components read the standard shadcn semantic tokens (`--background`, `--muted-foreground`, `--destructive`, …) plus `--destructive-foreground`, which current shadcn themes omit. Define any your theme lacks, or import `@epicbagel/saas-kit/styles/tokens.css` for the kit's neutral palette.
 
 ```tsx
 import {
@@ -41,30 +52,50 @@ directive prologue.
 Public workflow exports include:
 
 - review and compact surfaces: `CandidateReviewCard`, `CandidateInlineCard`, `CandidateCoverHeader`, `CandidateCoverImage`, and `CandidateQuote`;
+- card lists and card controls: `CandidateCardList`, `CandidateCardColumnsToggle` with `useCandidateCardColumns`, `CandidateFavouriteButton`, `CandidateProfileLinkButton` (the host supplies the glyph and URL), `CandidateSharedProfileButton`, and `CandidateContactChannelsMenu`;
 - profile composition: `CandidateProfile`, `CandidateProfileHeader`, `CandidateProfileBody`, `CandidateProfileFooter`, and `CandidateProfileDialog`;
-- review details: `CandidateCareerHistoryTimeline`, `CareerDateRange`, `CurrentCompanyLabel`, and presentation-only candidate grade helpers/badge (host applications supply grade labels and tones);
+- review details: `CandidateCareerHistoryTimeline`, `CareerDateRange`, `CandidateCareerHistoryPanel` (the timeline under a counted header, scrolling within the viewport), `CurrentCompanyLabel`, `CurrentCompanyPopover` (the company opens host content on hover or tap, mounted only while open), and presentation-only candidate grade helpers and `CandidateGradeBadge` (split or inline text, badge or sentiment-pill appearance; host applications supply grade labels, tones and sentiments);
 - decisions and delivery: `CandidateAssessment`, `CandidateDecisionBar`, and `CandidateDestinationStatus`.
+- jobs and the pipeline: `JobSummaryCard` (a job's identity, facts and footer actions), `JobClientBadge`, and `CandidatePipelineCard` (a dense board-column card).
+- relationships and roles: `CandidateRelationshipCard` (a person in a network: signal, facts, suggested roles and the latest note), `CandidateFilterChips`, `CandidateSignalMenu` (`CandidateActionMenu` with a signal's defaults), `CandidateSignalList`, `CandidateRoleMatchSummary`, `CandidateRoleMatchList` (roles a person may fit, with a confirmed add action), and `CandidateSuggestedRolesPanel`.
+- calls: `CandidateCallList` and `CandidateCallCard` (a person's linked calls, each with an unlink confirmation and a check against open roles), `MatchedCallCard` (a call already linked to people, with a dialog that links one more), and `CallReconcileCard` (a call awaiting a person: attach it to a guess or a search result after a preview, create a person from it, or dismiss it). The host passes the people search and the transcript loader as functions, and the state of its insight check as `CallInsights`. `normalizeCallParticipants` and `normalizeCallSegments` turn raw participant and transcript lists into the cards' shapes; they also ship from `@recruiteros/recruit-ui/recruit/call-data`, a subpath without a client boundary, so a server can call them.
+- a person's detail pane: `CandidateDetailLayout` (a fixed header, alert, tabs and footer around the one body that scrolls), `CandidateDetailHeader`, `CandidateActionMenu`, `CandidateDetailTabs`, `CandidateDecisionSummary` (the recorded decision and the assessment grade as two rows of one card), `CandidateJobEvidence` (why the person was sourced for a role, and a recruiter's feedback on them for it), `CandidateNoteList`, `CandidateNoteCard` and `CandidateNoteComposer` (voice first, with typing and one-tap suggestions), `CandidateFactList` with `formatFactValue`, `CandidateContactDetails`, `CandidateChannelLog`, `CandidateDefinitionSection`, `CandidateOutreachComposer` (a channel, its house style, and the editable draft), and `CandidatePipelineList` with `CandidateSummaryBullets` (each role the person is in, with a stage select and the host's evidence for it).
+- review-card actions: `CandidateHeaderActions` with `CandidateIconAction`, `useCandidateVoiceNote` (a mic trigger already wired to the hidden dictation control), `CandidateSelectableAvatar` (the avatar as a batch-selection toggle), `CandidatePendingNote`, `CandidateReviewActionRow`, `CandidateDecisionButtons` (Yes and No that start the host's own decision flow, unlike `CandidateDecisionBar`, which shows a recorded value), `CandidateDecisionReasonDialog`, `CandidateStageActions` (advance, jump ahead, contact, present, reject and declined) and `CandidateStageSelect`; `CandidateQuote` clamps a long excerpt behind a show-more toggle with `collapsible`.
 
-All candidate identity, media, assessment, actions, and destination values enter through explicit display slots and callbacks. `CareerHistoryItem.dateRange` accepts host-formatted date text; raw dates are formatted as absolute calendar dates when that slot is omitted.
+All candidate identity, media, assessment, actions, contact, and destination values enter through explicit display slots and callbacks. A component whose root is the kit's Button, Badge or Card keeps the kit's own `data-slot` there, because theme stylesheets select on it (so `CandidateNoteCard` adds none, and `CandidateGradeBadge` names its grade in `data-grade` instead: the letter, or `ungraded`); other components mark their root (for the card list, its grid; for the contact and stage menus, the menu surface; for the current-company popover, the popover surface beside the label's own; for the stage select, its trigger; for the action menu and the signal menu built on it, the menu surface, `candidate-action-menu`; for the detail tabs, the tab root) with a `data-slot` of their own. A dialog keeps the kit's `data-slot` on its content, and `CandidateStageActions`, which renders its controls without a wrapper, marks only its menu. The call cards' root is the kit's `CallCard`, which accepts a `className` but no other attributes, so they add no `data-slot`; `CandidateCallList` marks its section. `CareerHistoryItem.dateRange` accepts host-formatted date text; raw dates are formatted as absolute calendar dates when that slot is omitted.
 
 ## Registry setup
 
-This repository is a native GitHub source registry. Install both namespaces with the official CLI:
+This repository is a native GitHub source registry.
+
+Registry installs need a shadcn project on Radix UI: a `components.json` with a Radix style such as `radix-nova` (or `new-york` from an older init), and the `@` import alias. Start a new project with:
 
 ```bash
-pnpm dlx shadcn@latest add RecruiterOS/recruit-ui/recruit-core
+pnpm dlx shadcn@latest init --base radix --preset nova
+```
+
+The workflow files are built on Radix and pass its `asChild` prop. With a Base UI style (`base-*`, the CLI's default), the CLI rewrites `asChild` into `render` on install, and the files fail `tsc` and lose links and accessible names at runtime. The package install above doesn't depend on your shadcn setup.
+
+Then install the workflows with the official CLI:
+
+```bash
 pnpm dlx shadcn@latest add RecruiterOS/recruit-ui/recruit-workflows
 ```
 
-Installing `recruit-workflows` also resolves `RecruiterOS/recruit-ui/recruit-core`. The root `registry.json` points only to files committed in this repository:
+Installing `recruit-workflows` also resolves `RecruiterOS/recruit-ui/recruit-tokens`. The root `registry.json` points only to files committed in this repository:
 
-- `recruit-core` reads the generated, allowlisted artifact under `vendor/core`
-  and installs its license and third-party notices alongside the source;
-- `recruit-workflows` reads the canonical workflow files under `src/` directly.
+- `recruit-workflows` reads the canonical workflow files under `src/` directly,
+  installs `@epicbagel/saas-kit` and `lucide-react` from npm, adds the kit's
+  `utilities.css` and `source.css` imports to your stylesheet, and installs
+  `LICENSE`, `NOTICE` and `THIRD_PARTY_NOTICES.md` alongside the source;
+- `recruit-tokens` carries the kit's neutral palette as CSS variables. It is a
+  `registry:item`, so the CLI only appends a variable your stylesheet doesn't
+  already define and never overwrites your palette; on a current shadcn theme
+  that adds `--destructive-foreground` and nothing else.
 
-Every registry item installs into an isolated `components/recruit-ui` directory. It does not replace an application's existing shadcn primitives.
-The core item includes `LICENSE`, `NOTICE`, and `THIRD_PARTY_NOTICES.md`, so
-the applicable terms travel with registry-installed source.
+Workflow files install into an isolated `components/recruit-ui` directory and import the primitives from `@epicbagel/saas-kit`. They do not replace an application's existing shadcn primitives.
+
+The static payloads in `dist/registry` carry the same two items as JSON (`recruit/recruit-workflows.json` and `tokens/recruit-tokens.json`). The workflows payload names its tokens as `RecruiterOS/recruit-ui/recruit-tokens`, which the CLI resolves from this repository's default branch, whichever ref or host served the workflows payload. If you serve the payloads yourself, or pin both to one ref, rewrite that dependency to the URL of the `recruit-tokens.json` you serve beside it.
 
 ## Boundary
 
@@ -81,11 +112,10 @@ Do not add application records, customer material, screenshots, production paylo
 ## License and provenance
 
 RecruiterOS-authored portions are licensed under the Apache License, Version
-2.0. `vendor/core/` holds generated core primitives contributed by their
-copyright holder under the Apache License, Version 2.0; it will be replaced by
-the public `@epicbagel/saas-kit` package. Identified shadcn/ui-derived portions
-remain subject to the shadcn/ui MIT license. Runtime dependencies are external
-and retain their own licenses. See `LICENSE`, `NOTICE`, and
+2.0. Recruit UI depends on `@epicbagel/saas-kit` (MIT) for its UI primitives;
+the kit is installed from npm, not copied into this repository, and its own
+notices cover the shadcn/ui-derived portions it contains. Runtime dependencies
+are external and retain their own licenses. See `LICENSE`, `NOTICE`, and
 `THIRD_PARTY_NOTICES.md` for details.
 
 ## Development
@@ -98,6 +128,8 @@ pnpm verify
 Focused commands:
 
 ```bash
+pnpm check:imports
+pnpm check:empty-states
 pnpm typecheck
 pnpm test
 pnpm build
@@ -108,6 +140,6 @@ pnpm check:registry
 pnpm check:public
 ```
 
-Maintainers with access to the core source can refresh the allowlisted artifact with `pnpm import:core --source <core-checkout> --script <export-script>`, review the diff and checksums, then run `pnpm verify`. Git dependencies consume committed, verified ESM, CommonJS, and declaration artifacts without running install-time build scripts. `pnpm check:dist` rebuilds those artifacts and fails if they differ from the committed distribution. Package builds resolve the install-facing registry alias explicitly, rather than depending on a consumer's package-manager or TypeScript path-discovery behavior.
+Git dependencies consume committed, verified ESM, CommonJS, and declaration artifacts without running install-time build scripts. `pnpm check:dist` rebuilds those artifacts and fails if they differ from the committed distribution. The build keeps `@epicbagel/saas-kit` external, so the artifacts import the kit by package name exactly as the registry sources do. `pnpm check:imports` fails the build if a source imports an undeclared package, goes through a path alias, or names a kit module that the pinned kit release doesn't export; `pnpm check:registry` applies the same kit-module check to every registry payload. `pnpm check:empty-states` holds every blank slate to the kit's `EmptyState` with an explicit variant, size, icon and title.
 
-See `CONTRIBUTING.md` for the public-source workflow and `SECURITY.md` for private vulnerability reporting.
+Each release, and every change to the public API it makes, is in `CHANGELOG.md`. See `CONTRIBUTING.md` for the public-source workflow and `SECURITY.md` for private vulnerability reporting.

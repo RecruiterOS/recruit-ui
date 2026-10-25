@@ -1,4 +1,5 @@
-import { Badge } from "@/components/recruit-ui/core/primitives/badge";
+import { Badge, type BadgeProps } from "@epicbagel/saas-kit/primitives/badge";
+import { SentimentBadge, type Sentiment } from "@epicbagel/saas-kit/primitives/sentiment-dot";
 import type { HTMLAttributes, ReactNode } from "react";
 
 export type CandidateGrade = "A" | "B" | "C" | "D";
@@ -63,14 +64,61 @@ export interface CandidateGradeBadgeProps
   /** Host-owned semantic treatment; no meaning is inferred from the letter. */
   tone?: CandidateGradeTone;
   showLabel?: boolean;
+  /** The kit badge size, such as `compact` for dense rows. */
+  size?: BadgeProps["size"];
+  /** Root element: a block-level `div` (default) or an inline `span`. */
+  as?: "div" | "span";
+  /** Keep the badge at its natural width in a flex row. */
+  shrink?: boolean;
+  /**
+   * `split` (default): the letter and the label as separate spans, the letter
+   * with an accessible name. `inline`: a single line of text, "A — Strong fit",
+   * for a host that names the grade in a tooltip or the surrounding text.
+   */
+  format?: "split" | "inline";
+  /**
+   * `badge` (default): the kit Badge in `tone`. `sentiment`: the kit's
+   * sentiment pill, a coloured dot and text, in `sentiment`. The pill takes
+   * only `className`; other attributes are not passed to it.
+   */
+  appearance?: "badge" | "sentiment";
+  /** Host-owned sentiment for `appearance="sentiment"`. */
+  sentiment?: CandidateGradeSentiment;
 }
 
+/** The kit's sentiment scale, for `appearance="sentiment"`. */
+export type CandidateGradeSentiment = Sentiment;
+
+function inlineGradeText(
+  grade: CandidateGrade | null,
+  label: ReactNode,
+): ReactNode {
+  if (!grade) return "—";
+  if (label == null || label === false || label === "") return grade;
+  // One text node when the label is plain text, as candidateGradeDisplay
+  // would format it.
+  return typeof label === "string" || typeof label === "number"
+    ? `${grade} — ${label}`
+    : <>{grade} — {label}</>;
+}
+
+/**
+ * The grade letter with an optional host label. The root is the kit Badge
+ * (or its sentiment pill) and keeps the kit's own `data-slot`, which theme
+ * stylesheets select on; `data-grade` names the grade, or `ungraded`.
+ */
 export function CandidateGradeBadge({
   grade,
   label,
   labels = {},
   tone = "neutral",
   showLabel = true,
+  size,
+  as,
+  shrink,
+  format = "split",
+  appearance = "badge",
+  sentiment = "neutral",
   className,
   ...props
 }: CandidateGradeBadgeProps) {
@@ -78,19 +126,38 @@ export function CandidateGradeBadge({
   const resolvedLabel = label === undefined
     ? candidateGradeLabel(normalized, labels)
     : label;
+  const visibleLabel = showLabel ? resolvedLabel : null;
+
+  const content = format === "inline"
+    ? inlineGradeText(normalized, visibleLabel)
+    : (
+      <>
+        <span aria-label={normalized ? `Grade ${normalized}` : "Not graded"}>
+          {normalized ?? "—"}
+        </span>
+        {visibleLabel ? <span>{visibleLabel}</span> : null}
+      </>
+    );
+
+  if (appearance === "sentiment") {
+    return (
+      <SentimentBadge sentiment={sentiment} className={className}>
+        {content}
+      </SentimentBadge>
+    );
+  }
 
   return (
     <Badge
-      data-slot="candidate-grade"
       data-grade={normalized ?? "ungraded"}
       variant={tone}
+      size={size}
+      as={as}
+      shrink={shrink}
       className={className}
       {...props}
     >
-      <span aria-label={normalized ? `Grade ${normalized}` : "Not graded"}>
-        {normalized ?? "—"}
-      </span>
-      {showLabel && resolvedLabel ? <span>{resolvedLabel}</span> : null}
+      {content}
     </Badge>
   );
 }

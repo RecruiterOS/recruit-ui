@@ -1,10 +1,6 @@
 import * as react from 'react';
 import { ReactNode } from 'react';
-
-interface DecisionActionOption<TValue extends string = string> {
-    value: TValue;
-    label: ReactNode;
-}
+import { DecisionActionOption } from '@epicbagel/saas-kit/primitives/decision-actions';
 
 type CandidateDecisionOption<TValue extends string = string> = DecisionActionOption<TValue>;
 interface CandidateDecisionBarProps<TValue extends string = string> {

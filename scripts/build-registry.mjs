@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
-import {
-  mkdirSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, relative, resolve, sep } from "node:path";
-import { fileURLToPath } from "node:url";
+import {
+  KIT,
+  manifest,
+  packageName,
+  pinnedKit,
+  readJson,
+  retiredAliasIn,
+  root,
+  specifiers,
+} from "./imports.mjs";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const outputFlag = process.argv.indexOf("--out");
 const sourceOutputFlag = process.argv.indexOf("--source-out");
 const outputRoot = resolve(
@@ -24,14 +27,14 @@ const sourceOutputRoot = resolve(
     ? process.argv[sourceOutputFlag + 1]
     : ".",
 );
-const coreCatalog = readJson(join(root, "registry/core-support.json"));
+const tokensCatalog = readJson(join(root, "registry/recruit-tokens.json"));
 const recruitCatalog = readJson(join(root, "registry/recruit-workflows.json"));
-const vendorManifest = readJson(join(root, coreCatalog.vendorManifest));
-const packageManifest = readJson(join(root, "package.json"));
+const packageManifest = manifest();
+const kit = pinnedKit();
 
-function readJson(path) {
-  return JSON.parse(readFileSync(path, "utf8"));
-}
+// A shadcn host already has React; the registry installs everything else the
+// workflow files import.
+const HOST_PACKAGES = new Set(["react", "react-dom"]);
 
 function writeJson(path, value) {
   mkdirSync(dirname(path), { recursive: true });
@@ -49,41 +52,37 @@ function registryTarget(sourcePath) {
   throw new Error(`No registry target for ${sourcePath}`);
 }
 
-const installDependencies = vendorManifest.dependencies.map((name) => {
-  const version = packageManifest.dependencies?.[name];
-  if (!version) throw new Error(`Missing package dependency for generated core: ${name}`);
-  return `${name}@${version}`;
-});
-
-const licenseFiles = coreCatalog.licenseFiles;
-if (!Array.isArray(licenseFiles) || licenseFiles.length === 0) {
-  throw new Error("Core catalog must declare the license files installed with its source.");
+/** "name@range" from package.json, for a package the registry files import. */
+function installSpec(name) {
+  const range =
+    packageManifest.dependencies?.[name] ?? packageManifest.peerDependencies?.[name];
+  if (!range) throw new Error(`Registry files import ${name}, which package.json doesn't declare.`);
+  return `${name}@${range}`;
 }
-const registryLicenseFiles = licenseFiles.map((path) => ({
-  path,
-  target: `components/recruit-ui/${path}`,
-  type: "registry:file",
-}));
-const coreSourceFiles = [
-  ...vendorManifest.files.map((file) => ({
-    path: `vendor/core/${file.path}`,
-    target: file.target,
-    type: file.type,
-  })),
-  ...registryLicenseFiles,
-];
-const coreStaticFiles = [
-  ...vendorManifest.files.map((file) => ({
-    ...file,
-    path: file.target,
-    content: readFileSync(join(root, "vendor/core", file.path), "utf8"),
-  })),
-  ...registryLicenseFiles.map((file) => ({
-    ...file,
-    path: file.target,
-    content: readFileSync(join(root, file.path), "utf8"),
-  })),
-];
+
+// --- recruit-tokens: the base kit's neutral palette as append-only CSS vars --
+
+// The palette comes from the pinned kit, so the values a registry install
+// appends are the ones the package's primitives were built against. Every
+// token is listed for light and dark; the shadcn CLI only appends a variable
+// the host's stylesheet doesn't already declare (a registry:item never
+// overwrites), so a host keeps its own palette and gains only what it lacks,
+// such as --destructive-foreground on a current shadcn theme. Values are the
+// bare `H S% L%` triples the kit uses; the CLI wraps them in hsl() for a
+// Tailwind v4 stylesheet.
+const { NEUTRAL, SEMANTIC_TOKENS, hexToHsl } = await import(`${KIT}/lib/neutral-theme`);
+const palette = (mode) =>
+  Object.fromEntries(SEMANTIC_TOKENS.map((token) => [token, hexToHsl(NEUTRAL[mode][token])]));
+
+const tokensItem = {
+  name: tokensCatalog.name,
+  type: tokensCatalog.type,
+  title: tokensCatalog.title,
+  description: tokensCatalog.description,
+  cssVars: { light: palette("light"), dark: palette("dark") },
+};
+
+// --- recruit-workflows: the canonical workflow sources ----------------------
 
 const recruitSources = [...recruitCatalog.files]
   .sort()
@@ -95,9 +94,8 @@ const recruitSources = [...recruitCatalog.files]
     }
     const target = registryTarget(pathFromRoot);
     const content = readFileSync(absolutePath, "utf8");
-    if (content.includes("@recruit-ui/core/")) {
-      throw new Error(`Legacy core alias remains in ${sourcePath}`);
-    }
+    const alias = retiredAliasIn(content);
+    if (alias) throw new Error(`Retired core alias ${alias} remains in ${sourcePath}`);
     return {
       target,
       sourcePath: pathFromRoot.split(sep).join("/"),
@@ -105,64 +103,84 @@ const recruitSources = [...recruitCatalog.files]
     };
   });
 
-const recruitSourceFiles = recruitSources.map(({ target, sourcePath }) => ({
-  path: sourcePath,
-  target,
-  type: "registry:ui",
-}));
-const recruitStaticFiles = recruitSources.map(({ target, content }) => ({
-  path: target,
-  target,
-  type: "registry:ui",
-  content,
+// The workflow files import the kit by package name, so the registry
+// installs it (and anything else they import) as an npm dependency at the
+// range package.json declares. Nothing from the kit is copied in.
+const cssImports = recruitCatalog.css ?? [];
+const importedPackages = [
+  ...recruitSources.flatMap(({ content }) => specifiers(content)),
+  ...cssImports,
+]
+  .map(packageName)
+  .filter((name) => name && !HOST_PACKAGES.has(name));
+const installDependencies = [...new Set(importedPackages)].sort().map(installSpec);
+if (!installDependencies.includes(`${KIT}@${kit.range}`)) {
+  throw new Error(`Workflow files must install ${KIT}@${kit.range}.`);
+}
+
+const licenseFiles = recruitCatalog.licenseFiles;
+if (!Array.isArray(licenseFiles) || licenseFiles.length === 0) {
+  throw new Error("Workflow catalog must declare the license files installed with its source.");
+}
+const registryLicenseFiles = licenseFiles.map((path) => ({
+  path,
+  target: `components/recruit-ui/${path}`,
+  type: "registry:file",
 }));
 
-const coreSourceItem = {
-  name: coreCatalog.name,
-  type: "registry:ui",
-  title: coreCatalog.title,
-  description: coreCatalog.description,
-  dependencies: installDependencies,
-  files: coreSourceFiles,
-};
+const recruitSourceFiles = [
+  ...recruitSources.map(({ target, sourcePath }) => ({
+    path: sourcePath,
+    target,
+    type: "registry:ui",
+  })),
+  ...registryLicenseFiles,
+];
+const recruitStaticFiles = [
+  ...recruitSources.map(({ target, content }) => ({
+    path: target,
+    target,
+    type: "registry:ui",
+    content,
+  })),
+  ...registryLicenseFiles.map((file) => ({
+    ...file,
+    path: file.target,
+    content: readFileSync(join(root, file.path), "utf8"),
+  })),
+];
+
 const recruitSourceItem = {
   name: recruitCatalog.name,
   type: "registry:ui",
   title: recruitCatalog.title,
   description: recruitCatalog.description,
+  dependencies: installDependencies,
   registryDependencies: recruitCatalog.registryDependencies,
+  css: Object.fromEntries(cssImports.map((specifier) => [`@import "${specifier}"`, {}])),
   files: recruitSourceFiles,
 };
-const sourceRegistry = {
-  $schema: "https://ui.shadcn.com/schema/registry.json",
-  name: "recruit-ui",
-  homepage: "https://github.com/RecruiterOS/recruit-ui",
-  items: [coreSourceItem, recruitSourceItem],
-};
 
-const coreStaticItem = {
-  $schema: "https://ui.shadcn.com/schema/registry-item.json",
-  ...coreSourceItem,
-  files: coreStaticFiles,
-};
-const recruitStaticItem = {
-  $schema: "https://ui.shadcn.com/schema/registry-item.json",
-  ...recruitSourceItem,
-  files: recruitStaticFiles,
-};
-const staticRegistry = {
+// --- outputs -----------------------------------------------------------------
+
+const registryHeader = {
   $schema: "https://ui.shadcn.com/schema/registry.json",
   name: "recruit-ui",
   homepage: "https://github.com/RecruiterOS/recruit-ui",
-  items: [coreStaticItem, recruitStaticItem],
 };
+const itemSchema = "https://ui.shadcn.com/schema/registry-item.json";
+
+const sourceRegistry = { ...registryHeader, items: [tokensItem, recruitSourceItem] };
+const tokensStaticItem = { $schema: itemSchema, ...tokensItem };
+const recruitStaticItem = { $schema: itemSchema, ...recruitSourceItem, files: recruitStaticFiles };
+const staticRegistry = { ...registryHeader, items: [tokensStaticItem, recruitStaticItem] };
 
 writeJson(join(sourceOutputRoot, "registry.json"), sourceRegistry);
 rmSync(outputRoot, { recursive: true, force: true });
-writeJson(join(outputRoot, "core/recruit-core.json"), coreStaticItem);
-writeJson(join(outputRoot, "recruit/recruit-workflows.json"), recruitStaticItem);
+writeJson(join(outputRoot, `${tokensCatalog.namespace}/${tokensItem.name}.json`), tokensStaticItem);
+writeJson(join(outputRoot, `${recruitCatalog.namespace}/${recruitSourceItem.name}.json`), recruitStaticItem);
 writeJson(join(outputRoot, "registry.json"), staticRegistry);
 
 console.log(
-  `registry built: ${coreSourceFiles.length} core files, ${recruitSourceFiles.length} workflow files`,
+  `registry built: ${SEMANTIC_TOKENS.length} tokens from ${KIT} ${kit.version}, ${recruitSources.length} workflow files (+${registryLicenseFiles.length} license files), ${installDependencies.length} npm dependencies`,
 );

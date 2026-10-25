@@ -3,15 +3,11 @@
 
 
 
-var _chunkMMQ6C6MMcjs = require('../chunk-MMQ6C6MM.cjs');
-require('../chunk-RTB3COSU.cjs');
-require('../chunk-VCJ24CC5.cjs');
-require('../chunk-R52RM2CD.cjs');
-require('../chunk-YMPXXC7B.cjs');
-require('../chunk-42BCVSWN.cjs');
+var _chunkL2CTLKZQcjs = require('../chunk-L2CTLKZQ.cjs');
+require('../chunk-4OKOQUKV.cjs');
 
 
 
 
 
-exports.CandidateProfile = _chunkMMQ6C6MMcjs.CandidateProfile; exports.CandidateProfileBody = _chunkMMQ6C6MMcjs.CandidateProfileBody; exports.CandidateProfileFooter = _chunkMMQ6C6MMcjs.CandidateProfileFooter; exports.CandidateProfileHeader = _chunkMMQ6C6MMcjs.CandidateProfileHeader;
+exports.CandidateProfile = _chunkL2CTLKZQcjs.CandidateProfile; exports.CandidateProfileBody = _chunkL2CTLKZQcjs.CandidateProfileBody; exports.CandidateProfileFooter = _chunkL2CTLKZQcjs.CandidateProfileFooter; exports.CandidateProfileHeader = _chunkL2CTLKZQcjs.CandidateProfileHeader;

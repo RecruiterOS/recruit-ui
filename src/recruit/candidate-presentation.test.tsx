@@ -93,9 +93,9 @@ describe("candidate presentation", () => {
       />,
     );
     expect(screen.getByText("Host-defined badge label")).toBeInTheDocument();
-    expect(document.querySelector('[data-slot="candidate-grade"]')).toHaveAttribute(
-      "data-variant",
-      "info",
-    );
+    const badge = document.querySelector('[data-grade="B"]');
+    expect(badge).toHaveAttribute("data-variant", "info");
+    // The kit's own slot stays on the root, so theme styles still apply.
+    expect(badge).toHaveAttribute("data-slot", "badge");
   });
 });

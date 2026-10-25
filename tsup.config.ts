@@ -1,9 +1,4 @@
-import { fileURLToPath } from "node:url";
 import { defineConfig } from "tsup";
-
-const coreSourceRoot = fileURLToPath(
-  new URL("./vendor/core/files/src", import.meta.url),
-);
 
 export default defineConfig({
   entry: [
@@ -11,48 +6,72 @@ export default defineConfig({
     "src/core/index.ts",
     "src/core/calendar-date.ts",
     "src/recruit/index.ts",
+    "src/recruit/call-data.ts",
+    "src/recruit/call-reconcile-card.tsx",
     "src/recruit/candidate-assessment.tsx",
+    "src/recruit/candidate-call-card.tsx",
+    "src/recruit/candidate-call-list.tsx",
+    "src/recruit/candidate-card-columns-toggle.tsx",
+    "src/recruit/candidate-card-list.tsx",
+    "src/recruit/candidate-career-history-panel.tsx",
     "src/recruit/candidate-career-history-timeline.tsx",
+    "src/recruit/candidate-contact-channels-menu.tsx",
+    "src/recruit/candidate-contact-details.tsx",
     "src/recruit/candidate-cover-header.tsx",
     "src/recruit/candidate-decision-bar.tsx",
+    "src/recruit/candidate-decision-buttons.tsx",
+    "src/recruit/candidate-decision-reason-dialog.tsx",
+    "src/recruit/candidate-decision-summary.tsx",
     "src/recruit/candidate-destination-status.tsx",
+    "src/recruit/candidate-detail-layout.tsx",
+    "src/recruit/candidate-fact-list.tsx",
+    "src/recruit/candidate-favourite-button.tsx",
+    "src/recruit/candidate-filter-chips.tsx",
     "src/recruit/candidate-grade.tsx",
+    "src/recruit/candidate-header-actions.tsx",
     "src/recruit/candidate-inline-card.tsx",
-    "src/recruit/candidate-profile.tsx",
+    "src/recruit/candidate-job-evidence.tsx",
+    "src/recruit/candidate-notes.tsx",
+    "src/recruit/candidate-outreach-composer.tsx",
+    "src/recruit/candidate-pending-note.tsx",
+    "src/recruit/candidate-pipeline-card.tsx",
+    "src/recruit/candidate-pipeline-list.tsx",
     "src/recruit/candidate-profile-dialog.tsx",
+    "src/recruit/candidate-profile-link-button.tsx",
+    "src/recruit/candidate-profile.tsx",
     "src/recruit/candidate-quote.tsx",
+    "src/recruit/candidate-relationship-card.tsx",
+    "src/recruit/candidate-review-action-row.tsx",
     "src/recruit/candidate-review-card.tsx",
-    "src/recruit/current-company-label.tsx"
+    "src/recruit/candidate-role-matches.tsx",
+    "src/recruit/candidate-selectable-avatar.tsx",
+    "src/recruit/candidate-shared-profile-button.tsx",
+    "src/recruit/candidate-signal-list.tsx",
+    "src/recruit/candidate-signal-menu.tsx",
+    "src/recruit/candidate-stage-actions.tsx",
+    "src/recruit/candidate-stage-select.tsx",
+    "src/recruit/candidate-suggested-roles-panel.tsx",
+    "src/recruit/candidate-voice-note.tsx",
+    "src/recruit/current-company-label.tsx",
+    "src/recruit/current-company-popover.tsx",
+    "src/recruit/job-client-badge.tsx",
+    "src/recruit/job-summary-card.tsx",
+    "src/recruit/matched-call-card.tsx"
   ],
   format: ["esm", "cjs"],
-  dts: {
-    compilerOptions: {
-      baseUrl: ".",
-      paths: {
-        "@/components/recruit-ui/core/*": [`${coreSourceRoot}/*`],
-      },
-    },
-  },
+  dts: true,
   splitting: true,
   clean: true,
   sourcemap: false,
   target: "es2022",
-  esbuildOptions(options) {
-    options.alias = {
-      ...options.alias,
-      "@/components/recruit-ui/core": coreSourceRoot,
-    };
-  },
+  // The primitives come from @epicbagel/saas-kit, a peer dependency: the host
+  // installs one copy and every library that renders a primitive shares it
+  // (and its Dialog and Tooltip context). Nothing from the kit is bundled.
   external: [
     "react",
     "react-dom",
     "react/jsx-runtime",
-    /^@radix-ui\//,
-    "class-variance-authority",
-    "clsx",
-    "lucide-react",
-    "react-responsive",
-    "tailwind-merge",
-    "vaul"
+    /^@epicbagel\/saas-kit(\/|$)/,
+    "lucide-react"
   ]
 });
