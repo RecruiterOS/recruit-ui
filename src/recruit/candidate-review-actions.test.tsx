@@ -153,6 +153,36 @@ describe("candidate review action row", () => {
     const row = container.querySelector("[data-slot='candidate-review-action-row']")!;
     expect(row.firstElementChild?.className).toContain("border-t");
     expect(container.querySelectorAll(".border-t")).toHaveLength(1);
+    // Nothing above the row draws a rule, so the card leaves its keyline alone.
+    const content = container.querySelector("[data-slot='candidate-review-card-content']")!;
+    expect(content.className).not.toContain("border-t-0");
+  });
+
+  it("draws one rule between a review card's facts and its action row", () => {
+    const { container } = render(
+      <CandidateReviewCard
+        name="Fictional Person"
+        facts={[{ label: "Location", value: "Example City" }]}
+        actions={
+          <CandidateReviewActionRow>
+            <CandidateDecisionButtons onChoose={vi.fn()} />
+          </CandidateReviewActionRow>
+        }
+      />,
+    );
+    const facts = container.querySelector("[data-slot='candidate-review-card-facts']")!;
+    // The facts end on a rule; the row's keyline under it is hidden by the card.
+    expect(facts.className).toContain("border-y");
+    // Inset as far as the header and the action row (26px), so the edges line up.
+    expect(facts.className).toContain("px-[26px]");
+    const controls = container.querySelector("[data-slot='candidate-review-action-row-controls']")!;
+    expect(controls.className).toContain("border-t");
+    const content = container.querySelector("[data-slot='candidate-review-card-content']")!;
+    expect(content.className).toContain(
+      "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0",
+    );
+    expect(content.className).toContain("[&_[data-slot=candidate-review-action-row-controls]]:pt-0");
+    expect(content.contains(controls)).toBe(true);
   });
 });
 

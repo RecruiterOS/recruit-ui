@@ -1,8 +1,9 @@
 "use client";
 import {
   CandidateInlineCard
-} from "../chunk-LMMM7GCZ.js";
+} from "../chunk-3GUOSUR5.js";
 import "../chunk-NBZS6VTO.js";
+import "../chunk-YKEE5RQG.js";
 export {
   CandidateInlineCard
 };

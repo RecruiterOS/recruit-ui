@@ -14,17 +14,10 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Input } from "@epicbagel/saas-kit/primitives/input";
 import { InteractiveCard } from "@epicbagel/saas-kit/primitives/interactive-card";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
-import {
-  ResponsiveDialog,
-  ResponsiveDialogBody,
-  ResponsiveDialogContent,
-  ResponsiveDialogHeader,
-  ResponsiveDialogTitle
-} from "@epicbagel/saas-kit/primitives/responsive-dialog";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { UserPlus, UserSearch } from "lucide-react";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var DEFAULT_LABELS = {
   untitled: "Untitled call",
@@ -52,6 +45,9 @@ var DEFAULT_LABELS = {
   cancel: "Cancel",
   attach: "Attach this call"
 };
+var CallReconcileDialogs = lazy(
+  () => import("./call-reconcile-dialogs-LJ55XLXI.js").then((module) => ({ default: module.CallReconcileDialogs }))
+);
 var isShown = (node) => node != null && node !== false && node !== "" && !(Array.isArray(node) && node.length === 0);
 var noSearch = async () => [];
 function CallReconcileCard({
@@ -192,72 +188,41 @@ function CallReconcileCard({
         ] })
       }
     ),
-    picker ? null : /* @__PURE__ */ jsxs(Fragment, { children: [
-      /* @__PURE__ */ jsx(ResponsiveDialog, { open: createOpen, onOpenChange: setCreateOpen, children: /* @__PURE__ */ jsxs(ResponsiveDialogContent, { children: [
-        /* @__PURE__ */ jsx(ResponsiveDialogHeader, { children: /* @__PURE__ */ jsx(ResponsiveDialogTitle, { children: text.createTitle }) }),
-        /* @__PURE__ */ jsx(ResponsiveDialogBody, { children: /* @__PURE__ */ jsxs(Stack, { gap: "sm", children: [
-          participants.length > 0 && /* @__PURE__ */ jsxs(Stack, { gap: "xs", children: [
-            /* @__PURE__ */ jsx(Text, { variant: "small", tone: "muted", children: text.useParticipant }),
-            /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "sm", wrap: true, children: participants.map((participant, index) => /* @__PURE__ */ jsx(
-              Button,
-              {
-                variant: "outline",
-                size: "sm",
-                onClick: () => {
-                  setNewName(participant.name ?? "");
-                  setNewEmail(participant.email ?? "");
-                },
-                children: participant.name || participant.email
-              },
-              `${participant.email ?? participant.name}-${index}`
-            )) })
-          ] }),
-          /* @__PURE__ */ jsxs(Stack, { gap: "xs", children: [
-            /* @__PURE__ */ jsx(Text, { variant: "small", tone: "muted", children: text.name }),
-            /* @__PURE__ */ jsx(Input, { value: newName, onChange: (event) => setNewName(event.target.value), placeholder: text.namePlaceholder })
-          ] }),
-          /* @__PURE__ */ jsxs(Stack, { gap: "xs", children: [
-            /* @__PURE__ */ jsx(Text, { variant: "small", tone: "muted", children: text.email }),
-            /* @__PURE__ */ jsx(Input, { type: "email", value: newEmail, onChange: (event) => setNewEmail(event.target.value), placeholder: text.emailPlaceholder })
-          ] }),
-          /* @__PURE__ */ jsx(
-            Button,
-            {
-              size: "sm",
-              disabled: !newName.trim(),
-              onClick: () => {
-                const name = newName.trim();
-                const email = newEmail.trim();
-                setCreateOpen(false);
-                onCreateAttach?.({ name, email: email || void 0 });
-              },
-              children: text.createSubmit
+    picker ? null : (
+      // Closed dialogs render nothing, so there is nothing to show while
+      // the chunk loads.
+      /* @__PURE__ */ jsx(Suspense, { fallback: null, children: /* @__PURE__ */ jsx(
+        CallReconcileDialogs,
+        {
+          labels: text,
+          participants,
+          create: {
+            open: createOpen,
+            onOpenChange: setCreateOpen,
+            name: newName,
+            onNameChange: setNewName,
+            email: newEmail,
+            onEmailChange: setNewEmail,
+            onSubmit: () => {
+              const name = newName.trim();
+              const email = newEmail.trim();
+              setCreateOpen(false);
+              onCreateAttach?.({ name, email: email || void 0 });
             }
-          )
-        ] }) })
-      ] }) }),
-      /* @__PURE__ */ jsx(ResponsiveDialog, { open: preview !== null, onOpenChange: (open) => !open && closePreview(), children: /* @__PURE__ */ jsxs(ResponsiveDialogContent, { presentation: "preview", children: [
-        /* @__PURE__ */ jsx(ResponsiveDialogHeader, { visibility: "screen-reader", children: /* @__PURE__ */ jsx(ResponsiveDialogTitle, { children: text.previewTitle }) }),
-        preview && /* @__PURE__ */ jsxs(Stack, { gap: "none", minHeight: "zero", grow: true, children: [
-          /* @__PURE__ */ jsx(FlexItem, { grow: true, minHeight: "zero", overflow: "hidden", children: renderPreview?.(preview, closePreview) }),
-          /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "end", border: "top", surface: "background", padding: "action-row", children: [
-            /* @__PURE__ */ jsx(Button, { variant: "outline", size: "sm", onClick: closePreview, children: text.cancel }),
-            /* @__PURE__ */ jsx(
-              Button,
-              {
-                size: "sm",
-                onClick: () => {
-                  const person = preview;
-                  setPreview(null);
-                  onAttach?.(person);
-                },
-                children: text.attach
-              }
-            )
-          ] })
-        ] })
-      ] }) })
-    ] })
+          },
+          preview: {
+            open: preview !== null,
+            content: preview ? renderPreview?.(preview, closePreview) : null,
+            onClose: closePreview,
+            onAttach: () => {
+              const person = preview;
+              setPreview(null);
+              if (person) onAttach?.(person);
+            }
+          }
+        }
+      ) })
+    )
   ] });
 }
 

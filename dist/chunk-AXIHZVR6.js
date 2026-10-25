@@ -1,3 +1,7 @@
+import {
+  COARSE_POINTER_TOUCH_TARGET
+} from "./chunk-YKEE5RQG.js";
+
 // src/recruit/candidate-channel-actions.tsx
 import { Anchor } from "@epicbagel/saas-kit/primitives/anchor";
 import { Button } from "@epicbagel/saas-kit/primitives/button";
@@ -6,6 +10,7 @@ import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { jsx, jsxs } from "react/jsx-runtime";
 var isWebLink = (href) => /^https?:\/\//i.test(href);
+var BAR_LABEL_VISIBILITY = "hidden @min-[4.5rem]:inline";
 function CandidateChannelActions({
   channels,
   presentation = "icons",
@@ -37,16 +42,42 @@ function CandidateChannelActions({
             href: channel.href,
             "data-channel": channel.kind,
             title: channel.label,
-            "aria-label": bar ? void 0 : channel.label,
+            "aria-label": channel.label,
             ...external ? { target: "_blank", rel: "noopener noreferrer" } : {},
             onClick: (event) => event.stopPropagation(),
             children: [
               /* @__PURE__ */ jsx(Icon, { icon: channel.icon, size: "md" }),
-              bar ? /* @__PURE__ */ jsx(Text, { variant: "inherit", as: "span", truncate: true, minWidth: "zero", children: channel.label }) : null
+              bar ? /* @__PURE__ */ jsx(
+                Text,
+                {
+                  variant: "inherit",
+                  as: "span",
+                  truncate: true,
+                  minWidth: "zero",
+                  className: BAR_LABEL_VISIBILITY,
+                  children: channel.label
+                }
+              ) : null
             ]
           }
         );
-        return bar ? /* @__PURE__ */ jsx(Button, { asChild: true, variant: "outline", size: "sm", grow: true, minWidth: "zero", children: link }, key) : /* @__PURE__ */ jsx(
+        return bar ? (
+          // A size container, so its label can query the link's own width;
+          // that also makes the links share the row equally.
+          /* @__PURE__ */ jsx(
+            Button,
+            {
+              asChild: true,
+              variant: "outline",
+              size: "sm",
+              grow: true,
+              minWidth: "zero",
+              className: `@container ${COARSE_POINTER_TOUCH_TARGET}`,
+              children: link
+            },
+            key
+          )
+        ) : /* @__PURE__ */ jsx(
           Button,
           {
             asChild: true,
@@ -54,6 +85,7 @@ function CandidateChannelActions({
             shape: "circle",
             size: size === "compact" ? "icon-compact" : "icon-sm",
             shrink: true,
+            className: COARSE_POINTER_TOUCH_TARGET,
             children: link
           },
           key

@@ -15,6 +15,7 @@
     "src/recruit/call-data.ts",
     "src/recruit/call-hooks.ts",
     "src/recruit/call-reconcile-card.tsx",
+    "src/recruit/call-reconcile-dialogs.tsx",
     "src/recruit/candidate-activity-timeline.tsx",
     "src/recruit/candidate-assessment.tsx",
     "src/recruit/candidate-call-card.tsx",
@@ -67,6 +68,7 @@
     "src/recruit/current-company-popover.tsx",
     "src/recruit/job-client-badge.tsx",
     "src/recruit/job-summary-card.tsx",
-    "src/recruit/matched-call-card.tsx"
+    "src/recruit/matched-call-card.tsx",
+    "src/recruit/touch-targets.ts"
   ]
 }

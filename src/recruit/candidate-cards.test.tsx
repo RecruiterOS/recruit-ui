@@ -69,6 +69,11 @@ describe("candidate card activation", () => {
     expect(card).not.toHaveAttribute("tabindex");
     expect(trigger.tagName).toBe("BUTTON");
     expect(trigger.contains(headerAction)).toBe(false);
+    // The card clips its content, which would cut a ring drawn outside the
+    // trigger: the ring is drawn inside it, so keyboard focus stays visible.
+    expect(card).toHaveClass("overflow-hidden");
+    expect(trigger).toHaveClass("focus-visible:ring-2", "focus-visible:ring-inset", "focus-visible:ring-offset-0");
+    expect(trigger).not.toHaveClass("focus-visible:ring-offset-2");
     expect(card).toHaveClass("border");
     expect(card).not.toHaveClass("border-2");
     expect(screen.getByTestId("owned-actions").parentElement).not.toHaveClass("p-6");
@@ -127,10 +132,31 @@ describe("candidate card activation", () => {
     expect(screen.getByText("Example Role · Fictional North")).toHaveClass("text-xs", "truncate", "leading-snug");
     expect(screen.getByText("Last touched two weeks ago")).toHaveClass("truncate", "leading-snug");
     expect(screen.getByText("Example Role · Fictional North")).not.toHaveClass("leading-relaxed");
+    // The actions lay out as items of the row (the wrapper has no box), and on
+    // a touchscreen every link and button among them is at least 44px square.
+    const actions = document.querySelector('[data-slot="candidate-inline-card-actions"]');
+    expect(actions).toHaveClass("contents");
+    expect(actions?.className).toContain("pointer-coarse:[&_button]:min-h-[max(44px,2.75rem)]");
+    expect(actions?.className).toContain("pointer-coarse:[&_button]:min-w-[max(44px,2.75rem)]");
+    expect(actions?.className).toContain("pointer-coarse:[&_a]:min-h-[max(44px,2.75rem)]");
+    expect(actions?.className).toContain("pointer-coarse:[&_a]:min-w-[max(44px,2.75rem)]");
+    expect(actions).toContainElement(screen.getByRole("button", { name: "Profile" }));
 
     await user.click(screen.getByRole("button", { name: "Profile" }));
     expect(onSelect).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: "Open Fictional Candidate" }));
     expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves a comfortable card's actions at their own size, and adds no wrapper without actions", () => {
+    const { rerender } = render(
+      <CandidateInlineCard name="Fictional Candidate" actions={<button type="button">Profile</button>} />,
+    );
+    const actions = document.querySelector('[data-slot="candidate-inline-card-actions"]');
+    expect(actions).toHaveClass("contents");
+    expect(actions?.className).not.toContain("pointer-coarse");
+
+    rerender(<CandidateInlineCard density="compact" name="Fictional Candidate" />);
+    expect(document.querySelector('[data-slot="candidate-inline-card-actions"]')).toBeNull();
   });
 });

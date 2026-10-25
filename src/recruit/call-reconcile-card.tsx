@@ -9,17 +9,10 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Input } from "@epicbagel/saas-kit/primitives/input";
 import { InteractiveCard } from "@epicbagel/saas-kit/primitives/interactive-card";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
-import {
-  ResponsiveDialog,
-  ResponsiveDialogBody,
-  ResponsiveDialogContent,
-  ResponsiveDialogHeader,
-  ResponsiveDialogTitle,
-} from "@epicbagel/saas-kit/primitives/responsive-dialog";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { UserPlus, UserSearch } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { lazy, Suspense, useState, type ReactNode } from "react";
 
 import type {
   CallPerson,
@@ -186,6 +179,14 @@ export interface CallReconcilePickerProps {
 
 export type CallReconcileCardProps<TPerson extends CallPerson = CallPerson> =
   CallReconcileCardBaseProps & (CallReconcileSearchProps<TPerson> | CallReconcilePickerProps);
+
+// The create and preview dialogs (and the drawer the kit's ResponsiveDialog
+// renders on a phone) are a chunk of their own. Search mode mounts them with
+// the card, so the chunk loads at once, closed; picker mode never mounts
+// them, so a host with its own picker never downloads them.
+const CallReconcileDialogs = lazy(() =>
+  import("./call-reconcile-dialogs").then((module) => ({ default: module.CallReconcileDialogs })),
+);
 
 const isShown = (node: ReactNode) =>
   node != null && node !== false && node !== "" && !(Array.isArray(node) && node.length === 0);
@@ -363,87 +364,38 @@ export function CallReconcileCard<TPerson extends CallPerson>({
 
       {/* The host's picker replaces both dialogs, so picker mode mounts neither. */}
       {picker ? null : (
-        <>
-          <ResponsiveDialog open={createOpen} onOpenChange={setCreateOpen}>
-            <ResponsiveDialogContent>
-              <ResponsiveDialogHeader>
-                <ResponsiveDialogTitle>{text.createTitle}</ResponsiveDialogTitle>
-              </ResponsiveDialogHeader>
-              <ResponsiveDialogBody>
-                <Stack gap="sm">
-                  {participants.length > 0 && (
-                    <Stack gap="xs">
-                      <Text variant="small" tone="muted">{text.useParticipant}</Text>
-                      <Stack direction="horizontal" gap="sm" wrap>
-                        {participants.map((participant, index) => (
-                          <Button
-                            key={`${participant.email ?? participant.name}-${index}`}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setNewName(participant.name ?? "");
-                              setNewEmail(participant.email ?? "");
-                            }}
-                          >
-                            {participant.name || participant.email}
-                          </Button>
-                        ))}
-                      </Stack>
-                    </Stack>
-                  )}
-                  <Stack gap="xs">
-                    <Text variant="small" tone="muted">{text.name}</Text>
-                    <Input value={newName} onChange={(event) => setNewName(event.target.value)} placeholder={text.namePlaceholder} />
-                  </Stack>
-                  <Stack gap="xs">
-                    <Text variant="small" tone="muted">{text.email}</Text>
-                    <Input type="email" value={newEmail} onChange={(event) => setNewEmail(event.target.value)} placeholder={text.emailPlaceholder} />
-                  </Stack>
-                  <Button
-                    size="sm"
-                    disabled={!newName.trim()}
-                    onClick={() => {
-                      const name = newName.trim();
-                      const email = newEmail.trim();
-                      setCreateOpen(false);
-                      onCreateAttach?.({ name, email: email || undefined });
-                    }}
-                  >
-                    {text.createSubmit}
-                  </Button>
-                </Stack>
-              </ResponsiveDialogBody>
-            </ResponsiveDialogContent>
-          </ResponsiveDialog>
-
-          <ResponsiveDialog open={preview !== null} onOpenChange={(open) => !open && closePreview()}>
-            <ResponsiveDialogContent presentation="preview">
-              <ResponsiveDialogHeader visibility="screen-reader">
-                <ResponsiveDialogTitle>{text.previewTitle}</ResponsiveDialogTitle>
-              </ResponsiveDialogHeader>
-              {preview && (
-                <Stack gap="none" minHeight="zero" grow>
-                  <FlexItem grow minHeight="zero" overflow="hidden">
-                    {renderPreview?.(preview, closePreview)}
-                  </FlexItem>
-                  <Stack direction="horizontal" gap="sm" align="center" justify="end" border="top" surface="background" padding="action-row">
-                    <Button variant="outline" size="sm" onClick={closePreview}>{text.cancel}</Button>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        const person = preview;
-                        setPreview(null);
-                        onAttach?.(person);
-                      }}
-                    >
-                      {text.attach}
-                    </Button>
-                  </Stack>
-                </Stack>
-              )}
-            </ResponsiveDialogContent>
-          </ResponsiveDialog>
-        </>
+        // Closed dialogs render nothing, so there is nothing to show while
+        // the chunk loads.
+        <Suspense fallback={null}>
+          <CallReconcileDialogs
+            labels={text}
+            participants={participants}
+            create={{
+              open: createOpen,
+              onOpenChange: setCreateOpen,
+              name: newName,
+              onNameChange: setNewName,
+              email: newEmail,
+              onEmailChange: setNewEmail,
+              onSubmit: () => {
+                const name = newName.trim();
+                const email = newEmail.trim();
+                setCreateOpen(false);
+                onCreateAttach?.({ name, email: email || undefined });
+              },
+            }}
+            preview={{
+              open: preview !== null,
+              content: preview ? renderPreview?.(preview, closePreview) : null,
+              onClose: closePreview,
+              onAttach: () => {
+                const person = preview;
+                setPreview(null);
+                if (person) onAttach?.(person);
+              },
+            }}
+          />
+        </Suspense>
       )}
     </>
   );

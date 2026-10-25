@@ -6,6 +6,7 @@ import {
 } from "./chunk-IQFISO63.js";
 
 // src/recruit/candidate-review-card.tsx
+import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Grid } from "@epicbagel/saas-kit/primitives/grid";
@@ -17,6 +18,7 @@ import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var SUPPRESS_ACTION_ROW_KEYLINE = "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0 [&_[data-slot=candidate-review-action-row-controls]]:pt-0";
 function CandidateReviewCard({
   name,
   avatar,
@@ -38,6 +40,7 @@ function CandidateReviewCard({
   const generatedId = useId();
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
+  const ruled = facts.length > 0 || insight != null;
   return /* @__PURE__ */ jsxs(
     InteractiveCard,
     {
@@ -60,7 +63,7 @@ function CandidateReviewCard({
             "aria-labelledby": selectLabel === "Open candidate review" ? `${actionId} ${nameId}` : void 0,
             "aria-current": selected || void 0,
             "aria-expanded": ariaExpanded,
-            className: "pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            className: "pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring focus-visible:ring-offset-0",
             onClick: onSelect,
             children: selectLabel === "Open candidate review" ? /* @__PURE__ */ jsx("span", { id: actionId, className: "sr-only", children: selectLabel }) : null
           }
@@ -69,7 +72,7 @@ function CandidateReviewCard({
           "div",
           {
             "data-slot": "candidate-review-card-content",
-            className: "h-full",
+            className: cn("h-full", ruled && SUPPRESS_ACTION_ROW_KEYLINE),
             onClick: onSelect ? (event) => {
               if (shouldActivateCandidateCard(event)) onSelect();
             } : void 0,
@@ -101,7 +104,20 @@ function CandidateReviewCard({
                   }
                 ) }),
                 beforeFacts,
-                facts.length > 0 ? /* @__PURE__ */ jsx(DefinitionList, { inset: "lg", className: "border-y", children: facts.map((fact, index) => /* @__PURE__ */ jsx(DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,
+                facts.length > 0 ? (
+                  // Inset like the header and the action row, so the labels line
+                  // up under the avatar; the rules above and below run edge to edge.
+                  /* @__PURE__ */ jsx(
+                    PanelSection,
+                    {
+                      "data-slot": "candidate-review-card-facts",
+                      padding: "none",
+                      paddingX: "lg",
+                      className: "border-y",
+                      children: /* @__PURE__ */ jsx(DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ jsx(DefinitionItem, { label: fact.label, children: fact.value }, index)) })
+                    }
+                  )
+                ) : null,
                 insight != null ? /* @__PURE__ */ jsxs(Fragment, { children: [
                   /* @__PURE__ */ jsx(Spacer, { size: "xs" }),
                   /* @__PURE__ */ jsxs(PanelSection, { border: "bottom", surface: "muted", padding: "default", children: [

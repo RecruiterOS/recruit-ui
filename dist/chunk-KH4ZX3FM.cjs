@@ -2,6 +2,9 @@
 
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
+
+var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
+
 // src/recruit/candidate-inline-card.tsx
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
 var _heading = require('@epicbagel/saas-kit/primitives/heading');
@@ -107,7 +110,18 @@ function CandidateInlineCard({
                     ) : null,
                     assessment != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { gap: "none", marginTop: compact ? "sm" : "md", children: assessment }) : null
                   ] }),
-                  actions
+                  actions != null ? (
+                    // No box of its own, so the actions stay items of the row; it
+                    // only carries a compact row's touch targets to its controls.
+                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                      "div",
+                      {
+                        "data-slot": "candidate-inline-card-actions",
+                        className: compact ? `contents ${_chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : "contents",
+                        children: actions
+                      }
+                    )
+                  ) : null
                 ]
               }
             )

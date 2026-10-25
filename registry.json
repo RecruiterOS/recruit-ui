@@ -117,6 +117,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/call-reconcile-dialogs.tsx",
+          "target": "components/recruit-ui/recruit/call-reconcile-dialogs.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/candidate-activity-timeline.tsx",
           "target": "components/recruit-ui/recruit/candidate-activity-timeline.tsx",
           "type": "registry:ui"
@@ -379,6 +384,11 @@
         {
           "path": "src/recruit/matched-call-card.tsx",
           "target": "components/recruit-ui/recruit/matched-call-card.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/touch-targets.ts",
+          "target": "components/recruit-ui/recruit/touch-targets.ts",
           "type": "registry:ui"
         },
         {

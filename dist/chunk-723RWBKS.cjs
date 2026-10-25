@@ -6,6 +6,7 @@ var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 var _chunkZJZS63R6cjs = require('./chunk-ZJZS63R6.cjs');
 
 // src/recruit/candidate-review-card.tsx
+var _utils = require('@epicbagel/saas-kit/lib/utils');
 var _definitionlist = require('@epicbagel/saas-kit/primitives/definition-list');
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
 var _grid = require('@epicbagel/saas-kit/primitives/grid');
@@ -17,6 +18,7 @@ var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _text = require('@epicbagel/saas-kit/primitives/text');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
+var SUPPRESS_ACTION_ROW_KEYLINE = "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0 [&_[data-slot=candidate-review-action-row-controls]]:pt-0";
 function CandidateReviewCard({
   name,
   avatar,
@@ -38,6 +40,7 @@ function CandidateReviewCard({
   const generatedId = _react.useId.call(void 0, );
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
+  const ruled = facts.length > 0 || insight != null;
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     _interactivecard.InteractiveCard,
     {
@@ -60,7 +63,7 @@ function CandidateReviewCard({
             "aria-labelledby": selectLabel === "Open candidate review" ? `${actionId} ${nameId}` : void 0,
             "aria-current": selected || void 0,
             "aria-expanded": ariaExpanded,
-            className: "pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            className: "pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring focus-visible:ring-offset-0",
             onClick: onSelect,
             children: selectLabel === "Open candidate review" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { id: actionId, className: "sr-only", children: selectLabel }) : null
           }
@@ -69,7 +72,7 @@ function CandidateReviewCard({
           "div",
           {
             "data-slot": "candidate-review-card-content",
-            className: "h-full",
+            className: _utils.cn.call(void 0, "h-full", ruled && SUPPRESS_ACTION_ROW_KEYLINE),
             onClick: onSelect ? (event) => {
               if (_chunkK3VUGGWHcjs.shouldActivateCandidateCard.call(void 0, event)) onSelect();
             } : void 0,
@@ -101,7 +104,20 @@ function CandidateReviewCard({
                   }
                 ) }),
                 beforeFacts,
-                facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { inset: "lg", className: "border-y", children: facts.map((fact, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,
+                facts.length > 0 ? (
+                  // Inset like the header and the action row, so the labels line
+                  // up under the avatar; the rules above and below run edge to edge.
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                    _panelsection.PanelSection,
+                    {
+                      "data-slot": "candidate-review-card-facts",
+                      padding: "none",
+                      paddingX: "lg",
+                      className: "border-y",
+                      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, index)) })
+                    }
+                  )
+                ) : null,
                 insight != null ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
                   /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _spacer.Spacer, { size: "xs" }),
                   /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _panelsection.PanelSection, { border: "bottom", surface: "muted", padding: "default", children: [

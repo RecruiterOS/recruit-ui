@@ -18,6 +18,9 @@ interface CandidateInlineCardProps extends Omit<HTMLAttributes<HTMLElement>, "on
      * `compact` is a single dense row (smaller padding, the name and lines
      * centred on the avatar, every line truncated) for fixed-height list rows
      * and board columns: give the card a height and its content centres in it.
+     * On a coarse pointer (a touchscreen) every link and button in a compact
+     * card's `actions` is at least 44px square, whatever size it asked for, so
+     * a dense row keeps its touch targets on a phone.
      */
     density?: CandidateInlineCardDensity;
 }
@@ -27,7 +30,9 @@ type CandidateInlineCardDensity = "comfortable" | "compact";
  * A compact candidate trigger suitable for lists, messages, and previews.
  *
  * The root is the kit InteractiveCard as an `article`, marked
- * `data-slot="candidate-inline-card"` and `data-density`.
+ * `data-slot="candidate-inline-card"` and `data-density`. The `actions` sit in
+ * an element marked `data-slot="candidate-inline-card-actions"` that takes no
+ * box of its own (`display: contents`), so they lay out as before.
  */
 declare function CandidateInlineCard({ name, avatar, headline, meta, assessment, status, actions, selected, subdued, onSelect, selectLabel, density, "aria-expanded": ariaExpanded, className, ...props }: CandidateInlineCardProps): react.JSX.Element;
 

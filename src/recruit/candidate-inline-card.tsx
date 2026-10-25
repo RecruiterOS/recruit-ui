@@ -8,6 +8,7 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
+import { COARSE_POINTER_TOUCH_TARGETS_WITHIN } from "./touch-targets";
 
 export interface CandidateInlineCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "title"> {
@@ -27,6 +28,9 @@ export interface CandidateInlineCardProps
    * `compact` is a single dense row (smaller padding, the name and lines
    * centred on the avatar, every line truncated) for fixed-height list rows
    * and board columns: give the card a height and its content centres in it.
+   * On a coarse pointer (a touchscreen) every link and button in a compact
+   * card's `actions` is at least 44px square, whatever size it asked for, so
+   * a dense row keeps its touch targets on a phone.
    */
   density?: CandidateInlineCardDensity;
 }
@@ -38,7 +42,9 @@ export type CandidateInlineCardDensity = "comfortable" | "compact";
  * A compact candidate trigger suitable for lists, messages, and previews.
  *
  * The root is the kit InteractiveCard as an `article`, marked
- * `data-slot="candidate-inline-card"` and `data-density`.
+ * `data-slot="candidate-inline-card"` and `data-density`. The `actions` sit in
+ * an element marked `data-slot="candidate-inline-card-actions"` that takes no
+ * box of its own (`display: contents`), so they lay out as before.
  */
 export function CandidateInlineCard({
   name,
@@ -141,7 +147,16 @@ export function CandidateInlineCard({
               <Stack gap="none" marginTop={compact ? "sm" : "md"}>{assessment}</Stack>
             ) : null}
           </FlexItem>
-          {actions}
+          {actions != null ? (
+            // No box of its own, so the actions stay items of the row; it
+            // only carries a compact row's touch targets to its controls.
+            <div
+              data-slot="candidate-inline-card-actions"
+              className={compact ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : "contents"}
+            >
+              {actions}
+            </div>
+          ) : null}
         </Stack>
       </div>
     </InteractiveCard>

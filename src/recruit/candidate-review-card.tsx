@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Grid } from "@epicbagel/saas-kit/primitives/grid";
@@ -13,6 +14,10 @@ import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "rea
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
 import { CandidateCoverHeader } from "./candidate-cover-header";
+
+// CandidateReviewActionRow marks its inline controls with this slot.
+const SUPPRESS_ACTION_ROW_KEYLINE =
+  "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0 [&_[data-slot=candidate-review-action-row-controls]]:pt-0";
 
 export interface CandidateReviewFact {
   label: ReactNode;
@@ -59,6 +64,7 @@ export function CandidateReviewCard({
   const generatedId = useId();
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
+  const ruled = facts.length > 0 || insight != null;
 
   return (
     <InteractiveCard
@@ -80,7 +86,7 @@ export function CandidateReviewCard({
           aria-labelledby={selectLabel === "Open candidate review" ? `${actionId} ${nameId}` : undefined}
           aria-current={selected || undefined}
           aria-expanded={ariaExpanded}
-          className="pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="pointer-events-none absolute inset-0 z-10 rounded-[inherit] border-0 bg-transparent p-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring focus-visible:ring-offset-0"
           onClick={onSelect}
         >
           {selectLabel === "Open candidate review" ? (
@@ -90,7 +96,9 @@ export function CandidateReviewCard({
       ) : null}
       <div
         data-slot="candidate-review-card-content"
-        className="h-full"
+        // The facts list and the insight already end on a rule, so an action
+        // row under them drops its own keyline rather than draw a second one.
+        className={cn("h-full", ruled && SUPPRESS_ACTION_ROW_KEYLINE)}
         onClick={
           onSelect
             ? (event: MouseEvent<HTMLDivElement>) => {
@@ -132,13 +140,22 @@ export function CandidateReviewCard({
             {beforeFacts}
 
             {facts.length > 0 ? (
-              <DefinitionList inset="lg" className="border-y">
-                {facts.map((fact, index) => (
-                  <DefinitionItem key={index} label={fact.label}>
-                    {fact.value}
-                  </DefinitionItem>
-                ))}
-              </DefinitionList>
+              // Inset like the header and the action row, so the labels line
+              // up under the avatar; the rules above and below run edge to edge.
+              <PanelSection
+                data-slot="candidate-review-card-facts"
+                padding="none"
+                paddingX="lg"
+                className="border-y"
+              >
+                <DefinitionList>
+                  {facts.map((fact, index) => (
+                    <DefinitionItem key={index} label={fact.label}>
+                      {fact.value}
+                    </DefinitionItem>
+                  ))}
+                </DefinitionList>
+              </PanelSection>
             ) : null}
 
             {insight != null ? (

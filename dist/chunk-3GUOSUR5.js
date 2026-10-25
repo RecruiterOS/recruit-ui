@@ -1,6 +1,9 @@
 import {
   shouldActivateCandidateCard
 } from "./chunk-NBZS6VTO.js";
+import {
+  COARSE_POINTER_TOUCH_TARGETS_WITHIN
+} from "./chunk-YKEE5RQG.js";
 
 // src/recruit/candidate-inline-card.tsx
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
@@ -107,7 +110,18 @@ function CandidateInlineCard({
                     ) : null,
                     assessment != null ? /* @__PURE__ */ jsx(Stack, { gap: "none", marginTop: compact ? "sm" : "md", children: assessment }) : null
                   ] }),
-                  actions
+                  actions != null ? (
+                    // No box of its own, so the actions stay items of the row; it
+                    // only carries a compact row's touch targets to its controls.
+                    /* @__PURE__ */ jsx(
+                      "div",
+                      {
+                        "data-slot": "candidate-inline-card-actions",
+                        className: compact ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : "contents",
+                        children: actions
+                      }
+                    )
+                  ) : null
                 ]
               }
             )

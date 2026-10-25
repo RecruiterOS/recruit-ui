@@ -1,8 +1,8 @@
-// src/recruit/candidate-review-action-row.tsx
-import { Grid } from "@epicbagel/saas-kit/primitives/grid";
-import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
-import { Stack } from "@epicbagel/saas-kit/primitives/stack";
-import { jsx } from "react/jsx-runtime";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true});// src/recruit/candidate-review-action-row.tsx
+var _grid = require('@epicbagel/saas-kit/primitives/grid');
+var _panelsection = require('@epicbagel/saas-kit/primitives/panel-section');
+var _stack = require('@epicbagel/saas-kit/primitives/stack');
+var _jsxruntime = require('react/jsx-runtime');
 function CandidateReviewActionRow({
   children,
   isolateClicks = false,
@@ -11,8 +11,8 @@ function CandidateReviewActionRow({
   ...props
 }) {
   const onClick = isolateClicks ? (event) => event.stopPropagation() : void 0;
-  return /* @__PURE__ */ jsx(
-    PanelSection,
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+    _panelsection.PanelSection,
     {
       "data-slot": "candidate-review-action-row",
       padding: "none",
@@ -20,8 +20,8 @@ function CandidateReviewActionRow({
       paddingTop: "md",
       paddingBottom: "xs",
       ...props,
-      children: layout === "split" ? /* @__PURE__ */ jsx(
-        Grid,
+      children: layout === "split" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+        _grid.Grid,
         {
           columns: 2,
           responsive: false,
@@ -30,9 +30,10 @@ function CandidateReviewActionRow({
           onClick,
           children
         }
-      ) : /* @__PURE__ */ jsx(
-        Stack,
+      ) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+        _stack.Stack,
         {
+          "data-slot": "candidate-review-action-row-controls",
           direction: "horizontal",
           gap,
           align: "center",
@@ -47,6 +48,6 @@ function CandidateReviewActionRow({
   );
 }
 
-export {
-  CandidateReviewActionRow
-};
+
+
+exports.CandidateReviewActionRow = CandidateReviewActionRow;

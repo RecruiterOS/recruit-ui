@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkEDZ2G7NVcjs = require('../chunk-EDZ2G7NV.cjs');
+var _chunkVVPSU63Ncjs = require('../chunk-VVPSU63N.cjs');
 
 
-exports.CandidateReviewActionRow = _chunkEDZ2G7NVcjs.CandidateReviewActionRow;
+exports.CandidateReviewActionRow = _chunkVVPSU63Ncjs.CandidateReviewActionRow;

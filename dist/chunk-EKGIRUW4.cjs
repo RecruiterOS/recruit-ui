@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { newObj[key] = obj[key]; } } } newObj.default = obj; return newObj; } } function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
 
@@ -14,13 +14,6 @@ var _icon = require('@epicbagel/saas-kit/primitives/icon');
 var _input = require('@epicbagel/saas-kit/primitives/input');
 var _interactivecard = require('@epicbagel/saas-kit/primitives/interactive-card');
 var _list = require('@epicbagel/saas-kit/primitives/list');
-
-
-
-
-
-
-var _responsivedialog = require('@epicbagel/saas-kit/primitives/responsive-dialog');
 var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _text = require('@epicbagel/saas-kit/primitives/text');
 var _lucidereact = require('lucide-react');
@@ -52,6 +45,9 @@ var DEFAULT_LABELS = {
   cancel: "Cancel",
   attach: "Attach this call"
 };
+var CallReconcileDialogs = _react.lazy.call(void 0,
+  () => Promise.resolve().then(() => _interopRequireWildcard(require("./call-reconcile-dialogs-SRMGHHR3.cjs"))).then((module) => ({ default: module.CallReconcileDialogs }))
+);
 var isShown = (node) => node != null && node !== false && node !== "" && !(Array.isArray(node) && node.length === 0);
 var noSearch = async () => [];
 function CallReconcileCard({
@@ -192,72 +188,41 @@ function CallReconcileCard({
         ] })
       }
     ),
-    picker ? null : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
-      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialog, { open: createOpen, onOpenChange: setCreateOpen, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _responsivedialog.ResponsiveDialogContent, { children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogHeader, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTitle, { children: text.createTitle }) }),
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "sm", children: [
-          participants.length > 0 && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", tone: "muted", children: text.useParticipant }),
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", wrap: true, children: participants.map((participant, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-              _button.Button,
-              {
-                variant: "outline",
-                size: "sm",
-                onClick: () => {
-                  setNewName(_nullishCoalesce(participant.name, () => ( "")));
-                  setNewEmail(_nullishCoalesce(participant.email, () => ( "")));
-                },
-                children: participant.name || participant.email
-              },
-              `${_nullishCoalesce(participant.email, () => ( participant.name))}-${index}`
-            )) })
-          ] }),
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", tone: "muted", children: text.name }),
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { value: newName, onChange: (event) => setNewName(event.target.value), placeholder: text.namePlaceholder })
-          ] }),
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", tone: "muted", children: text.email }),
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { type: "email", value: newEmail, onChange: (event) => setNewEmail(event.target.value), placeholder: text.emailPlaceholder })
-          ] }),
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-            _button.Button,
-            {
-              size: "sm",
-              disabled: !newName.trim(),
-              onClick: () => {
-                const name = newName.trim();
-                const email = newEmail.trim();
-                setCreateOpen(false);
-                _optionalChain([onCreateAttach, 'optionalCall', _6 => _6({ name, email: email || void 0 })]);
-              },
-              children: text.createSubmit
+    picker ? null : (
+      // Closed dialogs render nothing, so there is nothing to show while
+      // the chunk loads.
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _react.Suspense, { fallback: null, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+        CallReconcileDialogs,
+        {
+          labels: text,
+          participants,
+          create: {
+            open: createOpen,
+            onOpenChange: setCreateOpen,
+            name: newName,
+            onNameChange: setNewName,
+            email: newEmail,
+            onEmailChange: setNewEmail,
+            onSubmit: () => {
+              const name = newName.trim();
+              const email = newEmail.trim();
+              setCreateOpen(false);
+              _optionalChain([onCreateAttach, 'optionalCall', _6 => _6({ name, email: email || void 0 })]);
             }
-          )
-        ] }) })
-      ] }) }),
-      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialog, { open: preview !== null, onOpenChange: (open) => !open && closePreview(), children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _responsivedialog.ResponsiveDialogContent, { presentation: "preview", children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogHeader, { visibility: "screen-reader", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTitle, { children: text.previewTitle }) }),
-        preview && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "none", minHeight: "zero", grow: true, children: [
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minHeight: "zero", overflow: "hidden", children: _optionalChain([renderPreview, 'optionalCall', _7 => _7(preview, closePreview)]) }),
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "end", border: "top", surface: "background", padding: "action-row", children: [
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { variant: "outline", size: "sm", onClick: closePreview, children: text.cancel }),
-            /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-              _button.Button,
-              {
-                size: "sm",
-                onClick: () => {
-                  const person = preview;
-                  setPreview(null);
-                  _optionalChain([onAttach, 'optionalCall', _8 => _8(person)]);
-                },
-                children: text.attach
-              }
-            )
-          ] })
-        ] })
-      ] }) })
-    ] })
+          },
+          preview: {
+            open: preview !== null,
+            content: preview ? _optionalChain([renderPreview, 'optionalCall', _7 => _7(preview, closePreview)]) : null,
+            onClose: closePreview,
+            onAttach: () => {
+              const person = preview;
+              setPreview(null);
+              if (person) _optionalChain([onAttach, 'optionalCall', _8 => _8(person)]);
+            }
+          }
+        }
+      ) })
+    )
   ] });
 }
 

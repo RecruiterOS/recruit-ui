@@ -27,8 +27,11 @@ interface CandidateReviewActionRowProps extends Omit<HTMLAttributes<HTMLElement>
  * with `layout="split"`.
  *
  * Pass it as `CandidateReviewCard`'s `actions`, which renders it verbatim, so
- * the row is never padded twice. The root is marked
- * `data-slot="candidate-review-action-row"`.
+ * the row is never padded twice. Under a card's facts or insight, which end
+ * on a rule of their own, the card hides the keyline, so there is one rule
+ * between the content and the controls. The root is marked
+ * `data-slot="candidate-review-action-row"`, and the inline controls
+ * `data-slot="candidate-review-action-row-controls"`.
  */
 declare function CandidateReviewActionRow({ children, isolateClicks, layout, gap, ...props }: CandidateReviewActionRowProps): react.JSX.Element;
 

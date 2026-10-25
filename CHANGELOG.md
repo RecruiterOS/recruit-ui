@@ -5,6 +5,43 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.10.1
+
+### Fixed
+
+- `CandidateReviewCard` shows its keyboard focus ring again. The card clips
+  its content, and the ring sat outside the full-card trigger, so the clip
+  cut all of it. The ring is now drawn inside the trigger's edge.
+- `CandidateReviewCard` draws one rule between its facts (or insight) and a
+  `CandidateReviewActionRow`, where the facts list's rule and the row's
+  keyline used to stack about 12px apart. Under facts or an insight the card
+  hides the row's keyline; with neither, the keyline stays. The facts are
+  inset as far as the header and the action row, so their labels line up
+  under the avatar instead of 6px to its left. The facts list carries
+  `data-slot="candidate-review-card-facts"`, and the row's inline controls
+  `data-slot="candidate-review-action-row-controls"`.
+- `CandidateChannelActions` with `presentation="bar"` no longer cuts labels
+  to a letter and an ellipsis on a narrow row. Its links share the row in
+  equal parts, and a link with less than 4.5rem inside shows the glyph alone.
+  Every link now carries the label as its accessible name (`aria-label`) and
+  tooltip in both presentations, so a link that hides its text keeps both.
+- Compact controls keep a 44px touch target on a touchscreen (a coarse
+  pointer, `pointer-coarse:`); a mouse keeps the dense size. Every
+  `CandidateChannelActions` link is at least 44px square there, compact icons
+  (28px with a mouse) included, and in a `CandidateInlineCard` with
+  `density="compact"` every link and button in `actions` is too, whatever
+  size the host gave it. The floor is 44 CSS pixels (or 2.75rem, if the
+  host's root type is larger) rather than the kit's `h-11`, because below
+  768px the kit scales its root to 87.5%, which makes `h-11` 38.5px on a
+  phone. A compact card's actions now sit in an element marked
+  `data-slot="candidate-inline-card-actions"` with `display: contents`, so
+  they lay out as before.
+- `CallReconcileCard` with `onPickOther` no longer downloads its search-mode
+  create and preview dialogs, or the drawer the kit's `ResponsiveDialog`
+  renders on a phone. The dialogs are a chunk of their own, loaded only when
+  a card in search mode mounts. They start closed, so nothing shows while
+  the chunk loads, and a pick made before it arrives opens once it does.
+
 ## 0.10.0
 
 ### Added

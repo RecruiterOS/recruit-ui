@@ -17,9 +17,17 @@ interface CandidateChannel {
 interface CandidateChannelActionsProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
     /** The channels, in order. Leave out any the host has no address for. */
     channels: readonly CandidateChannel[];
-    /** `icons`: a row of round icon links. `bar`: labelled links that share a row, for an action bar. */
+    /**
+     * `icons`: a row of round icon links. `bar`: labelled links that share a
+     * row equally, for an action bar; a link too narrow for its label (five
+     * channels on a phone) shows the glyph alone, still named by the label.
+     */
     presentation?: "icons" | "bar";
-    /** Icon size: `default` keeps the kit's 44px touch target, `compact` suits a dense card row. */
+    /**
+     * Icon size: `default` keeps the kit's 44px touch target, `compact` suits a
+     * dense card row. On a coarse pointer (a touchscreen) every link is at
+     * least 44px square at either size, so a phone keeps the touch target.
+     */
     size?: "default" | "compact";
     /** The group's accessible name, such as "Contact Mei Example". */
     label?: string;
@@ -27,8 +35,15 @@ interface CandidateChannelActionsProps extends Omit<HTMLAttributes<HTMLElement>,
 /**
  * The ways to reach a person (email, call, message, an external profile) as
  * plain links: round icon buttons, or a labelled bar whose links share the
- * row on a phone. The host builds each link, so the package knows no
- * address scheme or network; a web link opens in a new tab.
+ * row in equal parts. A bar link narrower than a short label (a container
+ * query on the link) drops to its glyph, so a phone shows a row of icons
+ * rather than one letter and an ellipsis each. The host builds each link,
+ * so the package knows no address scheme or network; a web link opens in a
+ * new tab.
+ *
+ * Every link is at least 44px square on a coarse pointer (a touchscreen): a
+ * bar link at any width, an icon at either size, even where the kit scales
+ * its rem sizes down on a narrow screen.
  *
  * Clicks never reach a surrounding clickable card. The root is marked
  * `data-slot="candidate-channel-actions"` and is a labelled group; each link

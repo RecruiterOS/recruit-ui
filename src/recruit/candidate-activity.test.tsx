@@ -170,6 +170,12 @@ describe("candidate channel actions", () => {
     const email = within(group).getByRole("link", { name: "Email Mei" });
     expect(email).toHaveTextContent("Email Mei");
     expect(email).toHaveClass("flex-1");
+    // Too narrow for its label (a container query on the link), a bar link
+    // shows its glyph alone and keeps the label as its name and tooltip.
+    expect(email).toHaveClass("@container");
+    expect(email).toHaveAttribute("aria-label", "Email Mei");
+    expect(email).toHaveAttribute("title", "Email Mei");
+    expect(within(email).getByText("Email Mei")).toHaveClass("hidden", "@min-[4.5rem]:inline", "truncate");
     expect(within(group).getByRole("link", { name: "Mei's profile" })).not.toHaveAttribute("target");
     await user.click(email);
     expect(onCardClick).not.toHaveBeenCalled();
@@ -177,7 +183,18 @@ describe("candidate channel actions", () => {
 
   it("sizes icons down for a dense row and renders nothing without channels", () => {
     const { container, rerender } = render(<CandidateChannelActions channels={CHANNELS} size="compact" />);
-    expect(screen.getByRole("link", { name: "Email Mei" })).toHaveClass("h-7", "w-7");
+    const email = screen.getByRole("link", { name: "Email Mei" });
+    expect(email).toHaveClass("h-7", "w-7");
+    // On a touchscreen a compact icon still grows to a 44px target: 44 CSS
+    // pixels, not the kit's h-11, which a narrow screen scales to 38.5px.
+    const touch = ["pointer-coarse:min-h-[max(44px,2.75rem)]", "pointer-coarse:min-w-[max(44px,2.75rem)]"];
+    expect(email).toHaveClass(...touch);
+
+    // So does a default icon, and a bar link at any width.
+    rerender(<CandidateChannelActions channels={CHANNELS} />);
+    expect(screen.getByRole("link", { name: "Email Mei" })).toHaveClass("h-11", ...touch);
+    rerender(<CandidateChannelActions channels={CHANNELS} presentation="bar" size="compact" />);
+    expect(screen.getByRole("link", { name: "Email Mei" })).toHaveClass("min-h-11", ...touch);
 
     rerender(<CandidateChannelActions channels={[]} />);
     expect(container).toBeEmptyDOMElement();
