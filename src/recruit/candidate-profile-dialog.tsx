@@ -1,7 +1,9 @@
 "use client";
 
 import { useIsMobile } from "@epicbagel/saas-kit/hooks/use-mobile";
+import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { Button, type ButtonProps } from "@epicbagel/saas-kit/primitives/button";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import {
   ResponsiveDialog,
@@ -39,6 +41,15 @@ import { forwardRef, type ReactElement, type ReactNode } from "react";
  */
 export type CandidateProfileDialogPresentation = "dialog" | "sheet";
 
+/**
+ * The centred dialog's height on desktop. `viewport` fixes it at 85% of the
+ * viewport, so a profile doesn't change height as its sections load or as a
+ * person moves between profiles. `content` sizes it to what it holds, up to
+ * the same cap, for a short profile such as an example. A drawer and a sheet
+ * already fit their content, so this applies to the desktop dialog only.
+ */
+export type CandidateProfileDialogHeight = "viewport" | "content";
+
 export interface CandidateProfileDialogProps {
   accessibleTitle: ReactNode;
   accessibleDescription?: ReactNode;
@@ -48,6 +59,14 @@ export interface CandidateProfileDialogProps {
   onOpenChange?: (open: boolean) => void;
   /** `dialog` (the default) or `sheet`. */
   presentation?: CandidateProfileDialogPresentation;
+  /** `viewport` (the default) or `content`; the desktop dialog's only. */
+  height?: CandidateProfileDialogHeight;
+  /**
+   * The visible head, such as a CandidateProfileHeader. It keeps its natural
+   * height and only the body scrolls, also in a drawer or bottom sheet, whose
+   * height is capped rather than fixed. A CandidateProfileHeader with
+   * `padding="dialog"` starts at the body's left edge.
+   */
   header?: ReactNode;
   children: ReactNode;
   footer?: ReactNode;
@@ -67,6 +86,21 @@ export interface CandidateProfileDialogProps {
 }
 
 const DEFAULT_CLOSE_LABEL = "Close candidate profile";
+
+/**
+ * The header slot. It never shrinks: a drawer or bottom sheet only caps its
+ * height, so a tall body makes the column shrink its items, and a header that
+ * clips its content (a cover header does) has no minimum height and would lose
+ * its last lines. The body scrolls, so it takes the shrinking instead.
+ */
+function ProfileHeaderSlot({ children }: { children: ReactNode }) {
+  if (children == null || typeof children === "boolean") return null;
+  return (
+    <FlexItem data-slot="candidate-profile-dialog-header" shrink={false}>
+      {children}
+    </FlexItem>
+  );
+}
 
 /** The close control both presentations pin to the top-right corner. */
 const CloseButton = forwardRef<HTMLButtonElement, ButtonProps>(function CloseButton(props, ref) {
@@ -90,21 +124,30 @@ const CloseButton = forwardRef<HTMLButtonElement, ButtonProps>(function CloseBut
  * presented as a centred dialog or as a side sheet.
  *
  * The surface is marked `data-slot="candidate-profile-dialog"`, with
- * `data-presentation` naming the presentation and, for a sheet, `data-side`
- * the edge it opens from.
+ * `data-presentation` naming the presentation and, for a dialog,
+ * `data-height` its height; for a sheet, `data-side` names the edge it opens
+ * from. A `header` sits in an element marked
+ * `data-slot="candidate-profile-dialog-header"`.
  */
 export function CandidateProfileDialog({
   presentation = "dialog",
+  height = "viewport",
   ...props
 }: CandidateProfileDialogProps) {
   return presentation === "sheet" ? (
     <CandidateProfileSheet {...props} />
   ) : (
-    <CandidateProfileCentredDialog {...props} />
+    <CandidateProfileCentredDialog height={height} {...props} />
   );
 }
 
-type PresentationProps = Omit<CandidateProfileDialogProps, "presentation">;
+type PresentationProps = Omit<CandidateProfileDialogProps, "presentation" | "height">;
+
+/**
+ * The kit's preview dialog is `sm:h-[85vh]`; `content` lets it shrink to fit,
+ * keeping the kit's max-h-[85vh] cap (the class merge drops the fixed height).
+ */
+const CONTENT_HEIGHT = "sm:h-auto";
 
 function CandidateProfileCentredDialog({
   accessibleTitle,
@@ -113,6 +156,7 @@ function CandidateProfileCentredDialog({
   open,
   defaultOpen,
   onOpenChange,
+  height,
   header,
   children,
   footer,
@@ -121,7 +165,7 @@ function CandidateProfileCentredDialog({
   closeLabel = DEFAULT_CLOSE_LABEL,
   contentClassName,
   bodyClassName,
-}: PresentationProps) {
+}: PresentationProps & { height: CandidateProfileDialogHeight }) {
   return (
     <ResponsiveDialog
       open={open}
@@ -134,8 +178,9 @@ function CandidateProfileCentredDialog({
       <ResponsiveDialogContent
         data-slot="candidate-profile-dialog"
         data-presentation="dialog"
+        data-height={height}
         presentation="preview"
-        className={contentClassName}
+        className={cn(height === "content" && CONTENT_HEIGHT, contentClassName)}
       >
         {showClose ? (
           <ResponsiveDialogClose asChild>
@@ -150,7 +195,7 @@ function CandidateProfileCentredDialog({
             </ResponsiveDialogDescription>
           ) : null}
         </ResponsiveDialogHeader>
-        {header}
+        <ProfileHeaderSlot>{header}</ProfileHeaderSlot>
         <ResponsiveDialogBody className={bodyClassName}>
           {children}
         </ResponsiveDialogBody>
@@ -222,7 +267,7 @@ function CandidateProfileSheet({
             <SheetDescription>{accessibleDescription}</SheetDescription>
           ) : null}
         </SheetHeader>
-        {header}
+        <ProfileHeaderSlot>{header}</ProfileHeaderSlot>
         <ResponsiveDialogBody className={bodyClassName}>
           {children}
         </ResponsiveDialogBody>

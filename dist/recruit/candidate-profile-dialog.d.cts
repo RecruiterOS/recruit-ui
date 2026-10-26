@@ -12,6 +12,14 @@ import { ReactNode, ReactElement } from 'react';
  * becomes a two-column grid, while a sheet's stays one right-aligned row.
  */
 type CandidateProfileDialogPresentation = "dialog" | "sheet";
+/**
+ * The centred dialog's height on desktop. `viewport` fixes it at 85% of the
+ * viewport, so a profile doesn't change height as its sections load or as a
+ * person moves between profiles. `content` sizes it to what it holds, up to
+ * the same cap, for a short profile such as an example. A drawer and a sheet
+ * already fit their content, so this applies to the desktop dialog only.
+ */
+type CandidateProfileDialogHeight = "viewport" | "content";
 interface CandidateProfileDialogProps {
     accessibleTitle: ReactNode;
     accessibleDescription?: ReactNode;
@@ -21,6 +29,14 @@ interface CandidateProfileDialogProps {
     onOpenChange?: (open: boolean) => void;
     /** `dialog` (the default) or `sheet`. */
     presentation?: CandidateProfileDialogPresentation;
+    /** `viewport` (the default) or `content`; the desktop dialog's only. */
+    height?: CandidateProfileDialogHeight;
+    /**
+     * The visible head, such as a CandidateProfileHeader. It keeps its natural
+     * height and only the body scrolls, also in a drawer or bottom sheet, whose
+     * height is capped rather than fixed. A CandidateProfileHeader with
+     * `padding="dialog"` starts at the body's left edge.
+     */
     header?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
@@ -43,9 +59,11 @@ interface CandidateProfileDialogProps {
  * presented as a centred dialog or as a side sheet.
  *
  * The surface is marked `data-slot="candidate-profile-dialog"`, with
- * `data-presentation` naming the presentation and, for a sheet, `data-side`
- * the edge it opens from.
+ * `data-presentation` naming the presentation and, for a dialog,
+ * `data-height` its height; for a sheet, `data-side` names the edge it opens
+ * from. A `header` sits in an element marked
+ * `data-slot="candidate-profile-dialog-header"`.
  */
-declare function CandidateProfileDialog({ presentation, ...props }: CandidateProfileDialogProps): react.JSX.Element;
+declare function CandidateProfileDialog({ presentation, height, ...props }: CandidateProfileDialogProps): react.JSX.Element;
 
-export { CandidateProfileDialog, type CandidateProfileDialogPresentation, type CandidateProfileDialogProps };
+export { CandidateProfileDialog, type CandidateProfileDialogHeight, type CandidateProfileDialogPresentation, type CandidateProfileDialogProps };

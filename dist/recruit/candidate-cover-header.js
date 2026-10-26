@@ -1,7 +1,7 @@
 import {
   CandidateCoverHeader,
   CandidateCoverImage
-} from "../chunk-IQFISO63.js";
+} from "../chunk-NBAJDT3O.js";
 export {
   CandidateCoverHeader,
   CandidateCoverImage

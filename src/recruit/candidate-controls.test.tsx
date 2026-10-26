@@ -319,6 +319,28 @@ describe("candidate grade badge formats", () => {
     expect(screen.getByTitle("ungraded")).toHaveAttribute("data-grade", "ungraded");
   });
 
+  it("shows the host's label alone when there is no grade", () => {
+    render(
+      <>
+        <CandidateGradeBadge grade={null} label="Needs a closer look" format="inline" title="ungraded with label" />
+        <CandidateGradeBadge grade={null} label="Hidden" showLabel={false} format="inline" title="ungraded, label hidden" />
+        <CandidateGradeBadge
+          grade={null}
+          label="Needs a closer look"
+          format="inline"
+          appearance="sentiment"
+          sentiment="neutral"
+        />
+      </>,
+    );
+    const badge = screen.getByTitle("ungraded with label");
+    expect(badge).toHaveTextContent(/^Needs a closer look$/);
+    expect(badge).toHaveAttribute("data-grade", "ungraded");
+    expect(screen.getByTitle("ungraded, label hidden")).toHaveTextContent(/^—$/);
+    const pills = screen.getAllByText("Needs a closer look");
+    expect(pills.at(-1)).toHaveClass("rounded-full", "border");
+  });
+
   it("renders the sentiment appearance as the kit's dot pill", () => {
     render(
       <CandidateGradeBadge

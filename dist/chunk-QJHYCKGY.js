@@ -14,20 +14,22 @@ function CandidateCareerHistoryPanel({
   empty,
   detailedCompanyGroups,
   locale,
+  scroll = "viewport",
   ...props
 }) {
+  const timeline = /* @__PURE__ */ jsx(
+    CandidateCareerHistoryTimeline,
+    {
+      items,
+      loading,
+      empty,
+      detailedCompanyGroups,
+      locale
+    }
+  );
   return /* @__PURE__ */ jsxs(Stack, { direction: "vertical", gap: "md", "data-slot": "candidate-career-history-panel", ...props, children: [
     /* @__PURE__ */ jsx(SectionHeader, { label: title, count: loading ? void 0 : items.length }),
-    /* @__PURE__ */ jsx(ScrollArea, { "data-slot": "career-history-scroll", maxHeight: "viewport", paddingEnd: "sm", children: /* @__PURE__ */ jsx(
-      CandidateCareerHistoryTimeline,
-      {
-        items,
-        loading,
-        empty,
-        detailedCompanyGroups,
-        locale
-      }
-    ) })
+    scroll === "none" ? timeline : /* @__PURE__ */ jsx(ScrollArea, { "data-slot": "career-history-scroll", maxHeight: "viewport", paddingEnd: "sm", children: timeline })
   ] });
 }
 

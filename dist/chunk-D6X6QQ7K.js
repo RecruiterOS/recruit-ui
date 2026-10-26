@@ -1,8 +1,14 @@
+import {
+  COARSE_POINTER_TOUCH_TARGET
+} from "./chunk-YKEE5RQG.js";
+
 // src/recruit/candidate-filter-chips.tsx
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Toggle } from "@epicbagel/saas-kit/primitives/toggle";
 import { jsx, jsxs } from "react/jsx-runtime";
+var CHIP_STATES = "text-muted-foreground hover:text-foreground data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:font-medium data-[state=on]:text-foreground";
+var CHIP_CLASSES = `${CHIP_STATES} ${COARSE_POINTER_TOUCH_TARGET}`;
 function CandidateFilterChips({
   value,
   onChange,
@@ -14,7 +20,17 @@ function CandidateFilterChips({
 }) {
   return /* @__PURE__ */ jsx(Stack, { gap: "none", border: "bottom", "data-slot": "candidate-filter-chips", ...props, children: /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", paddingY: "sm", overflow: "x-auto", children: [
     context,
-    /* @__PURE__ */ jsx(Toggle, { pressed: !value, onPressedChange: () => onChange(null), variant: "outline", size: "chip", children: allLabel }),
+    /* @__PURE__ */ jsx(
+      Toggle,
+      {
+        pressed: !value,
+        onPressedChange: () => onChange(null),
+        variant: "outline",
+        size: "chip",
+        className: CHIP_CLASSES,
+        children: allLabel
+      }
+    ),
     options.map((option) => /* @__PURE__ */ jsxs(
       Toggle,
       {
@@ -22,6 +38,7 @@ function CandidateFilterChips({
         onPressedChange: () => onChange(option.value),
         variant: "outline",
         size: "chip",
+        className: CHIP_CLASSES,
         children: [
           option.icon && /* @__PURE__ */ jsx(Icon, { icon: option.icon, size: "xs" }),
           option.label

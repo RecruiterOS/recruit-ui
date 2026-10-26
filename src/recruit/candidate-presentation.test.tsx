@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 
+import { CandidateAssessment } from "./candidate-assessment";
 import { CandidateCareerHistoryTimeline } from "./candidate-career-history-timeline";
 import { CandidateCoverHeader, CandidateCoverImage } from "./candidate-cover-header";
 import { CandidateProfileHeader } from "./candidate-profile";
@@ -93,6 +94,72 @@ describe("candidate presentation", () => {
     expect(screen.getByText("Earlier")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Show more" }));
     expect(screen.getByRole("button", { name: "Show less" })).toBeInTheDocument();
+  });
+
+  it("draws evidence, caveats and signals from items in the package's own lists", () => {
+    render(
+      <CandidateAssessment
+        facts={[{ label: "Company", value: "Fernhill Example Co" }]}
+        summary="Fictional summary of why this person fits."
+        evidenceItems={["Led a fictional platform migration", "Hired an example team of six"]}
+        caveatItems={["Confirm the example notice period"]}
+        signalItems={[
+          { text: "Fictional promotion last spring", sentiment: "positive" },
+          { text: "Example tenure under a year", sentiment: "warning" },
+        ]}
+        labels={{ summary: "Why they fit", caveats: "Open questions" }}
+      />,
+    );
+
+    const assessment = document.querySelector('[data-slot="candidate-assessment"]') as HTMLElement;
+    expect(assessment).toHaveClass("px-[26px]", "py-[26px]");
+    expect([...assessment.querySelectorAll("h3")].map((heading) => heading.textContent)).toEqual([
+      "Why they fit",
+      "Evidence",
+      "Open questions",
+      "Signals",
+    ]);
+
+    const evidence = assessment.querySelector('[data-slot="candidate-assessment-evidence"]') as HTMLElement;
+    expect(evidence.tagName).toBe("UL");
+    const points = within(evidence).getAllByRole("listitem");
+    expect(points.map((point) => point.textContent)).toEqual([
+      "Led a fictional platform migration",
+      "Hired an example team of six",
+    ]);
+    // Each point carries a decorative check mark.
+    for (const point of points) expect(point.querySelector("svg")).toHaveAttribute("aria-hidden", "true");
+
+    const caveats = assessment.querySelector('[data-slot="candidate-assessment-caveats"]') as HTMLElement;
+    expect(caveats).toHaveClass("list-disc");
+    expect(within(caveats).getByRole("listitem")).toHaveTextContent("Confirm the example notice period");
+
+    const signals = assessment.querySelector('[data-slot="candidate-summary-bullets"]') as HTMLElement;
+    expect(within(signals).getAllByRole("listitem").map((line) => line.textContent)).toEqual([
+      "Positive: Fictional promotion last spring",
+      "Caution: Example tenure under a year",
+    ]);
+  });
+
+  it("prefers a slot over items, leaves out empty sections and sits flush on request", () => {
+    render(
+      <CandidateAssessment
+        padding="none"
+        evidence={<p>Fictional evidence written by the host</p>}
+        evidenceItems={["Never shown"]}
+        caveatItems={[]}
+        signalItems={[]}
+      />,
+    );
+
+    const assessment = document.querySelector('[data-slot="candidate-assessment"]') as HTMLElement;
+    expect(assessment.className).not.toMatch(/(^|\s)p[xy]?-/);
+    expect(screen.getByText("Fictional evidence written by the host")).toBeInTheDocument();
+    expect(screen.queryByText("Never shown")).not.toBeInTheDocument();
+    expect(assessment.querySelector('[data-slot="candidate-assessment-evidence"]')).toBeNull();
+    expect(screen.queryByText("Caveats")).not.toBeInTheDocument();
+    expect(screen.queryByText("Signals")).not.toBeInTheDocument();
+    expect(assessment.querySelector('[data-slot="candidate-summary-bullets"]')).toBeNull();
   });
 
   it("keeps grade assignment separate from A-D presentation", () => {

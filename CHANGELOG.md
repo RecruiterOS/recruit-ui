@@ -5,6 +5,109 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.11.0
+
+### Breaking
+
+- `CandidateSummaryBulletsLabels` gains a required `sentiment`
+  (`CandidateSentimentLabels`), the word read before each line. Code that
+  builds a full `CandidateSummaryBulletsLabels` object must add it.
+  `CandidateSummaryBullets`' `labels` prop is now
+  `CandidateSummaryBulletsLabelOverrides`: every label stays optional,
+  including each sentiment's word.
+
+### Added
+
+- `CandidateShortlist`, a shortlist of people as one section: an optional
+  `eyebrow`, the `title` (an h2 that names the section) and an optional
+  `description`, with an optional `status` at the heading's end; then the
+  host's candidate cards as `children`, one under another, and an optional
+  `footer` under them, such as a `CandidateDestinationStatus`. With `count`
+  zero, or with no `count` and nothing in `children` to render, it shows the
+  kit's empty state in place of the cards and the footer, worded by `empty`
+  ("No candidates shortlisted yet" by default). It has no surface of its own,
+  so it sits flush in a message or pane, or inside a card the host draws. The
+  root is a `section` marked `data-slot="candidate-shortlist"`, and
+  `@recruiteros/recruit-ui/recruit/candidate-shortlist` is a client entry.
+- `CandidateAssessment` takes `evidenceItems`, `caveatItems` and
+  `signalItems`, so a host hands over its points instead of building the
+  lists. Evidence draws as a list with a success-toned check mark on each
+  point (`data-slot="candidate-assessment-evidence"`), caveats as a muted
+  bulleted list (`data-slot="candidate-assessment-caveats"`), and signals,
+  each a `CandidateSummaryBullet` with the host's sentiment, through
+  `CandidateSummaryBullets`. An empty list draws no section, heading
+  included. The `evidence`, `caveats` and `signals` slots stay, and a slot
+  the host gives takes precedence over the items for the same section.
+- `CandidateAssessment` takes `padding`, the kit PanelSection's: `default`
+  (as before) pads it like a card's section, and `none` sits it flush in a
+  container the host already pads, such as a `CandidateProfileDialog` body,
+  so it lines up with what follows it there instead of sitting 26px inside
+  it. `compact` is the kit's compact padding.
+- `CandidateCareerHistoryPanel` takes `scroll`: `viewport` (the default, as
+  before) keeps the timeline in a scroll area capped at the viewport's
+  height, and `none` drops the scroll area, so the history runs at full
+  height in a container that already scrolls, such as a profile dialog's
+  body. With `none` there is no `career-history-scroll` element. The panel
+  still imports the kit's ScrollArea for `viewport`, so a bundle that only
+  uses `none` carries it too (about 5.6 kB gzipped).
+- `CandidateProfileHeader` and `CandidateCoverHeader` take `padding="dialog"`,
+  the kit dialog header's 16px. As a `CandidateProfileDialog` `header`, the
+  name then starts at the body's left edge, in line with a flush
+  `CandidateAssessment` and the rest of the body; with the default `lg` it
+  sat 10px further in.
+- `CandidateProfileDialog` takes `height`: `viewport` (the default, as
+  before) fixes the desktop dialog at 85% of the viewport, so it keeps its
+  height while sections load, and `content` sizes it to what it holds, up to
+  the same cap, for a short profile such as an example. A drawer and a sheet
+  already fit their content. The surface carries `data-height`.
+
+### Changed
+
+- `CandidateFilterChips` marks the pressed chip with a primary border and
+  tint and a full-strength label, and gives the others a muted label: the
+  kit ChipTabs' outline states. The kit Toggle's accent fill left a pressed
+  chip about 1.2:1 against the others, with the same label colour.
+- `CandidateGradeBadge` with `format="inline"` and no grade shows the host's
+  `label` alone, such as "Needs review", where it showed "—" and dropped the
+  label. With no label, or with `showLabel={false}`, it still shows "—", and
+  `data-grade` is still `ungraded`.
+- `@recruiteros/recruit-ui/recruit/candidate-assessment` is now a client
+  entry (`"use client"`), because the assessment renders
+  `CandidateSummaryBullets` from a client module. A server component can
+  still render it with serializable props.
+
+### Fixed
+
+- `CandidateSummaryBullets` says each line's sentiment to a screen reader.
+  The dot is decorative, so a positive and a negative line were announced
+  alike and only the dot's colour told them apart. Each line now carries a
+  visually hidden word before its text, marked
+  `data-slot="candidate-summary-bullet-sentiment"`: "Positive", "Neutral",
+  "Caution" or "Negative" by default, the host's own through
+  `labels.sentiment` (any of the four), or a bullet's `sentimentLabel`. This
+  covers `CandidateAssessment`'s `signalItems` too. A line's text content now
+  starts with that word, such as "Positive: Led the migration"; the text
+  itself keeps its own element.
+- `CandidateInlineCard` keeps a leading glyph in `meta`, such as a location
+  pin before the place, on the text's line, with a small gap after it. The
+  stylesheet reset makes every `svg` a block, so the glyph sat on a line of
+  its own above the text. The glyph is now inline, centred on a capital when
+  it is as tall as the text, so the line still wraps, and with
+  `density="compact"` still truncates with an ellipsis. Nothing else in
+  `meta` changes. The meta line carries
+  `data-slot="candidate-inline-card-meta"`.
+- `CandidateProfileDialog` no longer clips its header on a phone. The drawer
+  (and the sheet's bottom sheet) caps its height rather than fixing it, so
+  with a tall body the header shrank with it and lost its last lines, such
+  as a `CandidateProfileHeader`'s second meta line. The `header` now sits in
+  an element that never shrinks, marked
+  `data-slot="candidate-profile-dialog-header"`, and only the body gives way
+  and scrolls. With no `header` there is no such element.
+- `CandidateFilterChips` keeps a 44px touch target on a touchscreen, as the
+  compact controls have since 0.10.1: on a coarse pointer every chip is at
+  least 44px tall and wide (where it was 28px, and 24.5px on a phone, whose
+  root type the kit scales to 87.5%); a mouse keeps the 28px chip.
+
 ## 0.10.1
 
 ### Fixed

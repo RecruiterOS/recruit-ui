@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { HTMLAttributes, ReactNode, Key } from 'react';
+import { ReactNode, HTMLAttributes, Key } from 'react';
 import { Sentiment } from '@epicbagel/saas-kit/primitives/sentiment-dot';
 import { CandidateStageOption } from './candidate-stage-select.cjs';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.cjs';
@@ -60,13 +60,30 @@ declare function CandidatePipelineList<TStage extends string = string>({ title, 
 interface CandidateSummaryBullet {
     text: ReactNode;
     sentiment: Sentiment;
+    /**
+     * The word a screen reader says for this line's dot, in place of the one
+     * `labels.sentiment` gives its sentiment, such as the host's "Risk".
+     */
+    sentimentLabel?: string;
 }
+/** The word a screen reader says for each sentiment's dot. */
+type CandidateSentimentLabels = Record<Sentiment, string>;
 interface CandidateSummaryBulletsLabels {
     generate: string;
     /** In place of generate once a summary exists. */
     refresh: string;
     generating: string;
+    /**
+     * Read before each line, because the dot is decorative: without a word, a
+     * screen reader announces a positive and a negative line alike, and only
+     * the dot's colour tells them apart.
+     */
+    sentiment: CandidateSentimentLabels;
 }
+/** CandidateSummaryBullets' labels as a host gives them: any of them, and any sentiment's word. */
+type CandidateSummaryBulletsLabelOverrides = Partial<Omit<CandidateSummaryBulletsLabels, "sentiment">> & {
+    sentiment?: Partial<CandidateSentimentLabels>;
+};
 interface CandidateSummaryBulletsProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
     /** The lines to show; the host may fall back to other evidence when there is no summary. */
     bullets: readonly CandidateSummaryBullet[];
@@ -78,14 +95,18 @@ interface CandidateSummaryBulletsProps extends Omit<HTMLAttributes<HTMLElement>,
     generated?: boolean;
     /** Why the last request failed. */
     error?: ReactNode;
-    labels?: Partial<CandidateSummaryBulletsLabels>;
+    labels?: CandidateSummaryBulletsLabelOverrides;
 }
 /**
  * A short summary of a person for one role, as a dense list of lines with
  * sentiment dots, and a link-style button to generate or refresh it.
  *
+ * The dot is decorative, so each line also carries its sentiment as a word
+ * for screen readers ("Positive", "Caution", …, from `labels.sentiment` or
+ * the bullet's own `sentimentLabel`), visually hidden before the text.
+ *
  * The root is marked `data-slot="candidate-summary-bullets"`.
  */
 declare function CandidateSummaryBullets({ bullets, onGenerate, generating, generated, error, labels, ...props }: CandidateSummaryBulletsProps): react.JSX.Element;
 
-export { CandidatePipelineList, type CandidatePipelineListLabels, type CandidatePipelineListProps, type CandidatePipelineRow, type CandidatePipelineRowStage, type CandidateSummaryBullet, CandidateSummaryBullets, type CandidateSummaryBulletsLabels, type CandidateSummaryBulletsProps };
+export { CandidatePipelineList, type CandidatePipelineListLabels, type CandidatePipelineListProps, type CandidatePipelineRow, type CandidatePipelineRowStage, type CandidateSentimentLabels, type CandidateSummaryBullet, CandidateSummaryBullets, type CandidateSummaryBulletsLabelOverrides, type CandidateSummaryBulletsLabels, type CandidateSummaryBulletsProps };

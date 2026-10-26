@@ -96,7 +96,13 @@ function CandidatePipelineList({
 var BULLET_LABELS = {
   generate: "Generate summary",
   refresh: "Refresh summary",
-  generating: "Generating\u2026"
+  generating: "Generating\u2026",
+  sentiment: {
+    positive: "Positive",
+    neutral: "Neutral",
+    warning: "Caution",
+    negative: "Negative"
+  }
 };
 function CandidateSummaryBullets({
   bullets,
@@ -107,10 +113,15 @@ function CandidateSummaryBullets({
   labels,
   ...props
 }) {
-  const wording = { ...BULLET_LABELS, ...labels };
+  const wording = {
+    ...BULLET_LABELS,
+    ...labels,
+    sentiment: { ...BULLET_LABELS.sentiment, ..._optionalChain([labels, 'optionalAccess', _4 => _4.sentiment]) }
+  };
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "candidate-summary-bullets", gap: "none", ...props, children: [
     bullets.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _list.List, { spacing: "normal", inset: "xs", children: bullets.map((bullet, index) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _list.ListItem, { layout: "row", textSize: "xs", tone: "soft", children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _sentimentdot.SentimentDot, { sentiment: bullet.sentiment }),
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { className: "sr-only", "data-slot": "candidate-summary-bullet-sentiment", children: `${_nullishCoalesce(bullet.sentimentLabel, () => ( wording.sentiment[bullet.sentiment]))}: ` }),
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "inherit", as: "span", grow: true, children: bullet.text })
     ] }, index)) }) : null,
     onGenerate && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,

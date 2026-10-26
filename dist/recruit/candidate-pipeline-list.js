@@ -2,7 +2,7 @@
 import {
   CandidatePipelineList,
   CandidateSummaryBullets
-} from "../chunk-HUK5ITID.js";
+} from "../chunk-IJBSAYUR.js";
 import "../chunk-VOKP2HLR.js";
 export {
   CandidatePipelineList,

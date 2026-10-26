@@ -1,8 +1,14 @@
 "use client";
-import "../chunk-K5CBLKPS.js";
+import "../chunk-3XX6Y5MT.js";
+import {
+  JobSummaryCard
+} from "../chunk-RMPILAI4.js";
 import {
   MatchedCallCard
 } from "../chunk-YEUNNP4X.js";
+import {
+  CandidateStageActions
+} from "../chunk-A4CA7P4F.js";
 import {
   CandidateSuggestedRolesPanel
 } from "../chunk-VYIPKB27.js";
@@ -19,14 +25,11 @@ import {
   JobClientBadge
 } from "../chunk-4DPYKJJE.js";
 import {
-  JobSummaryCard
-} from "../chunk-RMPILAI4.js";
-import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";
 import {
   CandidateReviewCard
-} from "../chunk-NHA2AX5R.js";
+} from "../chunk-TLVCKMHJ.js";
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
@@ -38,30 +41,23 @@ import {
   CandidateSharedProfileButton
 } from "../chunk-3PLNO5JF.js";
 import {
+  CandidateShortlist
+} from "../chunk-LZVWQT7D.js";
+import {
   CandidateSignalList
 } from "../chunk-5NTFYUS6.js";
 import {
   CandidateSignalMenu
 } from "../chunk-PKH6IZ3T.js";
 import {
-  CandidateStageActions
-} from "../chunk-A4CA7P4F.js";
-import {
   CandidatePendingNote
 } from "../chunk-3OWWB6XI.js";
 import {
   CandidatePipelineCard
-} from "../chunk-FPJQRFJM.js";
-import {
-  CandidatePipelineList,
-  CandidateSummaryBullets
-} from "../chunk-HUK5ITID.js";
-import {
-  CandidateStageSelect
-} from "../chunk-VOKP2HLR.js";
+} from "../chunk-CUQFEOEW.js";
 import {
   CandidateProfileDialog
-} from "../chunk-WR3J2WJ2.js";
+} from "../chunk-JKIRGRRB.js";
 import {
   CandidateProfileLinkButton
 } from "../chunk-MQMPVZLZ.js";
@@ -70,33 +66,33 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "../chunk-I264RN25.js";
+} from "../chunk-RABDTG2L.js";
 import {
   CandidateQuote
 } from "../chunk-2TU6TCNM.js";
 import {
   CandidateRelationshipCard
-} from "../chunk-IMGDQA5R.js";
+} from "../chunk-5F4DKATL.js";
 import {
   CandidateFavouriteButton
 } from "../chunk-63LXPDYZ.js";
 import {
   CandidateFilterChips
-} from "../chunk-PWSNPIKR.js";
+} from "../chunk-D6X6QQ7K.js";
 import {
   CandidateGradeBadge,
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,
   normalizeCandidateGrade
-} from "../chunk-GAWM3PBN.js";
+} from "../chunk-U6D53LXH.js";
 import {
   CandidateHeaderActions,
   CandidateIconAction
 } from "../chunk-6DUL7U2Q.js";
 import {
   CandidateInlineCard
-} from "../chunk-3GUOSUR5.js";
+} from "../chunk-3GLTLDDV.js";
 import "../chunk-NBZS6VTO.js";
 import {
   CandidateJobEvidence
@@ -112,7 +108,7 @@ import {
 import {
   CandidateCoverHeader,
   CandidateCoverImage
-} from "../chunk-IQFISO63.js";
+} from "../chunk-NBAJDT3O.js";
 import {
   CandidateDecisionBar
 } from "../chunk-TMC65IQ7.js";
@@ -150,7 +146,7 @@ import {
 } from "../chunk-4JMEZ7QY.js";
 import {
   CandidateCareerHistoryPanel
-} from "../chunk-DCAC7UMD.js";
+} from "../chunk-QJHYCKGY.js";
 import {
   CandidateCareerHistoryTimeline,
   CareerDateRange
@@ -177,7 +173,14 @@ import {
 } from "../chunk-PHBBIDTW.js";
 import {
   CandidateAssessment
-} from "../chunk-VLMS655E.js";
+} from "../chunk-UKOIKB57.js";
+import {
+  CandidatePipelineList,
+  CandidateSummaryBullets
+} from "../chunk-IJBSAYUR.js";
+import {
+  CandidateStageSelect
+} from "../chunk-VOKP2HLR.js";
 import {
   CandidateCallCard
 } from "../chunk-N75IMABN.js";
@@ -240,6 +243,7 @@ export {
   CandidateRoleMatchSummary,
   CandidateSelectableAvatar,
   CandidateSharedProfileButton,
+  CandidateShortlist,
   CandidateSignalList,
   CandidateSignalMenu,
   CandidateStageActions,

@@ -30,9 +30,9 @@ export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, Can
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './recruit/candidate-outreach-composer.cjs';
 export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNoteProps } from './recruit/candidate-pending-note.cjs';
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './recruit/candidate-pipeline-card.cjs';
-export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './recruit/candidate-pipeline-list.cjs';
+export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './recruit/candidate-pipeline-list.cjs';
 export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './recruit/candidate-profile.cjs';
-export { CandidateProfileDialog, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.cjs';
+export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.cjs';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './recruit/candidate-profile-link-button.cjs';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './recruit/candidate-quote.cjs';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './recruit/candidate-relationship-card.cjs';
@@ -41,6 +41,7 @@ export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } fr
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './recruit/candidate-role-matches.cjs';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './recruit/candidate-selectable-avatar.cjs';
 export { CandidateSharedProfileButton, CandidateSharedProfileButtonProps } from './recruit/candidate-shared-profile-button.cjs';
+export { CandidateShortlist, CandidateShortlistProps } from './recruit/candidate-shortlist.cjs';
 export { CandidateSignalDetail, CandidateSignalItem, CandidateSignalList, CandidateSignalListProps } from './recruit/candidate-signal-list.cjs';
 export { CandidateSignalMenu, CandidateSignalMenuProps } from './recruit/candidate-signal-menu.cjs';
 export { CandidateStageActions, CandidateStageActionsLabels, CandidateStageActionsProps, CandidateStageAdvance } from './recruit/candidate-stage-actions.cjs';
@@ -57,9 +58,9 @@ export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/cal
 import 'react';
 import '@epicbagel/saas-kit/primitives/icon';
 import '@epicbagel/saas-kit/primitives/timeline';
+import '@epicbagel/saas-kit/primitives/sentiment-dot';
+import '@epicbagel/saas-kit/primitives/select';
 import '@epicbagel/saas-kit/primitives/resource-list';
 import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/badge';
-import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
-import '@epicbagel/saas-kit/primitives/select';

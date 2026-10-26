@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkZJZS63R6cjs = require('./chunk-ZJZS63R6.cjs');
+var _chunkDUEGVK55cjs = require('./chunk-DUEGVK55.cjs');
 
 // src/recruit/candidate-profile.tsx
 var _utils = require('@epicbagel/saas-kit/lib/utils');
@@ -49,7 +49,7 @@ function CandidateProfileHeader({
   ...props
 }) {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-    _chunkZJZS63R6cjs.CandidateCoverHeader,
+    _chunkDUEGVK55cjs.CandidateCoverHeader,
     {
       cover,
       padding,

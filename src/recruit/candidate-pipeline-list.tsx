@@ -162,19 +162,44 @@ export function CandidatePipelineList<TStage extends string = string>({
 export interface CandidateSummaryBullet {
   text: ReactNode;
   sentiment: Sentiment;
+  /**
+   * The word a screen reader says for this line's dot, in place of the one
+   * `labels.sentiment` gives its sentiment, such as the host's "Risk".
+   */
+  sentimentLabel?: string;
 }
+
+/** The word a screen reader says for each sentiment's dot. */
+export type CandidateSentimentLabels = Record<Sentiment, string>;
 
 export interface CandidateSummaryBulletsLabels {
   generate: string;
   /** In place of generate once a summary exists. */
   refresh: string;
   generating: string;
+  /**
+   * Read before each line, because the dot is decorative: without a word, a
+   * screen reader announces a positive and a negative line alike, and only
+   * the dot's colour tells them apart.
+   */
+  sentiment: CandidateSentimentLabels;
 }
 
 const BULLET_LABELS: CandidateSummaryBulletsLabels = {
   generate: "Generate summary",
   refresh: "Refresh summary",
   generating: "Generating…",
+  sentiment: {
+    positive: "Positive",
+    neutral: "Neutral",
+    warning: "Caution",
+    negative: "Negative",
+  },
+};
+
+/** CandidateSummaryBullets' labels as a host gives them: any of them, and any sentiment's word. */
+export type CandidateSummaryBulletsLabelOverrides = Partial<Omit<CandidateSummaryBulletsLabels, "sentiment">> & {
+  sentiment?: Partial<CandidateSentimentLabels>;
 };
 
 export interface CandidateSummaryBulletsProps
@@ -189,12 +214,16 @@ export interface CandidateSummaryBulletsProps
   generated?: boolean;
   /** Why the last request failed. */
   error?: ReactNode;
-  labels?: Partial<CandidateSummaryBulletsLabels>;
+  labels?: CandidateSummaryBulletsLabelOverrides;
 }
 
 /**
  * A short summary of a person for one role, as a dense list of lines with
  * sentiment dots, and a link-style button to generate or refresh it.
+ *
+ * The dot is decorative, so each line also carries its sentiment as a word
+ * for screen readers ("Positive", "Caution", …, from `labels.sentiment` or
+ * the bullet's own `sentimentLabel`), visually hidden before the text.
  *
  * The root is marked `data-slot="candidate-summary-bullets"`.
  */
@@ -207,7 +236,11 @@ export function CandidateSummaryBullets({
   labels,
   ...props
 }: CandidateSummaryBulletsProps) {
-  const wording = { ...BULLET_LABELS, ...labels };
+  const wording = {
+    ...BULLET_LABELS,
+    ...labels,
+    sentiment: { ...BULLET_LABELS.sentiment, ...labels?.sentiment },
+  };
 
   return (
     <Stack data-slot="candidate-summary-bullets" gap="none" {...props}>
@@ -216,6 +249,10 @@ export function CandidateSummaryBullets({
           {bullets.map((bullet, index) => (
             <ListItem key={index} layout="row" textSize="xs" tone="soft">
               <SentimentDot sentiment={bullet.sentiment} />
+              {/* Out of the row's flow, so the dot and text keep their layout. */}
+              <span className="sr-only" data-slot="candidate-summary-bullet-sentiment">
+                {`${bullet.sentimentLabel ?? wording.sentiment[bullet.sentiment]}: `}
+              </span>
               <Text variant="inherit" as="span" grow>{bullet.text}</Text>
             </ListItem>
           ))}

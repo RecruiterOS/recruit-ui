@@ -1,6 +1,9 @@
+"use client";
 import {
   CandidateAssessment
-} from "../chunk-VLMS655E.js";
+} from "../chunk-UKOIKB57.js";
+import "../chunk-IJBSAYUR.js";
+import "../chunk-VOKP2HLR.js";
 export {
   CandidateAssessment
 };

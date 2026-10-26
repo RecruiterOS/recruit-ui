@@ -83,7 +83,7 @@
       "name": "recruit-workflows",
       "type": "registry:ui",
       "title": "Recruit UI candidate workflows",
-      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and pipeline rows), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
+      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and pipeline rows), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
       "dependencies": [
         "@epicbagel/saas-kit@^1.0.0",
         "lucide-react@>=0.400.0 <2"
@@ -329,6 +329,11 @@
         {
           "path": "src/recruit/candidate-shared-profile-button.tsx",
           "target": "components/recruit-ui/recruit/candidate-shared-profile-button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-shortlist.tsx",
+          "target": "components/recruit-ui/recruit/candidate-shortlist.tsx",
           "type": "registry:ui"
         },
         {

@@ -19,10 +19,13 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
     summary?: ReactNode;
     actions?: ReactNode;
     /**
-     * `lg` (the default) pads the header like a card's; `none` sits it flush in
-     * a container the host already pads, such as a drawer body.
+     * `lg` (the default) pads the header like a card's. `dialog` pads it like
+     * the kit's dialog header, so as a CandidateProfileDialog's `header` the
+     * name starts at the body's left edge, in line with what the body holds.
+     * `none` sits it flush in a container the host already pads, such as a
+     * drawer body.
      */
-    padding?: Extract<CandidateCoverHeaderPadding, "lg" | "none">;
+    padding?: Extract<CandidateCoverHeaderPadding, "lg" | "dialog" | "none">;
 }
 declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, padding, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {

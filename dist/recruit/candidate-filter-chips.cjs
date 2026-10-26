@@ -2,7 +2,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkGH53S5S5cjs = require('../chunk-GH53S5S5.cjs');
+var _chunk54JFBVR5cjs = require('../chunk-54JFBVR5.cjs');
+require('../chunk-D5BXTRVN.cjs');
 
 
-exports.CandidateFilterChips = _chunkGH53S5S5cjs.CandidateFilterChips;
+exports.CandidateFilterChips = _chunk54JFBVR5cjs.CandidateFilterChips;

@@ -43,14 +43,21 @@ export interface CandidateCoverHeaderProps
   /**
    * Space around the identity. `none` sits it flush in a container the host
    * pads; with no cover the header then doesn't clip, so a focus ring at its
-   * edge stays whole.
+   * edge stays whole. `dialog` pads it like the kit's dialog header (16px), so
+   * as a CandidateProfileDialog's `header` it starts at the body's left edge.
    */
   padding?: CandidateCoverHeaderPadding;
   softenCoverUntilHover?: boolean;
 }
 
 /** The space a CandidateCoverHeader leaves around the identity. */
-export type CandidateCoverHeaderPadding = "compact" | "card-header" | "lg" | "none";
+export type CandidateCoverHeaderPadding = "compact" | "card-header" | "lg" | "dialog" | "none";
+
+/**
+ * `dialog`: the kit's ResponsiveDialogHeader padding. Its inline padding is
+ * the ResponsiveDialogBody's (px-4), which is what lines the two up.
+ */
+const DIALOG_PADDING = "p-4";
 
 /** One cover-and-identity hierarchy shared by candidate cards and profiles. */
 export function CandidateCoverHeader({
@@ -76,8 +83,8 @@ export function CandidateCoverHeader({
       </CandidateCoverImage>
       <PanelSection
         as="div"
-        padding={padding === "none" ? "none" : padding === "compact" ? "compact" : "default"}
-        className={cn(padding === "card-header" && "pb-3 pt-5")}
+        padding={padding === "none" || padding === "dialog" ? "none" : padding === "compact" ? "compact" : "default"}
+        className={cn(padding === "card-header" && "pb-3 pt-5", padding === "dialog" && DIALOG_PADDING)}
       >
         {children}
       </PanelSection>

@@ -20,8 +20,9 @@ function candidateGradeDisplay(grade, labels) {
   return label ? `${normalized} \u2014 ${label}` : normalized;
 }
 function inlineGradeText(grade, label) {
-  if (!grade) return "\u2014";
-  if (label == null || label === false || label === "") return grade;
+  const hasLabel = !(label == null || label === false || label === "");
+  if (!grade) return hasLabel ? label : "\u2014";
+  if (!hasLabel) return grade;
   return typeof label === "string" || typeof label === "number" ? `${grade} \u2014 ${label}` : /* @__PURE__ */ jsxs(Fragment, { children: [
     grade,
     " \u2014 ",

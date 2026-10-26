@@ -235,6 +235,51 @@ describe("candidate filter chips", () => {
     await user.click(screen.getByRole("button", { name: "Everyone" }));
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
+
+  it("marks the pressed chip with the kit chip's primary border and tint, and mutes the others", () => {
+    render(
+      <CandidateFilterChips
+        value="moves"
+        onChange={() => undefined}
+        allLabel="Everyone"
+        options={[
+          { value: "moves", label: "Job moves" },
+          { value: "promotions", label: "Promotions" },
+        ]}
+      />,
+    );
+
+    const pressed = ["data-[state=on]:border-primary", "data-[state=on]:bg-primary/10", "data-[state=on]:text-foreground"];
+    for (const name of ["Everyone", "Job moves", "Promotions"]) {
+      const chip = screen.getByRole("button", { name });
+      expect(chip).toHaveClass("text-muted-foreground", ...pressed);
+      // The kit Toggle's faint accent fill is replaced, not stacked under it.
+      expect(chip).not.toHaveClass("data-[state=on]:bg-accent");
+    }
+    expect(screen.getByRole("button", { name: "Job moves" })).toHaveAttribute("data-state", "on");
+    expect(screen.getByRole("button", { name: "Everyone" })).toHaveAttribute("data-state", "off");
+  });
+
+  it("keeps every chip a 44px touch target on a touchscreen and the dense chip for a mouse", () => {
+    render(
+      <CandidateFilterChips
+        value="moves"
+        onChange={() => undefined}
+        allLabel="Everyone"
+        options={[
+          { value: "moves", label: "Job moves" },
+          { value: "promotions", label: "Promotions" },
+        ]}
+      />,
+    );
+
+    // 44 CSS pixels on a coarse pointer, not the kit's h-11, which a narrow
+    // screen scales to 38.5px; the chip's own h-7 stays for a mouse.
+    const touch = ["pointer-coarse:min-h-[max(44px,2.75rem)]", "pointer-coarse:min-w-[max(44px,2.75rem)]"];
+    for (const name of ["Everyone", "Job moves", "Promotions"]) {
+      expect(screen.getByRole("button", { name })).toHaveClass("h-7", "rounded-full", ...touch);
+    }
+  });
 });
 
 describe("candidate signal list", () => {
@@ -318,6 +363,29 @@ describe("candidate career history panel", () => {
     expect(screen.getByText("Career history")).toBeInTheDocument();
     expect(screen.getByText("No roles imported yet")).toBeInTheDocument();
     expect(screen.getByText("Nothing imported.")).toBeInTheDocument();
+  });
+
+  it("runs at full height in a container that already scrolls", () => {
+    const { container } = render(
+      <CandidateCareerHistoryPanel
+        scroll="none"
+        items={[
+          { title: "Staff Engineer", company: "Fernhill Example Co", startDate: "2024-01", current: true },
+          { title: "Senior Engineer", company: "Example Works", startDate: "2020-05", endDate: "2023-12" },
+        ]}
+        detailedCompanyGroups={2}
+      />,
+    );
+    const panel = container.firstElementChild as HTMLElement;
+    expect(panel).toHaveAttribute("data-slot", "candidate-career-history-panel");
+    expect(document.querySelector('[data-slot="career-history-scroll"]')).toBeNull();
+    expect(document.querySelector("[data-radix-scroll-area-viewport]")).toBeNull();
+    // The timeline sits straight under the counted header.
+    const timeline = panel.querySelector('[data-slot="candidate-career-history"]');
+    expect(timeline?.parentElement).toBe(panel);
+    expect(screen.getByText("Career history")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText("Senior Engineer")).toBeInTheDocument();
   });
 });
 

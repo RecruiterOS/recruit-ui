@@ -1,6 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});// src/recruit/candidate-profile-dialog.tsx
 var _usemobile = require('@epicbagel/saas-kit/hooks/use-mobile');
+var _utils = require('@epicbagel/saas-kit/lib/utils');
 var _button = require('@epicbagel/saas-kit/primitives/button');
+var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
 var _icon = require('@epicbagel/saas-kit/primitives/icon');
 
 
@@ -27,6 +29,10 @@ var _lucidereact = require('lucide-react');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
 var DEFAULT_CLOSE_LABEL = "Close candidate profile";
+function ProfileHeaderSlot({ children }) {
+  if (children == null || typeof children === "boolean") return null;
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { "data-slot": "candidate-profile-dialog-header", shrink: false, children });
+}
 var CloseButton = _react.forwardRef.call(void 0, function CloseButton2(props, ref) {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
     _button.Button,
@@ -44,10 +50,12 @@ var CloseButton = _react.forwardRef.call(void 0, function CloseButton2(props, re
 });
 function CandidateProfileDialog({
   presentation = "dialog",
+  height = "viewport",
   ...props
 }) {
-  return presentation === "sheet" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateProfileSheet, { ...props }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateProfileCentredDialog, { ...props });
+  return presentation === "sheet" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateProfileSheet, { ...props }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateProfileCentredDialog, { height, ...props });
 }
+var CONTENT_HEIGHT = "sm:h-auto";
 function CandidateProfileCentredDialog({
   accessibleTitle,
   accessibleDescription,
@@ -55,6 +63,7 @@ function CandidateProfileCentredDialog({
   open,
   defaultOpen,
   onOpenChange,
+  height,
   header,
   children,
   footer,
@@ -77,15 +86,16 @@ function CandidateProfileCentredDialog({
           {
             "data-slot": "candidate-profile-dialog",
             "data-presentation": "dialog",
+            "data-height": height,
             presentation: "preview",
-            className: contentClassName,
+            className: _utils.cn.call(void 0, height === "content" && CONTENT_HEIGHT, contentClassName),
             children: [
               showClose ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogClose, { asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CloseButton, { "aria-label": closeLabel }) }) : null,
               /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _responsivedialog.ResponsiveDialogHeader, { visibility: "screen-reader", children: [
                 /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTitle, { children: accessibleTitle }),
                 accessibleDescription != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogDescription, { children: accessibleDescription }) : null
               ] }),
-              header,
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ProfileHeaderSlot, { children: header }),
               /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { className: bodyClassName, children }),
               footer != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogFooter, { layout: footerLayout, children: footer }) : null
             ]
@@ -138,7 +148,7 @@ function CandidateProfileSheet({
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _sheet.SheetTitle, { children: accessibleTitle }),
             accessibleDescription != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _sheet.SheetDescription, { children: accessibleDescription }) : null
           ] }),
-          header,
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, ProfileHeaderSlot, { children: header }),
           /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { className: bodyClassName, children }),
           footer != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
             _stack.Stack,

@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkHL3HSPW3cjs = require('../chunk-HL3HSPW3.cjs');
+var _chunkYHM6BGZNcjs = require('../chunk-YHM6BGZN.cjs');
 
 
-exports.CandidateProfileDialog = _chunkHL3HSPW3cjs.CandidateProfileDialog;
+exports.CandidateProfileDialog = _chunkYHM6BGZNcjs.CandidateProfileDialog;

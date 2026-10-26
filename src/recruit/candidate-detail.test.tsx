@@ -547,6 +547,48 @@ describe("candidate pipeline list", () => {
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
 
+  it("says each line's sentiment to a screen reader, not only with the dot's colour", () => {
+    const { rerender } = render(
+      <CandidateSummaryBullets
+        bullets={[
+          { text: "Fictional promotion last spring", sentiment: "positive" },
+          { text: "Example tenure under a year", sentiment: "warning" },
+          { text: "Fictional gap in the record", sentiment: "negative" },
+          { text: "Example note", sentiment: "neutral" },
+        ]}
+      />,
+    );
+    const lines = screen.getAllByRole("listitem");
+    expect(lines.map((line) => line.textContent)).toEqual([
+      "Positive: Fictional promotion last spring",
+      "Caution: Example tenure under a year",
+      "Negative: Fictional gap in the record",
+      "Neutral: Example note",
+    ]);
+    for (const line of lines) {
+      // The word is visually hidden and sits beside the text, which keeps its own element.
+      expect(line.querySelector('[data-slot="candidate-summary-bullet-sentiment"]')).toHaveClass("sr-only");
+      expect(line.firstElementChild).toHaveAttribute("aria-hidden", "true");
+    }
+    expect(screen.getByText("Fictional promotion last spring")).toBeInTheDocument();
+
+    rerender(
+      <CandidateSummaryBullets
+        labels={{ sentiment: { negative: "Risk" } }}
+        bullets={[
+          { text: "Fictional gap in the record", sentiment: "negative" },
+          { text: "Example tenure under a year", sentiment: "warning" },
+          { text: "Fictional promotion last spring", sentiment: "positive", sentimentLabel: "Green" },
+        ]}
+      />,
+    );
+    expect(screen.getAllByRole("listitem").map((line) => line.textContent)).toEqual([
+      "Risk: Fictional gap in the record",
+      "Caution: Example tenure under a year",
+      "Green: Fictional promotion last spring",
+    ]);
+  });
+
   it("generates a summary, then offers to refresh it, and shows why it failed", async () => {
     const user = userEvent.setup();
     const onGenerate = vi.fn();

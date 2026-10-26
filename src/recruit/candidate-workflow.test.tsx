@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -7,7 +7,9 @@ import {
   CandidateDestinationStatus,
   type CandidateDestinationAction,
 } from "./candidate-destination-status";
+import { CandidateProfileHeader } from "./candidate-profile";
 import { CandidateProfileDialog } from "./candidate-profile-dialog";
+import { CandidateShortlist } from "./candidate-shortlist";
 import { ResponsiveDialogClose } from "@epicbagel/saas-kit/primitives/responsive-dialog";
 import { SheetClose } from "@epicbagel/saas-kit/primitives/sheet";
 
@@ -85,6 +87,97 @@ describe("candidate workflow compositions", () => {
     });
   });
 
+  it("keeps the header at its natural height in a dialog and in the mobile drawer", () => {
+    for (const isDesktop of [true, false]) {
+      setDesktopViewport(isDesktop);
+      const { unmount } = render(
+        <CandidateProfileDialog
+          accessibleTitle="Fictional headed profile"
+          open
+          header={<p>Fictional profile header</p>}
+        >
+          <p>Fictional profile body</p>
+        </CandidateProfileDialog>,
+      );
+
+      const surface = screen.getByRole("dialog", { name: "Fictional headed profile" });
+      const slot = screen.getByText("Fictional profile header").parentElement;
+      // Only the body scrolls; the header never shrinks, so a tall body can't clip it.
+      expect(slot).toHaveAttribute("data-slot", "candidate-profile-dialog-header");
+      expect(slot).toHaveClass("shrink-0");
+      expect(slot?.parentElement).toBe(surface);
+      expect(slot?.nextElementSibling).toContainElement(screen.getByText("Fictional profile body"));
+      unmount();
+    }
+  });
+
+  it("lines a dialog-padded profile header up with the body, in the dialog and the drawer", () => {
+    // The left edge is the inline padding: the kit body's px-4, and the
+    // header's p-4. jsdom has no layout, so the classes are the contract.
+    const inlinePadding = (element: Element) => {
+      const token = [...element.classList].find((name) => /^(p|px)-\S+$/.test(name));
+      return token?.replace(/^px?-/, "");
+    };
+    for (const isDesktop of [true, false]) {
+      setDesktopViewport(isDesktop);
+      const { unmount } = render(
+        <CandidateProfileDialog
+          accessibleTitle="Fictional aligned profile"
+          open
+          header={<CandidateProfileHeader name="Fictional Person" padding="dialog" />}
+        >
+          <p>Fictional profile body</p>
+        </CandidateProfileDialog>,
+      );
+
+      const header = document.querySelector('[data-slot="candidate-profile-header"]') as HTMLElement;
+      const identity = header.lastElementChild as HTMLElement;
+      const body = header.closest('[data-slot="candidate-profile-dialog-header"]')?.nextElementSibling as HTMLElement;
+      expect(identity).toHaveClass("p-4");
+      expect(identity.className).not.toMatch(/px-\[26px\]/);
+      expect(body).toContainElement(screen.getByText("Fictional profile body"));
+      expect(inlinePadding(body)).toBe("4");
+      expect(inlinePadding(identity)).toBe(inlinePadding(body));
+      unmount();
+    }
+
+    // The default stays a card's padding.
+    render(<CandidateProfileHeader name="Fictional Card Person" />);
+    expect(screen.getByText("Fictional Card Person").closest('[data-slot="candidate-profile-header"]')?.lastElementChild)
+      .toHaveClass("px-[26px]", "py-[26px]");
+  });
+
+  it("fixes the desktop dialog's height unless asked to fit its content", () => {
+    const { unmount } = render(
+      <CandidateProfileDialog accessibleTitle="Fictional tall profile" open>
+        <p>Fictional profile body</p>
+      </CandidateProfileDialog>,
+    );
+    const fixed = screen.getByRole("dialog", { name: "Fictional tall profile" });
+    expect(fixed).toHaveAttribute("data-height", "viewport");
+    expect(fixed).toHaveClass("sm:h-[85vh]", "max-h-[85vh]");
+    unmount();
+
+    render(
+      <CandidateProfileDialog accessibleTitle="Fictional short profile" open height="content">
+        <p>Fictional profile body</p>
+      </CandidateProfileDialog>,
+    );
+    const fitted = screen.getByRole("dialog", { name: "Fictional short profile" });
+    expect(fitted).toHaveAttribute("data-height", "content");
+    expect(fitted).toHaveClass("sm:h-auto", "max-h-[85vh]");
+    expect(fitted).not.toHaveClass("sm:h-[85vh]");
+  });
+
+  it("adds no header slot without a header", () => {
+    render(
+      <CandidateProfileDialog accessibleTitle="Fictional headless profile" open header={false}>
+        <p>Fictional profile body</p>
+      </CandidateProfileDialog>,
+    );
+    expect(document.querySelector('[data-slot="candidate-profile-dialog-header"]')).toBeNull();
+  });
+
   it("allows a host-owned close to replace the default control", async () => {
     const user = userEvent.setup();
     const onOpenChange = vi.fn();
@@ -133,7 +226,10 @@ describe("candidate workflow compositions", () => {
     expect(sheet).toHaveAttribute("data-side", "right");
     expect(sheet).toHaveClass("sm:max-w-2xl", "lg:max-w-5xl");
     expect(sheet).toHaveAccessibleDescription("A fictional profile beside the list.");
-    expect(screen.getByText("Sheet header")).toBeInTheDocument();
+    const header = screen.getByText("Sheet header").parentElement;
+    expect(header).toHaveAttribute("data-slot", "candidate-profile-dialog-header");
+    expect(header).toHaveClass("shrink-0");
+    expect(header?.parentElement).toBe(sheet);
     expect(screen.getByText("Sheet body")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Mark as touched" }).parentElement).toHaveAttribute(
       "data-slot",
@@ -172,6 +268,8 @@ describe("candidate workflow compositions", () => {
     const sheet = await screen.findByRole("dialog", { name: "Fictional phone profile" });
     await waitFor(() => expect(sheet).toHaveAttribute("data-side", "bottom"));
     expect(sheet).toHaveClass("max-h-[92dvh]");
+    // A capped height, so the header's slot keeps it from shrinking.
+    expect(screen.getByRole("button", { name: "Close from profile header" }).parentElement).toHaveClass("shrink-0");
     expect(screen.queryByRole("button", { name: "Close contact" })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Close from profile header" }));
     await waitFor(() => {
@@ -267,5 +365,112 @@ describe("candidate workflow compositions", () => {
     };
 
     expect(missingLabel.iconOnly).toBe(true);
+  });
+});
+
+describe("candidate shortlist", () => {
+  const follows = (later: Node, earlier: Node) =>
+    Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
+
+  it("is a section named by its title: the heading block, the people, then the footer", () => {
+    render(
+      <CandidateShortlist
+        eyebrow="First delivery"
+        title="Two people to review"
+        description="Fictional shortlist for an example role."
+        status={<span>Ready</span>}
+        count={2}
+        footer={<p>Fictional destination status</p>}
+        id="example-shortlist"
+      >
+        <article>Mei Example</article>
+        <article>Owen Sample</article>
+      </CandidateShortlist>,
+    );
+
+    const section = screen.getByRole("region", { name: "Two people to review" });
+    expect(section.tagName).toBe("SECTION");
+    expect(section).toHaveAttribute("data-slot", "candidate-shortlist");
+    expect(section).toHaveAttribute("id", "example-shortlist");
+
+    const heading = within(section).getByRole("heading", { level: 2, name: "Two people to review" });
+    const eyebrow = within(section).getByText("First delivery");
+    const description = within(section).getByText("Fictional shortlist for an example role.");
+    const status = within(section).getByText("Ready");
+    expect(follows(heading, eyebrow)).toBe(true);
+    expect(follows(description, heading)).toBe(true);
+    // The status sits at the end of the heading's row, after the text beside it.
+    expect(status.parentElement).toBe(heading.parentElement!.parentElement);
+    expect(follows(status, description)).toBe(true);
+
+    const people = within(section).getAllByRole("article");
+    expect(people.map((person) => person.textContent)).toEqual(["Mei Example", "Owen Sample"]);
+    expect(people[0]!.parentElement).toBe(people[1]!.parentElement);
+    const footer = within(section).getByText("Fictional destination status");
+    expect(follows(footer, people[1]!)).toBe(true);
+    expect(screen.queryByText("No candidates shortlisted yet")).toBeNull();
+  });
+
+  it("renders only the title when the optional heading slots are left out", () => {
+    const { container } = render(
+      <CandidateShortlist title="Fictional shortlist">
+        <article>Mei Example</article>
+      </CandidateShortlist>,
+    );
+
+    const heading = screen.getByRole("heading", { level: 2, name: "Fictional shortlist" });
+    expect(heading.parentElement!.children).toHaveLength(1);
+    expect(heading.parentElement!.parentElement!.children).toHaveLength(1);
+    expect(container.querySelector("[data-slot='empty-state']")).toBeNull();
+  });
+
+  it("shows the blank slate in place of the people and the footer when the count is zero", () => {
+    render(
+      <CandidateShortlist
+        title="Fictional shortlist"
+        description="Fictional description stays."
+        count={0}
+        footer={<p>Fictional destination status</p>}
+      >
+        <article>Mei Example</article>
+      </CandidateShortlist>,
+    );
+
+    const section = screen.getByRole("region", { name: "Fictional shortlist" });
+    expect(within(section).getByText("Fictional description stays.")).toBeInTheDocument();
+    expect(within(section).getByText("No candidates shortlisted yet")).toBeInTheDocument();
+    // No generic kit description under the default title.
+    expect(within(section).queryByText(/Get started/)).toBeNull();
+    expect(within(section).queryByRole("article")).toBeNull();
+    expect(within(section).queryByText("Fictional destination status")).toBeNull();
+    const blank = section.querySelector("[data-slot='empty-state']")!;
+    expect(blank).toBeInTheDocument();
+    expect(blank.querySelector("svg")).not.toBeNull();
+  });
+
+  it("is empty when its children render nothing and the host passes no count", () => {
+    const empty = {
+      title: "No example people yet",
+      description: "Fictional people appear here once found.",
+    };
+    const { rerender } = render(
+      <CandidateShortlist title="Fictional shortlist" empty={empty} footer={<p>Fictional footer</p>}>
+        {[]}
+        {null}
+        {false}
+      </CandidateShortlist>,
+    );
+
+    expect(screen.getByText("No example people yet")).toBeInTheDocument();
+    expect(screen.getByText("Fictional people appear here once found.")).toBeInTheDocument();
+    expect(screen.queryByText("Fictional footer")).toBeNull();
+
+    // A count the host passes wins over what the children hold.
+    rerender(
+      <CandidateShortlist title="Fictional shortlist" empty={empty} count={1}>
+        {null}
+      </CandidateShortlist>,
+    );
+    expect(screen.queryByText("No example people yet")).toBeNull();
   });
 });

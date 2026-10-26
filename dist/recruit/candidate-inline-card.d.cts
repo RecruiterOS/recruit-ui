@@ -5,6 +5,11 @@ interface CandidateInlineCardProps extends Omit<HTMLAttributes<HTMLElement>, "on
     name: ReactNode;
     avatar?: ReactNode;
     headline?: ReactNode;
+    /**
+     * The caption line under the headline, such as a location. A leading glyph
+     * (an `svg`, such as the kit's Icon, passed before the text) sits on the
+     * text's line, centred on its capitals, with a small gap after it.
+     */
     meta?: ReactNode;
     assessment?: ReactNode;
     status?: ReactNode;
@@ -32,7 +37,8 @@ type CandidateInlineCardDensity = "comfortable" | "compact";
  * The root is the kit InteractiveCard as an `article`, marked
  * `data-slot="candidate-inline-card"` and `data-density`. The `actions` sit in
  * an element marked `data-slot="candidate-inline-card-actions"` that takes no
- * box of its own (`display: contents`), so they lay out as before.
+ * box of its own (`display: contents`), so they lay out as before. The meta
+ * line is marked `data-slot="candidate-inline-card-meta"`.
  */
 declare function CandidateInlineCard({ name, avatar, headline, meta, assessment, status, actions, selected, subdued, onSelect, selectLabel, density, "aria-expanded": ariaExpanded, className, ...props }: CandidateInlineCardProps): react.JSX.Element;
 

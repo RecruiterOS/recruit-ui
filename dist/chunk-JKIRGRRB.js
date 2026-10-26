@@ -1,6 +1,8 @@
 // src/recruit/candidate-profile-dialog.tsx
 import { useIsMobile } from "@epicbagel/saas-kit/hooks/use-mobile";
+import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { Button } from "@epicbagel/saas-kit/primitives/button";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import {
   ResponsiveDialog,
@@ -27,6 +29,10 @@ import { X } from "lucide-react";
 import { forwardRef } from "react";
 import { jsx, jsxs } from "react/jsx-runtime";
 var DEFAULT_CLOSE_LABEL = "Close candidate profile";
+function ProfileHeaderSlot({ children }) {
+  if (children == null || typeof children === "boolean") return null;
+  return /* @__PURE__ */ jsx(FlexItem, { "data-slot": "candidate-profile-dialog-header", shrink: false, children });
+}
 var CloseButton = forwardRef(function CloseButton2(props, ref) {
   return /* @__PURE__ */ jsx(
     Button,
@@ -44,10 +50,12 @@ var CloseButton = forwardRef(function CloseButton2(props, ref) {
 });
 function CandidateProfileDialog({
   presentation = "dialog",
+  height = "viewport",
   ...props
 }) {
-  return presentation === "sheet" ? /* @__PURE__ */ jsx(CandidateProfileSheet, { ...props }) : /* @__PURE__ */ jsx(CandidateProfileCentredDialog, { ...props });
+  return presentation === "sheet" ? /* @__PURE__ */ jsx(CandidateProfileSheet, { ...props }) : /* @__PURE__ */ jsx(CandidateProfileCentredDialog, { height, ...props });
 }
+var CONTENT_HEIGHT = "sm:h-auto";
 function CandidateProfileCentredDialog({
   accessibleTitle,
   accessibleDescription,
@@ -55,6 +63,7 @@ function CandidateProfileCentredDialog({
   open,
   defaultOpen,
   onOpenChange,
+  height,
   header,
   children,
   footer,
@@ -77,15 +86,16 @@ function CandidateProfileCentredDialog({
           {
             "data-slot": "candidate-profile-dialog",
             "data-presentation": "dialog",
+            "data-height": height,
             presentation: "preview",
-            className: contentClassName,
+            className: cn(height === "content" && CONTENT_HEIGHT, contentClassName),
             children: [
               showClose ? /* @__PURE__ */ jsx(ResponsiveDialogClose, { asChild: true, children: /* @__PURE__ */ jsx(CloseButton, { "aria-label": closeLabel }) }) : null,
               /* @__PURE__ */ jsxs(ResponsiveDialogHeader, { visibility: "screen-reader", children: [
                 /* @__PURE__ */ jsx(ResponsiveDialogTitle, { children: accessibleTitle }),
                 accessibleDescription != null ? /* @__PURE__ */ jsx(ResponsiveDialogDescription, { children: accessibleDescription }) : null
               ] }),
-              header,
+              /* @__PURE__ */ jsx(ProfileHeaderSlot, { children: header }),
               /* @__PURE__ */ jsx(ResponsiveDialogBody, { className: bodyClassName, children }),
               footer != null ? /* @__PURE__ */ jsx(ResponsiveDialogFooter, { layout: footerLayout, children: footer }) : null
             ]
@@ -138,7 +148,7 @@ function CandidateProfileSheet({
             /* @__PURE__ */ jsx(SheetTitle, { children: accessibleTitle }),
             accessibleDescription != null ? /* @__PURE__ */ jsx(SheetDescription, { children: accessibleDescription }) : null
           ] }),
-          header,
+          /* @__PURE__ */ jsx(ProfileHeaderSlot, { children: header }),
           /* @__PURE__ */ jsx(ResponsiveDialogBody, { className: bodyClassName, children }),
           footer != null ? /* @__PURE__ */ jsx(
             Stack,

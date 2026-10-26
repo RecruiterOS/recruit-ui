@@ -15,7 +15,11 @@ declare function candidateGradeLabel(grade: string | null | undefined, labels: C
 declare function candidateGradeDisplay(grade: string | null | undefined, labels: CandidateGradeLabels): string;
 interface CandidateGradeBadgeProps extends HTMLAttributes<HTMLDivElement> {
     grade: string | null | undefined;
-    /** One-off host wording. Takes precedence over `labels`. */
+    /**
+     * One-off host wording. Takes precedence over `labels`. With no grade, the
+     * inline format shows it alone, such as "Needs review", in place of the
+     * dash.
+     */
     label?: ReactNode;
     /** Host-owned wording map for shared badge instances. */
     labels?: CandidateGradeLabels;
@@ -31,7 +35,8 @@ interface CandidateGradeBadgeProps extends HTMLAttributes<HTMLDivElement> {
     /**
      * `split` (default): the letter and the label as separate spans, the letter
      * with an accessible name. `inline`: a single line of text, "A — Strong fit",
-     * for a host that names the grade in a tooltip or the surrounding text.
+     * for a host that names the grade in a tooltip or the surrounding text; with
+     * no grade, the label alone, or "—" without one.
      */
     format?: "split" | "inline";
     /**

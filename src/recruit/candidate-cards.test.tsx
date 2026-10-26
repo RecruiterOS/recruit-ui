@@ -148,6 +148,30 @@ describe("candidate card activation", () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps a leading glyph on the meta line's text line, in either density", () => {
+    const meta = (
+      <>
+        <svg data-testid="meta-glyph" aria-hidden="true" />
+        Example City
+      </>
+    );
+    const { rerender } = render(<CandidateInlineCard name="Fictional Candidate" meta={meta} />);
+
+    const line = document.querySelector('[data-slot="candidate-inline-card-meta"]');
+    // The glyph is a direct child of the line, beside the text, not a block above it.
+    expect(screen.getByTestId("meta-glyph").parentElement).toBe(line);
+    expect(line).toHaveTextContent("Example City");
+    expect(line).toHaveClass("[&>svg]:inline-block", "[&>svg]:align-[-0.125em]", "[&>svg]:me-1.5");
+    // Still a text line: it wraps when comfortable...
+    expect(line).not.toHaveClass("flex", "inline-flex", "truncate");
+
+    // ...and truncates with an ellipsis when compact.
+    rerender(<CandidateInlineCard density="compact" name="Fictional Candidate" meta={meta} />);
+    const compactLine = document.querySelector('[data-slot="candidate-inline-card-meta"]');
+    expect(compactLine).toHaveClass("truncate", "[&>svg]:inline-block");
+    expect(screen.getByTestId("meta-glyph").parentElement).toBe(compactLine);
+  });
+
   it("leaves a comfortable card's actions at their own size, and adds no wrapper without actions", () => {
     const { rerender } = render(
       <CandidateInlineCard name="Fictional Candidate" actions={<button type="button">Profile</button>} />,

@@ -15,6 +15,11 @@ export interface CandidateInlineCardProps
   name: ReactNode;
   avatar?: ReactNode;
   headline?: ReactNode;
+  /**
+   * The caption line under the headline, such as a location. A leading glyph
+   * (an `svg`, such as the kit's Icon, passed before the text) sits on the
+   * text's line, centred on its capitals, with a small gap after it.
+   */
   meta?: ReactNode;
   assessment?: ReactNode;
   status?: ReactNode;
@@ -39,12 +44,23 @@ export interface CandidateInlineCardProps
 export type CandidateInlineCardDensity = "comfortable" | "compact";
 
 /**
+ * A glyph in the meta line stays on the text's line. The stylesheet reset
+ * makes every `svg` a block, which would put it on a line of its own above
+ * the text; inline, the line still wraps, and still truncates with an
+ * ellipsis when compact, as plain text does. Centred on a capital for a
+ * glyph as tall as the text; the gap matches the kit's icon-and-text rows.
+ */
+const META_LINE_GLYPHS =
+  "[&>svg]:inline-block [&>svg]:align-[-0.125em] [&>svg]:me-1.5";
+
+/**
  * A compact candidate trigger suitable for lists, messages, and previews.
  *
  * The root is the kit InteractiveCard as an `article`, marked
  * `data-slot="candidate-inline-card"` and `data-density`. The `actions` sit in
  * an element marked `data-slot="candidate-inline-card-actions"` that takes no
- * box of its own (`display: contents`), so they lay out as before.
+ * box of its own (`display: contents`), so they lay out as before. The meta
+ * line is marked `data-slot="candidate-inline-card-meta"`.
  */
 export function CandidateInlineCard({
   name,
@@ -134,11 +150,13 @@ export function CandidateInlineCard({
             ) : null}
             {meta != null ? (
               <Text
+                data-slot="candidate-inline-card-meta"
                 variant="caption"
                 size="xs"
                 leading={compact ? "snug" : "normal"}
                 truncate={compact}
                 marginTop={compact ? "none" : "xs"}
+                className={META_LINE_GLYPHS}
               >
                 {meta}
               </Text>

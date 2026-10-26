@@ -42,6 +42,7 @@ export * from "./candidate-review-card";
 export * from "./candidate-role-matches";
 export * from "./candidate-selectable-avatar";
 export * from "./candidate-shared-profile-button";
+export * from "./candidate-shortlist";
 export * from "./candidate-signal-list";
 export * from "./candidate-signal-menu";
 export * from "./candidate-stage-actions";

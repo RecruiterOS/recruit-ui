@@ -29,9 +29,9 @@ export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, Can
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './candidate-outreach-composer.js';
 export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNoteProps } from './candidate-pending-note.js';
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './candidate-pipeline-card.js';
-export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './candidate-pipeline-list.js';
+export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './candidate-pipeline-list.js';
 export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './candidate-profile.js';
-export { CandidateProfileDialog, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './candidate-profile-dialog.js';
+export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './candidate-profile-dialog.js';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './candidate-profile-link-button.js';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './candidate-quote.js';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './candidate-relationship-card.js';
@@ -40,6 +40,7 @@ export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } fr
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './candidate-role-matches.js';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './candidate-selectable-avatar.js';
 export { CandidateSharedProfileButton, CandidateSharedProfileButtonProps } from './candidate-shared-profile-button.js';
+export { CandidateShortlist, CandidateShortlistProps } from './candidate-shortlist.js';
 export { CandidateSignalDetail, CandidateSignalItem, CandidateSignalList, CandidateSignalListProps } from './candidate-signal-list.js';
 export { CandidateSignalMenu, CandidateSignalMenuProps } from './candidate-signal-menu.js';
 export { CandidateStageActions, CandidateStageActionsLabels, CandidateStageActionsProps, CandidateStageAdvance } from './candidate-stage-actions.js';

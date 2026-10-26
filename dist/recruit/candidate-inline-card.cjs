@@ -2,9 +2,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkKH4ZX3FMcjs = require('../chunk-KH4ZX3FM.cjs');
+var _chunkIIHGO2EDcjs = require('../chunk-IIHGO2ED.cjs');
 require('../chunk-K3VUGGWH.cjs');
 require('../chunk-D5BXTRVN.cjs');
 
 
-exports.CandidateInlineCard = _chunkKH4ZX3FMcjs.CandidateInlineCard;
+exports.CandidateInlineCard = _chunkIIHGO2EDcjs.CandidateInlineCard;

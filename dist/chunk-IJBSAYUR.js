@@ -96,7 +96,13 @@ function CandidatePipelineList({
 var BULLET_LABELS = {
   generate: "Generate summary",
   refresh: "Refresh summary",
-  generating: "Generating\u2026"
+  generating: "Generating\u2026",
+  sentiment: {
+    positive: "Positive",
+    neutral: "Neutral",
+    warning: "Caution",
+    negative: "Negative"
+  }
 };
 function CandidateSummaryBullets({
   bullets,
@@ -107,10 +113,15 @@ function CandidateSummaryBullets({
   labels,
   ...props
 }) {
-  const wording = { ...BULLET_LABELS, ...labels };
+  const wording = {
+    ...BULLET_LABELS,
+    ...labels,
+    sentiment: { ...BULLET_LABELS.sentiment, ...labels?.sentiment }
+  };
   return /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-summary-bullets", gap: "none", ...props, children: [
     bullets.length > 0 ? /* @__PURE__ */ jsx(List, { spacing: "normal", inset: "xs", children: bullets.map((bullet, index) => /* @__PURE__ */ jsxs(ListItem, { layout: "row", textSize: "xs", tone: "soft", children: [
       /* @__PURE__ */ jsx(SentimentDot, { sentiment: bullet.sentiment }),
+      /* @__PURE__ */ jsx("span", { className: "sr-only", "data-slot": "candidate-summary-bullet-sentiment", children: `${bullet.sentimentLabel ?? wording.sentiment[bullet.sentiment]}: ` }),
       /* @__PURE__ */ jsx(Text, { variant: "inherit", as: "span", grow: true, children: bullet.text })
     ] }, index)) }) : null,
     onGenerate && /* @__PURE__ */ jsxs(

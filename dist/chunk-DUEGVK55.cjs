@@ -25,6 +25,7 @@ function CandidateCoverImage({
     }
   );
 }
+var DIALOG_PADDING = "p-4";
 function CandidateCoverHeader({
   cover,
   children,
@@ -46,8 +47,8 @@ function CandidateCoverHeader({
           _panelsection.PanelSection,
           {
             as: "div",
-            padding: padding === "none" ? "none" : padding === "compact" ? "compact" : "default",
-            className: _utils.cn.call(void 0, padding === "card-header" && "pb-3 pt-5"),
+            padding: padding === "none" || padding === "dialog" ? "none" : padding === "compact" ? "compact" : "default",
+            className: _utils.cn.call(void 0, padding === "card-header" && "pb-3 pt-5", padding === "dialog" && DIALOG_PADDING),
             children
           }
         )

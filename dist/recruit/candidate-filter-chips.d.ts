@@ -25,8 +25,13 @@ interface CandidateFilterChipsProps<TValue extends string = string> extends Omit
  * A single row of pressed-state chips that narrows a list of people to one
  * kind, such as everyone with a recent job move. The row scrolls sideways
  * rather than wrapping, and sits on a bottom border so it reads as part of
- * the toolbar above the list. The host owns the options, their wording and
- * what each one filters. The root is marked `data-slot="candidate-filter-chips"`.
+ * the toolbar above the list. Each chip is a toggle button with
+ * `aria-pressed`; the pressed one has a primary border and tint and a
+ * full-strength label, the others a muted label. Every chip keeps a 44px
+ * touch target on a coarse pointer (a touchscreen); a mouse keeps the 28px
+ * chip. The host owns the options, their
+ * wording and what each one filters. The root is marked
+ * `data-slot="candidate-filter-chips"`.
  */
 declare function CandidateFilterChips<TValue extends string = string>({ value, onChange, allLabel, options, context, action, ...props }: CandidateFilterChipsProps<TValue>): react.JSX.Element;
 

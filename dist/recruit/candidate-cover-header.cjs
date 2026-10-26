@@ -1,8 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkZJZS63R6cjs = require('../chunk-ZJZS63R6.cjs');
+var _chunkDUEGVK55cjs = require('../chunk-DUEGVK55.cjs');
 
 
 
-exports.CandidateCoverHeader = _chunkZJZS63R6cjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkZJZS63R6cjs.CandidateCoverImage;
+exports.CandidateCoverHeader = _chunkDUEGVK55cjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkDUEGVK55cjs.CandidateCoverImage;

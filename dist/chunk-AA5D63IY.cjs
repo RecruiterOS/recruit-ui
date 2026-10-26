@@ -4,7 +4,7 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunkZJZS63R6cjs = require('./chunk-ZJZS63R6.cjs');
+var _chunkDUEGVK55cjs = require('./chunk-DUEGVK55.cjs');
 
 // src/recruit/candidate-relationship-card.tsx
 var _badge = require('@epicbagel/saas-kit/primitives/badge');
@@ -60,7 +60,7 @@ function CandidateRelationshipCard({
       ...props,
       ..._chunkK3VUGGWHcjs.candidateCardSelectProps.call(void 0, onSelect, { onKeyDown }),
       children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkZJZS63R6cjs.CandidateCoverHeader, { cover, padding: "lg", softenCoverUntilHover: true, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkDUEGVK55cjs.CandidateCoverHeader, { cover, padding: "lg", softenCoverUntilHover: true, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [
           avatar,
           /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
             /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "center", children: [

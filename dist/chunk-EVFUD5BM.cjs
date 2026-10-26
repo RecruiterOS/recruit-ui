@@ -14,20 +14,22 @@ function CandidateCareerHistoryPanel({
   empty,
   detailedCompanyGroups,
   locale,
+  scroll = "viewport",
   ...props
 }) {
+  const timeline = /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+    _chunkVE3ICFAVcjs.CandidateCareerHistoryTimeline,
+    {
+      items,
+      loading,
+      empty,
+      detailedCompanyGroups,
+      locale
+    }
+  );
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "vertical", gap: "md", "data-slot": "candidate-career-history-panel", ...props, children: [
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _sectionheader.SectionHeader, { label: title, count: loading ? void 0 : items.length }),
-    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _scrollarea.ScrollArea, { "data-slot": "career-history-scroll", maxHeight: "viewport", paddingEnd: "sm", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-      _chunkVE3ICFAVcjs.CandidateCareerHistoryTimeline,
-      {
-        items,
-        loading,
-        empty,
-        detailedCompanyGroups,
-        locale
-      }
-    ) })
+    scroll === "none" ? timeline : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _scrollarea.ScrollArea, { "data-slot": "career-history-scroll", maxHeight: "viewport", paddingEnd: "sm", children: timeline })
   ] });
 }
 

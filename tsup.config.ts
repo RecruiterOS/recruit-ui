@@ -48,6 +48,7 @@ export default defineConfig({
     "src/recruit/candidate-role-matches.tsx",
     "src/recruit/candidate-selectable-avatar.tsx",
     "src/recruit/candidate-shared-profile-button.tsx",
+    "src/recruit/candidate-shortlist.tsx",
     "src/recruit/candidate-signal-list.tsx",
     "src/recruit/candidate-signal-menu.tsx",
     "src/recruit/candidate-stage-actions.tsx",

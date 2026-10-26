@@ -13,6 +13,7 @@ var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _text = require('@epicbagel/saas-kit/primitives/text');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
+var META_LINE_GLYPHS = "[&>svg]:inline-block [&>svg]:align-[-0.125em] [&>svg]:me-1.5";
 function CandidateInlineCard({
   name,
   avatar,
@@ -100,11 +101,13 @@ function CandidateInlineCard({
                     meta != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
                       _text.Text,
                       {
+                        "data-slot": "candidate-inline-card-meta",
                         variant: "caption",
                         size: "xs",
                         leading: compact ? "snug" : "normal",
                         truncate: compact,
                         marginTop: compact ? "none" : "xs",
+                        className: META_LINE_GLYPHS,
                         children: meta
                       }
                     ) : null,

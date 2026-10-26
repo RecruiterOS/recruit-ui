@@ -1,6 +1,6 @@
 import {
   CandidateCoverHeader
-} from "./chunk-IQFISO63.js";
+} from "./chunk-NBAJDT3O.js";
 
 // src/recruit/candidate-profile.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
