@@ -399,8 +399,11 @@ describe("candidate shortlist", () => {
     const status = within(section).getByText("Ready");
     expect(follows(heading, eyebrow)).toBe(true);
     expect(follows(description, heading)).toBe(true);
-    // The status sits at the end of the heading's row, after the text beside it.
-    expect(status.parentElement).toBe(heading.parentElement!.parentElement);
+    // The status sits at the end of the heading's row, after the text beside
+    // it, in a slot that doesn't shrink, so the title wraps before it does.
+    const statusSlot = status.parentElement!;
+    expect(statusSlot.parentElement).toBe(heading.parentElement!.parentElement);
+    expect(statusSlot).toHaveClass("shrink-0");
     expect(follows(status, description)).toBe(true);
 
     const people = within(section).getAllByRole("article");
@@ -472,5 +475,19 @@ describe("candidate shortlist", () => {
       </CandidateShortlist>,
     );
     expect(screen.queryByText("No example people yet")).toBeNull();
+  });
+
+  it("sizes the blank slate inline by default and md for a shortlist that is a page's main list", () => {
+    const { container, rerender } = render(<CandidateShortlist title="Fictional shortlist" count={0} />);
+    const message = () => container.querySelector("[data-slot='empty-state-message']")!;
+    // Inline: the icon beside the words, left-aligned.
+    expect(message()).toHaveClass("text-left");
+    expect(message()).not.toHaveClass("text-center");
+
+    rerender(<CandidateShortlist title="Fictional shortlist" count={0} emptySize="md" />);
+    // md: the icon over the words, centred.
+    expect(message()).toHaveClass("text-center");
+    expect(screen.getByText("No candidates shortlisted yet")).toBeInTheDocument();
+    expect(container.querySelectorAll("[data-slot='empty-state']")).toHaveLength(1);
   });
 });

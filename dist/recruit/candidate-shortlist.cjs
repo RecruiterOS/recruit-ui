@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkUXTLDCACcjs = require('../chunk-UXTLDCAC.cjs');
+var _chunkI53Z6SAJcjs = require('../chunk-I53Z6SAJ.cjs');
 
 
-exports.CandidateShortlist = _chunkUXTLDCACcjs.CandidateShortlist;
+exports.CandidateShortlist = _chunkI53Z6SAJcjs.CandidateShortlist;

@@ -3,7 +3,7 @@
   "namespace": "recruit",
   "name": "recruit-workflows",
   "title": "Recruit UI candidate workflows",
-  "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and pipeline rows), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
+  "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
   "registryDependencies": ["RecruiterOS/recruit-ui/recruit-tokens"],
   "css": [
     "@epicbagel/saas-kit/styles/utilities.css",
@@ -17,6 +17,7 @@
     "src/recruit/call-reconcile-card.tsx",
     "src/recruit/call-reconcile-dialogs.tsx",
     "src/recruit/candidate-activity-timeline.tsx",
+    "src/recruit/candidate-add-to-job-popover.tsx",
     "src/recruit/candidate-assessment.tsx",
     "src/recruit/candidate-call-card.tsx",
     "src/recruit/candidate-call-list.tsx",
@@ -45,9 +46,11 @@
     "src/recruit/candidate-job-evidence.tsx",
     "src/recruit/candidate-notes.tsx",
     "src/recruit/candidate-outreach-composer.tsx",
+    "src/recruit/candidate-outreach-drafts.tsx",
     "src/recruit/candidate-pending-note.tsx",
     "src/recruit/candidate-pipeline-card.tsx",
     "src/recruit/candidate-pipeline-list.tsx",
+    "src/recruit/candidate-presentation-recorder.tsx",
     "src/recruit/candidate-profile-dialog.tsx",
     "src/recruit/candidate-profile-link-button.tsx",
     "src/recruit/candidate-profile.tsx",
@@ -59,6 +62,7 @@
     "src/recruit/candidate-selectable-avatar.tsx",
     "src/recruit/candidate-shared-profile-button.tsx",
     "src/recruit/candidate-shortlist.tsx",
+    "src/recruit/candidate-shortlist-note.tsx",
     "src/recruit/candidate-signal-list.tsx",
     "src/recruit/candidate-signal-menu.tsx",
     "src/recruit/candidate-stage-actions.tsx",
@@ -67,9 +71,11 @@
     "src/recruit/candidate-voice-note.tsx",
     "src/recruit/current-company-label.tsx",
     "src/recruit/current-company-popover.tsx",
+    "src/recruit/document-list.tsx",
     "src/recruit/job-client-badge.tsx",
     "src/recruit/job-summary-card.tsx",
     "src/recruit/matched-call-card.tsx",
+    "src/recruit/pending-action.ts",
     "src/recruit/touch-targets.ts"
   ]
 }

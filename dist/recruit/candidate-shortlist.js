@@ -1,7 +1,7 @@
 "use client";
 import {
   CandidateShortlist
-} from "../chunk-LZVWQT7D.js";
+} from "../chunk-J6AD2LEO.js";
 export {
   CandidateShortlist
 };

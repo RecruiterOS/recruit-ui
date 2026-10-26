@@ -172,6 +172,54 @@ describe("candidate card activation", () => {
     expect(screen.getByTestId("meta-glyph").parentElement).toBe(compactLine);
   });
 
+  it("can set a comfortable card's name large, wrap its headline and centre its actions", () => {
+    const headline = "Senior Account Executive · Fictional Northwind Example Co";
+    const { rerender } = render(
+      <CandidateInlineCard name="Fictional Candidate" headline={headline} actions={<svg data-testid="chevron" />} />,
+    );
+    const heading = screen.getByRole("heading", { name: "Fictional Candidate" });
+    const line = () => document.querySelector('[data-slot="candidate-inline-card-headline"]');
+    const actions = () => document.querySelector('[data-slot="candidate-inline-card-actions"]');
+    // By default: an inline heading, a headline that ends in an ellipsis, actions level with the name.
+    expect(heading).toHaveClass("text-sm", "font-semibold");
+    expect(line()).toHaveClass("truncate");
+    expect(actions()).not.toHaveClass("[&>*]:self-center");
+
+    rerender(
+      <CandidateInlineCard
+        name="Fictional Candidate"
+        headline={headline}
+        nameSize="lg"
+        headlineWrap
+        actionsAlign="center"
+        actions={<svg data-testid="chevron" />}
+      />,
+    );
+    expect(heading.tagName).toBe("H5");
+    expect(heading).toHaveClass("text-lg", "font-semibold");
+    expect(heading).not.toHaveClass("text-sm");
+    expect(line()).toHaveTextContent(headline);
+    expect(line()).not.toHaveClass("truncate");
+    // Still no box of its own: the chevron is centred as an item of the row.
+    expect(actions()).toHaveClass("contents", "[&>*]:self-center");
+
+    // A compact row keeps its height whatever the options say.
+    rerender(
+      <CandidateInlineCard
+        density="compact"
+        name="Fictional Candidate"
+        headline={headline}
+        nameSize="lg"
+        headlineWrap
+        actionsAlign="center"
+        actions={<svg data-testid="chevron" />}
+      />,
+    );
+    expect(heading).toHaveClass("text-sm", "font-medium");
+    expect(line()).toHaveClass("truncate");
+    expect(actions()).not.toHaveClass("[&>*]:self-center");
+  });
+
   it("leaves a comfortable card's actions at their own size, and adds no wrapper without actions", () => {
     const { rerender } = render(
       <CandidateInlineCard name="Fictional Candidate" actions={<button type="button">Profile</button>} />,

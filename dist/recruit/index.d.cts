@@ -1,5 +1,6 @@
 export { CallReconcileCard, CallReconcileCardBaseProps, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcilePickerProps, CallReconcileSearchProps, CallReconcileSuggestedPerson } from './call-reconcile-card.cjs';
 export { CandidateActivityDetailItem, CandidateActivityGroup, CandidateActivityItem, CandidateActivityLinkItem, CandidateActivityTimeline, CandidateActivityTimelineLabels, CandidateActivityTimelineProps } from './candidate-activity-timeline.cjs';
+export { CandidateAddToJobMode, CandidateAddToJobOption, CandidateAddToJobPopover, CandidateAddToJobPopoverLabels, CandidateAddToJobPopoverProps } from './candidate-add-to-job-popover.cjs';
 export { CandidateAssessment, CandidateAssessmentFact, CandidateAssessmentLabels, CandidateAssessmentProps } from './candidate-assessment.cjs';
 export { CandidateCallCard, CandidateCallCardLabels, CandidateCallCardProps } from './candidate-call-card.cjs';
 export { CandidateCallList, CandidateCallListProps } from './candidate-call-list.cjs';
@@ -23,14 +24,16 @@ export { CandidateFavouriteButton, CandidateFavouriteButtonLabels, CandidateFavo
 export { CandidateFilterChipOption, CandidateFilterChips, CandidateFilterChipsProps } from './candidate-filter-chips.cjs';
 export { CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './candidate-grade.cjs';
 export { CandidateHeaderActions, CandidateHeaderActionsProps, CandidateIconAction, CandidateIconActionProps } from './candidate-header-actions.cjs';
-export { CandidateInlineCard, CandidateInlineCardDensity, CandidateInlineCardProps } from './candidate-inline-card.cjs';
+export { CandidateInlineCard, CandidateInlineCardActionsAlign, CandidateInlineCardDensity, CandidateInlineCardNameSize, CandidateInlineCardProps } from './candidate-inline-card.cjs';
 export { CandidateJobEvidence, CandidateJobEvidenceEntry, CandidateJobEvidenceFeedback, CandidateJobEvidenceProps } from './candidate-job-evidence.cjs';
 export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, CandidateNoteComposer, CandidateNoteComposerLabels, CandidateNoteComposerProps, CandidateNoteKind, CandidateNoteList, CandidateNoteListProps, CandidateNotePinned, CandidateNoteScope } from './candidate-notes.cjs';
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './candidate-outreach-composer.cjs';
+export { CandidateOutreachDraftAction, CandidateOutreachDraftCallback, CandidateOutreachDraftChannel, CandidateOutreachDraftItem, CandidateOutreachDraftList, CandidateOutreachDraftListLabels, CandidateOutreachDraftListProps, CandidateOutreachDraftStatus, CandidateOutreachDraftStatusAction, defaultOutreachDraftActions, outreachDraftCopyText } from './candidate-outreach-drafts.cjs';
 export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNoteProps } from './candidate-pending-note.cjs';
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './candidate-pipeline-card.cjs';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './candidate-pipeline-list.cjs';
-export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './candidate-profile.cjs';
+export { CandidatePresentationRecorder, CandidatePresentationRecorderAudio, CandidatePresentationRecorderLabels, CandidatePresentationRecorderProps, CandidatePresentationRecorderState, supportedRecordingMimeType } from './candidate-presentation-recorder.cjs';
+export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfilePrintMode, CandidateProfileProps } from './candidate-profile.cjs';
 export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './candidate-profile-dialog.cjs';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './candidate-profile-link-button.cjs';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './candidate-quote.cjs';
@@ -40,7 +43,8 @@ export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } fr
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './candidate-role-matches.cjs';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './candidate-selectable-avatar.cjs';
 export { CandidateSharedProfileButton, CandidateSharedProfileButtonProps } from './candidate-shared-profile-button.cjs';
-export { CandidateShortlist, CandidateShortlistProps } from './candidate-shortlist.cjs';
+export { CandidateShortlist, CandidateShortlistEmptySize, CandidateShortlistProps } from './candidate-shortlist.cjs';
+export { CandidateShortlistNote, CandidateShortlistNoteProps } from './candidate-shortlist-note.cjs';
 export { CandidateSignalDetail, CandidateSignalItem, CandidateSignalList, CandidateSignalListProps } from './candidate-signal-list.cjs';
 export { CandidateSignalMenu, CandidateSignalMenuProps } from './candidate-signal-menu.cjs';
 export { CandidateStageActions, CandidateStageActionsLabels, CandidateStageActionsProps, CandidateStageAdvance } from './candidate-stage-actions.cjs';
@@ -49,6 +53,7 @@ export { CandidateSuggestedRolesPanel, CandidateSuggestedRolesPanelProps } from 
 export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote } from './candidate-voice-note.cjs';
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './current-company-label.cjs';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './current-company-popover.cjs';
+export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './document-list.cjs';
 export { JobClientBadge, JobClientBadgeProps } from './job-client-badge.cjs';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './job-summary-card.cjs';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './matched-call-card.cjs';

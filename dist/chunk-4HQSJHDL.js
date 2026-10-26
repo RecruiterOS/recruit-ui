@@ -5,6 +5,7 @@ import {
 // src/recruit/candidate-profile.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { ContactHeader } from "@epicbagel/saas-kit/primitives/contact-header";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
@@ -13,6 +14,7 @@ function CandidateProfile({
   header,
   children,
   footer,
+  printMode = "default",
   className,
   ...props
 }) {
@@ -25,7 +27,7 @@ function CandidateProfile({
       surface: "card",
       radius: "xl",
       overflow: "hidden",
-      className,
+      className: cn(printMode === "flat" && "print:border-0 print:shadow-none", className),
       ...props,
       children: [
         header,
@@ -44,10 +46,23 @@ function CandidateProfileHeader({
   meta,
   summary,
   actions,
+  actionsPlacement = "name",
   padding = "lg",
   className,
   ...props
 }) {
+  const aside = actionsPlacement === "aside" && actions != null;
+  const identity = /* @__PURE__ */ jsx(
+    ContactHeader,
+    {
+      avatar,
+      name,
+      status,
+      meta,
+      actions: aside ? void 0 : actions,
+      spacing: "none"
+    }
+  );
   return /* @__PURE__ */ jsx(
     CandidateCoverHeader,
     {
@@ -58,17 +73,20 @@ function CandidateProfileHeader({
       ...props,
       children: /* @__PURE__ */ jsxs(Stack, { gap: "sm", children: [
         eyebrow != null ? /* @__PURE__ */ jsx(Text, { variant: "eyebrow", children: eyebrow }) : null,
-        /* @__PURE__ */ jsx(
-          ContactHeader,
-          {
-            avatar,
-            name,
-            status,
-            meta,
-            actions,
-            spacing: "none"
-          }
-        ),
+        aside ? /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "start", children: [
+          /* @__PURE__ */ jsx(FlexItem, { grow: true, minWidth: "zero", children: identity }),
+          /* @__PURE__ */ jsx(
+            Stack,
+            {
+              "data-slot": "candidate-profile-header-actions",
+              direction: "horizontal",
+              gap: "xs",
+              align: "center",
+              shrink: false,
+              children: actions
+            }
+          )
+        ] }) : identity,
         summary != null ? /* @__PURE__ */ jsx(Text, { variant: "muted", size: "sm", children: summary }) : null
       ] })
     }
@@ -92,8 +110,18 @@ function CandidateProfileBody({
     }
   );
 }
+var FOOTER_JUSTIFY = {
+  start: "",
+  center: "justify-center",
+  end: "justify-end",
+  between: "justify-between"
+};
 function CandidateProfileFooter({
   children,
+  justify = "start",
+  padding = "default",
+  printVisibility = "visible",
+  className,
   ...props
 }) {
   return /* @__PURE__ */ jsx(
@@ -104,6 +132,12 @@ function CandidateProfileFooter({
       border: "top",
       layout: "row",
       gap: "sm",
+      padding,
+      className: cn(
+        FOOTER_JUSTIFY[justify],
+        printVisibility === "hidden" && "print:hidden",
+        className
+      ),
       ...props,
       children
     }

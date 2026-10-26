@@ -1,6 +1,7 @@
 "use client";
 
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Heading } from "@epicbagel/saas-kit/primitives/heading";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
@@ -17,7 +18,10 @@ export interface CandidateShortlistProps
   eyebrow?: ReactNode;
   /** A muted line under the title: why these people, or what to do with them. */
   description?: ReactNode;
-  /** Beside the heading, at its end, such as a status badge. */
+  /**
+   * Beside the heading, at its end, such as a status badge. It keeps its
+   * width: on a narrow screen the title wraps rather than the status.
+   */
   status?: ReactNode;
   /**
    * How many people the shortlist holds. Zero shows the empty state in place
@@ -35,7 +39,16 @@ export interface CandidateShortlistProps
   footer?: ReactNode;
   /** The blank slate's wording. Defaults to "No candidates shortlisted yet". */
   empty?: CandidateEmptyCopy;
+  /**
+   * The blank slate's size. `inline` (the default) suits a shortlist inside
+   * a message, pane or card; `md` suits one that is the main list on a page
+   * of its own, such as a shortlist page sent to a client.
+   */
+  emptySize?: CandidateShortlistEmptySize;
 }
+
+/** How large a CandidateShortlist's blank slate is. */
+export type CandidateShortlistEmptySize = "inline" | "md";
 
 /**
  * A shortlist of people as one section: an optional eyebrow, the title and an
@@ -55,6 +68,7 @@ export function CandidateShortlist({
   children,
   footer,
   empty = { title: "No candidates shortlisted yet" },
+  emptySize = "inline",
   ...props
 }: CandidateShortlistProps) {
   const titleId = useId();
@@ -75,18 +89,30 @@ export function CandidateShortlist({
           <Heading id={titleId} level={2}>{title}</Heading>
           {description ? <Text variant="muted">{description}</Text> : null}
         </Stack>
-        {status}
+        {/* A badge would shrink and wrap before the title does. */}
+        {status != null && status !== false ? <FlexItem shrink={false}>{status}</FlexItem> : null}
       </Stack>
+      {/* Without host wording, no description: the kit's generic one ("Get
+          started by creating...") doesn't fit a shortlist. Each size is its
+          own literal, so where the blank slate sits stays reviewable. */}
       {isEmpty ? (
-        <EmptyState
-          variant="empty"
-          size="inline"
-          icon={UsersRound}
-          title={empty.title}
-          // Without host wording, no description: the kit's generic one ("Get
-          // started by creating...") doesn't fit a shortlist.
-          description={empty.description ?? ""}
-        />
+        emptySize === "md" ? (
+          <EmptyState
+            variant="empty"
+            size="md"
+            icon={UsersRound}
+            title={empty.title}
+            description={empty.description ?? ""}
+          />
+        ) : (
+          <EmptyState
+            variant="empty"
+            size="inline"
+            icon={UsersRound}
+            title={empty.title}
+            description={empty.description ?? ""}
+          />
+        )
       ) : (
         <Stack gap="md">{children}</Stack>
       )}

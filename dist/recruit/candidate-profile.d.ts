@@ -6,9 +6,17 @@ interface CandidateProfileProps extends Omit<HTMLAttributes<HTMLElement>, "title
     header?: ReactNode;
     children: ReactNode;
     footer?: ReactNode;
+    /**
+     * `default` prints the card as it looks on screen. `flat` prints it without
+     * its border (or a shadow a host gave it), so a printed profile reads as a
+     * page rather than a card on one.
+     */
+    printMode?: CandidateProfilePrintMode;
 }
+/** How a CandidateProfile prints. */
+type CandidateProfilePrintMode = "default" | "flat";
 /** Structural profile composition. Data loading and record policy stay outside. */
-declare function CandidateProfile({ header, children, footer, className, ...props }: CandidateProfileProps): react.JSX.Element;
+declare function CandidateProfile({ header, children, footer, printMode, className, ...props }: CandidateProfileProps): react.JSX.Element;
 interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
     name: ReactNode;
     avatar?: ReactNode;
@@ -19,6 +27,13 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
     summary?: ReactNode;
     actions?: ReactNode;
     /**
+     * Where `actions` sit. `name` (the default) puts them on the name line, at
+     * its end, with the meta running under them. `aside` gives them a column
+     * of their own beside the whole identity, top-aligned, so a control taller
+     * than the name's line doesn't push the meta away from the name.
+     */
+    actionsPlacement?: CandidateProfileHeaderActionsPlacement;
+    /**
      * `lg` (the default) pads the header like a card's. `dialog` pads it like
      * the kit's dialog header, so as a CandidateProfileDialog's `header` the
      * name starts at the body's left edge, in line with what the body holds.
@@ -27,7 +42,9 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
      */
     padding?: Extract<CandidateCoverHeaderPadding, "lg" | "dialog" | "none">;
 }
-declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, padding, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
+/** Where a CandidateProfileHeader puts its actions. */
+type CandidateProfileHeaderActionsPlacement = "name" | "aside";
+declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, actionsPlacement, padding, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
     divided?: boolean;
@@ -35,7 +52,22 @@ interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
 declare function CandidateProfileBody({ children, divided, className, ...props }: CandidateProfileBodyProps): react.JSX.Element;
 interface CandidateProfileFooterProps extends HTMLAttributes<HTMLElement> {
     children: ReactNode;
+    /** Where the row's content sits along it. `start` by default. */
+    justify?: CandidateProfileFooterJustify;
+    /**
+     * The kit PanelSection's padding: `default` (26px) for a row of actions,
+     * `compact` for a single line such as a credit.
+     */
+    padding?: CandidateProfileFooterPadding;
+    /** `hidden` leaves the footer off a printed profile. */
+    printVisibility?: CandidateProfileFooterPrintVisibility;
 }
-declare function CandidateProfileFooter({ children, ...props }: CandidateProfileFooterProps): react.JSX.Element;
+/** Where a CandidateProfileFooter puts its content along the row. */
+type CandidateProfileFooterJustify = "start" | "center" | "end" | "between";
+/** The space inside a CandidateProfileFooter. */
+type CandidateProfileFooterPadding = "default" | "compact";
+/** Whether a CandidateProfileFooter prints. */
+type CandidateProfileFooterPrintVisibility = "visible" | "hidden";
+declare function CandidateProfileFooter({ children, justify, padding, printVisibility, className, ...props }: CandidateProfileFooterProps): react.JSX.Element;
 
-export { CandidateProfile, CandidateProfileBody, type CandidateProfileBodyProps, CandidateProfileFooter, type CandidateProfileFooterProps, CandidateProfileHeader, type CandidateProfileHeaderProps, type CandidateProfileProps };
+export { CandidateProfile, CandidateProfileBody, type CandidateProfileBodyProps, CandidateProfileFooter, type CandidateProfileFooterJustify, type CandidateProfileFooterPadding, type CandidateProfileFooterPrintVisibility, type CandidateProfileFooterProps, CandidateProfileHeader, type CandidateProfileHeaderActionsPlacement, type CandidateProfileHeaderProps, type CandidateProfilePrintMode, type CandidateProfileProps };

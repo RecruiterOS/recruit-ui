@@ -9,7 +9,10 @@ interface CandidateShortlistProps extends Omit<HTMLAttributes<HTMLElement>, "tit
     eyebrow?: ReactNode;
     /** A muted line under the title: why these people, or what to do with them. */
     description?: ReactNode;
-    /** Beside the heading, at its end, such as a status badge. */
+    /**
+     * Beside the heading, at its end, such as a status badge. It keeps its
+     * width: on a narrow screen the title wraps rather than the status.
+     */
     status?: ReactNode;
     /**
      * How many people the shortlist holds. Zero shows the empty state in place
@@ -27,7 +30,15 @@ interface CandidateShortlistProps extends Omit<HTMLAttributes<HTMLElement>, "tit
     footer?: ReactNode;
     /** The blank slate's wording. Defaults to "No candidates shortlisted yet". */
     empty?: CandidateEmptyCopy;
+    /**
+     * The blank slate's size. `inline` (the default) suits a shortlist inside
+     * a message, pane or card; `md` suits one that is the main list on a page
+     * of its own, such as a shortlist page sent to a client.
+     */
+    emptySize?: CandidateShortlistEmptySize;
 }
+/** How large a CandidateShortlist's blank slate is. */
+type CandidateShortlistEmptySize = "inline" | "md";
 /**
  * A shortlist of people as one section: an optional eyebrow, the title and an
  * optional description, with an optional status at the heading's end; then
@@ -37,6 +48,6 @@ interface CandidateShortlistProps extends Omit<HTMLAttributes<HTMLElement>, "tit
  * root is a `section` named by its title and marked
  * `data-slot="candidate-shortlist"`.
  */
-declare function CandidateShortlist({ title, eyebrow, description, status, count, children, footer, empty, ...props }: CandidateShortlistProps): react.JSX.Element;
+declare function CandidateShortlist({ title, eyebrow, description, status, count, children, footer, empty, emptySize, ...props }: CandidateShortlistProps): react.JSX.Element;
 
-export { CandidateShortlist, type CandidateShortlistProps };
+export { CandidateShortlist, type CandidateShortlistEmptySize, type CandidateShortlistProps };

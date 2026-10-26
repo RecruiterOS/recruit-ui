@@ -5,6 +5,152 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.12.0
+
+### Added
+
+- `DocumentUploadPanel`, `DocumentList` and `DocumentListItem`, for the files
+  attached to a person or a role. `DocumentUploadPanel` is a section named by
+  its `title` ("Documents" by default): an optional `kindSelect` in the header
+  for the kind the next upload is filed as (a kit Select named "Document
+  kind"), an `error`, the kit's `FileDropzone` (multiple files, the host's
+  `accept`, busy with `labels.uploading` while `uploading`), and the list.
+  The host uploads what `onFiles` receives, loads the list and renders each
+  row. `DocumentList` shows a skeleton row while `loading`, the kit's empty
+  state when `count` is zero (worded by `empty`, "No documents yet" by
+  default), and its `children` otherwise; with no `count`, such as before a
+  first load succeeds, it shows only its children. `DocumentListItem` is one
+  file: a glyph, the `name`, the `kind` as a badge with a host-chosen tone,
+  the host's `meta` line (size and date, say), then a `summary`, or a spinner
+  and `labels.processing` while `processing`. It draws preview, download,
+  re-analyse and delete buttons for the callbacks given, each named for
+  screen readers after the file ("Download brief.pdf"); delete asks to
+  confirm in the row first, moving focus to Cancel and back. A download,
+  re-analyse or delete callback that returns a promise shows its button busy
+  until it settles, so the host needn't track which row is busy;
+  `downloading` and `reanalysing` show it busy from outside. Each takes
+  `density`: `default` for a page or tab of its own, where the summary takes
+  the row's full width, and `compact` for a pane, one dense row under a
+  counted section header (`SectionHeader`, the count shown only above zero)
+  with the kit PanelSection's `border`. The roots are marked
+  `data-slot="document-upload-panel"`, `"document-list"` and
+  `"document-list-item"`, the kind select's trigger
+  `data-slot="document-kind-select"`, and
+  `@recruiteros/recruit-ui/recruit/document-list` is a client entry.
+- `formatFileSize`, which reads a size in bytes as "512 B", "180 KB" or
+  "2.4 MB", and a missing size as an em dash (or the `empty` text given).
+- `CandidateOutreachDraftList`, the messages drafted to a person, one card
+  per draft: the channel (its `label` and an optional `icon`), the draft's
+  status as a badge (`draft`, `approved`, `sent` or `dismissed`, worded by
+  `labels.status`), the subject when there is one and the message with its
+  line breaks kept. Each card has the kit's `CopyButton`, which copies
+  `copyText(draft)` (by default `outreachDraftCopyText`: the subject line,
+  then the message); Approve and Dismiss while the draft is still a draft,
+  and Mark sent once it is approved, each only when its callback is given.
+  Every button is named for screen readers after the draft's channel ("Copy
+  Email draft", `labels.actionName`), and a callback that returns a promise
+  disables the card's buttons, with a spinner on the one pressed, until it
+  settles. The callbacks receive the host's own draft object, so it can
+  carry its own fields. The list sits under a heading counted only above
+  zero, shows a skeleton row while `loading` with no drafts yet, and the
+  kit's empty state when there are none (worded by `empty`, "No outreach
+  drafts yet" by default). The root is the kit PanelSection, a section named
+  by its title and marked `data-slot="candidate-outreach-draft-list"`; each
+  card is marked `data-slot="candidate-outreach-draft"`, and
+  `@recruiteros/recruit-ui/recruit/candidate-outreach-drafts` is a client
+  entry.
+- `CandidateOutreachDraftList` takes `availableActions(draft)`, which names
+  the status actions (`approve`, `dismiss`, `markSent`) each draft offers, so
+  a workflow without an approval step can offer Mark sent on a draft. It
+  defaults to `defaultOutreachDraftActions`: Approve and Dismiss while a
+  draft is a `draft`, Mark sent once it is `approved`, and none after. A
+  button still shows only when its callback is given too.
+- `CandidateAddToJobPopover`, which adds one or more people to a job: a
+  select for the job (`jobs`, with an optional `defaultJob`), one for the
+  stage they land at (`stages`, each read as "at <stage>" by
+  `labels.stageOption`, starting at `defaultStage` or the first), and
+  Confirm, which calls `onConfirm(job, stage)`. With `assessors` and
+  `onAssess`, a toggle offers a second mode that picks an assessor and calls
+  `onAssess(job, assessor)` instead; `assessIcon` is its glyph. The heading
+  counts the people when `count` is above one ("Add 3 candidates to a job").
+  The popover closes once the callback settles, and stays open with its
+  choices if it throws, so the host reports the failure in its callback. The
+  host's own `trigger` opens it, or an outline "Add to job" button; every
+  select is named (`labels.job`, `labels.stage`, `labels.assessor`), and an
+  empty `jobs` shows the kit's empty state inside the job select (`empty`).
+  Each time it opens it starts again from `defaultJob` and `defaultStage`,
+  and a job or stage its options no longer list counts as no pick, so a job
+  the person was just added to, which the host then leaves out of `jobs`,
+  is never submitted twice; a `defaultJob` that arrives later is picked on
+  the next open. The popover surface is marked
+  `data-slot="candidate-add-to-job-popover"`, and
+  `@recruiteros/recruit-ui/recruit/candidate-add-to-job-popover` is a client
+  entry.
+- `CandidatePresentationRecorder`, which records a short voice note to send
+  with a person's profile: Record, a running clock, Stop, then a player for
+  the take. Each take goes to `onAccept(blob, mimeType)` as soon as recording
+  stops; while it runs the recorder shows Uploading, and if it throws the
+  take stays playable with Retry and Discard and the error's message shows
+  under the controls, so nobody has to record it again. `existingAudio`
+  stays playable until a new take is accepted (the button then reads
+  "Record a replacement"); `externalState` shows `uploading` or
+  `transcribing` from outside; `onPendingChange` reports whether a take is
+  in progress or unsaved; `renderAudio` replaces the browser's own audio
+  controls with the host's player. Every line, including the microphone
+  errors, is a label. The root is marked
+  `data-slot="candidate-presentation-recorder"`, and
+  `@recruiteros/recruit-ui/recruit/candidate-presentation-recorder` is a
+  client entry.
+- `supportedRecordingMimeType`, the first audio format the browser's
+  MediaRecorder can write (MP4 before WebM and Ogg), or "" without one.
+- `CandidateInlineCard` takes three options for a comfortable card that
+  stands on its own, such as a row in a short list shared with a client:
+  `nameSize="lg"` sets the name at the kit's section-title size (it stays an
+  `h5`), `headlineWrap` lets the headline wrap instead of ending in an
+  ellipsis, so a long title and company read in full on a phone, and
+  `actionsAlign="center"` centres the actions on the card's height, for a
+  lone chevron. Each defaults to the card as before (`default`, `false`,
+  `start`), and a compact card ignores them. The headline is now marked
+  `data-slot="candidate-inline-card-headline"`.
+- `CandidateProfileHeader` takes `actionsPlacement`. `name` (the default, as
+  before) puts `actions` on the name line; `aside` sets them in a column of
+  their own beside the whole identity, top-aligned, in a kit Stack row that
+  keeps its width (4px apart) and is marked
+  `data-slot="candidate-profile-header-actions"`, so a control taller than
+  the name's line, such as an icon button beside a large avatar, doesn't
+  push the meta away from the name.
+- `CandidateProfile` takes `printMode`: `default` (as before) prints the card
+  as it looks on screen, and `flat` prints it without its border, so a
+  printed profile reads as a page.
+- `CandidateProfileFooter` takes `justify` (`start`, the default and as
+  before, `center`, `end` or `between`), `padding` (the kit PanelSection's:
+  `default`, as before, for a row of actions, or `compact` for a one-line
+  credit) and `printVisibility` (`hidden` leaves the footer off paper).
+- `CandidateShortlistNote`, a personal note from whoever presents a
+  shortlist, set above it on the kit's Card: the sender's `avatar`, a `title`
+  such as "A note from Jordan" and a `meta` line such as their role, then the
+  `message` set as rich text (the kit's RichText; pass paragraphs, or
+  Markdown the host has already rendered and sanitised), an optional `media`
+  slot such as an embedded video, and a last line with a `signature` such as
+  "— Jordan" beside an `action` such as a link to book a call. The title is
+  a kit Heading at `titleLevel`: an h2 by default, so the note adds no second
+  h1 to the page it sits on, or 3 or 4 where it sits deeper in the page's
+  outline. Only the tag changes; the title looks the same at every level.
+  Each part shows only when given, and the last line is left out when it
+  would hold neither. The root keeps the Card's own `data-slot`.
+- `CandidateShortlist` takes `emptySize`: `inline` (the default, as before)
+  for a shortlist inside a message, pane or card, or `md` for one that is
+  the main list on a page of its own, such as a shortlist page sent to a
+  client.
+
+### Fixed
+
+- `CandidateShortlist`'s `status` keeps its width. It sat in the heading row
+  as a shrinkable item, so on a narrow screen a long status badge, such as
+  "Identities shared on engagement", squeezed onto two lines while the title
+  kept its room; it now sits in a slot that doesn't shrink (as the kit
+  Section's action does), and the title wraps instead.
+
 ## 0.11.0
 
 ### Breaking

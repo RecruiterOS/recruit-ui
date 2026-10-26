@@ -38,10 +38,35 @@ export interface CandidateInlineCardProps
    * a dense row keeps its touch targets on a phone.
    */
   density?: CandidateInlineCardDensity;
+  /**
+   * The name's size on a comfortable card. `default` suits a row among many;
+   * `lg` sets it at the kit's section-title size, for a short list in which
+   * each card stands on its own, such as the people shared with a client. A
+   * compact card keeps its small name either way.
+   */
+  nameSize?: CandidateInlineCardNameSize;
+  /**
+   * On a comfortable card, `true` lets the headline wrap onto further lines
+   * instead of ending in an ellipsis, so a long title and company still read
+   * in full on a phone. A compact row always truncates, to keep its height.
+   */
+  headlineWrap?: boolean;
+  /**
+   * Where the `actions` sit across a comfortable card: `start` (the default)
+   * level with the name, or `center`, centred on the card's height, for a
+   * lone affordance such as a chevron. A compact row centres them already.
+   */
+  actionsAlign?: CandidateInlineCardActionsAlign;
 }
 
 /** How much room a CandidateInlineCard takes. */
 export type CandidateInlineCardDensity = "comfortable" | "compact";
+
+/** How large a CandidateInlineCard sets the name. */
+export type CandidateInlineCardNameSize = "default" | "lg";
+
+/** Where a CandidateInlineCard's actions sit across the card. */
+export type CandidateInlineCardActionsAlign = "start" | "center";
 
 /**
  * A glyph in the meta line stays on the text's line. The stylesheet reset
@@ -59,8 +84,9 @@ const META_LINE_GLYPHS =
  * The root is the kit InteractiveCard as an `article`, marked
  * `data-slot="candidate-inline-card"` and `data-density`. The `actions` sit in
  * an element marked `data-slot="candidate-inline-card-actions"` that takes no
- * box of its own (`display: contents`), so they lay out as before. The meta
- * line is marked `data-slot="candidate-inline-card-meta"`.
+ * box of its own (`display: contents`), so they lay out as before. The
+ * headline is marked `data-slot="candidate-inline-card-headline"` and the
+ * meta line `data-slot="candidate-inline-card-meta"`.
  */
 export function CandidateInlineCard({
   name,
@@ -75,6 +101,9 @@ export function CandidateInlineCard({
   onSelect,
   selectLabel = "Open candidate profile",
   density = "comfortable",
+  nameSize = "default",
+  headlineWrap = false,
+  actionsAlign = "start",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -83,6 +112,7 @@ export function CandidateInlineCard({
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
   const compact = density === "compact";
+  const centreActions = !compact && actionsAlign === "center";
 
   return (
     <InteractiveCard
@@ -133,16 +163,24 @@ export function CandidateInlineCard({
           {avatar}
           <FlexItem grow minWidth="zero">
             <Stack direction="horizontal" gap="sm" align="center" wrap={!compact}>
-              <Heading id={nameId} level={5} appearance={compact ? "compact" : "default"} truncate>{name}</Heading>
+              <Heading
+                id={nameId}
+                level={5}
+                appearance={compact ? "compact" : nameSize === "lg" ? "section" : "default"}
+                truncate
+              >
+                {name}
+              </Heading>
               {status}
             </Stack>
             {headline != null ? (
               // A compact row is a fixed height: the caption's relaxed leading would push the lines apart.
               <Text
+                data-slot="candidate-inline-card-headline"
                 variant="caption"
                 size={compact ? "xs" : "sm"}
                 leading={compact ? "snug" : "normal"}
-                truncate
+                truncate={compact || !headlineWrap}
                 marginTop={compact ? "none" : "tight"}
               >
                 {headline}
@@ -167,10 +205,15 @@ export function CandidateInlineCard({
           </FlexItem>
           {actions != null ? (
             // No box of its own, so the actions stay items of the row; it
-            // only carries a compact row's touch targets to its controls.
+            // only carries a compact row's touch targets, or the centring, to
+            // its controls.
             <div
               data-slot="candidate-inline-card-actions"
-              className={compact ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : "contents"}
+              className={
+                compact
+                  ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}`
+                  : centreActions ? "contents [&>*]:self-center" : "contents"
+              }
             >
               {actions}
             </div>

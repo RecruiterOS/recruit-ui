@@ -1,11 +1,38 @@
 "use client";
-import "./chunk-3XX6Y5MT.js";
+import "./chunk-7R7JT5AD.js";
+import {
+  CurrentCompanyPopover
+} from "./chunk-QXRY3PXD.js";
+import {
+  CurrentCompanyLabel
+} from "./chunk-XTAH2XJR.js";
+import {
+  DocumentList,
+  DocumentListItem,
+  DocumentUploadPanel,
+  formatFileSize
+} from "./chunk-5ZNJ2NAY.js";
+import {
+  JobClientBadge
+} from "./chunk-4DPYKJJE.js";
 import {
   JobSummaryCard
 } from "./chunk-RMPILAI4.js";
 import {
   MatchedCallCard
 } from "./chunk-YEUNNP4X.js";
+import {
+  CandidateShortlistNote
+} from "./chunk-BF6GDZLT.js";
+import {
+  CandidateShortlist
+} from "./chunk-J6AD2LEO.js";
+import {
+  CandidateSignalList
+} from "./chunk-5NTFYUS6.js";
+import {
+  CandidateSignalMenu
+} from "./chunk-PKH6IZ3T.js";
 import {
   CandidateStageActions
 } from "./chunk-A4CA7P4F.js";
@@ -16,14 +43,17 @@ import {
   useCandidateVoiceNote
 } from "./chunk-S6VNT7YQ.js";
 import {
-  CurrentCompanyPopover
-} from "./chunk-QXRY3PXD.js";
+  CandidateProfile,
+  CandidateProfileBody,
+  CandidateProfileFooter,
+  CandidateProfileHeader
+} from "./chunk-4HQSJHDL.js";
 import {
-  CurrentCompanyLabel
-} from "./chunk-XTAH2XJR.js";
+  CandidateQuote
+} from "./chunk-2TU6TCNM.js";
 import {
-  JobClientBadge
-} from "./chunk-4DPYKJJE.js";
+  CandidateRelationshipCard
+} from "./chunk-5F4DKATL.js";
 import {
   CandidateReviewActionRow
 } from "./chunk-Z63PQB6T.js";
@@ -41,14 +71,14 @@ import {
   CandidateSharedProfileButton
 } from "./chunk-3PLNO5JF.js";
 import {
-  CandidateShortlist
-} from "./chunk-LZVWQT7D.js";
+  CandidateOutreachComposer
+} from "./chunk-52PO4WFT.js";
 import {
-  CandidateSignalList
-} from "./chunk-5NTFYUS6.js";
-import {
-  CandidateSignalMenu
-} from "./chunk-PKH6IZ3T.js";
+  CandidateOutreachDraftList,
+  defaultOutreachDraftActions,
+  outreachDraftCopyText
+} from "./chunk-OHGHIBTO.js";
+import "./chunk-IDSFSTZM.js";
 import {
   CandidatePendingNote
 } from "./chunk-3OWWB6XI.js";
@@ -56,23 +86,19 @@ import {
   CandidatePipelineCard
 } from "./chunk-CUQFEOEW.js";
 import {
+  CandidatePresentationRecorder,
+  supportedRecordingMimeType
+} from "./chunk-H2QEKGHY.js";
+import {
   CandidateProfileDialog
 } from "./chunk-JKIRGRRB.js";
 import {
   CandidateProfileLinkButton
 } from "./chunk-MQMPVZLZ.js";
 import {
-  CandidateProfile,
-  CandidateProfileBody,
-  CandidateProfileFooter,
-  CandidateProfileHeader
-} from "./chunk-RABDTG2L.js";
-import {
-  CandidateQuote
-} from "./chunk-2TU6TCNM.js";
-import {
-  CandidateRelationshipCard
-} from "./chunk-5F4DKATL.js";
+  CandidateFactList,
+  formatFactValue
+} from "./chunk-MHNDTSGQ.js";
 import {
   CandidateFavouriteButton
 } from "./chunk-63LXPDYZ.js";
@@ -92,7 +118,7 @@ import {
 } from "./chunk-6DUL7U2Q.js";
 import {
   CandidateInlineCard
-} from "./chunk-3GLTLDDV.js";
+} from "./chunk-MHXJ2MOB.js";
 import "./chunk-NBZS6VTO.js";
 import {
   CandidateJobEvidence
@@ -103,8 +129,10 @@ import {
   CandidateNoteList
 } from "./chunk-LKGKQDXU.js";
 import {
-  CandidateOutreachComposer
-} from "./chunk-52PO4WFT.js";
+  CandidateChannelLog,
+  CandidateContactDetails,
+  CandidateDefinitionSection
+} from "./chunk-ESIFTU4K.js";
 import {
   CandidateCoverHeader,
   CandidateCoverImage
@@ -131,9 +159,8 @@ import {
   CandidateDetailTabs
 } from "./chunk-ASGWN3F6.js";
 import {
-  CandidateFactList,
-  formatFactValue
-} from "./chunk-MHNDTSGQ.js";
+  CandidateCallCard
+} from "./chunk-N75IMABN.js";
 import {
   CandidateCallList
 } from "./chunk-4PGLERSR.js";
@@ -158,16 +185,15 @@ import "./chunk-YKEE5RQG.js";
 import {
   CandidateContactChannelsMenu
 } from "./chunk-LBAMUWXA.js";
-import {
-  CandidateChannelLog,
-  CandidateContactDetails,
-  CandidateDefinitionSection
-} from "./chunk-ESIFTU4K.js";
 import "./chunk-NHPRTISE.js";
 import {
   formatCalendarDate,
   parseCalendarDate
 } from "./chunk-KCKE3KQE.js";
+import {
+  normalizeCallParticipants,
+  normalizeCallSegments
+} from "./chunk-G7FUKJ2Q.js";
 import {
   CallReconcileCard
 } from "./chunk-LLBDYZPB.js";
@@ -175,6 +201,9 @@ import "./chunk-5BOS2LCM.js";
 import {
   CandidateActivityTimeline
 } from "./chunk-PHBBIDTW.js";
+import {
+  CandidateAddToJobPopover
+} from "./chunk-AYW6BEG5.js";
 import {
   CandidateAssessment
 } from "./chunk-UKOIKB57.js";
@@ -185,17 +214,11 @@ import {
 import {
   CandidateStageSelect
 } from "./chunk-VOKP2HLR.js";
-import {
-  CandidateCallCard
-} from "./chunk-N75IMABN.js";
-import {
-  normalizeCallParticipants,
-  normalizeCallSegments
-} from "./chunk-G7FUKJ2Q.js";
 export {
   CallReconcileCard,
   CandidateActionMenu,
   CandidateActivityTimeline,
+  CandidateAddToJobPopover,
   CandidateAssessment,
   CandidateCallCard,
   CandidateCallList,
@@ -230,9 +253,11 @@ export {
   CandidateNoteComposer,
   CandidateNoteList,
   CandidateOutreachComposer,
+  CandidateOutreachDraftList,
   CandidatePendingNote,
   CandidatePipelineCard,
   CandidatePipelineList,
+  CandidatePresentationRecorder,
   CandidateProfile,
   CandidateProfileBody,
   CandidateProfileDialog,
@@ -248,6 +273,7 @@ export {
   CandidateSelectableAvatar,
   CandidateSharedProfileButton,
   CandidateShortlist,
+  CandidateShortlistNote,
   CandidateSignalList,
   CandidateSignalMenu,
   CandidateStageActions,
@@ -257,18 +283,25 @@ export {
   CareerDateRange,
   CurrentCompanyLabel,
   CurrentCompanyPopover,
+  DocumentList,
+  DocumentListItem,
+  DocumentUploadPanel,
   JobClientBadge,
   JobSummaryCard,
   MatchedCallCard,
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,
+  defaultOutreachDraftActions,
   formatCalendarDate,
   formatFactValue,
+  formatFileSize,
   normalizeCallParticipants,
   normalizeCallSegments,
   normalizeCandidateGrade,
+  outreachDraftCopyText,
   parseCalendarDate,
+  supportedRecordingMimeType,
   useCandidateCardColumns,
   useCandidateVoiceNote
 };

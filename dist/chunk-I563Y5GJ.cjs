@@ -27,6 +27,9 @@ function CandidateInlineCard({
   onSelect,
   selectLabel = "Open candidate profile",
   density = "comfortable",
+  nameSize = "default",
+  headlineWrap = false,
+  actionsAlign = "start",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -35,6 +38,7 @@ function CandidateInlineCard({
   const nameId = `${generatedId}-name`;
   const actionId = `${generatedId}-action`;
   const compact = density === "compact";
+  const centreActions = !compact && actionsAlign === "center";
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     _interactivecard.InteractiveCard,
     {
@@ -81,7 +85,16 @@ function CandidateInlineCard({
                   avatar,
                   /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
                     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", wrap: !compact, children: [
-                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: nameId, level: 5, appearance: compact ? "compact" : "default", truncate: true, children: name }),
+                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                        _heading.Heading,
+                        {
+                          id: nameId,
+                          level: 5,
+                          appearance: compact ? "compact" : nameSize === "lg" ? "section" : "default",
+                          truncate: true,
+                          children: name
+                        }
+                      ),
                       status
                     ] }),
                     headline != null ? (
@@ -89,10 +102,11 @@ function CandidateInlineCard({
                       /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
                         _text.Text,
                         {
+                          "data-slot": "candidate-inline-card-headline",
                           variant: "caption",
                           size: compact ? "xs" : "sm",
                           leading: compact ? "snug" : "normal",
-                          truncate: true,
+                          truncate: compact || !headlineWrap,
                           marginTop: compact ? "none" : "tight",
                           children: headline
                         }
@@ -115,12 +129,13 @@ function CandidateInlineCard({
                   ] }),
                   actions != null ? (
                     // No box of its own, so the actions stay items of the row; it
-                    // only carries a compact row's touch targets to its controls.
+                    // only carries a compact row's touch targets, or the centring, to
+                    // its controls.
                     /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
                       "div",
                       {
                         "data-slot": "candidate-inline-card-actions",
-                        className: compact ? `contents ${_chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : "contents",
+                        className: compact ? `contents ${_chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGETS_WITHIN}` : centreActions ? "contents [&>*]:self-center" : "contents",
                         children: actions
                       }
                     )

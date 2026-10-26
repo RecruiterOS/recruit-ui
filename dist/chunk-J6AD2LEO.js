@@ -1,5 +1,6 @@
 // src/recruit/candidate-shortlist.tsx
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
+import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Heading } from "@epicbagel/saas-kit/primitives/heading";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
@@ -15,6 +16,7 @@ function CandidateShortlist({
   children,
   footer,
   empty = { title: "No candidates shortlisted yet" },
+  emptySize = "inline",
   ...props
 }) {
   const titleId = useId();
@@ -35,9 +37,18 @@ function CandidateShortlist({
             /* @__PURE__ */ jsx(Heading, { id: titleId, level: 2, children: title }),
             description ? /* @__PURE__ */ jsx(Text, { variant: "muted", children: description }) : null
           ] }),
-          status
+          status != null && status !== false ? /* @__PURE__ */ jsx(FlexItem, { shrink: false, children: status }) : null
         ] }),
-        isEmpty ? /* @__PURE__ */ jsx(
+        isEmpty ? emptySize === "md" ? /* @__PURE__ */ jsx(
+          EmptyState,
+          {
+            variant: "empty",
+            size: "md",
+            icon: UsersRound,
+            title: empty.title,
+            description: empty.description ?? ""
+          }
+        ) : /* @__PURE__ */ jsx(
           EmptyState,
           {
             variant: "empty",

@@ -1,6 +1,7 @@
 export { CalendarDateValue, formatCalendarDate, parseCalendarDate } from './core/calendar-date.js';
 export { CallReconcileCard, CallReconcileCardBaseProps, CallReconcileCardLabels, CallReconcileCardProps, CallReconcileNewPerson, CallReconcileOwner, CallReconcilePickerProps, CallReconcileSearchProps, CallReconcileSuggestedPerson } from './recruit/call-reconcile-card.js';
 export { CandidateActivityDetailItem, CandidateActivityGroup, CandidateActivityItem, CandidateActivityLinkItem, CandidateActivityTimeline, CandidateActivityTimelineLabels, CandidateActivityTimelineProps } from './recruit/candidate-activity-timeline.js';
+export { CandidateAddToJobMode, CandidateAddToJobOption, CandidateAddToJobPopover, CandidateAddToJobPopoverLabels, CandidateAddToJobPopoverProps } from './recruit/candidate-add-to-job-popover.js';
 export { CandidateAssessment, CandidateAssessmentFact, CandidateAssessmentLabels, CandidateAssessmentProps } from './recruit/candidate-assessment.js';
 export { CandidateCallCard, CandidateCallCardLabels, CandidateCallCardProps } from './recruit/candidate-call-card.js';
 export { CandidateCallList, CandidateCallListProps } from './recruit/candidate-call-list.js';
@@ -24,14 +25,16 @@ export { CandidateFavouriteButton, CandidateFavouriteButtonLabels, CandidateFavo
 export { CandidateFilterChipOption, CandidateFilterChips, CandidateFilterChipsProps } from './recruit/candidate-filter-chips.js';
 export { CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './recruit/candidate-grade.js';
 export { CandidateHeaderActions, CandidateHeaderActionsProps, CandidateIconAction, CandidateIconActionProps } from './recruit/candidate-header-actions.js';
-export { CandidateInlineCard, CandidateInlineCardDensity, CandidateInlineCardProps } from './recruit/candidate-inline-card.js';
+export { CandidateInlineCard, CandidateInlineCardActionsAlign, CandidateInlineCardDensity, CandidateInlineCardNameSize, CandidateInlineCardProps } from './recruit/candidate-inline-card.js';
 export { CandidateJobEvidence, CandidateJobEvidenceEntry, CandidateJobEvidenceFeedback, CandidateJobEvidenceProps } from './recruit/candidate-job-evidence.js';
 export { CandidateNoteCard, CandidateNoteCardLabels, CandidateNoteCardProps, CandidateNoteComposer, CandidateNoteComposerLabels, CandidateNoteComposerProps, CandidateNoteKind, CandidateNoteList, CandidateNoteListProps, CandidateNotePinned, CandidateNoteScope } from './recruit/candidate-notes.js';
 export { CandidateOutreachChannel, CandidateOutreachComposer, CandidateOutreachComposerLabels, CandidateOutreachComposerProps, CandidateOutreachDraft, CandidateOutreachGuidance } from './recruit/candidate-outreach-composer.js';
+export { CandidateOutreachDraftAction, CandidateOutreachDraftCallback, CandidateOutreachDraftChannel, CandidateOutreachDraftItem, CandidateOutreachDraftList, CandidateOutreachDraftListLabels, CandidateOutreachDraftListProps, CandidateOutreachDraftStatus, CandidateOutreachDraftStatusAction, defaultOutreachDraftActions, outreachDraftCopyText } from './recruit/candidate-outreach-drafts.js';
 export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNoteProps } from './recruit/candidate-pending-note.js';
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './recruit/candidate-pipeline-card.js';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './recruit/candidate-pipeline-list.js';
-export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderProps, CandidateProfileProps } from './recruit/candidate-profile.js';
+export { CandidatePresentationRecorder, CandidatePresentationRecorderAudio, CandidatePresentationRecorderLabels, CandidatePresentationRecorderProps, CandidatePresentationRecorderState, supportedRecordingMimeType } from './recruit/candidate-presentation-recorder.js';
+export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfilePrintMode, CandidateProfileProps } from './recruit/candidate-profile.js';
 export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.js';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './recruit/candidate-profile-link-button.js';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './recruit/candidate-quote.js';
@@ -41,7 +44,8 @@ export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } fr
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './recruit/candidate-role-matches.js';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './recruit/candidate-selectable-avatar.js';
 export { CandidateSharedProfileButton, CandidateSharedProfileButtonProps } from './recruit/candidate-shared-profile-button.js';
-export { CandidateShortlist, CandidateShortlistProps } from './recruit/candidate-shortlist.js';
+export { CandidateShortlist, CandidateShortlistEmptySize, CandidateShortlistProps } from './recruit/candidate-shortlist.js';
+export { CandidateShortlistNote, CandidateShortlistNoteProps } from './recruit/candidate-shortlist-note.js';
 export { CandidateSignalDetail, CandidateSignalItem, CandidateSignalList, CandidateSignalListProps } from './recruit/candidate-signal-list.js';
 export { CandidateSignalMenu, CandidateSignalMenuProps } from './recruit/candidate-signal-menu.js';
 export { CandidateStageActions, CandidateStageActionsLabels, CandidateStageActionsProps, CandidateStageAdvance } from './recruit/candidate-stage-actions.js';
@@ -50,6 +54,7 @@ export { CandidateSuggestedRolesPanel, CandidateSuggestedRolesPanelProps } from 
 export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote } from './recruit/candidate-voice-note.js';
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './recruit/current-company-label.js';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './recruit/current-company-popover.js';
+export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './recruit/document-list.js';
 export { JobClientBadge, JobClientBadgeProps } from './recruit/job-client-badge.js';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './recruit/job-summary-card.js';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './recruit/matched-call-card.js';

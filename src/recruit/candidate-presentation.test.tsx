@@ -1,11 +1,17 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 
 import { CandidateAssessment } from "./candidate-assessment";
 import { CandidateCareerHistoryTimeline } from "./candidate-career-history-timeline";
 import { CandidateCoverHeader, CandidateCoverImage } from "./candidate-cover-header";
-import { CandidateProfileHeader } from "./candidate-profile";
+import {
+  CandidateProfile,
+  CandidateProfileBody,
+  CandidateProfileFooter,
+  CandidateProfileHeader,
+} from "./candidate-profile";
 import {
   candidateGradeDisplay,
   candidateGradeLabel,
@@ -45,6 +51,65 @@ describe("candidate presentation", () => {
       </CandidateCoverHeader>,
     );
     expect(document.querySelector('[data-slot="candidate-cover-header"]')).toHaveClass("overflow-hidden");
+  });
+
+  it("puts actions on the name line, or beside the whole identity on request", () => {
+    const link = <a href="https://example.com/mei">Mei's profile</a>;
+    const meta = <span>Fictional meta</span>;
+    const { rerender } = render(<CandidateProfileHeader name="Mei Example" meta={meta} actions={link} />);
+    const nameRow = () => screen.getByRole("heading", { level: 1, name: "Mei Example" }).parentElement;
+    expect(nameRow()).toContainElement(screen.getByRole("link", { name: "Mei's profile" }));
+    expect(document.querySelector('[data-slot="candidate-profile-header-actions"]')).not.toBeInTheDocument();
+
+    rerender(<CandidateProfileHeader name="Mei Example" meta={meta} actions={link} actionsPlacement="aside" />);
+    const actions = document.querySelector('[data-slot="candidate-profile-header-actions"]');
+    expect(actions).toContainElement(screen.getByRole("link", { name: "Mei's profile" }));
+    // Off the name line, so a tall control can't push the meta down...
+    expect(nameRow()).not.toContainElement(screen.getByRole("link", { name: "Mei's profile" }));
+    // ...and beside the identity, meta included, rather than under it.
+    const identity = actions?.previousElementSibling;
+    expect(identity).toContainElement(screen.getByText("Fictional meta"));
+    expect(actions?.parentElement).toHaveClass("flex-row", "items-start");
+    // A row of its own that keeps its width, so the identity wraps instead.
+    expect(actions).toHaveClass("flex-row", "items-center", "shrink-0");
+
+    // Nothing to place, nothing drawn.
+    rerender(<CandidateProfileHeader name="Mei Example" actionsPlacement="aside" />);
+    expect(document.querySelector('[data-slot="candidate-profile-header-actions"]')).not.toBeInTheDocument();
+  });
+
+  it("prints flat and centres a compact credit footer only when asked", () => {
+    const profile = (props: { flat?: boolean; footer: ReactNode }) => (
+      <CandidateProfile
+        header={<CandidateProfileHeader name="Mei Example" />}
+        footer={props.footer}
+        printMode={props.flat ? "flat" : undefined}
+      >
+        <CandidateProfileBody>Fictional body</CandidateProfileBody>
+      </CandidateProfile>
+    );
+    const root = () => document.querySelector('[data-slot="candidate-profile"]');
+    const footer = () => document.querySelector('[data-slot="candidate-profile-footer"]');
+
+    const { rerender } = render(profile({ footer: <CandidateProfileFooter>Fictional actions</CandidateProfileFooter> }));
+    expect(root()?.className).not.toMatch(/print:/);
+    expect(footer()).toHaveClass("px-[26px]", "py-[26px]", "flex", "gap-2");
+    expect(footer()?.className).not.toMatch(/justify-|print:/);
+
+    rerender(
+      profile({
+        flat: true,
+        footer: (
+          <CandidateProfileFooter justify="center" padding="compact" printVisibility="hidden">
+            Shared via a fictional agency
+          </CandidateProfileFooter>
+        ),
+      }),
+    );
+    expect(root()).toHaveClass("print:border-0");
+    expect(footer()?.tagName).toBe("FOOTER");
+    expect(footer()).toHaveClass("justify-center", "px-[22px]", "py-[18px]", "print:hidden");
+    expect(footer()).not.toHaveClass("px-[26px]");
   });
 
   it("renders quiet quotes without nested card treatment", () => {
