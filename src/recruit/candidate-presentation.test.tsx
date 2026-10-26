@@ -78,6 +78,51 @@ describe("candidate presentation", () => {
     expect(document.querySelector('[data-slot="candidate-profile-header-actions"]')).not.toBeInTheDocument();
   });
 
+  it("puts the name at the heading level asked for, looking the same at every level", () => {
+    const props = {
+      name: "Mei Example",
+      avatar: <span data-testid="avatar">ME</span>,
+      status: <span>Fictional status</span>,
+      meta: <span>Fictional meta</span>,
+      actions: <a href="https://example.com/mei">Mei's profile</a>,
+      padding: "none" as const,
+    };
+    const identity = () => document.querySelector('[data-slot="candidate-profile-header"] > div > div') as HTMLElement;
+    const { rerender } = render(<CandidateProfileHeader {...props} />);
+    // The default is the kit's own header, whose name is the page's h1.
+    expect(screen.getByRole("heading", { level: 1, name: /Mei Example/ })).toBeInTheDocument();
+    const kitTree = identity().cloneNode(true) as HTMLElement;
+
+    rerender(<CandidateProfileHeader {...props} titleLevel={2} />);
+    // In a dialog over a page, an h2: never a second h1.
+    expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+    const heading = screen.getByRole("heading", { level: 2, name: /Mei Example/ });
+    expect(heading).toContainElement(screen.getByText("Fictional status"));
+    expect(heading.parentElement).toContainElement(screen.getByRole("link", { name: "Mei's profile" }));
+    expect(identity()).toContainElement(screen.getByTestId("avatar"));
+    expect(identity()).toContainElement(screen.getByText("Fictional meta"));
+
+    // The same rows, gaps and type as the kit's header, node for node: only
+    // the heading's tag differs, and a few flex defaults (a row, start
+    // justification) that change nothing.
+    const flexDefaults = new Set(["flex-row", "justify-start", "items-stretch"]);
+    const compare = (kit: Element, ours: Element) => {
+      const kitClasses = new Set(kit.classList);
+      const ourClasses = new Set(ours.classList);
+      for (const name of kitClasses) expect(ourClasses, `${name} on <${ours.tagName}>`).toContain(name);
+      for (const name of ourClasses) {
+        if (!kitClasses.has(name)) expect(flexDefaults, `${name} on <${ours.tagName}>`).toContain(name);
+      }
+      expect(ours.children).toHaveLength(kit.children.length);
+      Array.from(kit.children).forEach((child, index) => compare(child, ours.children[index]!));
+    };
+    compare(kitTree, identity());
+    expect(heading.tagName).toBe("H2");
+
+    rerender(<CandidateProfileHeader {...props} titleLevel={4} />);
+    expect(screen.getByRole("heading", { level: 4, name: /Mei Example/ })).toBeInTheDocument();
+  });
+
   it("prints flat and centres a compact credit footer only when asked", () => {
     const profile = (props: { flat?: boolean; footer: ReactNode }) => (
       <CandidateProfile

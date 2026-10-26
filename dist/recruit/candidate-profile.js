@@ -3,7 +3,7 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "../chunk-4HQSJHDL.js";
+} from "../chunk-CXIGUMWJ.js";
 import "../chunk-NBAJDT3O.js";
 export {
   CandidateProfile,

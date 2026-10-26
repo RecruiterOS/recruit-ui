@@ -33,7 +33,7 @@ export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNotePr
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './candidate-pipeline-card.js';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './candidate-pipeline-list.js';
 export { CandidatePresentationRecorder, CandidatePresentationRecorderAudio, CandidatePresentationRecorderLabels, CandidatePresentationRecorderProps, CandidatePresentationRecorderState, supportedRecordingMimeType } from './candidate-presentation-recorder.js';
-export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfilePrintMode, CandidateProfileProps } from './candidate-profile.js';
+export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfileHeaderTitleLevel, CandidateProfilePrintMode, CandidateProfileProps } from './candidate-profile.js';
 export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './candidate-profile-dialog.js';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './candidate-profile-link-button.js';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './candidate-quote.js';
@@ -54,6 +54,7 @@ export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './current-company-label.js';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './current-company-popover.js';
 export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './document-list.js';
+export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefRuleKind, JobBriefSection } from './job-brief-card.js';
 export { JobClientBadge, JobClientBadgeProps } from './job-client-badge.js';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './job-summary-card.js';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './matched-call-card.js';

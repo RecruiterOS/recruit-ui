@@ -34,7 +34,7 @@ export { CandidatePendingNote, CandidatePendingNoteAgent, CandidatePendingNotePr
 export { CandidatePipelineCard, CandidatePipelineCardProps } from './recruit/candidate-pipeline-card.js';
 export { CandidatePipelineList, CandidatePipelineListLabels, CandidatePipelineListProps, CandidatePipelineRow, CandidatePipelineRowStage, CandidateSentimentLabels, CandidateSummaryBullet, CandidateSummaryBullets, CandidateSummaryBulletsLabelOverrides, CandidateSummaryBulletsLabels, CandidateSummaryBulletsProps } from './recruit/candidate-pipeline-list.js';
 export { CandidatePresentationRecorder, CandidatePresentationRecorderAudio, CandidatePresentationRecorderLabels, CandidatePresentationRecorderProps, CandidatePresentationRecorderState, supportedRecordingMimeType } from './recruit/candidate-presentation-recorder.js';
-export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfilePrintMode, CandidateProfileProps } from './recruit/candidate-profile.js';
+export { CandidateProfile, CandidateProfileBody, CandidateProfileBodyProps, CandidateProfileFooter, CandidateProfileFooterJustify, CandidateProfileFooterPadding, CandidateProfileFooterPrintVisibility, CandidateProfileFooterProps, CandidateProfileHeader, CandidateProfileHeaderActionsPlacement, CandidateProfileHeaderProps, CandidateProfileHeaderTitleLevel, CandidateProfilePrintMode, CandidateProfileProps } from './recruit/candidate-profile.js';
 export { CandidateProfileDialog, CandidateProfileDialogHeight, CandidateProfileDialogPresentation, CandidateProfileDialogProps } from './recruit/candidate-profile-dialog.js';
 export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './recruit/candidate-profile-link-button.js';
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './recruit/candidate-quote.js';
@@ -55,6 +55,7 @@ export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './recruit/current-company-label.js';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './recruit/current-company-popover.js';
 export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './recruit/document-list.js';
+export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefRuleKind, JobBriefSection } from './recruit/job-brief-card.js';
 export { JobClientBadge, JobClientBadgeProps } from './recruit/job-client-badge.js';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './recruit/job-summary-card.js';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './recruit/matched-call-card.js';

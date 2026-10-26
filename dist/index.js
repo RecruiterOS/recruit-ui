@@ -1,5 +1,5 @@
 "use client";
-import "./chunk-7R7JT5AD.js";
+import "./chunk-FN45RXQ2.js";
 import {
   CurrentCompanyPopover
 } from "./chunk-QXRY3PXD.js";
@@ -11,7 +11,10 @@ import {
   DocumentListItem,
   DocumentUploadPanel,
   formatFileSize
-} from "./chunk-5ZNJ2NAY.js";
+} from "./chunk-TI77TY54.js";
+import {
+  JobBriefCard
+} from "./chunk-JCLLUQTZ.js";
 import {
   JobClientBadge
 } from "./chunk-4DPYKJJE.js";
@@ -47,7 +50,7 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "./chunk-4HQSJHDL.js";
+} from "./chunk-CXIGUMWJ.js";
 import {
   CandidateQuote
 } from "./chunk-2TU6TCNM.js";
@@ -77,8 +80,8 @@ import {
   CandidateOutreachDraftList,
   defaultOutreachDraftActions,
   outreachDraftCopyText
-} from "./chunk-OHGHIBTO.js";
-import "./chunk-IDSFSTZM.js";
+} from "./chunk-JYGMQJAH.js";
+import "./chunk-SBRXJRL4.js";
 import {
   CandidatePendingNote
 } from "./chunk-3OWWB6XI.js";
@@ -286,6 +289,7 @@ export {
   DocumentList,
   DocumentListItem,
   DocumentUploadPanel,
+  JobBriefCard,
   JobClientBadge,
   JobSummaryCard,
   MatchedCallCard,

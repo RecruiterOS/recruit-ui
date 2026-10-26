@@ -51,6 +51,7 @@ const clientEntryBases = [
   "recruit/candidate-voice-note",
   "recruit/current-company-popover",
   "recruit/document-list",
+  "recruit/job-brief-card",
   "recruit/job-summary-card",
   "recruit/matched-call-card",
 ];

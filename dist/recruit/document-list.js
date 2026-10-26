@@ -4,8 +4,8 @@ import {
   DocumentListItem,
   DocumentUploadPanel,
   formatFileSize
-} from "../chunk-5ZNJ2NAY.js";
-import "../chunk-IDSFSTZM.js";
+} from "../chunk-TI77TY54.js";
+import "../chunk-SBRXJRL4.js";
 export {
   DocumentList,
   DocumentListItem,

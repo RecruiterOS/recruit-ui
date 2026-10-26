@@ -5,6 +5,92 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.13.0
+
+### Added
+
+- `JobBriefCard`, a job's brief as one section: a `description`, headline
+  `facts` worded by the host (location, salary and on-target earnings, say),
+  the must-have, nice-to-have and red-flag lists (`mustHaves`,
+  `niceToHaves`, `redFlags`, each a kit EditableList with its sentiment dot),
+  then titled `sections` such as role details, who the role sells to, the
+  interview process or the company, each holding labelled facts, a bulleted
+  list, or a numbered one with `ordered`, and last a `footer` slot. `rules`
+  names which lists show, in order (all three by default), so a page that
+  mustn't show red flags leaves them out. The root is a `section` named by
+  the title, marked `data-slot="job-brief-card"` with `data-presentation`;
+  each list's wrapper is marked `data-slot="job-brief-rule-list"` with its
+  `data-kind`, each section `data-slot="job-brief-section"`, and the
+  skeleton `data-slot="job-brief-loading"`, while the kit Card inside keeps
+  its own `data-slot`. `@recruiteros/recruit-ui/recruit/job-brief-card` is a
+  client entry, and the `JobBriefCardProps`, `JobBriefCardLabels`,
+  `JobBriefCardPresentation`, `JobBriefRuleKind`, `JobBriefFact` and
+  `JobBriefSection` types ship with it.
+- `JobBriefCard` takes two `presentation`s. `collapsible` (the default),
+  for a page, is a kit Card holding a CollapsibleSection whose trigger is
+  the title, with the whole body folding under it; `open`, `defaultOpen`
+  (false by default) and `onOpenChange` drive it. `preview`, for a message
+  in a conversation, is a kit Card with the title as a heading and an
+  optional `status` at its end (an "Updated" badge, say, which keeps its
+  width while the title wraps). Closed, a preview shows the description
+  clamped to two lines and the first `previewCount` facts and entries of
+  the first shown list that has any, so an empty must-haves list hands the
+  preview to the nice-to-haves (3 by default; 0 leaves the title, the
+  description and the toggle), then a toggle, "Show full brief (N more)",
+  that opens the rest in place; it has `aria-expanded`, `aria-controls`
+  while open, and a 44px touch target on a touchscreen. Closing it from the
+  toggle, which sits at the foot of the full brief, scrolls the card back
+  into view (`block: "nearest"`, so a card already in view stays put). With
+  nothing hidden, the whole brief shows and no toggle does. A preview's
+  footer shows in both states, under the toggle.
+- `JobBriefCard` takes `onRulesChange(kind, items)`, which makes the lists
+  editable in place: each add, edit or remove hands the whole new list to
+  the host with which list it is, and the lists stay controlled. A callback
+  that returns a promise keeps the list showing what it sent, marked
+  `aria-busy`, until the promise settles, then the host's lists again, so a
+  save that fails reverts while the host says why; only the latest save
+  settles a list. On a touchscreen a row's edit and remove buttons stay
+  visible (the kit list shows them on hover or focus only) at a 44px touch
+  target. A preview edits only once open, so an editable preview always
+  offers its toggle. A read-only empty list draws nothing; an editable one
+  keeps the kit's "None set" and its add field.
+- `JobBriefCard`'s blank slates: with nothing to show and nothing to edit,
+  the kit's empty state (worded by `empty`, "No brief yet" by default);
+  while `processing` with nothing to show or edit yet, an in-progress one
+  with a spinning icon (`labels.processingTitle`, "Reading your document",
+  over `labels.processingDescription`, "The brief will fill in shortly.");
+  otherwise while `processing`, the kit's Alert above the brief
+  (`labels.processing`). An editable brief never gives its lists up to the
+  in-progress state: a document that is never read in full would otherwise
+  leave an empty brief with no way to add a rule. While `loading` with
+  nothing yet, skeleton rows marked `aria-busy`. `titleLevel` (2 by default,
+  or 3 or 4) sets the heading level: in a preview the title is a heading at
+  it, with each list's label and each section's title a heading one level
+  under; in `collapsible`, where the title is a button, the lists and
+  sections take that level themselves, so the page's outline skips none.
+  Only the tags change. Every fixed word is a label (`labels`): the lists'
+  names, the item names their controls use ("Add must have…", "Remove must
+  have"), the processing notice and blank slate, and the toggle.
+- `CandidateProfileHeader` takes `titleLevel`, the name's heading level, with
+  the `CandidateProfileHeaderTitleLevel` type. 1 (the default, as before)
+  suits a profile that is the page; 2, 3 or 4 suit one inside something that
+  already has the page's h1, such as the header of a `CandidateProfileDialog`
+  over a page, so the dialog adds no second h1. Only the tag changes: at levels
+  2 to 4 the header restates the kit ContactHeader's rows, gaps and name
+  type from kit primitives, because the kit's name is always an h1.
+
+### Known issues
+
+- In `JobBriefCard`'s `collapsible` presentation the title is the label of
+  the kit CollapsibleSection's trigger button, which can't hold a heading, so
+  that title isn't in the page's heading outline; the section is still named
+  by it, and its lists and sections sit at `titleLevel` so no level is
+  skipped. A heading level on CollapsibleSection is a kit change.
+- The kit EditableList names each row's buttons after the list ("Edit must
+  have", "Remove must have") rather than after the entry, so a screen reader
+  hears the same name on every row of a list. Per-entry names are a kit
+  change.
+
 ## 0.12.0
 
 ### Added

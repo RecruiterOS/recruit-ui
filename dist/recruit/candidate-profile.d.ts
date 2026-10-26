@@ -41,10 +41,19 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
      * drawer body.
      */
     padding?: Extract<CandidateCoverHeaderPadding, "lg" | "dialog" | "none">;
+    /**
+     * The name's heading level. 1 (the default) suits a profile that is the
+     * page. 2, 3 or 4 suit one inside something that already has the page's
+     * h1, such as a dialog over a page or a section of one. Only the tag
+     * changes: the name looks the same at every level.
+     */
+    titleLevel?: CandidateProfileHeaderTitleLevel;
 }
 /** Where a CandidateProfileHeader puts its actions. */
 type CandidateProfileHeaderActionsPlacement = "name" | "aside";
-declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, actionsPlacement, padding, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
+/** The heading level of a CandidateProfileHeader's name. */
+type CandidateProfileHeaderTitleLevel = 1 | 2 | 3 | 4;
+declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, actionsPlacement, padding, titleLevel, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
     divided?: boolean;
@@ -70,4 +79,4 @@ type CandidateProfileFooterPadding = "default" | "compact";
 type CandidateProfileFooterPrintVisibility = "visible" | "hidden";
 declare function CandidateProfileFooter({ children, justify, padding, printVisibility, className, ...props }: CandidateProfileFooterProps): react.JSX.Element;
 
-export { CandidateProfile, CandidateProfileBody, type CandidateProfileBodyProps, CandidateProfileFooter, type CandidateProfileFooterJustify, type CandidateProfileFooterPadding, type CandidateProfileFooterPrintVisibility, type CandidateProfileFooterProps, CandidateProfileHeader, type CandidateProfileHeaderActionsPlacement, type CandidateProfileHeaderProps, type CandidateProfilePrintMode, type CandidateProfileProps };
+export { CandidateProfile, CandidateProfileBody, type CandidateProfileBodyProps, CandidateProfileFooter, type CandidateProfileFooterJustify, type CandidateProfileFooterPadding, type CandidateProfileFooterPrintVisibility, type CandidateProfileFooterProps, CandidateProfileHeader, type CandidateProfileHeaderActionsPlacement, type CandidateProfileHeaderProps, type CandidateProfileHeaderTitleLevel, type CandidateProfilePrintMode, type CandidateProfileProps };

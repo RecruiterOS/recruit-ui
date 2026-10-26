@@ -1,6 +1,7 @@
 import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { ContactHeader } from "@epicbagel/saas-kit/primitives/contact-header";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Heading } from "@epicbagel/saas-kit/primitives/heading";
 import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
@@ -76,10 +77,87 @@ export interface CandidateProfileHeaderProps
    * drawer body.
    */
   padding?: Extract<CandidateCoverHeaderPadding, "lg" | "dialog" | "none">;
+  /**
+   * The name's heading level. 1 (the default) suits a profile that is the
+   * page. 2, 3 or 4 suit one inside something that already has the page's
+   * h1, such as a dialog over a page or a section of one. Only the tag
+   * changes: the name looks the same at every level.
+   */
+  titleLevel?: CandidateProfileHeaderTitleLevel;
 }
 
 /** Where a CandidateProfileHeader puts its actions. */
 export type CandidateProfileHeaderActionsPlacement = "name" | "aside";
+
+/** The heading level of a CandidateProfileHeader's name. */
+export type CandidateProfileHeaderTitleLevel = 1 | 2 | 3 | 4;
+
+/**
+ * The person's identity: avatar, name with its status, actions and meta. At
+ * level 1 it is the kit's ContactHeader, whose name is an h1. At any other
+ * level it is the same composition with the name at that level: the
+ * ContactHeader's rows, gaps and name type, restated from kit primitives,
+ * because the kit's name takes no level.
+ */
+function ProfileIdentity({
+  level,
+  avatar,
+  name,
+  status,
+  meta,
+  actions,
+}: {
+  level: CandidateProfileHeaderTitleLevel;
+  avatar?: ReactNode;
+  name: ReactNode;
+  status?: ReactNode;
+  meta?: ReactNode;
+  actions?: ReactNode;
+}) {
+  if (level === 1) {
+    return (
+      <ContactHeader
+        avatar={avatar}
+        name={name}
+        status={status}
+        meta={meta}
+        actions={actions}
+        spacing="none"
+      />
+    );
+  }
+
+  return (
+    <Stack direction="horizontal" gap="md" align="start">
+      {avatar ? <FlexItem shrink={false}>{avatar}</FlexItem> : null}
+      <FlexItem grow minWidth="zero">
+        <Stack direction="horizontal" gap="compact" align="start" justify="between">
+          {/* The ContactHeader name's type: the level-2 size without its
+              leading-tight (restating the size drops it), so the line height
+              is the size's own. */}
+          <Heading level={2} as={`h${level}`} className="min-w-0 text-xl md:text-2xl">
+            <span className="inline-flex min-w-0 max-w-full items-center gap-2">
+              {name}
+              {status}
+            </span>
+          </Heading>
+          {/* 6px between actions and between meta items: half a step off the
+              Stack scale, as the ContactHeader sets them. */}
+          {actions ? (
+            <Stack direction="horizontal" align="center" shrink={false} className="gap-1.5">
+              {actions}
+            </Stack>
+          ) : null}
+        </Stack>
+        {meta ? (
+          <Stack direction="horizontal" align="center" wrap className="mt-1.5 gap-1.5">
+            {meta}
+          </Stack>
+        ) : null}
+      </FlexItem>
+    </Stack>
+  );
+}
 
 export function CandidateProfileHeader({
   name,
@@ -92,18 +170,19 @@ export function CandidateProfileHeader({
   actions,
   actionsPlacement = "name",
   padding = "lg",
+  titleLevel = 1,
   className,
   ...props
 }: CandidateProfileHeaderProps) {
   const aside = actionsPlacement === "aside" && actions != null;
   const identity = (
-    <ContactHeader
+    <ProfileIdentity
+      level={titleLevel}
       avatar={avatar}
       name={name}
       status={status}
       meta={meta}
       actions={aside ? undefined : actions}
-      spacing="none"
     />
   );
 

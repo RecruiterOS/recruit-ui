@@ -4,10 +4,10 @@
 
 
 
-var _chunkA7XUZXNPcjs = require('../chunk-A7XUZXNP.cjs');
-require('../chunk-5E7ZZ5PN.cjs');
+var _chunk3SS4SZKAcjs = require('../chunk-3SS4SZKA.cjs');
+require('../chunk-GVQPJCZ6.cjs');
 
 
 
 
-exports.CandidateOutreachDraftList = _chunkA7XUZXNPcjs.CandidateOutreachDraftList; exports.defaultOutreachDraftActions = _chunkA7XUZXNPcjs.defaultOutreachDraftActions; exports.outreachDraftCopyText = _chunkA7XUZXNPcjs.outreachDraftCopyText;
+exports.CandidateOutreachDraftList = _chunk3SS4SZKAcjs.CandidateOutreachDraftList; exports.defaultOutreachDraftActions = _chunk3SS4SZKAcjs.defaultOutreachDraftActions; exports.outreachDraftCopyText = _chunk3SS4SZKAcjs.outreachDraftCopyText;

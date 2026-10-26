@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } }
 
-var _chunk5E7ZZ5PNcjs = require('./chunk-5E7ZZ5PN.cjs');
+var _chunkGVQPJCZ6cjs = require('./chunk-GVQPJCZ6.cjs');
 
 // src/recruit/candidate-outreach-drafts.tsx
 var _badge = require('@epicbagel/saas-kit/primitives/badge');
@@ -55,9 +55,9 @@ function CandidateOutreachDraftCard({
   const copy = { ...LABELS, ...labels };
   const channel = draft.channel.label;
   const offered = availableActions(draft);
-  const [approving, approve] = _chunk5E7ZZ5PNcjs.usePendingAction.call(void 0, onApprove && (() => onApprove(draft)));
-  const [dismissing, dismiss] = _chunk5E7ZZ5PNcjs.usePendingAction.call(void 0, onDismiss && (() => onDismiss(draft)));
-  const [sending, markSent] = _chunk5E7ZZ5PNcjs.usePendingAction.call(void 0, onMarkSent && (() => onMarkSent(draft)));
+  const [approving, approve] = _chunkGVQPJCZ6cjs.usePendingAction.call(void 0, onApprove && (() => onApprove(draft)));
+  const [dismissing, dismiss] = _chunkGVQPJCZ6cjs.usePendingAction.call(void 0, onDismiss && (() => onDismiss(draft)));
+  const [sending, markSent] = _chunkGVQPJCZ6cjs.usePendingAction.call(void 0, onMarkSent && (() => onMarkSent(draft)));
   const busy = approving || dismissing || sending;
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     _stack.Stack,

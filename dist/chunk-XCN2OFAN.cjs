@@ -6,6 +6,7 @@ var _chunkDUEGVK55cjs = require('./chunk-DUEGVK55.cjs');
 var _utils = require('@epicbagel/saas-kit/lib/utils');
 var _contactheader = require('@epicbagel/saas-kit/primitives/contact-header');
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
+var _heading = require('@epicbagel/saas-kit/primitives/heading');
 var _panelsection = require('@epicbagel/saas-kit/primitives/panel-section');
 var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _text = require('@epicbagel/saas-kit/primitives/text');
@@ -37,6 +38,41 @@ function CandidateProfile({
     }
   );
 }
+function ProfileIdentity({
+  level,
+  avatar,
+  name,
+  status,
+  meta,
+  actions
+}) {
+  if (level === 1) {
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+      _contactheader.ContactHeader,
+      {
+        avatar,
+        name,
+        status,
+        meta,
+        actions,
+        spacing: "none"
+      }
+    );
+  }
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [
+    avatar ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { shrink: false, children: avatar }) : null,
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
+      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "compact", align: "start", justify: "between", children: [
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { level: 2, as: `h${level}`, className: "min-w-0 text-xl md:text-2xl", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, "span", { className: "inline-flex min-w-0 max-w-full items-center gap-2", children: [
+          name,
+          status
+        ] }) }),
+        actions ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", align: "center", shrink: false, className: "gap-1.5", children: actions }) : null
+      ] }),
+      meta ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", align: "center", wrap: true, className: "mt-1.5 gap-1.5", children: meta }) : null
+    ] })
+  ] });
+}
 function CandidateProfileHeader({
   name,
   avatar,
@@ -48,19 +84,20 @@ function CandidateProfileHeader({
   actions,
   actionsPlacement = "name",
   padding = "lg",
+  titleLevel = 1,
   className,
   ...props
 }) {
   const aside = actionsPlacement === "aside" && actions != null;
   const identity = /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-    _contactheader.ContactHeader,
+    ProfileIdentity,
     {
+      level: titleLevel,
       avatar,
       name,
       status,
       meta,
-      actions: aside ? void 0 : actions,
-      spacing: "none"
+      actions: aside ? void 0 : actions
     }
   );
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
