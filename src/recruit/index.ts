@@ -57,6 +57,7 @@ export * from "./current-company-label";
 export * from "./current-company-popover";
 export * from "./document-list";
 export * from "./job-brief-card";
+export * from "./job-brief-changes";
 export * from "./job-client-badge";
 export * from "./job-summary-card";
 export * from "./matched-call-card";

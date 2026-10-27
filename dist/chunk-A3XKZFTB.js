@@ -191,10 +191,89 @@ function jobBriefView(content, options = {}) {
     }
   };
 }
+var jobBriefVersionLabels = Object.freeze({
+  number: (number) => `v${number}`,
+  current: "Current",
+  earlier: "Earlier",
+  separator: " \xB7 "
+});
+function jobBriefVersionLabel(version, labels = {}) {
+  const own = text(version.label);
+  if (own) return own;
+  const words = { ...jobBriefVersionLabels, ...labels };
+  const number = validVersion(version.number) ? words.number(version.number) : "";
+  const mark = version.current ? words.current : words.earlier;
+  return [number, mark].filter(Boolean).join(words.separator);
+}
+function validVersion(value) {
+  return typeof value === "number" && Number.isInteger(value) && value > 0;
+}
+var jobBriefChangeLabels = Object.freeze({
+  added: (field, item) => item ? `Added ${field}: ${item}` : `Added ${field}`,
+  removed: (field, item) => item ? `Removed ${field}: ${item}` : `Removed ${field}`,
+  reworded: (field, from, to) => from && to ? `Reworded ${field}: "${from}" \u2192 "${to}"` : to ? `Reworded ${field}: "${to}"` : `Reworded ${field}`,
+  moved: (field, item, position) => {
+    const moved = item ? `Moved ${field} "${item}"` : `Moved ${field}`;
+    return position ? `${moved} to position ${position}` : moved;
+  },
+  set: (fieldTitle, from, to) => from && to ? `${fieldTitle}: ${from} \u2192 ${to}` : to ? `${fieldTitle}: ${to}` : fieldTitle,
+  cleared: (field, from) => from ? `Removed the ${field} (was ${from})` : `Removed the ${field}`,
+  replaced: (field, to) => to ? `Replaced the ${field} (${to})` : `Replaced the ${field}`,
+  proseAdded: (field) => `Added ${/^[aeiou]/i.test(field) ? "an" : "a"} ${field}`,
+  proseUpdated: (field) => `Updated the ${field}`,
+  proseCleared: (field) => `Removed the ${field}`,
+  entries: (count) => `${plain.format(count)} ${count === 1 ? "entry" : "entries"}`,
+  more: (count) => `${plain.format(count)} more ${count === 1 ? "change" : "changes"}`,
+  groupName: (version) => validVersion(version) ? `What changed in ${jobBriefVersionLabels.number(version)}` : "What changed"
+});
+var MAX_CHANGE_VALUE_LENGTH = 80;
+var grouped = new Intl.NumberFormat(LOCALE);
+function changeValue(value, labels) {
+  if (typeof value === "string") {
+    const characters = Array.from(value.replace(/\s+/g, " ").trim());
+    return characters.length > MAX_CHANGE_VALUE_LENGTH ? `${characters.slice(0, MAX_CHANGE_VALUE_LENGTH - 3).join("").trimEnd()}\u2026` : characters.join("");
+  }
+  if (typeof value === "number") return Number.isFinite(value) ? grouped.format(value) : "";
+  if (Array.isArray(value)) return labels.entries(value.length);
+  return "";
+}
+function jobBriefChangeText(change, labels = {}) {
+  const words = { ...jobBriefChangeLabels, ...labels };
+  const field = text(change.field) ?? "";
+  const from = changeValue(change.from, words);
+  const to = changeValue(change.to, words);
+  const item = changeValue(change.item, words);
+  if (change.prose) {
+    if (change.kind === "cleared" || change.kind === "removed") return words.proseCleared(field);
+    return from ? words.proseUpdated(field) : words.proseAdded(field);
+  }
+  switch (change.kind) {
+    case "added":
+      return words.added(field, item);
+    case "removed":
+      return words.removed(field, item);
+    case "reworded":
+      return words.reworded(field, from, to);
+    case "moved":
+      return words.moved(field, item, to);
+    case "cleared":
+      return words.cleared(field, from);
+    case "replaced":
+      return words.replaced(field, to);
+    case "set":
+    default:
+      if (!to && from) return words.cleared(field, from);
+      return words.set(text(change.fieldTitle) ?? capitalise(field), from, to);
+  }
+}
 
 export {
   jobBriefLabels,
   jobBriefTitle,
   formatJobBriefSalary,
-  jobBriefView
+  jobBriefView,
+  jobBriefVersionLabels,
+  jobBriefVersionLabel,
+  jobBriefChangeLabels,
+  jobBriefChangeText
 };

@@ -5,6 +5,75 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.15.0
+
+### Breaking
+
+- `@epicbagel/saas-kit` 1.1.0 or later is required: the peer range is
+  `^1.1.0` (it was `^1.0.0`), and the registry installs that range.
+  `JobBriefChanges` draws the kit's trace lines (`primitives/trace`), which
+  1.1.0 added. A host on 1.0.0 upgrades the kit; nothing else changes.
+
+### Added
+
+- `JobBriefCard` takes `version` (`JobBriefVersion`: `number`, `current`,
+  and optionally `label` and `secondaryLabel`) and draws it at the title's
+  end, before any `status`, as the kit's `StatusBadge`: worded by
+  `jobBriefVersionLabel`, in the success tone on the version in force now
+  and the neutral tone on one a later version replaced, then any
+  `secondaryLabel` (the number another system gives the same version, say)
+  in a second, neutral badge. The badges name the section with the title and
+  the status ("Account Executive · Example Co v3 · Current"), so versions of
+  one brief stay apart in a screen reader's list of regions, and in
+  `collapsible` they sit in the trigger as phrasing content. They are marked
+  `data-slot="job-brief-version"` with `data-current`; each badge keeps the
+  kit's own `data-slot`.
+- `jobBriefVersionLabel(version, labels)`, a version's wording: "v3 ·
+  Current" for the version in force now and "v2 · Earlier" for one a later
+  version replaced, so the state is in words and never in a badge's colour
+  alone. A number that isn't a whole number from 1 is left out, leaving the
+  mark ("Current"); an empty `earlier` leaves an earlier version's number
+  alone ("v2"); the version's own `label` wins. Its default words are
+  `jobBriefVersionLabels` (`JobBriefVersionLabels`: `number`, `current`,
+  `earlier` and `separator`), frozen.
+- `JobBriefChanges`, what a version of a brief changed, for under its card:
+  one quiet kit trace line per change, each led by an icon for its kind (a
+  plus for added, a minus for removed or cleared, an arrow for set or
+  reworded, up and down arrows for moved, a refresh for replaced) and never
+  a sentiment colour, worded by `jobBriefChangeText`. The first
+  `previewCount` show (3 by default) and the rest fold under a toggle, "2
+  more changes", that opens them in place. The root is a group named for the
+  `version` ("What changed in v3", or "What changed" without one; a host's
+  `aria-label` wins), marked `data-slot="job-brief-changes"`, and each line
+  carries its `data-change-kind`; the kit's trace parts keep their own
+  `data-slot`. With no changes it draws nothing, as for a brief's first
+  version, which is the whole brief. `labels` takes any of
+  `jobBriefChangeLabels`. `@recruiteros/recruit-ui/recruit/job-brief-changes`
+  is a client entry, and `JobBriefChangesProps` ships with it.
+- `jobBriefChangeText(change, labels)`, one change as a line, from display
+  values each app maps its own change records onto (`JobBriefChange`: the
+  `kind`, the `field` as it reads mid-sentence and, where it leads a line,
+  its `fieldTitle`, then the `item`, `from` and `to` the kind uses, and
+  `prose`). All seven kinds (`JobBriefChangeKind`): "Added must-have:
+  Python", "Removed red flag: Job hopping", 'Reworded must-have: "Python" →
+  "Python 3"', 'Moved must-have "Python" to position 1', "Location: Remote →
+  Hybrid", "Removed the location (was Remote)" and "Replaced the interview
+  steps (3 entries)". Each value (`JobBriefChangeValue`) is shaped for a
+  line: text with its whitespace collapsed and cut to 80 characters, never
+  through one, with an ellipsis; a number grouped ("80,000", so a year comes
+  in as text); a list counted ("3 entries"). A missing value drops its colon,
+  quotes or arrow rather than leaving them dangling, a `set` to nothing from
+  a value reads as `cleared`, and a kind the release doesn't know reads as a
+  new value. A `prose` field, such as a role description, says only that it
+  was added, updated or removed. Its wording is `jobBriefChangeLabels`
+  (`JobBriefChangeLabels`), frozen, which also words `JobBriefChanges`'
+  toggle (`more`) and group (`groupName`).
+- The version and change helpers and their types ship from
+  `@recruiteros/recruit-ui/recruit/job-brief-view`, the subpath without a
+  client boundary, so a server can word a change too, and from the
+  `job-brief-card` entry and the `recruit` and root barrels; the change
+  helpers and types also from the `job-brief-changes` entry.
+
 ## 0.14.0
 
 ### Breaking

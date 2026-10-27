@@ -1,3 +1,4 @@
+import { StatusBadge } from "@epicbagel/saas-kit/primitives/status-badge";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { useState } from "react";
@@ -6,6 +7,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   JobBriefCard,
   jobBriefLabels,
+  jobBriefVersionLabel,
   jobBriefView,
   type JobBriefContent,
   type JobBriefRuleKind,
@@ -683,5 +685,106 @@ describe("job brief card, one look", () => {
     expect(rows()[1]).toBe(document.getElementById(toggle.getAttribute("aria-controls")!));
     await user.click(toggle);
     expect(rows()).toHaveLength(2);
+  });
+});
+
+describe("job brief card, version", () => {
+  /** The class names the kit StatusBadge gives a tone, to compare a drawn badge with. */
+  function toneClass(tone: "success" | "neutral") {
+    const { container, unmount } = render(<StatusBadge as="span" tone={tone}>Fictional</StatusBadge>);
+    const className = container.firstElementChild!.className;
+    unmount();
+    return className;
+  }
+
+  it("draws the version in force now as a success badge, and names the section with it", () => {
+    const success = toneClass("success");
+    render(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 3, current: true }} />);
+    const badge = screen.getByText("v3 · Current");
+    expect(badge).toHaveAttribute("data-slot", "status-badge");
+    expect(badge.className).toBe(success);
+    expect(badge.closest('[data-slot="job-brief-version"]')).toHaveAttribute("data-current", "true");
+    expect(screen.getByRole("region", { name: "Fictional brief v3 · Current" })).toBeInTheDocument();
+  });
+
+  it("draws an earlier version as a neutral badge, worded so in words as well as colour", () => {
+    const neutral = toneClass("neutral");
+    render(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 2, current: false }} />);
+    const badge = screen.getByText("v2 · Earlier");
+    expect(badge.className).toBe(neutral);
+    expect(badge.closest('[data-slot="job-brief-version"]')).toHaveAttribute("data-current", "false");
+    expect(screen.getByRole("region", { name: "Fictional brief v2 · Earlier" })).toBeInTheDocument();
+  });
+
+  it("draws a second label as a neutral badge after the version, and its own label in place of the wording", () => {
+    const neutral = toneClass("neutral");
+    const { rerender } = render(
+      <JobBriefCard
+        title="Fictional brief"
+        presentation="preview"
+        version={{ number: 55, current: true, secondaryLabel: "Partner v48" }}
+      />,
+    );
+    const version = document.querySelector('[data-slot="job-brief-version"]')!;
+    expect([...version.children].map((badge) => badge.textContent)).toEqual(["v55 · Current", "Partner v48"]);
+    expect(screen.getByText("Partner v48").className).toBe(neutral);
+    expect(screen.getByRole("region", { name: "Fictional brief v55 · Current Partner v48" })).toBeInTheDocument();
+
+    rerender(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 4, current: false, label: "Draft" }} />);
+    expect(screen.getByRole("region", { name: "Fictional brief Draft" })).toBeInTheDocument();
+    expect(screen.getByText("Draft").className).toBe(neutral);
+
+    // A blank second label is none.
+    rerender(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 4, current: true, secondaryLabel: " " }} />);
+    expect(document.querySelector('[data-slot="job-brief-version"]')!.children).toHaveLength(1);
+  });
+
+  it("words the version as jobBriefVersionLabel does, so a host's own wording comes in as its label", () => {
+    const { rerender } = render(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 0, current: true }} />);
+    // No usable number: the mark alone.
+    expect(screen.getByRole("region", { name: "Fictional brief Current" })).toBeInTheDocument();
+    const label = jobBriefVersionLabel({ number: 2, current: false }, { earlier: "" });
+    rerender(<JobBriefCard title="Fictional brief" presentation="preview" version={{ number: 2, current: false, label }} />);
+    expect(screen.getByRole("region", { name: "Fictional brief v2" })).toBeInTheDocument();
+    // Without a version or a status, the title alone names it.
+    rerender(<JobBriefCard title="Fictional brief" presentation="preview" />);
+    expect(document.querySelector('[data-slot="job-brief-version"]')).toBeNull();
+    expect(screen.getByRole("region", { name: "Fictional brief" })).toBeInTheDocument();
+  });
+
+  it("leads the status with the version, both naming the section", () => {
+    render(
+      <JobBriefCard
+        title="Fictional brief"
+        presentation="preview"
+        version={{ number: 3, current: true }}
+        status={<span>Updated</span>}
+      />,
+    );
+    const version = screen.getByText("v3 · Current");
+    const status = screen.getByText("Updated");
+    expect(version.compareDocumentPosition(status) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Fictional brief v3 · Current Updated" })).toBeInTheDocument();
+  });
+
+  it("sits inside the collapsible's trigger as phrasing content, before the chevron", () => {
+    render(
+      <JobBriefCard
+        title="Fictional brief"
+        version={{ number: 3, current: true, secondaryLabel: "Partner v48" }}
+        status={<span>Updated</span>}
+        description={description}
+      />,
+    );
+    const trigger = screen.getByRole("button", { name: /Fictional brief/ });
+    const version = trigger.querySelector('[data-slot="job-brief-version"]') as HTMLElement;
+    expect(trigger).toContainElement(version);
+    expect(trigger).toContainElement(screen.getByText("Updated"));
+    // A button holds only phrasing content: every part of the row is a span.
+    for (const element of trigger.querySelectorAll("*")) {
+      expect(["SPAN", "svg", "path"]).toContain(element.tagName);
+    }
+    expect(version.compareDocumentPosition(trigger.querySelector("svg")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Fictional brief v3 · Current Partner v48 Updated" })).toBeInTheDocument();
   });
 });

@@ -1,6 +1,7 @@
 import {
-  jobBriefLabels
-} from "./chunk-RNNQGKUL.js";
+  jobBriefLabels,
+  jobBriefVersionLabel
+} from "./chunk-A3XKZFTB.js";
 import {
   usePendingCall
 } from "./chunk-SBRXJRL4.js";
@@ -22,6 +23,7 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
 import { Skeleton } from "@epicbagel/saas-kit/primitives/skeleton";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { StatusBadge } from "@epicbagel/saas-kit/primitives/status-badge";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { FileText, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
@@ -64,19 +66,46 @@ function present(value) {
 function sectionRows(section) {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
 }
+function versionBadges(version) {
+  if (!version) return null;
+  const secondary = version.secondaryLabel?.trim();
+  return (
+    // Phrasing content throughout, so it can sit in the collapsible's trigger.
+    /* @__PURE__ */ jsxs(
+      Stack,
+      {
+        as: "span",
+        "data-slot": "job-brief-version",
+        "data-current": version.current ? "true" : "false",
+        direction: "horizontal",
+        gap: "xs",
+        align: "center",
+        children: [
+          /* @__PURE__ */ jsx(StatusBadge, { as: "span", tone: version.current ? "success" : "neutral", children: jobBriefVersionLabel(version) }),
+          secondary ? /* @__PURE__ */ jsx(StatusBadge, { as: "span", tone: "neutral", children: secondary }) : null
+        ]
+      }
+    )
+  );
+}
 function BriefHeader({
   title,
   status,
+  version,
   titleId,
   statusId,
   heading
 }) {
   const as = heading ? "div" : "span";
+  const hasStatus = present(status);
   return (
     // In the trigger the row takes the width the chevron leaves.
     /* @__PURE__ */ jsxs(Stack, { as, direction: "horizontal", gap: "md", align: "start", justify: "between", grow: !heading, minWidth: "zero", children: [
       /* @__PURE__ */ jsx(Stack, { as, grow: true, minWidth: "zero", children: /* @__PURE__ */ jsx(Heading, { id: titleId, level: 3, as: heading ?? "span", children: title }) }),
-      present(status) ? /* @__PURE__ */ jsx(Stack, { as, id: statusId, shrink: false, children: status }) : null
+      version ? /* @__PURE__ */ jsxs(Stack, { as, id: statusId, shrink: false, direction: "horizontal", gap: "xs", align: "center", children: [
+        version,
+        hasStatus ? status : null
+      ] }) : hasStatus ? /* @__PURE__ */ jsx(Stack, { as, id: statusId, shrink: false, children: status }) : null
     ] })
   );
 }
@@ -133,6 +162,7 @@ function JobBriefCard({
   title = jobBriefLabels.title,
   titleLevel = 2,
   status,
+  version,
   description,
   facts = NO_FACTS,
   mustHaves = NO_ITEMS,
@@ -158,8 +188,19 @@ function JobBriefCard({
   const titleId = useId();
   const statusId = useId();
   const bodyId = useId();
-  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
-  const header = (heading) => /* @__PURE__ */ jsx(BriefHeader, { title, status, titleId, statusId, heading });
+  const versionStatus = versionBadges(version);
+  const labelledBy = versionStatus || present(status) ? `${titleId} ${statusId}` : titleId;
+  const header = (heading) => /* @__PURE__ */ jsx(
+    BriefHeader,
+    {
+      title,
+      status,
+      version: versionStatus,
+      titleId,
+      statusId,
+      heading
+    }
+  );
   const [openState, setOpenState] = useState(defaultOpen);
   const expanded = open ?? openState;
   const setExpanded = (next) => {

@@ -34,13 +34,26 @@ import {
   CandidateDecisionBar,
   CandidateProfileDialog,
 } from "@recruiteros/recruit-ui/recruit";
-import { jobBriefView, type JobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";
+import { JobBriefChanges, type JobBriefChangesProps } from "@recruiteros/recruit-ui/recruit/job-brief-changes";
+import {
+  jobBriefChangeText,
+  jobBriefVersionLabel,
+  jobBriefView,
+  type JobBriefChange,
+  type JobBriefView,
+} from "@recruiteros/recruit-ui/recruit/job-brief-view";
 
 void formatCalendarDate;
 void CandidateDecisionBar;
 void CandidateProfileDialog;
+void JobBriefChanges;
 const view: JobBriefView = jobBriefView({ roleTitle: "Fictional role" });
 void view;
+const change: JobBriefChange = { kind: "added", field: "must-have", item: "Fictional skill" };
+const props: JobBriefChangesProps = { changes: [change], version: 2 };
+const words: string = jobBriefChangeText(change) + jobBriefVersionLabel({ number: 2, current: true });
+void props;
+void words;
 `;
 
 try {
@@ -79,14 +92,18 @@ try {
 
   writeFileSync(
     join(fixtureRoot, "runtime.mjs"),
-    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog) process.exit(1);\n` +
-      // A brief maps outside a client boundary too.
-      `import { jobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n`,
+    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges) process.exit(1);\n` +
+      // A brief maps, and its changes and versions are worded, outside a client boundary too.
+      `import { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
+      `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
+      `if (jobBriefVersionLabel({ number: 2, current: false }) !== "v2 · Earlier") process.exit(1);\n`,
   );
   writeFileSync(
     join(fixtureRoot, "runtime.cjs"),
-    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog) process.exit(1);\n` +
-      `const { jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n`,
+    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges) process.exit(1);\n` +
+      `const { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
+      `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
+      `if (jobBriefVersionLabel({ number: 2, current: false }) !== "v2 · Earlier") process.exit(1);\n`,
   );
   run(process.execPath, ["runtime.mjs"], fixtureRoot);
   run(process.execPath, ["runtime.cjs"], fixtureRoot);

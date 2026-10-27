@@ -13,12 +13,19 @@ import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
 import type { Sentiment } from "@epicbagel/saas-kit/primitives/sentiment-dot";
 import { Skeleton } from "@epicbagel/saas-kit/primitives/skeleton";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
+import { StatusBadge } from "@epicbagel/saas-kit/primitives/status-badge";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { FileText, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
 
 import type { CandidateEmptyCopy } from "./candidate-empty-copy";
-import { jobBriefLabels, type JobBriefRuleKind, type JobBriefRuleLabels } from "./job-brief-view";
+import {
+  jobBriefLabels,
+  jobBriefVersionLabel,
+  type JobBriefRuleKind,
+  type JobBriefRuleLabels,
+  type JobBriefVersion,
+} from "./job-brief-view";
 import { usePendingCall } from "./pending-action";
 import { COARSE_POINTER_TOUCH_TARGET, COARSE_POINTER_TOUCH_TARGETS_WITHIN } from "./touch-targets";
 
@@ -110,14 +117,24 @@ export interface JobBriefCardProps
    */
   titleLevel?: 2 | 3 | 4;
   /**
-   * At the title's end, such as a "Current" badge, in the same place in both
-   * presentations. It keeps its width: on a narrow screen the title wraps
-   * rather than the status. It names the section with the title ("… Current"),
-   * so versions of one brief stay apart in a screen reader's list of regions.
-   * In `collapsible` it sits inside the trigger button, so pass phrasing
-   * content (a Badge rendered `as="span"`).
+   * At the title's end, such as an "Updated" badge, in the same place in both
+   * presentations, after the `version`. It keeps its width: on a narrow
+   * screen the title wraps rather than the status. It names the section with
+   * the title ("… Updated"), so briefs stay apart in a screen reader's list
+   * of regions. In `collapsible` it sits inside the trigger button, so pass
+   * phrasing content (a Badge rendered `as="span"`).
    */
   status?: ReactNode;
+  /**
+   * Which version of the brief this is, drawn at the title's end before any
+   * `status`, as the kit StatusBadge: `jobBriefVersionLabel`'s wording ("v3 ·
+   * Current" or "v2 · Earlier", or the version's own `label`), in the success
+   * tone on the version in force now and the neutral tone on an earlier one,
+   * then any `secondaryLabel` in a second, neutral badge. Like the status, it
+   * names the section with the title ("… v3 · Current"), so each version
+   * stays apart from the others.
+   */
+  version?: JobBriefVersion;
   /** What the role is, in a sentence or two. Clamped to two lines in a closed preview. */
   description?: ReactNode;
   /** Headline facts after the description, such as location, salary and on-target earnings. */
@@ -239,26 +256,49 @@ function sectionRows(section: JobBriefSection): number {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
 }
 
+/** The version's badges: its wording, then any second label. */
+function versionBadges(version: JobBriefVersion | undefined): ReactNode {
+  if (!version) return null;
+  const secondary = version.secondaryLabel?.trim();
+  return (
+    // Phrasing content throughout, so it can sit in the collapsible's trigger.
+    <Stack
+      as="span"
+      data-slot="job-brief-version"
+      data-current={version.current ? "true" : "false"}
+      direction="horizontal"
+      gap="xs"
+      align="center"
+    >
+      <StatusBadge as="span" tone={version.current ? "success" : "neutral"}>{jobBriefVersionLabel(version)}</StatusBadge>
+      {secondary ? <StatusBadge as="span" tone="neutral">{secondary}</StatusBadge> : null}
+    </Stack>
+  );
+}
+
 /**
  * The title row both presentations share: the title in the kit's card-title
- * type, and the status at its end. Given a heading tag, the title is that
- * heading; without one the row is the collapsible trigger's label, so every
- * part is a span (a button holds only phrasing content).
+ * type, and the version and status at its end. Given a heading tag, the
+ * title is that heading; without one the row is the collapsible trigger's
+ * label, so every part is a span (a button holds only phrasing content).
  */
 function BriefHeader({
   title,
   status,
+  version,
   titleId,
   statusId,
   heading,
 }: {
   title: ReactNode;
   status: ReactNode;
+  version: ReactNode;
   titleId: string;
   statusId: string;
   heading?: "h2" | "h3" | "h4";
 }) {
   const as = heading ? "div" : "span";
+  const hasStatus = present(status);
   return (
     // In the trigger the row takes the width the chevron leaves.
     <Stack as={as} direction="horizontal" gap="md" align="start" justify="between" grow={!heading} minWidth="zero">
@@ -267,7 +307,14 @@ function BriefHeader({
         <Heading id={titleId} level={3} as={heading ?? "span"}>{title}</Heading>
       </Stack>
       {/* A badge would shrink and wrap before the title does. */}
-      {present(status) ? <Stack as={as} id={statusId} shrink={false}>{status}</Stack> : null}
+      {version ? (
+        <Stack as={as} id={statusId} shrink={false} direction="horizontal" gap="xs" align="center">
+          {version}
+          {hasStatus ? status : null}
+        </Stack>
+      ) : hasStatus ? (
+        <Stack as={as} id={statusId} shrink={false}>{status}</Stack>
+      ) : null}
     </Stack>
   );
 }
@@ -354,15 +401,15 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
  * fields onto them, so one brief reads the same in every host.
  *
  * Two presentations share one look: the same title row (the title in the
- * card-title type, the status at its end), inset and body, and differ only
- * in what folds. `collapsible` is a kit Card holding a CollapsibleSection,
- * for a page: the title row is the trigger and the whole body folds under
- * it. `preview` is a kit Card with the title as a heading, for a message:
- * closed, it shows the description (two lines), the first `previewCount`
- * facts and entries of the first shown list that has any, then a toggle
- * that opens the full brief in place; with nothing hidden, the full brief
- * shows and no toggle does. Closing it from the toggle brings the card back
- * into view, since a long brief's toggle sits far below its top.
+ * card-title type, the version and status at its end), inset and body, and
+ * differ only in what folds. `collapsible` is a kit Card holding a
+ * CollapsibleSection, for a page: the title row is the trigger and the whole
+ * body folds under it. `preview` is a kit Card with the title as a heading,
+ * for a message: closed, it shows the description (two lines), the first
+ * `previewCount` facts and entries of the first shown list that has any,
+ * then a toggle that opens the full brief in place; with nothing hidden, the
+ * full brief shows and no toggle does. Closing it from the toggle brings the
+ * card back into view, since a long brief's toggle sits far below its top.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps
@@ -370,17 +417,25 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
  * notice. A read-only brief with nothing to show is the kit's empty state,
  * or an in-progress one while `processing`; while `loading`, skeleton rows.
  *
- * The root is a `section` named by the title and the status together, and
- * marked `data-slot="job-brief-card"`, with `data-presentation`; each list's
- * wrapper is marked `data-slot="job-brief-rule-list"` with its `data-kind`,
- * each section `data-slot="job-brief-section"`, and the skeleton
- * `data-slot="job-brief-loading"`. The kit Card inside keeps its own.
+ * Given a `version`, its badges lead the status: "v3 · Current" in the
+ * success tone, or "v2 · Earlier" in the neutral one (`jobBriefVersionLabel`),
+ * and any second label beside it, neutral.
+ *
+ * The root is a `section` named by the title, the version and the status
+ * together, and marked `data-slot="job-brief-card"`, with
+ * `data-presentation`; the version's badges are marked
+ * `data-slot="job-brief-version"` with `data-current`, each list's wrapper
+ * `data-slot="job-brief-rule-list"` with its `data-kind`, each section
+ * `data-slot="job-brief-section"`, and the skeleton
+ * `data-slot="job-brief-loading"`. The kit Card and badges inside keep their
+ * own.
  */
 export function JobBriefCard({
   presentation = "collapsible",
   title = jobBriefLabels.title,
   titleLevel = 2,
   status,
+  version,
   description,
   facts = NO_FACTS,
   mustHaves = NO_ITEMS,
@@ -406,10 +461,18 @@ export function JobBriefCard({
   const titleId = useId();
   const statusId = useId();
   const bodyId = useId();
-  // The section is named by its title and its status together.
-  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
+  const versionStatus = versionBadges(version);
+  // The section is named by its title, its version and its status together.
+  const labelledBy = versionStatus || present(status) ? `${titleId} ${statusId}` : titleId;
   const header = (heading?: "h2" | "h3" | "h4") => (
-    <BriefHeader title={title} status={status} titleId={titleId} statusId={statusId} heading={heading} />
+    <BriefHeader
+      title={title}
+      status={status}
+      version={versionStatus}
+      titleId={titleId}
+      statusId={statusId}
+      heading={heading}
+    />
   );
   const [openState, setOpenState] = useState(defaultOpen);
   const expanded = open ?? openState;

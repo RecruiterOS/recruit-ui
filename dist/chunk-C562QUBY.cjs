@@ -1,6 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunk73CVHR52cjs = require('./chunk-73CVHR52.cjs');
+
+var _chunkEMCDHZVIcjs = require('./chunk-EMCDHZVI.cjs');
 
 
 var _chunkGVQPJCZ6cjs = require('./chunk-GVQPJCZ6.cjs');
@@ -22,6 +23,7 @@ var _icon = require('@epicbagel/saas-kit/primitives/icon');
 var _list = require('@epicbagel/saas-kit/primitives/list');
 var _skeleton = require('@epicbagel/saas-kit/primitives/skeleton');
 var _stack = require('@epicbagel/saas-kit/primitives/stack');
+var _statusbadge = require('@epicbagel/saas-kit/primitives/status-badge');
 var _text = require('@epicbagel/saas-kit/primitives/text');
 var _lucidereact = require('lucide-react');
 var _react = require('react');
@@ -64,19 +66,46 @@ function present(value) {
 function sectionRows(section) {
   return (_nullishCoalesce(_optionalChain([section, 'access', _ => _.facts, 'optionalAccess', _2 => _2.length]), () => ( 0))) + (_nullishCoalesce(_optionalChain([section, 'access', _3 => _3.items, 'optionalAccess', _4 => _4.length]), () => ( 0)));
 }
+function versionBadges(version) {
+  if (!version) return null;
+  const secondary = _optionalChain([version, 'access', _5 => _5.secondaryLabel, 'optionalAccess', _6 => _6.trim, 'call', _7 => _7()]);
+  return (
+    // Phrasing content throughout, so it can sit in the collapsible's trigger.
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+      _stack.Stack,
+      {
+        as: "span",
+        "data-slot": "job-brief-version",
+        "data-current": version.current ? "true" : "false",
+        direction: "horizontal",
+        gap: "xs",
+        align: "center",
+        children: [
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _statusbadge.StatusBadge, { as: "span", tone: version.current ? "success" : "neutral", children: _chunkEMCDHZVIcjs.jobBriefVersionLabel.call(void 0, version) }),
+          secondary ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _statusbadge.StatusBadge, { as: "span", tone: "neutral", children: secondary }) : null
+        ]
+      }
+    )
+  );
+}
 function BriefHeader({
   title,
   status,
+  version,
   titleId,
   statusId,
   heading
 }) {
   const as = heading ? "div" : "span";
+  const hasStatus = present(status);
   return (
     // In the trigger the row takes the width the chevron leaves.
     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { as, direction: "horizontal", gap: "md", align: "start", justify: "between", grow: !heading, minWidth: "zero", children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as, grow: true, minWidth: "zero", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: titleId, level: 3, as: _nullishCoalesce(heading, () => ( "span")), children: title }) }),
-      present(status) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as, id: statusId, shrink: false, children: status }) : null
+      version ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { as, id: statusId, shrink: false, direction: "horizontal", gap: "xs", align: "center", children: [
+        version,
+        hasStatus ? status : null
+      ] }) : hasStatus ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as, id: statusId, shrink: false, children: status }) : null
     ] })
   );
 }
@@ -130,9 +159,10 @@ function BriefSection({ section, level }) {
 }
 function JobBriefCard({
   presentation = "collapsible",
-  title = _chunk73CVHR52cjs.jobBriefLabels.title,
+  title = _chunkEMCDHZVIcjs.jobBriefLabels.title,
   titleLevel = 2,
   status,
+  version,
   description,
   facts = NO_FACTS,
   mustHaves = NO_ITEMS,
@@ -154,17 +184,28 @@ function JobBriefCard({
   ...props
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
-  const ruleText = { ..._chunk73CVHR52cjs.jobBriefLabels, ...ruleLabels };
+  const ruleText = { ..._chunkEMCDHZVIcjs.jobBriefLabels, ...ruleLabels };
   const titleId = _react.useId.call(void 0, );
   const statusId = _react.useId.call(void 0, );
   const bodyId = _react.useId.call(void 0, );
-  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
-  const header = (heading) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefHeader, { title, status, titleId, statusId, heading });
+  const versionStatus = versionBadges(version);
+  const labelledBy = versionStatus || present(status) ? `${titleId} ${statusId}` : titleId;
+  const header = (heading) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+    BriefHeader,
+    {
+      title,
+      status,
+      version: versionStatus,
+      titleId,
+      statusId,
+      heading
+    }
+  );
   const [openState, setOpenState] = _react.useState.call(void 0, defaultOpen);
   const expanded = _nullishCoalesce(open, () => ( openState));
   const setExpanded = (next) => {
     if (open === void 0) setOpenState(next);
-    _optionalChain([onOpenChange, 'optionalCall', _5 => _5(next)]);
+    _optionalChain([onOpenChange, 'optionalCall', _8 => _8(next)]);
   };
   const returnTo = _react.useRef.call(void 0, null);
   _react.useEffect.call(void 0, () => {

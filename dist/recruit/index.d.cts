@@ -55,12 +55,13 @@ export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './current-company
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './current-company-popover.cjs';
 export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './document-list.cjs';
 export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefSection } from './job-brief-card.cjs';
+export { JobBriefChanges, JobBriefChangesProps } from './job-brief-changes.cjs';
 export { JobClientBadge, JobClientBadgeProps } from './job-client-badge.cjs';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './job-summary-card.cjs';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './matched-call-card.cjs';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './call-data.cjs';
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
-export { JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefRuleKind, JobBriefRuleLabels, JobBriefTitleStyle, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefLabels, jobBriefTitle, jobBriefView } from './job-brief-view.cjs';
+export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefRuleKind, JobBriefRuleLabels, JobBriefTitleStyle, JobBriefVersion, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './job-brief-view.cjs';
 import '../core/calendar-date.cjs';
 import 'react';
 import '@epicbagel/saas-kit/primitives/icon';

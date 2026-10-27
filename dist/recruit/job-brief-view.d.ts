@@ -230,5 +230,147 @@ declare function formatJobBriefSalary(content: Pick<JobBriefContent, "salaryMin"
  * isn't among the `rules`.
  */
 declare function jobBriefView(content: JobBriefContent, options?: JobBriefViewOptions): JobBriefView;
+/** The words a brief's version reads in, as `jobBriefVersionLabel` puts them together. */
+interface JobBriefVersionLabels {
+    /** A version's number as it reads: "v3". */
+    number: (number: number) => string;
+    /** What marks the version in force now: "Current". */
+    current: string;
+    /** What marks a version a later one replaced: "Earlier". Empty for the number alone. */
+    earlier: string;
+    /** Between the number and its mark: " · ". */
+    separator: string;
+}
+/** The default wording of a brief's version. Pass `labels` to `jobBriefVersionLabel` to change any of it. */
+declare const jobBriefVersionLabels: Readonly<JobBriefVersionLabels>;
+/**
+ * Which version of a brief a card shows: JobBriefCard's `version`, which it
+ * draws in its status slot.
+ */
+interface JobBriefVersion {
+    /** The version's number, counted from 1. */
+    number: number;
+    /** Whether this is the version in force now, rather than one a later version replaced. */
+    current: boolean;
+    /** The version's whole wording, in place of `jobBriefVersionLabel`'s. */
+    label?: string;
+    /**
+     * A second, neutral badge after the version's, such as the number another
+     * system gives the same version ("Partner v48"), so people using either
+     * name the same one.
+     */
+    secondaryLabel?: string;
+}
+/**
+ * A version's wording: its number and whether it is in force, "v3 · Current"
+ * for the version in force now and "v2 · Earlier" for one a later version
+ * replaced, so the state is always in words and never in a badge's colour
+ * alone. A number that isn't a whole number from 1 is left out, leaving the
+ * mark ("Current"); an empty `labels.earlier` leaves an earlier version's
+ * number alone ("v2"). The version's own `label`, when it has one, wins.
+ */
+declare function jobBriefVersionLabel(version: Pick<JobBriefVersion, "number" | "current" | "label">, labels?: Partial<JobBriefVersionLabels>): string;
+/**
+ * What one change did: `set` a field's value, `cleared` it, `added` or
+ * `removed` a list's entry, `reworded` one, `moved` one, or `replaced` a
+ * whole field (a list of steps, say) at once.
+ */
+type JobBriefChangeKind = "set" | "cleared" | "added" | "removed" | "reworded" | "moved" | "replaced";
+/**
+ * A value as a change shows it: text (whitespace collapsed, cut to 80
+ * characters), a number (grouped, "80,000", so pass a year as text), or a
+ * list, counted ("3 entries").
+ */
+type JobBriefChangeValue = string | number | readonly unknown[];
+/**
+ * One change a version of a brief made, as display values: a host maps its
+ * own record of a change onto this, naming the field in its own words.
+ *
+ * | kind | reads | uses |
+ * | --- | --- | --- |
+ * | `added` | Added must-have: Python | `item` |
+ * | `removed` | Removed red flag: Job hopping | `item` |
+ * | `reworded` | Reworded must-have: "Python" → "Python 3" | `from`, `to` |
+ * | `moved` | Moved must-have "Python" to position 1 | `item`, `to` (the position) |
+ * | `set` | Location: Remote → Hybrid | `fieldTitle`, `from`, `to` |
+ * | `cleared` | Removed the location (was Remote) | `from` |
+ * | `replaced` | Replaced the interview steps (3 entries) | `to` |
+ *
+ * With `prose`, the line says only that the field was added, updated or
+ * removed ("Updated the role description"), since its text would swamp a line.
+ */
+interface JobBriefChange {
+    /** Stable key for the line. Defaults to its place in the list. */
+    id?: string;
+    kind: JobBriefChangeKind;
+    /** The field's name as it reads mid-sentence: "must-have", "location", "OTE". */
+    field: string;
+    /** The field's name where it leads a `set` line: "Location". Defaults to `field` with a capital. */
+    fieldTitle?: string;
+    /** The list entry an `added`, `removed` or `moved` change is about. */
+    item?: string | null;
+    /**
+     * What it was: a `reworded` entry's old words, a `set` field's old value,
+     * a `cleared` field's last value. Left out for a field set for the first time.
+     */
+    from?: JobBriefChangeValue | null;
+    /**
+     * What it is now: a `reworded` entry's new words, a `set` field's new
+     * value, what a `replaced` field holds now. For `moved`, the entry's new
+     * position, counted from 1.
+     */
+    to?: JobBriefChangeValue | null;
+    /**
+     * A prose field, such as a role description or a summary: the line says
+     * only that it was added (no `from`), updated (a `from`) or removed
+     * (`cleared`), never its text.
+     */
+    prose?: boolean;
+}
+/**
+ * The words a version's changes read in. Each line's wording takes its
+ * values already shaped for a line, and an empty string for one that is
+ * absent.
+ */
+interface JobBriefChangeLabels {
+    /** "Added must-have: Python". */
+    added: (field: string, item: string) => string;
+    /** "Removed red flag: Job hopping". */
+    removed: (field: string, item: string) => string;
+    /** 'Reworded must-have: "Python" → "Python 3"'. */
+    reworded: (field: string, from: string, to: string) => string;
+    /** 'Moved must-have "Python" to position 1'; without a position, 'Moved must-have "Python"'. */
+    moved: (field: string, item: string, position: string) => string;
+    /** "Location: Remote → Hybrid"; without an old value, "Location: Hybrid". */
+    set: (fieldTitle: string, from: string, to: string) => string;
+    /** "Removed the location (was Remote)"; without its last value, "Removed the location". */
+    cleared: (field: string, from: string) => string;
+    /** "Replaced the interview steps (3 entries)". */
+    replaced: (field: string, to: string) => string;
+    /** A prose field set for the first time: "Added a role description". */
+    proseAdded: (field: string) => string;
+    /** A prose field rewritten: "Updated the role description". */
+    proseUpdated: (field: string) => string;
+    /** A prose field removed: "Removed the role description". */
+    proseCleared: (field: string) => string;
+    /** A list as a value, by how many entries it holds: "3 entries". */
+    entries: (count: number) => string;
+    /** JobBriefChanges' toggle, by how many changes it folds away: "2 more changes". */
+    more: (count: number) => string;
+    /** JobBriefChanges' name for a screen reader, by the version the changes made: "What changed in v3". */
+    groupName: (version?: number) => string;
+}
+/** The default wording of a version's changes. Pass `labels` to change any of it. */
+declare const jobBriefChangeLabels: Readonly<JobBriefChangeLabels>;
+/**
+ * One change as a line: "Added must-have: Python", "Location: Remote →
+ * Hybrid", "Removed the location (was Remote)", in the field's own words
+ * (`field`, and `fieldTitle` where it leads the line). Each value is shaped
+ * for a line: text with its whitespace collapsed and cut to 80 characters
+ * with an ellipsis, a number grouped ("80,000"), a list counted ("3
+ * entries"). A `set` with nothing new and an old value reads as `cleared`; a
+ * `prose` field says only that it was added, updated or removed.
+ */
+declare function jobBriefChangeText(change: JobBriefChange, labels?: Partial<JobBriefChangeLabels>): string;
 
-export { type JobBriefCompanyOverview, type JobBriefContent, type JobBriefInterviewStep, type JobBriefLabels, type JobBriefPersona, type JobBriefRoleDetails, type JobBriefRuleKind, type JobBriefRuleLabels, type JobBriefTitleStyle, type JobBriefView, type JobBriefViewFact, type JobBriefViewOptions, type JobBriefViewSection, formatJobBriefSalary, jobBriefLabels, jobBriefTitle, jobBriefView };
+export { type JobBriefChange, type JobBriefChangeKind, type JobBriefChangeLabels, type JobBriefChangeValue, type JobBriefCompanyOverview, type JobBriefContent, type JobBriefInterviewStep, type JobBriefLabels, type JobBriefPersona, type JobBriefRoleDetails, type JobBriefRuleKind, type JobBriefRuleLabels, type JobBriefTitleStyle, type JobBriefVersion, type JobBriefVersionLabels, type JobBriefView, type JobBriefViewFact, type JobBriefViewOptions, type JobBriefViewSection, formatJobBriefSalary, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView };

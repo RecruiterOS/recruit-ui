@@ -1,8 +1,8 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.cjs';
-import { JobBriefRuleKind, JobBriefRuleLabels } from './job-brief-view.cjs';
-export { JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefTitleStyle, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefLabels, jobBriefTitle, jobBriefView } from './job-brief-view.cjs';
+import { JobBriefVersion, JobBriefRuleKind, JobBriefRuleLabels } from './job-brief-view.cjs';
+export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefTitleStyle, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './job-brief-view.cjs';
 
 /**
  * How a JobBriefCard sits. `collapsible` is a card whose whole body folds
@@ -74,14 +74,24 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
      */
     titleLevel?: 2 | 3 | 4;
     /**
-     * At the title's end, such as a "Current" badge, in the same place in both
-     * presentations. It keeps its width: on a narrow screen the title wraps
-     * rather than the status. It names the section with the title ("… Current"),
-     * so versions of one brief stay apart in a screen reader's list of regions.
-     * In `collapsible` it sits inside the trigger button, so pass phrasing
-     * content (a Badge rendered `as="span"`).
+     * At the title's end, such as an "Updated" badge, in the same place in both
+     * presentations, after the `version`. It keeps its width: on a narrow
+     * screen the title wraps rather than the status. It names the section with
+     * the title ("… Updated"), so briefs stay apart in a screen reader's list
+     * of regions. In `collapsible` it sits inside the trigger button, so pass
+     * phrasing content (a Badge rendered `as="span"`).
      */
     status?: ReactNode;
+    /**
+     * Which version of the brief this is, drawn at the title's end before any
+     * `status`, as the kit StatusBadge: `jobBriefVersionLabel`'s wording ("v3 ·
+     * Current" or "v2 · Earlier", or the version's own `label`), in the success
+     * tone on the version in force now and the neutral tone on an earlier one,
+     * then any `secondaryLabel` in a second, neutral badge. Like the status, it
+     * names the section with the title ("… v3 · Current"), so each version
+     * stays apart from the others.
+     */
+    version?: JobBriefVersion;
     /** What the role is, in a sentence or two. Clamped to two lines in a closed preview. */
     description?: ReactNode;
     /** Headline facts after the description, such as location, salary and on-target earnings. */
@@ -152,15 +162,15 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
  * fields onto them, so one brief reads the same in every host.
  *
  * Two presentations share one look: the same title row (the title in the
- * card-title type, the status at its end), inset and body, and differ only
- * in what folds. `collapsible` is a kit Card holding a CollapsibleSection,
- * for a page: the title row is the trigger and the whole body folds under
- * it. `preview` is a kit Card with the title as a heading, for a message:
- * closed, it shows the description (two lines), the first `previewCount`
- * facts and entries of the first shown list that has any, then a toggle
- * that opens the full brief in place; with nothing hidden, the full brief
- * shows and no toggle does. Closing it from the toggle brings the card back
- * into view, since a long brief's toggle sits far below its top.
+ * card-title type, the version and status at its end), inset and body, and
+ * differ only in what folds. `collapsible` is a kit Card holding a
+ * CollapsibleSection, for a page: the title row is the trigger and the whole
+ * body folds under it. `preview` is a kit Card with the title as a heading,
+ * for a message: closed, it shows the description (two lines), the first
+ * `previewCount` facts and entries of the first shown list that has any,
+ * then a toggle that opens the full brief in place; with nothing hidden, the
+ * full brief shows and no toggle does. Closing it from the toggle brings the
+ * card back into view, since a long brief's toggle sits far below its top.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps
@@ -168,12 +178,19 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
  * notice. A read-only brief with nothing to show is the kit's empty state,
  * or an in-progress one while `processing`; while `loading`, skeleton rows.
  *
- * The root is a `section` named by the title and the status together, and
- * marked `data-slot="job-brief-card"`, with `data-presentation`; each list's
- * wrapper is marked `data-slot="job-brief-rule-list"` with its `data-kind`,
- * each section `data-slot="job-brief-section"`, and the skeleton
- * `data-slot="job-brief-loading"`. The kit Card inside keeps its own.
+ * Given a `version`, its badges lead the status: "v3 · Current" in the
+ * success tone, or "v2 · Earlier" in the neutral one (`jobBriefVersionLabel`),
+ * and any second label beside it, neutral.
+ *
+ * The root is a `section` named by the title, the version and the status
+ * together, and marked `data-slot="job-brief-card"`, with
+ * `data-presentation`; the version's badges are marked
+ * `data-slot="job-brief-version"` with `data-current`, each list's wrapper
+ * `data-slot="job-brief-rule-list"` with its `data-kind`, each section
+ * `data-slot="job-brief-section"`, and the skeleton
+ * `data-slot="job-brief-loading"`. The kit Card and badges inside keep their
+ * own.
  */
-declare function JobBriefCard({ presentation, title, titleLevel, status, description, facts, mustHaves, niceToHaves, redFlags, rules, onRulesChange, sections, footer, processing, loading, open, defaultOpen, onOpenChange, previewCount, empty, ruleLabels, labels, ...props }: JobBriefCardProps): react.JSX.Element;
+declare function JobBriefCard({ presentation, title, titleLevel, status, version, description, facts, mustHaves, niceToHaves, redFlags, rules, onRulesChange, sections, footer, processing, loading, open, defaultOpen, onOpenChange, previewCount, empty, ruleLabels, labels, ...props }: JobBriefCardProps): react.JSX.Element;
 
-export { JobBriefCard, type JobBriefCardLabels, type JobBriefCardPresentation, type JobBriefCardProps, type JobBriefFact, JobBriefRuleKind, JobBriefRuleLabels, type JobBriefSection };
+export { JobBriefCard, type JobBriefCardLabels, type JobBriefCardPresentation, type JobBriefCardProps, type JobBriefFact, JobBriefRuleKind, JobBriefRuleLabels, type JobBriefSection, JobBriefVersion };

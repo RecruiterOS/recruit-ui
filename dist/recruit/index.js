@@ -1,5 +1,8 @@
 "use client";
-import "../chunk-FN45RXQ2.js";
+import "../chunk-ORR3ILOA.js";
+import {
+  JobSummaryCard
+} from "../chunk-RMPILAI4.js";
 import {
   MatchedCallCard
 } from "../chunk-YEUNNP4X.js";
@@ -17,19 +20,23 @@ import {
 } from "../chunk-TI77TY54.js";
 import {
   JobBriefCard
-} from "../chunk-5K7IES7G.js";
+} from "../chunk-3LVC2PB4.js";
+import {
+  JobBriefChanges
+} from "../chunk-E7YOYUUV.js";
 import {
   formatJobBriefSalary,
+  jobBriefChangeLabels,
+  jobBriefChangeText,
   jobBriefLabels,
   jobBriefTitle,
+  jobBriefVersionLabel,
+  jobBriefVersionLabels,
   jobBriefView
-} from "../chunk-RNNQGKUL.js";
+} from "../chunk-A3XKZFTB.js";
 import {
   JobClientBadge
 } from "../chunk-4DPYKJJE.js";
-import {
-  JobSummaryCard
-} from "../chunk-RMPILAI4.js";
 import {
   CandidateShortlistNote
 } from "../chunk-BF6GDZLT.js";
@@ -292,6 +299,7 @@ export {
   DocumentListItem,
   DocumentUploadPanel,
   JobBriefCard,
+  JobBriefChanges,
   JobClientBadge,
   JobSummaryCard,
   MatchedCallCard,
@@ -302,8 +310,12 @@ export {
   formatFactValue,
   formatFileSize,
   formatJobBriefSalary,
+  jobBriefChangeLabels,
+  jobBriefChangeText,
   jobBriefLabels,
   jobBriefTitle,
+  jobBriefVersionLabel,
+  jobBriefVersionLabels,
   jobBriefView,
   normalizeCallParticipants,
   normalizeCallSegments,

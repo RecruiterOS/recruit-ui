@@ -63,6 +63,7 @@ export default defineConfig({
     "src/recruit/current-company-popover.tsx",
     "src/recruit/document-list.tsx",
     "src/recruit/job-brief-card.tsx",
+    "src/recruit/job-brief-changes.tsx",
     "src/recruit/job-brief-view.ts",
     "src/recruit/job-client-badge.tsx",
     "src/recruit/job-summary-card.tsx",

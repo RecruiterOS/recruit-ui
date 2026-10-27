@@ -3,10 +3,18 @@
 
 
 
-var _chunk73CVHR52cjs = require('../chunk-73CVHR52.cjs');
+
+
+
+
+var _chunkEMCDHZVIcjs = require('../chunk-EMCDHZVI.cjs');
 
 
 
 
 
-exports.formatJobBriefSalary = _chunk73CVHR52cjs.formatJobBriefSalary; exports.jobBriefLabels = _chunk73CVHR52cjs.jobBriefLabels; exports.jobBriefTitle = _chunk73CVHR52cjs.jobBriefTitle; exports.jobBriefView = _chunk73CVHR52cjs.jobBriefView;
+
+
+
+
+exports.formatJobBriefSalary = _chunkEMCDHZVIcjs.formatJobBriefSalary; exports.jobBriefChangeLabels = _chunkEMCDHZVIcjs.jobBriefChangeLabels; exports.jobBriefChangeText = _chunkEMCDHZVIcjs.jobBriefChangeText; exports.jobBriefLabels = _chunkEMCDHZVIcjs.jobBriefLabels; exports.jobBriefTitle = _chunkEMCDHZVIcjs.jobBriefTitle; exports.jobBriefVersionLabel = _chunkEMCDHZVIcjs.jobBriefVersionLabel; exports.jobBriefVersionLabels = _chunkEMCDHZVIcjs.jobBriefVersionLabels; exports.jobBriefView = _chunkEMCDHZVIcjs.jobBriefView;
