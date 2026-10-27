@@ -1,5 +1,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
+var _chunk73CVHR52cjs = require('./chunk-73CVHR52.cjs');
+
+
 var _chunkGVQPJCZ6cjs = require('./chunk-GVQPJCZ6.cjs');
 
 
@@ -14,7 +17,6 @@ var _collapsiblesection = require('@epicbagel/saas-kit/primitives/collapsible-se
 var _definitionlist = require('@epicbagel/saas-kit/primitives/definition-list');
 var _editablelist = require('@epicbagel/saas-kit/primitives/editable-list');
 var _emptystate = require('@epicbagel/saas-kit/primitives/empty-state');
-var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
 var _heading = require('@epicbagel/saas-kit/primitives/heading');
 var _icon = require('@epicbagel/saas-kit/primitives/icon');
 var _list = require('@epicbagel/saas-kit/primitives/list');
@@ -25,12 +27,6 @@ var _lucidereact = require('lucide-react');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
 var DEFAULT_LABELS = {
-  mustHaves: "Must haves",
-  niceToHaves: "Nice to haves",
-  redFlags: "Red flags",
-  mustHaveItem: "must have",
-  niceToHaveItem: "nice to have",
-  redFlagItem: "red flag",
   processing: "Reading your document. The brief will fill in shortly.",
   processingTitle: "Reading your document",
   processingDescription: "The brief will fill in shortly.",
@@ -51,6 +47,8 @@ var ITEM_NAME = {
   niceToHaves: "niceToHaveItem",
   redFlags: "redFlagItem"
 };
+var COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
+var COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
 var SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
 var RULE_LIST = "[&_li]:[overflow-wrap:anywhere] [&_li>*]:min-w-0";
 var EDITABLE_LIST = [
@@ -65,6 +63,22 @@ function present(value) {
 }
 function sectionRows(section) {
   return (_nullishCoalesce(_optionalChain([section, 'access', _ => _.facts, 'optionalAccess', _2 => _2.length]), () => ( 0))) + (_nullishCoalesce(_optionalChain([section, 'access', _3 => _3.items, 'optionalAccess', _4 => _4.length]), () => ( 0)));
+}
+function BriefHeader({
+  title,
+  status,
+  titleId,
+  statusId,
+  heading
+}) {
+  const as = heading ? "div" : "span";
+  return (
+    // In the trigger the row takes the width the chevron leaves.
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { as, direction: "horizontal", gap: "md", align: "start", justify: "between", grow: !heading, minWidth: "zero", children: [
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as, grow: true, minWidth: "zero", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: titleId, level: 3, as: _nullishCoalesce(heading, () => ( "span")), children: title }) }),
+      present(status) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as, id: statusId, shrink: false, children: status }) : null
+    ] })
+  );
 }
 function BriefFacts({ facts, bordered }) {
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { variant: "divided", className: bordered ? "border-t" : void 0, children: facts.map((fact) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, fact.id)) });
@@ -116,7 +130,7 @@ function BriefSection({ section, level }) {
 }
 function JobBriefCard({
   presentation = "collapsible",
-  title = "Job brief",
+  title = _chunk73CVHR52cjs.jobBriefLabels.title,
   titleLevel = 2,
   status,
   description,
@@ -135,12 +149,17 @@ function JobBriefCard({
   onOpenChange,
   previewCount = 3,
   empty = { title: "No brief yet" },
+  ruleLabels,
   labels,
   ...props
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
+  const ruleText = { ..._chunk73CVHR52cjs.jobBriefLabels, ...ruleLabels };
   const titleId = _react.useId.call(void 0, );
+  const statusId = _react.useId.call(void 0, );
   const bodyId = _react.useId.call(void 0, );
+  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
+  const header = (heading) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefHeader, { title, status, titleId, statusId, heading });
   const [openState, setOpenState] = _react.useState.call(void 0, defaultOpen);
   const expanded = _nullishCoalesce(open, () => ( openState));
   const setExpanded = (next) => {
@@ -195,8 +214,8 @@ function JobBriefCard({
     {
       kind,
       items,
-      label: text[kind],
-      itemName: text[ITEM_NAME[kind]],
+      label: ruleText[kind],
+      itemName: ruleText[ITEM_NAME[kind]],
       level: subLevel,
       onRulesChange: canEdit ? onRulesChange : void 0
     },
@@ -210,29 +229,27 @@ function JobBriefCard({
     sections.map((section) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefSection, { section, level: subLevel }, section.id))
   ] });
   if (presentation === "collapsible") {
-    const label = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { id: titleId, children: title });
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
       _stack.Stack,
       {
         as: "section",
         "data-slot": "job-brief-card",
         "data-presentation": "collapsible",
-        "aria-labelledby": titleId,
+        "aria-labelledby": labelledBy,
         gap: "none",
         ...props,
         children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _card.Card, { children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
           _collapsiblesection.CollapsibleSection,
           {
-            title: present(status) ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { as: "span", direction: "horizontal", gap: "sm", align: "center", minWidth: "zero", children: [
-              label,
-              status
-            ] }) : label,
+            title: header(),
             open,
             defaultOpen,
             onOpenChange,
             density: "roomy",
             divided: false,
-            inset: "default",
+            inset: "none",
+            triggerClassName: COLLAPSIBLE_TRIGGER,
+            contentClassName: COLLAPSIBLE_BODY,
             children: [
               _nullishCoalesce(blank, () => ( fullBody)),
               state === "loading" ? null : footer
@@ -250,26 +267,24 @@ function JobBriefCard({
   ) + sections.reduce((sum, section) => sum + sectionRows(section), 0);
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;
+  const hasBody = full || notice !== null || hasDescription || count > 0 && (facts.length > 0 || first !== void 0 && lists[first].length > 0);
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
     _stack.Stack,
     {
       as: "section",
       "data-slot": "job-brief-card",
       "data-presentation": "preview",
-      "aria-labelledby": titleId,
+      "aria-labelledby": labelledBy,
       gap: "none",
       ...props,
       children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _card.Card, { padding: "md", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", children: [
-        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", justify: "between", children: [
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: titleId, level: 3, as: `h${titleLevel}`, children: title }) }),
-          present(status) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { shrink: false, children: status }) : null
-        ] }),
-        _nullishCoalesce(blank, () => ( /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { id: bodyId, gap: "md", children: full ? fullBody : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+        header(`h${titleLevel}`),
+        _nullishCoalesce(blank, () => ( (hasBody ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { id: bodyId, gap: "md", children: full ? fullBody : /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
           notice,
           hasDescription ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "div", variant: "caption", lineClamp: 2, children: description }) : null,
           count > 0 && facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefFacts, { facts: facts.slice(0, count), bordered: true }) : null,
           count > 0 && first ? ruleList(first, lists[first].slice(0, count), false) : null
-        ] }) }))),
+        ] }) }) : null))),
         hasToggle ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", gap: "none", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
           _button.Button,
           {

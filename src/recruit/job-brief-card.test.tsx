@@ -3,7 +3,14 @@ import userEvent from "@testing-library/user-event";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
 
-import { JobBriefCard, type JobBriefRuleKind, type JobBriefSection } from "./job-brief-card";
+import {
+  JobBriefCard,
+  jobBriefLabels,
+  jobBriefView,
+  type JobBriefContent,
+  type JobBriefRuleKind,
+  type JobBriefSection,
+} from "./job-brief-card";
 
 // A fictional role at a fictional company only.
 
@@ -87,8 +94,8 @@ describe("job brief card, collapsible", () => {
     // heading at the title's level and the outline skips none.
     expect(screen.queryAllByRole("heading", { level: 3 })).toHaveLength(0);
     expect(screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual([
-      "Must haves",
-      "Nice to haves",
+      "Must-haves",
+      "Nice-to-haves",
       "Red flags",
       "Role details",
       "Interview process",
@@ -138,8 +145,8 @@ describe("job brief card, collapsible", () => {
 
     // Deeper in a page's outline, the lists take the title's level there too.
     expect(screen.getAllByRole("heading", { level: 3 }).map((heading) => heading.textContent)).toEqual([
-      "Nice to haves",
-      "Must haves",
+      "Nice-to-haves",
+      "Must-haves",
     ]);
     expect(screen.queryByText("Fictional red flag")).toBeNull();
   });
@@ -148,7 +155,7 @@ describe("job brief card, collapsible", () => {
     const { rerender } = render(
       <JobBriefCard defaultOpen mustHaves={mustHaves.slice(0, 1)} niceToHaves={[]} redFlags={[]} />,
     );
-    expect(screen.queryByText("Nice to haves")).toBeNull();
+    expect(screen.queryByText("Nice-to-haves")).toBeNull();
     expect(document.querySelectorAll('[data-slot="job-brief-rule-list"]')).toHaveLength(1);
 
     rerender(
@@ -162,7 +169,7 @@ describe("job brief card, collapsible", () => {
     );
     expect(document.querySelectorAll('[data-slot="job-brief-rule-list"]')).toHaveLength(3);
     expect(screen.getAllByText("None set")).toHaveLength(2);
-    expect(screen.getByRole("textbox", { name: "New nice to have" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "New nice-to-have" })).toBeInTheDocument();
   });
 
   it("hands the whole new list to the host with which list it is", async () => {
@@ -178,13 +185,13 @@ describe("job brief card, collapsible", () => {
             onRulesChange(kind, items);
             setLists((current) => ({ ...current, [kind]: items }));
           }}
-          labels={{ niceToHaveItem: "bonus skill" }}
+          ruleLabels={{ niceToHaveItem: "bonus skill" }}
         />
       );
     }
     render(<Host />);
 
-    await user.type(screen.getByRole("textbox", { name: "New must have" }), "Example tooling{Enter}");
+    await user.type(screen.getByRole("textbox", { name: "New must-have" }), "Example tooling{Enter}");
     expect(onRulesChange).toHaveBeenLastCalledWith("mustHaves", ["Fictional field work", "Example tooling"]);
     expect(listItems("mustHaves")).toEqual(["Fictional field work", "Example tooling"]);
 
@@ -194,7 +201,7 @@ describe("job brief card, collapsible", () => {
 
     const redFlagList = document.querySelector('[data-kind="redFlags"]') as HTMLElement;
     expect(within(redFlagList).getByText("None set")).toBeInTheDocument();
-    await user.click(within(document.querySelector('[data-kind="mustHaves"]') as HTMLElement).getAllByRole("button", { name: "Remove must have" })[0]!);
+    await user.click(within(document.querySelector('[data-kind="mustHaves"]') as HTMLElement).getAllByRole("button", { name: "Remove must-have" })[0]!);
     expect(onRulesChange).toHaveBeenLastCalledWith("mustHaves", ["Example tooling"]);
     expect(listItems("mustHaves")).toEqual(["Example tooling"]);
   });
@@ -206,7 +213,7 @@ describe("job brief card, collapsible", () => {
     render(<JobBriefCard defaultOpen mustHaves={["Fictional field work"]} onRulesChange={onRulesChange} />);
     const list = () => document.querySelector('[data-kind="mustHaves"]') as HTMLElement;
 
-    await user.type(screen.getByRole("textbox", { name: "New must have" }), "Example tooling{Enter}");
+    await user.type(screen.getByRole("textbox", { name: "New must-have" }), "Example tooling{Enter}");
     expect(onRulesChange).toHaveBeenCalledWith("mustHaves", ["Fictional field work", "Example tooling"]);
     expect(list()).toHaveAttribute("aria-busy", "true");
     expect(listItems("mustHaves")).toEqual(["Fictional field work", "Example tooling"]);
@@ -224,9 +231,9 @@ describe("job brief card, collapsible", () => {
     const first = deferred();
     const second = deferred();
     pending = first;
-    await user.type(screen.getByRole("textbox", { name: "New must have" }), "Shift work{Enter}");
+    await user.type(screen.getByRole("textbox", { name: "New must-have" }), "Shift work{Enter}");
     pending = second;
-    await user.type(screen.getByRole("textbox", { name: "New must have" }), "On call{Enter}");
+    await user.type(screen.getByRole("textbox", { name: "New must-have" }), "On call{Enter}");
     expect(onRulesChange).toHaveBeenLastCalledWith("mustHaves", ["Fictional field work", "Shift work", "On call"]);
     await act(async () => {
       first.resolve();
@@ -274,7 +281,7 @@ describe("job brief card, collapsible", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("Still reading the fictional spec.");
     expect(document.querySelector('[data-slot="empty-state"]')).toBeNull();
     expect(screen.getAllByText("None set")).toHaveLength(3);
-    await user.type(screen.getByRole("textbox", { name: "New must have" }), "Example tooling{Enter}");
+    await user.type(screen.getByRole("textbox", { name: "New must-have" }), "Example tooling{Enter}");
     expect(onRulesChange).toHaveBeenLastCalledWith("mustHaves", ["Example tooling"]);
   });
 
@@ -327,11 +334,15 @@ describe("job brief card, collapsible", () => {
     expect(screen.getByText(description)).toBeInTheDocument();
   });
 
-  it("puts a status at the title's end, inside the trigger", () => {
+  it("puts a status at the title's end, inside the trigger, before the chevron", () => {
     render(<JobBriefCard title="Fictional brief" status={<span>Updated</span>} description={description} />);
     const trigger = screen.getByRole("button", { name: /Fictional brief/ });
-    expect(trigger).toContainElement(screen.getByText("Updated"));
-    expect(screen.getByRole("region", { name: "Fictional brief" })).toBeInTheDocument();
+    const status = screen.getByText("Updated");
+    expect(trigger).toContainElement(status);
+    expect(screen.getByText("Fictional brief").compareDocumentPosition(status) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(status.compareDocumentPosition(trigger.querySelector("svg")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    // The button holds only phrasing content.
+    expect(trigger.querySelector("div, h2, h3, h4")).toBeNull();
   });
 });
 
@@ -356,7 +367,7 @@ describe("job brief card, preview", () => {
 
     const root = container.firstElementChild as HTMLElement;
     expect(root).toHaveAttribute("data-presentation", "preview");
-    expect(screen.getByRole("region", { name: "Working brief" })).toBe(root);
+    expect(screen.getByRole("region", { name: "Working brief Updated" })).toBe(root);
     const heading = screen.getByRole("heading", { level: 2, name: "Working brief" });
     expect(heading.closest("section")).toBe(root);
     expect(screen.getByText("Updated")).toBeInTheDocument();
@@ -367,7 +378,7 @@ describe("job brief card, preview", () => {
     expect(screen.getByText("Bonus")).toBeInTheDocument();
     expect(screen.queryByText("Start")).toBeNull();
     expect(listItems("mustHaves")).toEqual(mustHaves.slice(0, 3));
-    expect(screen.queryByText("Nice to haves")).toBeNull();
+    expect(screen.queryByText("Nice-to-haves")).toBeNull();
     expect(screen.queryByText("Role details")).toBeNull();
 
     const toggle = screen.getByRole("button", { name: `Show full brief (${hiddenByDefault} more)` });
@@ -475,8 +486,8 @@ describe("job brief card, preview", () => {
     expect(screen.getByText("Start")).toBeInTheDocument();
     // The lists and sections sit one level under the title.
     expect(screen.getAllByRole("heading", { level: 4 }).map((heading) => heading.textContent)).toEqual([
-      "Must haves",
-      "Nice to haves",
+      "Must-haves",
+      "Nice-to-haves",
       "Red flags",
       "Role details",
       "Interview process",
@@ -496,7 +507,7 @@ describe("job brief card, preview", () => {
     // Closed, the shown entries are read-only: a slice is never handed back.
     expect(screen.queryByRole("textbox")).toBeNull();
     await user.click(screen.getByRole("button", { name: "Show full brief" }));
-    expect(screen.getByRole("textbox", { name: "New must have" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "New must-have" })).toBeInTheDocument();
   });
 
   it("keeps its footer under the toggle in both states", async () => {
@@ -526,5 +537,151 @@ describe("job brief card, preview", () => {
     rerender(<JobBriefCard {...full} processing />);
     expect(screen.getByRole("alert")).toBeInTheDocument();
     expect(screen.getByText(description)).toBeInTheDocument();
+  });
+});
+
+describe("job brief card, one look", () => {
+  // A fictional brief, mapped as every host maps one.
+  const content: JobBriefContent = {
+    roleTitle: "Account Executive",
+    companyName: "Fernhill Example Co",
+    roleDescription: description,
+    location: "Example City · hybrid",
+    salaryMin: 50000,
+    salaryMax: 60000,
+    mustHaves: mustHaves.slice(0, 2),
+    niceToHaves,
+    redFlags,
+    roleDetails: { ote: "90,000", quota: "Fictional quota" },
+    interviewSteps: [{ stepNumber: 2, label: "Final panel" }, { stepNumber: 1, label: "Intro call" }],
+    companyWebsite: "https://fernhill.example.com",
+  };
+  const status = <span>Current</span>;
+
+  function card(presentation: "collapsible" | "preview") {
+    return (
+      <JobBriefCard
+        {...jobBriefView(content)}
+        presentation={presentation}
+        status={status}
+        defaultOpen
+      />
+    );
+  }
+
+  it("names the section by its title and status in both presentations", () => {
+    const { rerender } = render(card("collapsible"));
+    expect(screen.getByRole("region", { name: "Account Executive · Fernhill Example Co Current" })).toHaveAttribute(
+      "data-presentation",
+      "collapsible",
+    );
+    rerender(card("preview"));
+    expect(screen.getByRole("region", { name: "Account Executive · Fernhill Example Co Current" })).toHaveAttribute(
+      "data-presentation",
+      "preview",
+    );
+
+    // Without a status, the title alone; a host's own name still wins.
+    rerender(<JobBriefCard {...jobBriefView(content)} presentation="preview" />);
+    expect(screen.getByRole("region", { name: "Account Executive · Fernhill Example Co" })).toBeInTheDocument();
+    rerender(
+      <>
+        <span id="fictional-name">Fictional brief v2</span>
+        <JobBriefCard {...jobBriefView(content)} aria-labelledby="fictional-name" />
+      </>,
+    );
+    expect(screen.getByRole("region", { name: "Fictional brief v2" })).toBeInTheDocument();
+  });
+
+  it("draws the same title row, inset and body in both presentations", () => {
+    const { container, rerender } = render(card("collapsible"));
+    const trigger = screen.getByRole("button", { name: /Account Executive/ });
+    const read = () => {
+      const title = screen.getByText("Account Executive · Fernhill Example Co");
+      return {
+        title: title.className,
+        status: screen.getByText("Current").parentElement!.className,
+        sections: [...container.querySelectorAll('[data-slot="job-brief-section"] > :first-child')].map(
+          (heading) => heading.textContent,
+        ),
+        lists: [...container.querySelectorAll('[data-slot="job-brief-rule-list"]')].map((list) => list.getAttribute("data-kind")),
+        facts: within(container.querySelector("dl")!).getAllByRole("term").map((term) => term.textContent),
+      };
+    };
+    const collapsible = read();
+    // The trigger takes the preview card's inset, and not the kit trigger's
+    // small type, whose line height would make the status taller there.
+    expect(trigger.className).toContain("p-[26px]");
+    expect(trigger.className).not.toMatch(/\btext-sm\b/);
+
+    rerender(card("preview"));
+    expect(container.querySelector('[data-slot="card"]')!.className).toContain("p-[26px]");
+    expect(screen.getByRole("heading", { level: 2, name: "Account Executive · Fernhill Example Co" })).toBeInTheDocument();
+    expect(read()).toEqual(collapsible);
+    expect(collapsible.facts).toEqual(["Location", "Salary", "OTE"]);
+    expect(collapsible.lists).toEqual(["mustHaves", "niceToHaves", "redFlags"]);
+    expect(collapsible.sections).toEqual(["Role details", "Interview process", "Company"]);
+  });
+
+  it("names the lists with the brief's wording by default", () => {
+    render(<JobBriefCard defaultOpen mustHaves={["Example tooling"]} niceToHaves={niceToHaves} redFlags={redFlags} />);
+    expect(screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      jobBriefLabels.mustHaves,
+      jobBriefLabels.niceToHaves,
+      jobBriefLabels.redFlags,
+    ]);
+    expect(screen.getByRole("button", { name: "Job brief" })).toBeInTheDocument();
+  });
+
+  it("names the lists only by the brief's wording, which jobBriefView hands it, never by the host's labels", () => {
+    const view = jobBriefView(content, { labels: { mustHaves: "Essentials", mustHaveItem: "essential" } });
+    render(
+      <JobBriefCard
+        {...view}
+        defaultOpen
+        onRulesChange={() => {}}
+        // Old list keys in `labels` are ignored: they aren't the host's wording.
+        labels={{ mustHaves: "Fictional override", niceToHaveItem: "fictional item", showLess: "Fewer" } as never}
+      />,
+    );
+    const names = [...document.querySelectorAll('[data-slot="job-brief-rule-list"] [role="heading"]')].map((heading) => heading.textContent);
+    expect(names).toEqual([
+      "Essentials",
+      jobBriefLabels.niceToHaves,
+      jobBriefLabels.redFlags,
+    ]);
+    expect(screen.getByRole("textbox", { name: "New essential" })).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: "New nice-to-have" })).toBeInTheDocument();
+  });
+
+  it("shows an earlier brief's title and description until opened, and the whole brief once it is", async () => {
+    const user = userEvent.setup();
+    render(<JobBriefCard {...jobBriefView(content, { current: false })} presentation="preview" />);
+    expect(screen.getByText(description)).toHaveClass("line-clamp-2");
+    expect(screen.queryByText("Location")).toBeNull();
+    expect(document.querySelector('[data-slot="job-brief-rule-list"]')).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Show full brief/ }));
+    expect(listItems("mustHaves")).toEqual(mustHaves.slice(0, 2));
+    // Opened, an earlier brief is the whole brief, its description included.
+    expect(screen.getByText(description)).not.toHaveClass("line-clamp-2");
+    expect(screen.getByText("Location")).toBeInTheDocument();
+  });
+
+  it("draws no empty body under the title row of a closed preview with nothing to show before its toggle", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <JobBriefCard {...jobBriefView({ ...content, roleDescription: null }, { current: false })} presentation="preview" />,
+    );
+    // The card's rows: the title row and the toggle, one gap apart.
+    const rows = () => [...container.querySelector('[data-slot="card"]')!.firstElementChild!.children];
+    const toggle = screen.getByRole("button", { name: /Show full brief/ });
+    expect(rows()).toHaveLength(2);
+    expect(rows()[1]).toContainElement(toggle);
+
+    await user.click(toggle);
+    expect(rows()).toHaveLength(3);
+    expect(rows()[1]).toBe(document.getElementById(toggle.getAttribute("aria-controls")!));
+    await user.click(toggle);
+    expect(rows()).toHaveLength(2);
   });
 });

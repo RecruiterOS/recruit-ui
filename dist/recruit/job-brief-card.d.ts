@@ -1,12 +1,9 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.js';
+import { JobBriefRuleKind, JobBriefRuleLabels } from './job-brief-view.js';
+export { JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefTitleStyle, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefLabels, jobBriefTitle, jobBriefView } from './job-brief-view.js';
 
-/**
- * One of a brief's three lists about the people a role wants: what they must
- * have, what would be nice, and what rules them out.
- */
-type JobBriefRuleKind = "mustHaves" | "niceToHaves" | "redFlags";
 /**
  * How a JobBriefCard sits. `collapsible` is a card whose whole body folds
  * under its title, for a section of a page. `preview` is a card that shows
@@ -38,20 +35,11 @@ interface JobBriefSection {
     /** Number the items, such as for the steps of an interview process. */
     ordered?: boolean;
 }
-/** Host-owned wording for a JobBriefCard's fixed parts. */
+/**
+ * Host-owned wording for a JobBriefCard's states and toggle. The lists' names
+ * are the brief's wording, not the host's: they come in `ruleLabels`.
+ */
 interface JobBriefCardLabels {
-    /** The must-haves list's label. */
-    mustHaves: ReactNode;
-    /** The nice-to-haves list's label. */
-    niceToHaves: ReactNode;
-    /** The red-flags list's label. */
-    redFlags: ReactNode;
-    /** What one must-have is called in its list's controls: "Add must have…", "Remove must have". */
-    mustHaveItem: string;
-    /** What one nice-to-have is called in its list's controls. */
-    niceToHaveItem: string;
-    /** What one red flag is called in its list's controls. */
-    redFlagItem: string;
     /** The notice over a brief that is still being read from a document. */
     processing: ReactNode;
     /** The in-progress blank slate's title, while nothing has been read yet. */
@@ -70,7 +58,10 @@ interface JobBriefCardLabels {
 interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | "children"> {
     /** `collapsible` (the default) for a page, `preview` for a message. */
     presentation?: JobBriefCardPresentation;
-    /** The brief's title. It names the section. Defaults to "Job brief". */
+    /**
+     * The brief's title, such as `jobBriefView`'s. With the status, it names the
+     * section. Defaults to "Job brief".
+     */
     title?: ReactNode;
     /**
      * The title's heading level: 2 (the default), or 3 or 4 where the card sits
@@ -83,10 +74,12 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
      */
     titleLevel?: 2 | 3 | 4;
     /**
-     * At the title's end, such as an "Updated" badge. It keeps its width: on a
-     * narrow screen the title wraps rather than the status. In `collapsible`
-     * it sits inside the trigger button, so pass phrasing content (a Badge
-     * rendered `as="span"`).
+     * At the title's end, such as a "Current" badge, in the same place in both
+     * presentations. It keeps its width: on a narrow screen the title wraps
+     * rather than the status. It names the section with the title ("… Current"),
+     * so versions of one brief stay apart in a screen reader's list of regions.
+     * In `collapsible` it sits inside the trigger button, so pass phrasing
+     * content (a Badge rendered `as="span"`).
      */
     status?: ReactNode;
     /** What the role is, in a sentence or two. Clamped to two lines in a closed preview. */
@@ -143,22 +136,31 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
      * edit. Defaults to "No brief yet".
      */
     empty?: CandidateEmptyCopy;
+    /**
+     * The lists' names and what one entry of each is called in their controls
+     * ("Add must-have…", "Remove must-have"), such as `jobBriefView`'s. Defaults
+     * to `jobBriefLabels`' wording.
+     */
+    ruleLabels?: Partial<JobBriefRuleLabels>;
     labels?: Partial<JobBriefCardLabels>;
 }
 /**
  * A job brief: what the role is, its headline facts, the must-have,
  * nice-to-have and red-flag lists, then titled sections such as role details
  * or the interview process, and a footer slot. Every value enters as a
- * display value or a slot, worded by the host.
+ * display value or a slot, worded by the host; `jobBriefView` maps a brief's
+ * fields onto them, so one brief reads the same in every host.
  *
- * Two presentations share one body. `collapsible` is a kit Card holding a
- * CollapsibleSection, for a page: the title is the trigger and the whole
- * body folds under it. `preview` is a kit Card with the title as a heading,
- * for a message: closed, it shows the description (two lines), the first
- * `previewCount` facts and entries of the first shown list that has any,
- * then a toggle that opens the full brief in place; with nothing hidden, the
- * full brief shows and no toggle does. Closing it from the toggle brings the
- * card back into view, since a long brief's toggle sits far below its top.
+ * Two presentations share one look: the same title row (the title in the
+ * card-title type, the status at its end), inset and body, and differ only
+ * in what folds. `collapsible` is a kit Card holding a CollapsibleSection,
+ * for a page: the title row is the trigger and the whole body folds under
+ * it. `preview` is a kit Card with the title as a heading, for a message:
+ * closed, it shows the description (two lines), the first `previewCount`
+ * facts and entries of the first shown list that has any, then a toggle
+ * that opens the full brief in place; with nothing hidden, the full brief
+ * shows and no toggle does. Closing it from the toggle brings the card back
+ * into view, since a long brief's toggle sits far below its top.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps
@@ -166,12 +168,12 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
  * notice. A read-only brief with nothing to show is the kit's empty state,
  * or an in-progress one while `processing`; while `loading`, skeleton rows.
  *
- * The root is a `section` named by the title and marked
- * `data-slot="job-brief-card"`, with `data-presentation`; each list's
+ * The root is a `section` named by the title and the status together, and
+ * marked `data-slot="job-brief-card"`, with `data-presentation`; each list's
  * wrapper is marked `data-slot="job-brief-rule-list"` with its `data-kind`,
  * each section `data-slot="job-brief-section"`, and the skeleton
  * `data-slot="job-brief-loading"`. The kit Card inside keeps its own.
  */
-declare function JobBriefCard({ presentation, title, titleLevel, status, description, facts, mustHaves, niceToHaves, redFlags, rules, onRulesChange, sections, footer, processing, loading, open, defaultOpen, onOpenChange, previewCount, empty, labels, ...props }: JobBriefCardProps): react.JSX.Element;
+declare function JobBriefCard({ presentation, title, titleLevel, status, description, facts, mustHaves, niceToHaves, redFlags, rules, onRulesChange, sections, footer, processing, loading, open, defaultOpen, onOpenChange, previewCount, empty, ruleLabels, labels, ...props }: JobBriefCardProps): react.JSX.Element;
 
-export { JobBriefCard, type JobBriefCardLabels, type JobBriefCardPresentation, type JobBriefCardProps, type JobBriefFact, type JobBriefRuleKind, type JobBriefSection };
+export { JobBriefCard, type JobBriefCardLabels, type JobBriefCardPresentation, type JobBriefCardProps, type JobBriefFact, JobBriefRuleKind, JobBriefRuleLabels, type JobBriefSection };

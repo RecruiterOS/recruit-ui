@@ -1,6 +1,9 @@
 "use client";
 import "../chunk-FN45RXQ2.js";
 import {
+  MatchedCallCard
+} from "../chunk-YEUNNP4X.js";
+import {
   CurrentCompanyPopover
 } from "../chunk-QXRY3PXD.js";
 import {
@@ -14,16 +17,19 @@ import {
 } from "../chunk-TI77TY54.js";
 import {
   JobBriefCard
-} from "../chunk-JCLLUQTZ.js";
+} from "../chunk-5K7IES7G.js";
+import {
+  formatJobBriefSalary,
+  jobBriefLabels,
+  jobBriefTitle,
+  jobBriefView
+} from "../chunk-RNNQGKUL.js";
 import {
   JobClientBadge
 } from "../chunk-4DPYKJJE.js";
 import {
   JobSummaryCard
 } from "../chunk-RMPILAI4.js";
-import {
-  MatchedCallCard
-} from "../chunk-YEUNNP4X.js";
 import {
   CandidateShortlistNote
 } from "../chunk-BF6GDZLT.js";
@@ -295,6 +301,10 @@ export {
   defaultOutreachDraftActions,
   formatFactValue,
   formatFileSize,
+  formatJobBriefSalary,
+  jobBriefLabels,
+  jobBriefTitle,
+  jobBriefView,
   normalizeCallParticipants,
   normalizeCallSegments,
   normalizeCandidateGrade,

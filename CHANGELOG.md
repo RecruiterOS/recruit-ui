@@ -5,6 +5,98 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.14.0
+
+### Breaking
+
+- `JobBriefCard` names its lists "Must-haves", "Nice-to-haves" and "Red
+  flags" by default, and one entry of each "must-have", "nice-to-have" and
+  "red flag", so the controls read "Add must-have…" and "Remove
+  nice-to-have". It said "Must haves", "Nice to haves", "must have" and
+  "nice to have". A host that wants the old words passes them to
+  `jobBriefView`'s `labels`, or in the card's `ruleLabels`.
+- `JobBriefCard` takes the lists' names and what one entry of each is
+  called in `ruleLabels` (`JobBriefRuleLabels`), which `jobBriefView` fills
+  from its own `labels`, so the lists read as the rest of the brief does.
+  `labels` (`JobBriefCardLabels`) keeps only the host's wording for the
+  processing notice, the in-progress blank slate and the preview's toggle
+  (`processing`, `processingTitle`, `processingDescription`, `showMore`,
+  `showLess`); a list name passed there (`mustHaves`, `mustHaveItem`, ...)
+  is ignored. Pass it in `ruleLabels`, or to `jobBriefView`'s `labels`.
+
+### Added
+
+- `jobBriefView(content, options)`, which turns a brief's own fields into
+  what `JobBriefCard` shows, so the same brief reads the same in every app:
+  spread the result onto the card and add only the host's props
+  (`presentation`, `status`, `onRulesChange`, `footer`, the open state). The
+  brief comes in as `JobBriefContent`, display values under the parsed
+  brief's field names, every one optional (`roleTitle`, `companyName`,
+  `roleDescription`, `summary`, `location`, `salaryMin`, `salaryMax`,
+  `currency`, `mustHaves`, `niceToHaves`, `redFlags`, `icp`, `roleDetails`,
+  `buyingPersonas`, `interviewSteps`, `companyOverview`, `companyWebsite`).
+  It returns a `JobBriefView`: the `title`; the `description`, the role
+  description or else the summary; the `facts` Location, Salary and OTE; the
+  three lists as written, so an editable card saves exactly what it showed;
+  the `rules`; the `sections` Role details, Target company types, Buying
+  personas, Interview process (in step order, numbered) and Company, then
+  the host's `extraSections`, each only when it has something in it;
+  `previewCount`; and `ruleLabels`, the lists' names and what one entry of
+  each is called. Every value is text.
+- `jobBriefView`'s options (`JobBriefViewOptions`): `current` (true by
+  default) previews three facts and entries, and `current: false`, for a
+  brief a later one replaced, none, so it closes down to its title and
+  description; `title` (`JobBriefTitleStyle`), `role` by default or
+  `generic` ("Job brief") for a page whose header already names the role;
+  `audience: "public"` for a page anyone with its link can open, which
+  leaves out the red flags (and their list from `rules`), the on-target
+  earnings, the role details, the company section and the interviewers'
+  names; `labels`; and `extraSections`, such as the named accounts a role
+  targets.
+- `jobBriefTitle(content, fallback)`, a brief's title: "Role · Company", or
+  the role alone when there is no company, the role already names it, or
+  the pair would pass 72 characters, when a longer role is cut with an
+  ellipsis. A placeholder a parser writes for a missing field ("TBD",
+  "N/A", "Role", "Unknown") counts as none, and quotes, markdown marks and
+  extra whitespace are stripped. With no role, `fallback` ("Job brief").
+- `formatJobBriefSalary(content, labels)`, a salary band in full grouped
+  numbers: "60,000–80,000", one figure when both ends agree, "From 60,000"
+  or "Up to 80,000". A `currency` puts its symbol before each amount
+  ("£60,000"), a code through `Intl` and anything else as given; without
+  one there is no symbol, never a guessed one. Null with neither end.
+- `jobBriefLabels`, the default wording of a brief (`JobBriefLabels`): the
+  title, the list and entry names, the fact and section names, the persona
+  categories ("economic buyer") and the interview-step phrasing. It is
+  frozen; `labels` overrides any of it, and a host's own text (an email, a
+  form) can read the same words from it.
+- `JobBriefContent`, `JobBriefRoleDetails`, `JobBriefPersona`,
+  `JobBriefInterviewStep`, `JobBriefCompanyOverview`, `JobBriefView`,
+  `JobBriefViewFact`, `JobBriefViewSection`, `JobBriefViewOptions`,
+  `JobBriefTitleStyle`, `JobBriefLabels` and `JobBriefRuleLabels`. All of it ships from
+  `@recruiteros/recruit-ui/recruit/job-brief-card` and the `recruit` and root
+  entries, and from `@recruiteros/recruit-ui/recruit/job-brief-view`, a
+  subpath without a client boundary, so a server component can map a brief
+  too. `JobBriefRuleKind` is declared there now and still ships from the
+  card's entry.
+
+### Changed
+
+- `JobBriefCard`'s two presentations look the same and differ only in what
+  folds. The collapsible's title row is the preview's: the title in the
+  card-title type (it was the trigger's small label type) and the `status`
+  at the row's end, before the chevron (it sat right after the title), and
+  both take the preview's inset, so the collapsible's title and body sit
+  26px in rather than 16px. The whole row is still the trigger.
+- `JobBriefCard`'s section is named by its title and its `status` together
+  ("Account Executive · Example Co Current"), in both presentations, so
+  versions of one brief stay apart in a screen reader's list of regions; it
+  was named by the title alone. A host that joined them itself with
+  `aria-labelledby` can drop that; a host's `aria-labelledby` still wins.
+- A closed `preview` with nothing to show before its toggle (no
+  description, and a `previewCount` of 0 or nothing to count) draws no
+  body, so the toggle sits one gap under the title row; an empty body there
+  doubled the gap.
+
 ## 0.13.0
 
 ### Added

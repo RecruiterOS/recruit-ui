@@ -3,7 +3,7 @@
   "namespace": "recruit",
   "name": "recruit-workflows",
   "title": "Recruit UI candidate workflows",
-  "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
+  "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message, with the helper that maps a brief's fields onto it), job summary and pipeline board cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
   "registryDependencies": ["RecruiterOS/recruit-ui/recruit-tokens"],
   "css": [
     "@epicbagel/saas-kit/styles/utilities.css",
@@ -73,6 +73,7 @@
     "src/recruit/current-company-popover.tsx",
     "src/recruit/document-list.tsx",
     "src/recruit/job-brief-card.tsx",
+    "src/recruit/job-brief-view.ts",
     "src/recruit/job-client-badge.tsx",
     "src/recruit/job-summary-card.tsx",
     "src/recruit/matched-call-card.tsx",

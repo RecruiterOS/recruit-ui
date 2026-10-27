@@ -1,4 +1,7 @@
 import {
+  jobBriefLabels
+} from "./chunk-RNNQGKUL.js";
+import {
   usePendingCall
 } from "./chunk-SBRXJRL4.js";
 import {
@@ -14,7 +17,6 @@ import { CollapsibleSection } from "@epicbagel/saas-kit/primitives/collapsible-s
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
 import { EditableList } from "@epicbagel/saas-kit/primitives/editable-list";
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
-import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Heading } from "@epicbagel/saas-kit/primitives/heading";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
@@ -25,12 +27,6 @@ import { FileText, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var DEFAULT_LABELS = {
-  mustHaves: "Must haves",
-  niceToHaves: "Nice to haves",
-  redFlags: "Red flags",
-  mustHaveItem: "must have",
-  niceToHaveItem: "nice to have",
-  redFlagItem: "red flag",
   processing: "Reading your document. The brief will fill in shortly.",
   processingTitle: "Reading your document",
   processingDescription: "The brief will fill in shortly.",
@@ -51,6 +47,8 @@ var ITEM_NAME = {
   niceToHaves: "niceToHaveItem",
   redFlags: "redFlagItem"
 };
+var COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
+var COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
 var SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
 var RULE_LIST = "[&_li]:[overflow-wrap:anywhere] [&_li>*]:min-w-0";
 var EDITABLE_LIST = [
@@ -65,6 +63,22 @@ function present(value) {
 }
 function sectionRows(section) {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
+}
+function BriefHeader({
+  title,
+  status,
+  titleId,
+  statusId,
+  heading
+}) {
+  const as = heading ? "div" : "span";
+  return (
+    // In the trigger the row takes the width the chevron leaves.
+    /* @__PURE__ */ jsxs(Stack, { as, direction: "horizontal", gap: "md", align: "start", justify: "between", grow: !heading, minWidth: "zero", children: [
+      /* @__PURE__ */ jsx(Stack, { as, grow: true, minWidth: "zero", children: /* @__PURE__ */ jsx(Heading, { id: titleId, level: 3, as: heading ?? "span", children: title }) }),
+      present(status) ? /* @__PURE__ */ jsx(Stack, { as, id: statusId, shrink: false, children: status }) : null
+    ] })
+  );
 }
 function BriefFacts({ facts, bordered }) {
   return /* @__PURE__ */ jsx(DefinitionList, { variant: "divided", className: bordered ? "border-t" : void 0, children: facts.map((fact) => /* @__PURE__ */ jsx(DefinitionItem, { label: fact.label, children: fact.value }, fact.id)) });
@@ -116,7 +130,7 @@ function BriefSection({ section, level }) {
 }
 function JobBriefCard({
   presentation = "collapsible",
-  title = "Job brief",
+  title = jobBriefLabels.title,
   titleLevel = 2,
   status,
   description,
@@ -135,12 +149,17 @@ function JobBriefCard({
   onOpenChange,
   previewCount = 3,
   empty = { title: "No brief yet" },
+  ruleLabels,
   labels,
   ...props
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
+  const ruleText = { ...jobBriefLabels, ...ruleLabels };
   const titleId = useId();
+  const statusId = useId();
   const bodyId = useId();
+  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
+  const header = (heading) => /* @__PURE__ */ jsx(BriefHeader, { title, status, titleId, statusId, heading });
   const [openState, setOpenState] = useState(defaultOpen);
   const expanded = open ?? openState;
   const setExpanded = (next) => {
@@ -195,8 +214,8 @@ function JobBriefCard({
     {
       kind,
       items,
-      label: text[kind],
-      itemName: text[ITEM_NAME[kind]],
+      label: ruleText[kind],
+      itemName: ruleText[ITEM_NAME[kind]],
       level: subLevel,
       onRulesChange: canEdit ? onRulesChange : void 0
     },
@@ -210,29 +229,27 @@ function JobBriefCard({
     sections.map((section) => /* @__PURE__ */ jsx(BriefSection, { section, level: subLevel }, section.id))
   ] });
   if (presentation === "collapsible") {
-    const label = /* @__PURE__ */ jsx("span", { id: titleId, children: title });
     return /* @__PURE__ */ jsx(
       Stack,
       {
         as: "section",
         "data-slot": "job-brief-card",
         "data-presentation": "collapsible",
-        "aria-labelledby": titleId,
+        "aria-labelledby": labelledBy,
         gap: "none",
         ...props,
         children: /* @__PURE__ */ jsx(Card, { children: /* @__PURE__ */ jsxs(
           CollapsibleSection,
           {
-            title: present(status) ? /* @__PURE__ */ jsxs(Stack, { as: "span", direction: "horizontal", gap: "sm", align: "center", minWidth: "zero", children: [
-              label,
-              status
-            ] }) : label,
+            title: header(),
             open,
             defaultOpen,
             onOpenChange,
             density: "roomy",
             divided: false,
-            inset: "default",
+            inset: "none",
+            triggerClassName: COLLAPSIBLE_TRIGGER,
+            contentClassName: COLLAPSIBLE_BODY,
             children: [
               blank ?? fullBody,
               state === "loading" ? null : footer
@@ -250,26 +267,24 @@ function JobBriefCard({
   ) + sections.reduce((sum, section) => sum + sectionRows(section), 0);
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;
+  const hasBody = full || notice !== null || hasDescription || count > 0 && (facts.length > 0 || first !== void 0 && lists[first].length > 0);
   return /* @__PURE__ */ jsx(
     Stack,
     {
       as: "section",
       "data-slot": "job-brief-card",
       "data-presentation": "preview",
-      "aria-labelledby": titleId,
+      "aria-labelledby": labelledBy,
       gap: "none",
       ...props,
       children: /* @__PURE__ */ jsx(Card, { padding: "md", children: /* @__PURE__ */ jsxs(Stack, { gap: "md", children: [
-        /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "start", justify: "between", children: [
-          /* @__PURE__ */ jsx(FlexItem, { grow: true, minWidth: "zero", children: /* @__PURE__ */ jsx(Heading, { id: titleId, level: 3, as: `h${titleLevel}`, children: title }) }),
-          present(status) ? /* @__PURE__ */ jsx(FlexItem, { shrink: false, children: status }) : null
-        ] }),
-        blank ?? /* @__PURE__ */ jsx(Stack, { id: bodyId, gap: "md", children: full ? fullBody : /* @__PURE__ */ jsxs(Fragment, { children: [
+        header(`h${titleLevel}`),
+        blank ?? (hasBody ? /* @__PURE__ */ jsx(Stack, { id: bodyId, gap: "md", children: full ? fullBody : /* @__PURE__ */ jsxs(Fragment, { children: [
           notice,
           hasDescription ? /* @__PURE__ */ jsx(Text, { as: "div", variant: "caption", lineClamp: 2, children: description }) : null,
           count > 0 && facts.length > 0 ? /* @__PURE__ */ jsx(BriefFacts, { facts: facts.slice(0, count), bordered: true }) : null,
           count > 0 && first ? ruleList(first, lists[first].slice(0, count), false) : null
-        ] }) }),
+        ] }) }) : null),
         hasToggle ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "none", children: /* @__PURE__ */ jsx(
           Button,
           {

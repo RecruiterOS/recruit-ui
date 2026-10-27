@@ -34,10 +34,13 @@ import {
   CandidateDecisionBar,
   CandidateProfileDialog,
 } from "@recruiteros/recruit-ui/recruit";
+import { jobBriefView, type JobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";
 
 void formatCalendarDate;
 void CandidateDecisionBar;
 void CandidateProfileDialog;
+const view: JobBriefView = jobBriefView({ roleTitle: "Fictional role" });
+void view;
 `;
 
 try {
@@ -76,11 +79,14 @@ try {
 
   writeFileSync(
     join(fixtureRoot, "runtime.mjs"),
-    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog) process.exit(1);\n`,
+    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog) process.exit(1);\n` +
+      // A brief maps outside a client boundary too.
+      `import { jobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n`,
   );
   writeFileSync(
     join(fixtureRoot, "runtime.cjs"),
-    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog) process.exit(1);\n`,
+    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog) process.exit(1);\n` +
+      `const { jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n`,
   );
   run(process.execPath, ["runtime.mjs"], fixtureRoot);
   run(process.execPath, ["runtime.cjs"], fixtureRoot);

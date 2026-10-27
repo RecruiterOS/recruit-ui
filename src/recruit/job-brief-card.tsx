@@ -7,7 +7,6 @@ import { CollapsibleSection } from "@epicbagel/saas-kit/primitives/collapsible-s
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
 import { EditableList } from "@epicbagel/saas-kit/primitives/editable-list";
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
-import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
 import { Heading } from "@epicbagel/saas-kit/primitives/heading";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { List, ListItem } from "@epicbagel/saas-kit/primitives/list";
@@ -19,14 +18,14 @@ import { FileText, Loader2 } from "lucide-react";
 import { useEffect, useId, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
 
 import type { CandidateEmptyCopy } from "./candidate-empty-copy";
+import { jobBriefLabels, type JobBriefRuleKind, type JobBriefRuleLabels } from "./job-brief-view";
 import { usePendingCall } from "./pending-action";
 import { COARSE_POINTER_TOUCH_TARGET, COARSE_POINTER_TOUCH_TARGETS_WITHIN } from "./touch-targets";
 
-/**
- * One of a brief's three lists about the people a role wants: what they must
- * have, what would be nice, and what rules them out.
- */
-export type JobBriefRuleKind = "mustHaves" | "niceToHaves" | "redFlags";
+// The brief's content helpers and wording live in a module without a client
+// boundary, so a server component can map a brief too; they are re-exported
+// here, beside the card that shows what they return.
+export * from "./job-brief-view";
 
 /**
  * How a JobBriefCard sits. `collapsible` is a card whose whole body folds
@@ -62,20 +61,11 @@ export interface JobBriefSection {
   ordered?: boolean;
 }
 
-/** Host-owned wording for a JobBriefCard's fixed parts. */
+/**
+ * Host-owned wording for a JobBriefCard's states and toggle. The lists' names
+ * are the brief's wording, not the host's: they come in `ruleLabels`.
+ */
 export interface JobBriefCardLabels {
-  /** The must-haves list's label. */
-  mustHaves: ReactNode;
-  /** The nice-to-haves list's label. */
-  niceToHaves: ReactNode;
-  /** The red-flags list's label. */
-  redFlags: ReactNode;
-  /** What one must-have is called in its list's controls: "Add must have…", "Remove must have". */
-  mustHaveItem: string;
-  /** What one nice-to-have is called in its list's controls. */
-  niceToHaveItem: string;
-  /** What one red flag is called in its list's controls. */
-  redFlagItem: string;
   /** The notice over a brief that is still being read from a document. */
   processing: ReactNode;
   /** The in-progress blank slate's title, while nothing has been read yet. */
@@ -93,12 +83,6 @@ export interface JobBriefCardLabels {
 }
 
 const DEFAULT_LABELS: JobBriefCardLabels = {
-  mustHaves: "Must haves",
-  niceToHaves: "Nice to haves",
-  redFlags: "Red flags",
-  mustHaveItem: "must have",
-  niceToHaveItem: "nice to have",
-  redFlagItem: "red flag",
   processing: "Reading your document. The brief will fill in shortly.",
   processingTitle: "Reading your document",
   processingDescription: "The brief will fill in shortly.",
@@ -110,7 +94,10 @@ export interface JobBriefCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "title" | "children"> {
   /** `collapsible` (the default) for a page, `preview` for a message. */
   presentation?: JobBriefCardPresentation;
-  /** The brief's title. It names the section. Defaults to "Job brief". */
+  /**
+   * The brief's title, such as `jobBriefView`'s. With the status, it names the
+   * section. Defaults to "Job brief".
+   */
   title?: ReactNode;
   /**
    * The title's heading level: 2 (the default), or 3 or 4 where the card sits
@@ -123,10 +110,12 @@ export interface JobBriefCardProps
    */
   titleLevel?: 2 | 3 | 4;
   /**
-   * At the title's end, such as an "Updated" badge. It keeps its width: on a
-   * narrow screen the title wraps rather than the status. In `collapsible`
-   * it sits inside the trigger button, so pass phrasing content (a Badge
-   * rendered `as="span"`).
+   * At the title's end, such as a "Current" badge, in the same place in both
+   * presentations. It keeps its width: on a narrow screen the title wraps
+   * rather than the status. It names the section with the title ("… Current"),
+   * so versions of one brief stay apart in a screen reader's list of regions.
+   * In `collapsible` it sits inside the trigger button, so pass phrasing
+   * content (a Badge rendered `as="span"`).
    */
   status?: ReactNode;
   /** What the role is, in a sentence or two. Clamped to two lines in a closed preview. */
@@ -183,6 +172,12 @@ export interface JobBriefCardProps
    * edit. Defaults to "No brief yet".
    */
   empty?: CandidateEmptyCopy;
+  /**
+   * The lists' names and what one entry of each is called in their controls
+   * ("Add must-have…", "Remove must-have"), such as `jobBriefView`'s. Defaults
+   * to `jobBriefLabels`' wording.
+   */
+  ruleLabels?: Partial<JobBriefRuleLabels>;
   labels?: Partial<JobBriefCardLabels>;
 }
 
@@ -202,6 +197,15 @@ const ITEM_NAME: Record<JobBriefRuleKind, "mustHaveItem" | "niceToHaveItem" | "r
   niceToHaves: "niceToHaveItem",
   redFlags: "redFlagItem",
 };
+
+// The collapsible's trigger and body take the preview's inset (the kit Card's
+// `md` padding) and its 16px between the title row and the body, so the two
+// presentations line up and differ only in what folds. The trigger stays the
+// whole row, with the chevron 16px after the status. It drops the kit
+// trigger's small type, whose line height the status would otherwise take,
+// so a badge there is as tall as in the preview.
+const COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
+const COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
 
 // The kit EditableList's own label, so a section reads as one more list.
 const SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
@@ -235,6 +239,39 @@ function sectionRows(section: JobBriefSection): number {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
 }
 
+/**
+ * The title row both presentations share: the title in the kit's card-title
+ * type, and the status at its end. Given a heading tag, the title is that
+ * heading; without one the row is the collapsible trigger's label, so every
+ * part is a span (a button holds only phrasing content).
+ */
+function BriefHeader({
+  title,
+  status,
+  titleId,
+  statusId,
+  heading,
+}: {
+  title: ReactNode;
+  status: ReactNode;
+  titleId: string;
+  statusId: string;
+  heading?: "h2" | "h3" | "h4";
+}) {
+  const as = heading ? "div" : "span";
+  return (
+    // In the trigger the row takes the width the chevron leaves.
+    <Stack as={as} direction="horizontal" gap="md" align="start" justify="between" grow={!heading} minWidth="zero">
+      <Stack as={as} grow minWidth="zero">
+        {/* The card-title look at every level. */}
+        <Heading id={titleId} level={3} as={heading ?? "span"}>{title}</Heading>
+      </Stack>
+      {/* A badge would shrink and wrap before the title does. */}
+      {present(status) ? <Stack as={as} id={statusId} shrink={false}>{status}</Stack> : null}
+    </Stack>
+  );
+}
+
 function BriefFacts({ facts, bordered }: { facts: readonly JobBriefFact[]; bordered?: boolean }) {
   return (
     <DefinitionList variant="divided" className={bordered ? "border-t" : undefined}>
@@ -255,7 +292,7 @@ function RuleList({
 }: {
   kind: JobBriefRuleKind;
   items: readonly string[];
-  label: ReactNode;
+  label: string;
   itemName: string;
   level: SubheadingLevel;
   onRulesChange?: (kind: JobBriefRuleKind, items: string[]) => unknown;
@@ -313,16 +350,19 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
  * A job brief: what the role is, its headline facts, the must-have,
  * nice-to-have and red-flag lists, then titled sections such as role details
  * or the interview process, and a footer slot. Every value enters as a
- * display value or a slot, worded by the host.
+ * display value or a slot, worded by the host; `jobBriefView` maps a brief's
+ * fields onto them, so one brief reads the same in every host.
  *
- * Two presentations share one body. `collapsible` is a kit Card holding a
- * CollapsibleSection, for a page: the title is the trigger and the whole
- * body folds under it. `preview` is a kit Card with the title as a heading,
- * for a message: closed, it shows the description (two lines), the first
- * `previewCount` facts and entries of the first shown list that has any,
- * then a toggle that opens the full brief in place; with nothing hidden, the
- * full brief shows and no toggle does. Closing it from the toggle brings the
- * card back into view, since a long brief's toggle sits far below its top.
+ * Two presentations share one look: the same title row (the title in the
+ * card-title type, the status at its end), inset and body, and differ only
+ * in what folds. `collapsible` is a kit Card holding a CollapsibleSection,
+ * for a page: the title row is the trigger and the whole body folds under
+ * it. `preview` is a kit Card with the title as a heading, for a message:
+ * closed, it shows the description (two lines), the first `previewCount`
+ * facts and entries of the first shown list that has any, then a toggle
+ * that opens the full brief in place; with nothing hidden, the full brief
+ * shows and no toggle does. Closing it from the toggle brings the card back
+ * into view, since a long brief's toggle sits far below its top.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps
@@ -330,15 +370,15 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
  * notice. A read-only brief with nothing to show is the kit's empty state,
  * or an in-progress one while `processing`; while `loading`, skeleton rows.
  *
- * The root is a `section` named by the title and marked
- * `data-slot="job-brief-card"`, with `data-presentation`; each list's
+ * The root is a `section` named by the title and the status together, and
+ * marked `data-slot="job-brief-card"`, with `data-presentation`; each list's
  * wrapper is marked `data-slot="job-brief-rule-list"` with its `data-kind`,
  * each section `data-slot="job-brief-section"`, and the skeleton
  * `data-slot="job-brief-loading"`. The kit Card inside keeps its own.
  */
 export function JobBriefCard({
   presentation = "collapsible",
-  title = "Job brief",
+  title = jobBriefLabels.title,
   titleLevel = 2,
   status,
   description,
@@ -357,12 +397,20 @@ export function JobBriefCard({
   onOpenChange,
   previewCount = 3,
   empty = { title: "No brief yet" },
+  ruleLabels,
   labels,
   ...props
 }: JobBriefCardProps) {
   const text = { ...DEFAULT_LABELS, ...labels };
+  const ruleText: JobBriefRuleLabels = { ...jobBriefLabels, ...ruleLabels };
   const titleId = useId();
+  const statusId = useId();
   const bodyId = useId();
+  // The section is named by its title and its status together.
+  const labelledBy = present(status) ? `${titleId} ${statusId}` : titleId;
+  const header = (heading?: "h2" | "h3" | "h4") => (
+    <BriefHeader title={title} status={status} titleId={titleId} statusId={statusId} heading={heading} />
+  );
   const [openState, setOpenState] = useState(defaultOpen);
   const expanded = open ?? openState;
   const setExpanded = (next: boolean) => {
@@ -445,8 +493,8 @@ export function JobBriefCard({
       key={kind}
       kind={kind}
       items={items}
-      label={text[kind]}
-      itemName={text[ITEM_NAME[kind]]}
+      label={ruleText[kind]}
+      itemName={ruleText[ITEM_NAME[kind]]}
       level={subLevel}
       onRulesChange={canEdit ? onRulesChange : undefined}
     />
@@ -465,34 +513,26 @@ export function JobBriefCard({
   );
 
   if (presentation === "collapsible") {
-    const label = <span id={titleId}>{title}</span>;
     return (
       <Stack
         as="section"
         data-slot="job-brief-card"
         data-presentation="collapsible"
-        aria-labelledby={titleId}
+        aria-labelledby={labelledBy}
         gap="none"
         {...props}
       >
         <Card>
           <CollapsibleSection
-            title={
-              present(status) ? (
-                <Stack as="span" direction="horizontal" gap="sm" align="center" minWidth="zero">
-                  {label}
-                  {status}
-                </Stack>
-              ) : (
-                label
-              )
-            }
+            title={header()}
             open={open}
             defaultOpen={defaultOpen}
             onOpenChange={onOpenChange}
             density="roomy"
             divided={false}
-            inset="default"
+            inset="none"
+            triggerClassName={COLLAPSIBLE_TRIGGER}
+            contentClassName={COLLAPSIBLE_BODY}
           >
             {blank ?? fullBody}
             {state === "loading" ? null : footer}
@@ -516,42 +556,45 @@ export function JobBriefCard({
   // Editing happens in the full brief, so an editable preview always offers it.
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;
+  // Closed with nothing to show before the toggle (no description, and a
+  // `previewCount` of 0 or nothing to count), there is no body, so the toggle
+  // sits one gap under the title row, not two. Nothing points at it: the
+  // toggle's `aria-controls` is set only while open.
+  const hasBody =
+    full ||
+    notice !== null ||
+    hasDescription ||
+    (count > 0 && (facts.length > 0 || (first !== undefined && lists[first].length > 0)));
 
   return (
     <Stack
       as="section"
       data-slot="job-brief-card"
       data-presentation="preview"
-      aria-labelledby={titleId}
+      aria-labelledby={labelledBy}
       gap="none"
       {...props}
     >
       <Card padding="md">
         <Stack gap="md">
-          <Stack direction="horizontal" gap="md" align="start" justify="between">
-            <FlexItem grow minWidth="zero">
-              {/* The card-title look at every level. */}
-              <Heading id={titleId} level={3} as={`h${titleLevel}`}>{title}</Heading>
-            </FlexItem>
-            {/* A badge would shrink and wrap before the title does. */}
-            {present(status) ? <FlexItem shrink={false}>{status}</FlexItem> : null}
-          </Stack>
-          {blank ?? (
-            <Stack id={bodyId} gap="md">
-              {full ? (
-                fullBody
-              ) : (
-                <>
-                  {notice}
-                  {hasDescription ? (
-                    <Text as="div" variant="caption" lineClamp={2}>{description}</Text>
-                  ) : null}
-                  {count > 0 && facts.length > 0 ? <BriefFacts facts={facts.slice(0, count)} bordered /> : null}
-                  {count > 0 && first ? ruleList(first, lists[first].slice(0, count), false) : null}
-                </>
-              )}
-            </Stack>
-          )}
+          {header(`h${titleLevel}`)}
+          {blank ??
+            (hasBody ? (
+              <Stack id={bodyId} gap="md">
+                {full ? (
+                  fullBody
+                ) : (
+                  <>
+                    {notice}
+                    {hasDescription ? (
+                      <Text as="div" variant="caption" lineClamp={2}>{description}</Text>
+                    ) : null}
+                    {count > 0 && facts.length > 0 ? <BriefFacts facts={facts.slice(0, count)} bordered /> : null}
+                    {count > 0 && first ? ruleList(first, lists[first].slice(0, count), false) : null}
+                  </>
+                )}
+              </Stack>
+            ) : null)}
           {hasToggle ? (
             <Stack direction="horizontal" gap="none">
               <Button

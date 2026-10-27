@@ -55,12 +55,13 @@ export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './recruit/current-company-label.cjs';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './recruit/current-company-popover.cjs';
 export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './recruit/document-list.cjs';
-export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefRuleKind, JobBriefSection } from './recruit/job-brief-card.cjs';
+export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefSection } from './recruit/job-brief-card.cjs';
 export { JobClientBadge, JobClientBadgeProps } from './recruit/job-client-badge.cjs';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './recruit/job-summary-card.cjs';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './recruit/matched-call-card.cjs';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './recruit/call-data.cjs';
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
+export { JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefRuleKind, JobBriefRuleLabels, JobBriefTitleStyle, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefLabels, jobBriefTitle, jobBriefView } from './recruit/job-brief-view.cjs';
 import 'react';
 import '@epicbagel/saas-kit/primitives/icon';
 import '@epicbagel/saas-kit/primitives/timeline';
