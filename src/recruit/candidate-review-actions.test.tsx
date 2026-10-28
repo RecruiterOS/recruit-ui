@@ -386,7 +386,7 @@ describe("candidate voice note", () => {
       instances.push(this);
     }
     start() {}
-    stop() {}
+    stop() { this.onend?.(); }
     abort() {}
   }
 

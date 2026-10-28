@@ -5,6 +5,20 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.17.0
+
+### Breaking
+
+- `@epicbagel/saas-kit` 1.7.0 or later is required for the public
+  `document-preview` primitive. The peer and registry minimum is `^1.7.0`.
+
+### Added
+
+- `DocumentUploadPanel` takes an optional controlled `preview` to render
+  the kit's responsive document dialog in either panel density. The host
+  supplies the document title, URL, loading/error state and download/close
+  callbacks; authentication, URL acquisition and persistence stay in the app.
+
 ## 0.16.0
 
 ### Added

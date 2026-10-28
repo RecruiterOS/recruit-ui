@@ -3,6 +3,7 @@
 import { Alert } from "@epicbagel/saas-kit/primitives/alert";
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";
 import { Button } from "@epicbagel/saas-kit/primitives/button";
+import { DocumentPreview, type DocumentPreviewProps } from "@epicbagel/saas-kit/primitives/document-preview";
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
 import { FileDropzone } from "@epicbagel/saas-kit/primitives/file-dropzone";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
@@ -442,6 +443,8 @@ export interface DocumentUploadPanelProps<TValue extends string = string>
   /** The compact panel's divider, as the kit PanelSection takes it. Defaults to `bottom`. */
   border?: "none" | "top" | "bottom";
   labels?: Partial<DocumentUploadPanelLabels>;
+  /** Controlled document preview. The host owns URL loading, authorization and download callbacks. */
+  preview?: DocumentPreviewProps;
   /** The documents, usually DocumentListItems with the same `density`. */
   children?: ReactNode;
 }
@@ -469,6 +472,7 @@ export function DocumentUploadPanel<TValue extends string = string>({
   density = "default",
   border = "bottom",
   labels,
+  preview,
   children,
   ...props
 }: DocumentUploadPanelProps<TValue>) {
@@ -539,6 +543,7 @@ export function DocumentUploadPanel<TValue extends string = string>({
         ) : null}
         {dropzone}
         <Stack marginTop="sm">{list}</Stack>
+        {preview && <DocumentPreview {...preview} />}
       </PanelSection>
     );
   }
@@ -563,6 +568,7 @@ export function DocumentUploadPanel<TValue extends string = string>({
       ) : null}
       {dropzone}
       {list}
+      {preview && <DocumentPreview {...preview} />}
     </Stack>
   );
 }
