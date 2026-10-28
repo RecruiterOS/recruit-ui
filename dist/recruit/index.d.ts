@@ -71,5 +71,6 @@ import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
 import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
+import '@epicbagel/saas-kit/primitives/notes';
 import '@epicbagel/saas-kit/primitives/select';
 import '@epicbagel/saas-kit/primitives/document-preview';

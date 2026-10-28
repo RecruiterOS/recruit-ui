@@ -5,6 +5,24 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.18.0
+
+### Breaking
+
+- `@epicbagel/saas-kit` 1.13.0 or later is required for its generic notes
+  components. The peer and registry minimum is `^1.13.0`.
+
+### Changed
+
+- `CandidateNoteList`, `CandidateNoteCard` and `CandidateNoteComposer` now
+  delegate to SaaS Kit's `NoteList`, `NoteCard` and `NoteComposer`. Existing
+  exports, labels and data slots are preserved. New generic consumers can use
+  SaaS Kit's `Notes` with an array of attributed notes directly.
+- Note saves disable conflicting actions, preserve failed drafts with an
+  inline error and prevent duplicate submissions. Without a voice callback,
+  the composer opens for typing. Controlled drafts are supported; their
+  host clears them after a successful save.
+
 ## 0.17.0
 
 ### Breaking

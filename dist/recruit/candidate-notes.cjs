@@ -4,9 +4,9 @@
 
 
 
-var _chunkP4CDDCSEcjs = require('../chunk-P4CDDCSE.cjs');
+var _chunkKDK5CYGScjs = require('../chunk-KDK5CYGS.cjs');
 
 
 
 
-exports.CandidateNoteCard = _chunkP4CDDCSEcjs.CandidateNoteCard; exports.CandidateNoteComposer = _chunkP4CDDCSEcjs.CandidateNoteComposer; exports.CandidateNoteList = _chunkP4CDDCSEcjs.CandidateNoteList;
+exports.CandidateNoteCard = _chunkKDK5CYGScjs.CandidateNoteCard; exports.CandidateNoteComposer = _chunkKDK5CYGScjs.CandidateNoteComposer; exports.CandidateNoteList = _chunkKDK5CYGScjs.CandidateNoteList;

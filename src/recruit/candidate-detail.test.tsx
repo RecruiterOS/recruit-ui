@@ -309,14 +309,14 @@ describe("candidate notes", () => {
     const onSubmit = vi.fn(() => Promise.reject(new Error("offline")));
     render(<CandidateNoteComposer onSubmit={onSubmit} />);
 
-    await user.click(screen.getByRole("button", { name: "or type instead" }));
+    // A host with no recorder opens directly for typing instead of a dead mic.
+    expect(screen.queryByRole("button", { name: "Tap to speak" })).toBeNull();
     await user.type(screen.getByPlaceholderText("Type your note…"), "Call back");
     await user.click(screen.getByRole("button", { name: "Add note" }));
     await waitFor(() => expect(screen.getByRole("button", { name: "Add note" })).toBeEnabled());
     expect(screen.getByPlaceholderText("Type your note…")).toHaveValue("Call back");
 
     await user.click(screen.getByRole("button", { name: "Cancel" }));
-    await user.click(screen.getByRole("button", { name: "or type instead" }));
     expect(screen.getByPlaceholderText("Type your note…")).toHaveValue("");
   });
 });

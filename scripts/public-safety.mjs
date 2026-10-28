@@ -187,6 +187,8 @@ function hasUndeclaredPackage(source, pathFromRoot, declared) {
 
 function filesUnder(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    // Git worktrees keep their repository metadata in a root .git file.
+    if (directory === root && entry.name === ".git") return [];
     if (entry.isDirectory() && SKIP_DIRECTORIES.has(entry.name)) return [];
     const path = join(directory, entry.name);
     return entry.isDirectory() ? filesUnder(path) : [path];
