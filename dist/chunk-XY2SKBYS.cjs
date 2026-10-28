@@ -6,6 +6,7 @@ var _chunkGVQPJCZ6cjs = require('./chunk-GVQPJCZ6.cjs');
 var _alert = require('@epicbagel/saas-kit/primitives/alert');
 var _badge = require('@epicbagel/saas-kit/primitives/badge');
 var _button = require('@epicbagel/saas-kit/primitives/button');
+var _documentpreview = require('@epicbagel/saas-kit/primitives/document-preview');
 var _emptystate = require('@epicbagel/saas-kit/primitives/empty-state');
 var _filedropzone = require('@epicbagel/saas-kit/primitives/file-dropzone');
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
@@ -264,6 +265,7 @@ function DocumentUploadPanel({
   density = "default",
   border = "bottom",
   labels,
+  preview,
   children,
   ...props
 }) {
@@ -324,7 +326,8 @@ function DocumentUploadPanel({
           ),
           error ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _alert.Alert, { variant: "destructive", radius: "md", padding: "compact", textSize: "xs", marginBottom: "md", children: error }) : null,
           dropzone,
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { marginTop: "sm", children: list })
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { marginTop: "sm", children: list }),
+          preview && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _documentpreview.DocumentPreview, { ...preview })
         ]
       }
     );
@@ -345,7 +348,8 @@ function DocumentUploadPanel({
         ] }),
         error ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _alert.Alert, { variant: "destructive", radius: "md", padding: "compact", textSize: "xs", children: error }) : null,
         dropzone,
-        list
+        list,
+        preview && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _documentpreview.DocumentPreview, { ...preview })
       ]
     }
   );

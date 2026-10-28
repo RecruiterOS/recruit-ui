@@ -6,6 +6,7 @@ import {
 import { Alert } from "@epicbagel/saas-kit/primitives/alert";
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";
 import { Button } from "@epicbagel/saas-kit/primitives/button";
+import { DocumentPreview } from "@epicbagel/saas-kit/primitives/document-preview";
 import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
 import { FileDropzone } from "@epicbagel/saas-kit/primitives/file-dropzone";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
@@ -264,6 +265,7 @@ function DocumentUploadPanel({
   density = "default",
   border = "bottom",
   labels,
+  preview,
   children,
   ...props
 }) {
@@ -324,7 +326,8 @@ function DocumentUploadPanel({
           ),
           error ? /* @__PURE__ */ jsx(Alert, { variant: "destructive", radius: "md", padding: "compact", textSize: "xs", marginBottom: "md", children: error }) : null,
           dropzone,
-          /* @__PURE__ */ jsx(Stack, { marginTop: "sm", children: list })
+          /* @__PURE__ */ jsx(Stack, { marginTop: "sm", children: list }),
+          preview && /* @__PURE__ */ jsx(DocumentPreview, { ...preview })
         ]
       }
     );
@@ -345,7 +348,8 @@ function DocumentUploadPanel({
         ] }),
         error ? /* @__PURE__ */ jsx(Alert, { variant: "destructive", radius: "md", padding: "compact", textSize: "xs", children: error }) : null,
         dropzone,
-        list
+        list,
+        preview && /* @__PURE__ */ jsx(DocumentPreview, { ...preview })
       ]
     }
   );

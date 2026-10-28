@@ -1,5 +1,6 @@
 import * as react from 'react';
 import { ReactNode, HTMLAttributes } from 'react';
+import { DocumentPreviewProps } from '@epicbagel/saas-kit/primitives/document-preview';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.cjs';
 
 /**
@@ -148,6 +149,8 @@ interface DocumentUploadPanelProps<TValue extends string = string> extends Omit<
     /** The compact panel's divider, as the kit PanelSection takes it. Defaults to `bottom`. */
     border?: "none" | "top" | "bottom";
     labels?: Partial<DocumentUploadPanelLabels>;
+    /** Controlled document preview. The host owns URL loading, authorization and download callbacks. */
+    preview?: DocumentPreviewProps;
     /** The documents, usually DocumentListItems with the same `density`. */
     children?: ReactNode;
 }
@@ -161,6 +164,6 @@ interface DocumentUploadPanelProps<TValue extends string = string> extends Omit<
  * The root is a section named by its title and marked
  * `data-slot="document-upload-panel"`.
  */
-declare function DocumentUploadPanel<TValue extends string = string>({ title, count, loading, error, onFiles, uploading, accept, kindSelect, empty, density, border, labels, children, ...props }: DocumentUploadPanelProps<TValue>): react.JSX.Element;
+declare function DocumentUploadPanel<TValue extends string = string>({ title, count, loading, error, onFiles, uploading, accept, kindSelect, empty, density, border, labels, preview, children, ...props }: DocumentUploadPanelProps<TValue>): react.JSX.Element;
 
 export { type DocumentKind, type DocumentKindOption, type DocumentKindSelect, type DocumentKindTone, DocumentList, type DocumentListDensity, DocumentListItem, type DocumentListItemAction, type DocumentListItemLabels, type DocumentListItemProps, type DocumentListProps, DocumentUploadPanel, type DocumentUploadPanelLabels, type DocumentUploadPanelProps, formatFileSize };

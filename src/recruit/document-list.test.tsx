@@ -168,6 +168,35 @@ describe("document list", () => {
 });
 
 describe("document upload panel", () => {
+  it.each(["default", "compact"] as const)("owns a controlled preview in %s density while the host supplies its URL and actions", async density => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn();
+    const onDownload = vi.fn();
+    const preview = { open: true, title: "harbourline-brief.pdf", onOpenChange, onDownload };
+    const { rerender } = render(
+      <DocumentUploadPanel density={density} onFiles={() => undefined} preview={{ ...preview, loading: true }} />,
+    );
+    expect(screen.getByRole("dialog", { name: "harbourline-brief.pdf" })).toBeInTheDocument();
+    expect(screen.getByRole("status")).toHaveTextContent("Loading preview");
+    expect(screen.queryByTitle("Preview of harbourline-brief.pdf")).toBeNull();
+
+    rerender(<DocumentUploadPanel density={density} onFiles={() => undefined} preview={{ ...preview, error: "Preview link expired" }} />);
+    expect(screen.getByRole("alert")).toHaveTextContent("Preview link expired");
+    expect(screen.queryByTitle("Preview of harbourline-brief.pdf")).toBeNull();
+
+    rerender(<DocumentUploadPanel density={density} onFiles={() => undefined} preview={{ ...preview, src: "https://files.example/brief.pdf", downloading: true }} />);
+    expect(screen.getByTitle("Preview of harbourline-brief.pdf")).toHaveAttribute("src", "https://files.example/brief.pdf");
+    expect(screen.getByRole("button", { name: "Download document" })).toBeDisabled();
+
+    rerender(<DocumentUploadPanel density={density} onFiles={() => undefined} preview={{ ...preview, src: "https://files.example/brief.pdf" }} />);
+    await user.click(screen.getByRole("button", { name: "Download document" }));
+    expect(onDownload).toHaveBeenCalledOnce();
+    await user.click(screen.getByRole("button", { name: "Close preview" }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+    rerender(<DocumentUploadPanel density={density} onFiles={() => undefined} preview={{ ...preview, open: false }} />);
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
   it("is a section named by its title, with the drop zone, an error and the list", async () => {
     const user = userEvent.setup();
     const onFiles = vi.fn();
