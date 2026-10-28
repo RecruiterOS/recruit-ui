@@ -2,9 +2,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkEGMKW75Icjs = require('../chunk-EGMKW75I.cjs');
+var _chunkLAOJ26MOcjs = require('../chunk-LAOJ26MO.cjs');
 require('../chunk-K3VUGGWH.cjs');
-require('../chunk-DUEGVK55.cjs');
+require('../chunk-KTFEHL5X.cjs');
 
 
-exports.CandidatePipelineCard = _chunkEGMKW75Icjs.CandidatePipelineCard;
+exports.CandidatePipelineCard = _chunkLAOJ26MOcjs.CandidatePipelineCard;

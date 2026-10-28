@@ -8,12 +8,17 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
+import { CandidateCoverHeader, type CandidateCoverImageSize } from "./candidate-cover-header";
 import { COARSE_POINTER_TOUCH_TARGETS_WITHIN } from "./touch-targets";
 
 export interface CandidateInlineCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "title"> {
   name: ReactNode;
   avatar?: ReactNode;
+  /** Optional host-owned media, in the shared 4:1 cover above the identity row. */
+  cover?: ReactNode;
+  /** `compact` caps the cover at 96px while retaining 4:1 on narrower cards. */
+  coverSize?: CandidateCoverImageSize;
   headline?: ReactNode;
   /**
    * The caption line under the headline, such as a location. A leading glyph
@@ -32,7 +37,8 @@ export interface CandidateInlineCardProps
    * `comfortable` (the default) gives the card room for an assessment;
    * `compact` is a single dense row (smaller padding, the name and lines
    * centred on the avatar, every line truncated) for fixed-height list rows
-   * and board columns: give the card a height and its content centres in it.
+   * and board columns: give a card without a cover a height and its content
+   * centres in it. A cover adds its natural height above the compact row.
    * On a coarse pointer (a touchscreen) every link and button in a compact
    * card's `actions` is at least 44px square, whatever size it asked for, so
    * a dense row keeps its touch targets on a phone.
@@ -91,6 +97,8 @@ const META_LINE_GLYPHS =
 export function CandidateInlineCard({
   name,
   avatar,
+  cover,
+  coverSize = "default",
   headline,
   meta,
   assessment,
@@ -113,6 +121,86 @@ export function CandidateInlineCard({
   const actionId = `${generatedId}-action`;
   const compact = density === "compact";
   const centreActions = !compact && actionsAlign === "center";
+  const hasCover = cover != null;
+  const handleSelect = onSelect
+    ? (event: MouseEvent<HTMLDivElement>) => {
+        if (!event.defaultPrevented && shouldActivateCandidateCard(event)) onSelect();
+      }
+    : undefined;
+  const content = (
+    <div
+      data-slot="candidate-inline-card-content"
+      // Only a card without a cover fills a fixed-height row; a cover adds its own height.
+      className={compact ? (hasCover ? "px-3 py-2" : "h-full px-3 py-2") : "px-5 py-4"}
+      onClick={hasCover ? undefined : handleSelect}
+    >
+      <Stack
+        direction="horizontal"
+        gap={compact ? "sm" : "compact"}
+        align={compact ? "center" : "start"}
+        height={compact && !hasCover ? "full" : "auto"}
+      >
+        {avatar}
+        <FlexItem grow minWidth="zero">
+          <Stack direction="horizontal" gap="sm" align="center" wrap={!compact}>
+            <Heading
+              id={nameId}
+              level={5}
+              appearance={compact ? "compact" : nameSize === "lg" ? "section" : "default"}
+              truncate
+            >
+              {name}
+            </Heading>
+            {status}
+          </Stack>
+          {headline != null ? (
+            // A compact row is a fixed height: the caption's relaxed leading would push the lines apart.
+            <Text
+              data-slot="candidate-inline-card-headline"
+              variant="caption"
+              size={compact ? "xs" : "sm"}
+              leading={compact ? "snug" : "normal"}
+              truncate={compact || !headlineWrap}
+              marginTop={compact ? "none" : "tight"}
+            >
+              {headline}
+            </Text>
+          ) : null}
+          {meta != null ? (
+            <Text
+              data-slot="candidate-inline-card-meta"
+              variant="caption"
+              size="xs"
+              leading={compact ? "snug" : "normal"}
+              truncate={compact}
+              marginTop={compact ? "none" : "xs"}
+              className={META_LINE_GLYPHS}
+            >
+              {meta}
+            </Text>
+          ) : null}
+          {assessment != null ? (
+            <Stack gap="none" marginTop={compact ? "sm" : "md"}>{assessment}</Stack>
+          ) : null}
+        </FlexItem>
+        {actions != null ? (
+          // No box of its own, so the actions stay items of the row; it
+          // only carries a compact row's touch targets, or the centring, to
+          // its controls.
+          <div
+            data-slot="candidate-inline-card-actions"
+            className={
+              compact
+                ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}`
+                : centreActions ? "contents [&>*]:self-center" : "contents"
+            }
+          >
+            {actions}
+          </div>
+        ) : null}
+      </Stack>
+    </div>
+  );
 
   return (
     <InteractiveCard
@@ -142,84 +230,17 @@ export function CandidateInlineCard({
           ) : null}
         </button>
       ) : null}
-      <div
-        data-slot="candidate-inline-card-content"
-        // Compact fills a fixed-height row and centres on it, as a virtualised list needs.
-        className={compact ? "h-full px-3 py-2" : "px-5 py-4"}
-        onClick={
-          onSelect
-            ? (event: MouseEvent<HTMLDivElement>) => {
-                if (shouldActivateCandidateCard(event)) onSelect();
-              }
-            : undefined
-        }
-      >
-        <Stack
-          direction="horizontal"
-          gap={compact ? "sm" : "compact"}
-          align={compact ? "center" : "start"}
-          height={compact ? "full" : "auto"}
+      {hasCover ? (
+        <CandidateCoverHeader
+          cover={cover}
+          coverSize={coverSize}
+          padding="none"
+          className="rounded-[inherit]"
+          onClick={handleSelect}
         >
-          {avatar}
-          <FlexItem grow minWidth="zero">
-            <Stack direction="horizontal" gap="sm" align="center" wrap={!compact}>
-              <Heading
-                id={nameId}
-                level={5}
-                appearance={compact ? "compact" : nameSize === "lg" ? "section" : "default"}
-                truncate
-              >
-                {name}
-              </Heading>
-              {status}
-            </Stack>
-            {headline != null ? (
-              // A compact row is a fixed height: the caption's relaxed leading would push the lines apart.
-              <Text
-                data-slot="candidate-inline-card-headline"
-                variant="caption"
-                size={compact ? "xs" : "sm"}
-                leading={compact ? "snug" : "normal"}
-                truncate={compact || !headlineWrap}
-                marginTop={compact ? "none" : "tight"}
-              >
-                {headline}
-              </Text>
-            ) : null}
-            {meta != null ? (
-              <Text
-                data-slot="candidate-inline-card-meta"
-                variant="caption"
-                size="xs"
-                leading={compact ? "snug" : "normal"}
-                truncate={compact}
-                marginTop={compact ? "none" : "xs"}
-                className={META_LINE_GLYPHS}
-              >
-                {meta}
-              </Text>
-            ) : null}
-            {assessment != null ? (
-              <Stack gap="none" marginTop={compact ? "sm" : "md"}>{assessment}</Stack>
-            ) : null}
-          </FlexItem>
-          {actions != null ? (
-            // No box of its own, so the actions stay items of the row; it
-            // only carries a compact row's touch targets, or the centring, to
-            // its controls.
-            <div
-              data-slot="candidate-inline-card-actions"
-              className={
-                compact
-                  ? `contents ${COARSE_POINTER_TOUCH_TARGETS_WITHIN}`
-                  : centreActions ? "contents [&>*]:self-center" : "contents"
-              }
-            >
-              {actions}
-            </div>
-          ) : null}
-        </Stack>
-      </div>
+          {content}
+        </CandidateCoverHeader>
+      ) : content}
     </InteractiveCard>
   );
 }

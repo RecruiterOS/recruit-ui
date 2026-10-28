@@ -3,7 +3,7 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunkDUEGVK55cjs = require('./chunk-DUEGVK55.cjs');
+var _chunkKTFEHL5Xcjs = require('./chunk-KTFEHL5X.cjs');
 
 // src/recruit/candidate-pipeline-card.tsx
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
@@ -35,7 +35,7 @@ function CandidatePipelineCard({
       clip: true,
       "data-slot": "candidate-pipeline-card",
       ...props,
-      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkDUEGVK55cjs.CandidateCoverHeader, { cover, padding: "compact", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "start", children: [
+      children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkKTFEHL5Xcjs.CandidateCoverHeader, { cover, padding: "compact", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "start", children: [
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "none", children: [
           /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { weight: "medium", truncate: true, children: name }),
           shown(headline) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "xs", tone: "muted", truncate: true, marginTop: "tight", children: headline }) : null,

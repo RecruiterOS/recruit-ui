@@ -63,19 +63,19 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "../chunk-CXIGUMWJ.js";
+} from "../chunk-YMFTDVCT.js";
 import {
   CandidateQuote
 } from "../chunk-2TU6TCNM.js";
 import {
   CandidateRelationshipCard
-} from "../chunk-5F4DKATL.js";
+} from "../chunk-QROSHLXN.js";
 import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";
 import {
   CandidateReviewCard
-} from "../chunk-TLVCKMHJ.js";
+} from "../chunk-5CTC3QPI.js";
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
@@ -100,7 +100,7 @@ import {
 } from "../chunk-3OWWB6XI.js";
 import {
   CandidatePipelineCard
-} from "../chunk-CUQFEOEW.js";
+} from "../chunk-MMB4GPLS.js";
 import {
   CandidatePresentationRecorder,
   supportedRecordingMimeType
@@ -134,7 +134,7 @@ import {
 } from "../chunk-6DUL7U2Q.js";
 import {
   CandidateInlineCard
-} from "../chunk-MHXJ2MOB.js";
+} from "../chunk-F2DBAQLW.js";
 import "../chunk-NBZS6VTO.js";
 import {
   CandidateJobEvidence
@@ -152,7 +152,7 @@ import {
 import {
   CandidateCoverHeader,
   CandidateCoverImage
-} from "../chunk-NBAJDT3O.js";
+} from "../chunk-KL7C75ZR.js";
 import {
   CandidateDecisionBar
 } from "../chunk-TMC65IQ7.js";

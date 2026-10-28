@@ -5,6 +5,28 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.16.0
+
+### Added
+
+- `CandidateInlineCard` takes an optional `cover` slot, using the same
+  `CandidateCoverHeader` and 4:1 `CandidateCoverImage` frame as the full
+  review card and profile. Pass the host's media directly; the shared header
+  supplies the frame. The card's existing avatar, name, headline, meta,
+  assessment and actions stay in the identity row below it. Clicking the
+  cover opens the card, while nested links and buttons keep their own
+  actions. The keyboard trigger and its focus ring surround the whole card.
+  A compact card keeps its dense identity row, with the cover's natural
+  height above it; without a cover, the existing fixed-height row and layout
+  are unchanged. Media loading, failure handling and alt text remain the
+  host's, and a failed image keeps the frame's reserved space.
+- `CandidateInlineCard` and `CandidateCoverHeader` take
+  `coverSize="compact"` for a condensed banner: its frame keeps the 4:1
+  ratio on narrow cards and caps its actual height at 96px on wider ones,
+  cropping the image at its centre. `CandidateCoverImage` takes the same
+  option as `size` (`CandidateCoverImageSize`). All three default to
+  `"default"`, the existing uncapped 4:1 frame.
+
 ## 0.15.0
 
 ### Breaking

@@ -3,7 +3,7 @@ import {
 } from "./chunk-NBZS6VTO.js";
 import {
   CandidateCoverHeader
-} from "./chunk-NBAJDT3O.js";
+} from "./chunk-KL7C75ZR.js";
 
 // src/recruit/candidate-pipeline-card.tsx
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";

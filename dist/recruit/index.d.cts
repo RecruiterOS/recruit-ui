@@ -11,7 +11,7 @@ export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, Ca
 export { CandidateChannel, CandidateChannelActions, CandidateChannelActionsProps } from './candidate-channel-actions.cjs';
 export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateContactChannelsMenuLabels, CandidateContactChannelsMenuProps } from './candidate-contact-channels-menu.cjs';
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './candidate-contact-details.cjs';
-export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './candidate-cover-header.cjs';
+export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps, CandidateCoverImageSize } from './candidate-cover-header.cjs';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './candidate-decision-bar.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './candidate-decision-reason-dialog.cjs';

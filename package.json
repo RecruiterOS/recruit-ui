@@ -1,6 +1,6 @@
 {
   "name": "@recruiteros/recruit-ui",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Public, slot-driven recruiting workflow components for React.",
   "license": "Apache-2.0",
   "type": "module",
