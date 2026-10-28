@@ -1,9 +1,14 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
+import { CandidateCoverImageSize } from './candidate-cover-header.js';
 
 interface CandidateInlineCardProps extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "title"> {
     name: ReactNode;
     avatar?: ReactNode;
+    /** Optional host-owned media, in the shared 4:1 cover above the identity row. */
+    cover?: ReactNode;
+    /** `compact` caps the cover at 96px while retaining 4:1 on narrower cards. */
+    coverSize?: CandidateCoverImageSize;
     headline?: ReactNode;
     /**
      * The caption line under the headline, such as a location. A leading glyph
@@ -22,7 +27,8 @@ interface CandidateInlineCardProps extends Omit<HTMLAttributes<HTMLElement>, "on
      * `comfortable` (the default) gives the card room for an assessment;
      * `compact` is a single dense row (smaller padding, the name and lines
      * centred on the avatar, every line truncated) for fixed-height list rows
-     * and board columns: give the card a height and its content centres in it.
+     * and board columns: give a card without a cover a height and its content
+     * centres in it. A cover adds its natural height above the compact row.
      * On a coarse pointer (a touchscreen) every link and button in a compact
      * card's `actions` is at least 44px square, whatever size it asked for, so
      * a dense row keeps its touch targets on a phone.
@@ -64,6 +70,6 @@ type CandidateInlineCardActionsAlign = "start" | "center";
  * headline is marked `data-slot="candidate-inline-card-headline"` and the
  * meta line `data-slot="candidate-inline-card-meta"`.
  */
-declare function CandidateInlineCard({ name, avatar, headline, meta, assessment, status, actions, selected, subdued, onSelect, selectLabel, density, nameSize, headlineWrap, actionsAlign, "aria-expanded": ariaExpanded, className, ...props }: CandidateInlineCardProps): react.JSX.Element;
+declare function CandidateInlineCard({ name, avatar, cover, coverSize, headline, meta, assessment, status, actions, selected, subdued, onSelect, selectLabel, density, nameSize, headlineWrap, actionsAlign, "aria-expanded": ariaExpanded, className, ...props }: CandidateInlineCardProps): react.JSX.Element;
 
 export { CandidateInlineCard, type CandidateInlineCardActionsAlign, type CandidateInlineCardDensity, type CandidateInlineCardNameSize, type CandidateInlineCardProps };

@@ -7,38 +7,49 @@ export interface CandidateCoverImageProps
   extends HTMLAttributes<HTMLDivElement> {
   /** Caller-owned media. The host owns source resolution and alt text. */
   children?: ReactNode;
+  /** `compact` keeps the 4:1 ratio until the frame reaches 96px high. */
+  size?: CandidateCoverImageSize;
   softenUntilHover?: boolean;
 }
+
+/** The shared cover's height: its full ratio, or capped for a condensed card. */
+export type CandidateCoverImageSize = "default" | "compact";
 
 /** A stable 4:1 media frame that performs no fetching or URL resolution. */
 export function CandidateCoverImage({
   children,
+  size = "default",
   softenUntilHover = false,
   className,
   ...props
 }: CandidateCoverImageProps) {
   if (children == null) return null;
 
-  return (
-    <AspectRatio
-      ratio={4}
-      data-slot="candidate-cover-image"
-      className={cn(
-        "w-full overflow-hidden bg-muted [&_img]:h-full [&_img]:w-full [&_img]:object-cover",
-        softenUntilHover &&
-          "[&_img]:opacity-75 [&_img]:grayscale-[0.2] group-hover:[&_img]:opacity-100 group-hover:[&_img]:grayscale-0",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </AspectRatio>
+  const frameProps = {
+    "data-slot": "candidate-cover-image",
+    className: cn(
+      "w-full overflow-hidden bg-muted [&_img]:h-full [&_img]:w-full [&_img]:object-cover [&_img]:object-center",
+      size === "compact" && "relative aspect-[4/1] max-h-[96px]",
+      softenUntilHover &&
+        "[&_img]:opacity-75 [&_img]:grayscale-[0.2] group-hover:[&_img]:opacity-100 group-hover:[&_img]:grayscale-0",
+      className,
+    ),
+    ...props,
+  };
+  // Radix reserves its height on an outer padding wrapper. Native aspect-ratio
+  // lets max-height cap the actual layout space, rather than just its image.
+  return size === "compact" ? (
+    <div {...frameProps}>{children}</div>
+  ) : (
+    <AspectRatio ratio={4} {...frameProps}>{children}</AspectRatio>
   );
 }
 
 export interface CandidateCoverHeaderProps
   extends HTMLAttributes<HTMLDivElement> {
   cover?: ReactNode;
+  /** The cover's size; the default keeps its full 4:1 ratio. */
+  coverSize?: CandidateCoverImageSize;
   children: ReactNode;
   /**
    * Space around the identity. `none` sits it flush in a container the host
@@ -62,6 +73,7 @@ const DIALOG_PADDING = "p-4";
 /** One cover-and-identity hierarchy shared by candidate cards and profiles. */
 export function CandidateCoverHeader({
   cover,
+  coverSize = "default",
   children,
   padding = "card-header",
   softenCoverUntilHover = false,
@@ -78,7 +90,7 @@ export function CandidateCoverHeader({
       className={cn(clip && "overflow-hidden", className)}
       {...props}
     >
-      <CandidateCoverImage softenUntilHover={softenCoverUntilHover}>
+      <CandidateCoverImage size={coverSize} softenUntilHover={softenCoverUntilHover}>
         {cover}
       </CandidateCoverImage>
       <PanelSection

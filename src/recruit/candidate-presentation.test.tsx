@@ -34,6 +34,21 @@ describe("candidate presentation", () => {
     expect(frame?.parentElement).toHaveStyle({ paddingBottom: "25%" });
   });
 
+  it("caps a compact cover's actual frame while keeping the default cover unchanged", () => {
+    const cover = <img alt="Fictional landscape" />;
+    const { rerender } = render(<CandidateCoverHeader cover={cover} coverSize="compact">Fictional identity</CandidateCoverHeader>);
+    const frame = () => document.querySelector('[data-slot="candidate-cover-image"]');
+    expect(frame()).toHaveClass("aspect-[4/1]", "max-h-[96px]", "[&_img]:object-cover", "[&_img]:object-center");
+    // The compact frame has no Radix padding wrapper left reserving 25% height
+    // above the capped image; the frame itself determines the layout height.
+    expect(frame()?.parentElement).toHaveAttribute("data-slot", "candidate-cover-header");
+    expect(document.querySelector("[data-radix-aspect-ratio-wrapper]")).toBeNull();
+
+    rerender(<CandidateCoverHeader cover={cover}>Fictional identity</CandidateCoverHeader>);
+    expect(frame()).not.toHaveClass("max-h-[96px]");
+    expect(frame()?.parentElement).toHaveStyle({ paddingBottom: "25%" });
+  });
+
   it("sits a header flush without clipping it unless a cover needs the clip", () => {
     const { rerender } = render(<CandidateProfileHeader name="Mei Example" padding="none" />);
     const header = () => document.querySelector('[data-slot="candidate-profile-header"]');

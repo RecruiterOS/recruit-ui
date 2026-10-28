@@ -12,7 +12,7 @@ export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, Ca
 export { CandidateChannel, CandidateChannelActions, CandidateChannelActionsProps } from './recruit/candidate-channel-actions.cjs';
 export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateContactChannelsMenuLabels, CandidateContactChannelsMenuProps } from './recruit/candidate-contact-channels-menu.cjs';
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './recruit/candidate-contact-details.cjs';
-export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps } from './recruit/candidate-cover-header.cjs';
+export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps, CandidateCoverImageSize } from './recruit/candidate-cover-header.cjs';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './recruit/candidate-decision-bar.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './recruit/candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './recruit/candidate-decision-reason-dialog.cjs';
