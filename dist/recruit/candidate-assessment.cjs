@@ -2,9 +2,9 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkQT52HGFIcjs = require('../chunk-QT52HGFI.cjs');
-require('../chunk-FECY2JGN.cjs');
+var _chunk3FGIEKV4cjs = require('../chunk-3FGIEKV4.cjs');
+require('../chunk-TWVXTT47.cjs');
 require('../chunk-HUCMR5O6.cjs');
 
 
-exports.CandidateAssessment = _chunkQT52HGFIcjs.CandidateAssessment;
+exports.CandidateAssessment = _chunk3FGIEKV4cjs.CandidateAssessment;
