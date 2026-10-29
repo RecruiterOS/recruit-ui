@@ -5,6 +5,22 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.20.0
+
+### Breaking
+
+- Requires `@epicbagel/saas-kit` 1.16.0 or later for shared bullet rows and responsive scroll navigation.
+
+### Added
+
+- `CandidateCardList.scrollNavigation` enables the shared avatar navigator for visible candidates. It follows filtered results, preserves one- and two-column layouts, and switches to a horizontal index on narrow screens.
+
+### Changed
+
+- Unordered brief sections, including target company types, use the same
+  bullet row as editable requirements. Dot placement, spacing, text wrapping
+  and mobile alignment stay consistent. Interview steps remain numbered.
+
 ## 0.19.0
 
 ### Fixed

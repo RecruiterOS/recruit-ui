@@ -227,22 +227,13 @@ const COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
 // The kit EditableList's own label, so a section reads as one more list.
 const SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
 
-// A long unbroken entry, such as a URL, must wrap inside the row instead of
-// pushing the card wider than the page. The kit list's text column is a flex
-// child without min-w-0 or a wrap rule, so both are set here (TODO: move into
-// saas-kit's EditableList and drop this).
-const RULE_LIST = "[&_li]:[overflow-wrap:anywhere] [&_li>*]:min-w-0";
-
 // The kit list shows a row's edit and remove buttons on hover or focus only,
 // which a touchscreen never has: there they stay visible, at the 44px a
-// finger needs, with the fields beside them as tall. A row then outgrows its
-// text, so its dot, text and buttons centre on one line (the dot drops the
-// top offset that lines it up with the text's first line).
+// finger needs, with the fields beside them as tall. The shared bullet row
+// owns first-line alignment and the same minimum height for read-only rows.
 const EDITABLE_LIST = [
   "pointer-coarse:[&_button]:opacity-100",
   "pointer-coarse:[&_input]:min-h-[max(44px,2.75rem)]",
-  "pointer-coarse:[&_li]:items-center",
-  "pointer-coarse:[&_li>:first-child]:mt-0",
   COARSE_POINTER_TOUCH_TARGETS_WITHIN,
 ].join(" ");
 
@@ -358,7 +349,7 @@ function RuleList({
         sentiment={SENTIMENT[kind]}
         items={[...shown]}
         onChange={onRulesChange ? (next) => save(kind, next) : undefined}
-        className={onRulesChange ? `${RULE_LIST} ${EDITABLE_LIST}` : RULE_LIST}
+        className={onRulesChange ? EDITABLE_LIST : undefined}
       />
     </Stack>
   );
@@ -377,15 +368,15 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
       </Text>
       {facts.length > 0 ? <BriefFacts facts={facts} /> : null}
       {items.length > 0 ? (
-        // The rule lists' rhythm: small type, 12px between entries.
+        // The same kit bullet row EditableList uses for the requirements.
         <List
           ordered={section.ordered}
-          marker={section.ordered ? "decimal" : "disc"}
+          marker={section.ordered ? "decimal" : "none"}
           spacing="normal"
           textSize="sm"
         >
           {items.map((item, index) => (
-            <ListItem key={index}>{item}</ListItem>
+            <ListItem key={index} layout={section.ordered ? "plain" : "bullet"}>{item}</ListItem>
           ))}
         </List>
       ) : null}
