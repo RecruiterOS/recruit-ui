@@ -566,6 +566,8 @@ describe("candidate pipeline list", () => {
       "Neutral: Example note",
     ]);
     for (const line of lines) {
+      // Standalone pipeline summaries retain their compact text treatment.
+      expect(line).toHaveClass("text-xs", "text-foreground/80");
       // The word is visually hidden and sits beside the text, which keeps its own element.
       expect(line.querySelector('[data-slot="candidate-summary-bullet-sentiment"]')).toHaveClass("sr-only");
       expect(line.firstElementChild).toHaveAttribute("aria-hidden", "true");

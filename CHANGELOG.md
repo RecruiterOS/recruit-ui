@@ -5,6 +5,20 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.19.0
+
+### Fixed
+
+- `CandidateAssessment` signals now use the same body size, line height and
+  muted tone as its evidence and caveats. Signal dots and accessible
+  sentiment labels are unchanged.
+
+### Added
+
+- `CandidateSummaryBullets` accepts `presentation="body"` for small body
+  text that inherits its surrounding tone. Its default `"compact"`
+  presentation keeps the existing dense pipeline text treatment.
+
 ## 0.18.0
 
 ### Breaking

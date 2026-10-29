@@ -206,6 +206,8 @@ export interface CandidateSummaryBulletsProps
   extends Omit<HTMLAttributes<HTMLElement>, "children"> {
   /** The lines to show; the host may fall back to other evidence when there is no summary. */
   bullets: readonly CandidateSummaryBullet[];
+  /** Compact pipeline text by default; body uses the small body scale and inherits its surrounding text tone. */
+  presentation?: "compact" | "body";
   /** Adds a link-style button that asks the host for a summary. */
   onGenerate?: () => void;
   /** Shows a spinner on the button and disables it. */
@@ -229,6 +231,7 @@ export interface CandidateSummaryBulletsProps
  */
 export function CandidateSummaryBullets({
   bullets,
+  presentation = "compact",
   onGenerate,
   generating = false,
   generated = false,
@@ -247,7 +250,12 @@ export function CandidateSummaryBullets({
       {bullets.length > 0 ? (
         <List spacing="normal" inset="xs">
           {bullets.map((bullet, index) => (
-            <ListItem key={index} layout="row" textSize="xs" tone="soft">
+            <ListItem
+              key={index}
+              layout="row"
+              textSize={presentation === "body" ? "sm" : "xs"}
+              tone={presentation === "body" ? "inherit" : "soft"}
+            >
               <SentimentDot sentiment={bullet.sentiment} />
               {/* Out of the row's flow, so the dot and text keep their layout. */}
               <span className="sr-only" data-slot="candidate-summary-bullet-sentiment">

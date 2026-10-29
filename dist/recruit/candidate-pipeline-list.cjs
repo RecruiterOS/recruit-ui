@@ -3,9 +3,9 @@
 
 
 
-var _chunkFECY2JGNcjs = require('../chunk-FECY2JGN.cjs');
+var _chunkTWVXTT47cjs = require('../chunk-TWVXTT47.cjs');
 require('../chunk-HUCMR5O6.cjs');
 
 
 
-exports.CandidatePipelineList = _chunkFECY2JGNcjs.CandidatePipelineList; exports.CandidateSummaryBullets = _chunkFECY2JGNcjs.CandidateSummaryBullets;
+exports.CandidatePipelineList = _chunkTWVXTT47cjs.CandidatePipelineList; exports.CandidateSummaryBullets = _chunkTWVXTT47cjs.CandidateSummaryBullets;

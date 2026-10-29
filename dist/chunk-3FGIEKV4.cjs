@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkFECY2JGNcjs = require('./chunk-FECY2JGN.cjs');
+var _chunkTWVXTT47cjs = require('./chunk-TWVXTT47.cjs');
 
 // src/recruit/candidate-assessment.tsx
 var _definitionlist = require('@epicbagel/saas-kit/primitives/definition-list');
@@ -57,7 +57,7 @@ function CandidateAssessment({
   const resolvedLabels = { ...DEFAULT_LABELS, ...labels };
   const evidenceContent = sectionContent(evidence, evidenceItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, EvidenceList, { items }));
   const caveatContent = sectionContent(caveats, caveatItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CaveatList, { items }));
-  const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkFECY2JGNcjs.CandidateSummaryBullets, { bullets: items }));
+  const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: items, presentation: "body" }));
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { "data-slot": "candidate-assessment", padding, ...props, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "lg", children: [
     grade,
     facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,

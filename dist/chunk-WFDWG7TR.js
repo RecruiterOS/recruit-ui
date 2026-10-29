@@ -1,6 +1,6 @@
 import {
   CandidateSummaryBullets
-} from "./chunk-IJBSAYUR.js";
+} from "./chunk-RZD4G4NP.js";
 
 // src/recruit/candidate-assessment.tsx
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";
@@ -57,7 +57,7 @@ function CandidateAssessment({
   const resolvedLabels = { ...DEFAULT_LABELS, ...labels };
   const evidenceContent = sectionContent(evidence, evidenceItems, (items) => /* @__PURE__ */ jsx(EvidenceList, { items }));
   const caveatContent = sectionContent(caveats, caveatItems, (items) => /* @__PURE__ */ jsx(CaveatList, { items }));
-  const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: items }));
+  const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: items, presentation: "body" }));
   return /* @__PURE__ */ jsx(PanelSection, { "data-slot": "candidate-assessment", padding, ...props, children: /* @__PURE__ */ jsxs(Stack, { gap: "lg", children: [
     grade,
     facts.length > 0 ? /* @__PURE__ */ jsx(DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ jsx(DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,

@@ -106,6 +106,7 @@ var BULLET_LABELS = {
 };
 function CandidateSummaryBullets({
   bullets,
+  presentation = "compact",
   onGenerate,
   generating = false,
   generated = false,
@@ -119,11 +120,20 @@ function CandidateSummaryBullets({
     sentiment: { ...BULLET_LABELS.sentiment, ...labels?.sentiment }
   };
   return /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-summary-bullets", gap: "none", ...props, children: [
-    bullets.length > 0 ? /* @__PURE__ */ jsx(List, { spacing: "normal", inset: "xs", children: bullets.map((bullet, index) => /* @__PURE__ */ jsxs(ListItem, { layout: "row", textSize: "xs", tone: "soft", children: [
-      /* @__PURE__ */ jsx(SentimentDot, { sentiment: bullet.sentiment }),
-      /* @__PURE__ */ jsx("span", { className: "sr-only", "data-slot": "candidate-summary-bullet-sentiment", children: `${bullet.sentimentLabel ?? wording.sentiment[bullet.sentiment]}: ` }),
-      /* @__PURE__ */ jsx(Text, { variant: "inherit", as: "span", grow: true, children: bullet.text })
-    ] }, index)) }) : null,
+    bullets.length > 0 ? /* @__PURE__ */ jsx(List, { spacing: "normal", inset: "xs", children: bullets.map((bullet, index) => /* @__PURE__ */ jsxs(
+      ListItem,
+      {
+        layout: "row",
+        textSize: presentation === "body" ? "sm" : "xs",
+        tone: presentation === "body" ? "inherit" : "soft",
+        children: [
+          /* @__PURE__ */ jsx(SentimentDot, { sentiment: bullet.sentiment }),
+          /* @__PURE__ */ jsx("span", { className: "sr-only", "data-slot": "candidate-summary-bullet-sentiment", children: `${bullet.sentimentLabel ?? wording.sentiment[bullet.sentiment]}: ` }),
+          /* @__PURE__ */ jsx(Text, { variant: "inherit", as: "span", grow: true, children: bullet.text })
+        ]
+      },
+      index
+    )) }) : null,
     onGenerate && /* @__PURE__ */ jsxs(
       Button,
       {

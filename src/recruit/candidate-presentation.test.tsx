@@ -264,6 +264,14 @@ describe("candidate presentation", () => {
       "Positive: Fictional promotion last spring",
       "Caution: Example tenure under a year",
     ]);
+    for (const line of within(signals).getAllByRole("listitem")) {
+      // Assessment signals use the same body scale and inherit the section's muted tone.
+      expect(line).toHaveClass("text-sm");
+      expect(line).not.toHaveClass("text-xs");
+      expect(line).not.toHaveClass("text-foreground/80");
+      expect(line.firstElementChild).toHaveAttribute("aria-hidden", "true");
+      expect(line.querySelector('[data-slot="candidate-summary-bullet-sentiment"]')).toHaveClass("sr-only");
+    }
   });
 
   it("prefers a slot over items, leaves out empty sections and sits flush on request", () => {
