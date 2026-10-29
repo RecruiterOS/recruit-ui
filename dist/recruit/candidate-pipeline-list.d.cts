@@ -87,6 +87,8 @@ type CandidateSummaryBulletsLabelOverrides = Partial<Omit<CandidateSummaryBullet
 interface CandidateSummaryBulletsProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
     /** The lines to show; the host may fall back to other evidence when there is no summary. */
     bullets: readonly CandidateSummaryBullet[];
+    /** Compact pipeline text by default; body uses the small body scale and inherits its surrounding text tone. */
+    presentation?: "compact" | "body";
     /** Adds a link-style button that asks the host for a summary. */
     onGenerate?: () => void;
     /** Shows a spinner on the button and disables it. */
@@ -107,6 +109,6 @@ interface CandidateSummaryBulletsProps extends Omit<HTMLAttributes<HTMLElement>,
  *
  * The root is marked `data-slot="candidate-summary-bullets"`.
  */
-declare function CandidateSummaryBullets({ bullets, onGenerate, generating, generated, error, labels, ...props }: CandidateSummaryBulletsProps): react.JSX.Element;
+declare function CandidateSummaryBullets({ bullets, presentation, onGenerate, generating, generated, error, labels, ...props }: CandidateSummaryBulletsProps): react.JSX.Element;
 
 export { CandidatePipelineList, type CandidatePipelineListLabels, type CandidatePipelineListProps, type CandidatePipelineRow, type CandidatePipelineRowStage, type CandidateSentimentLabels, type CandidateSummaryBullet, CandidateSummaryBullets, type CandidateSummaryBulletsLabelOverrides, type CandidateSummaryBulletsLabels, type CandidateSummaryBulletsProps };

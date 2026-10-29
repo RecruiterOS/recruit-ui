@@ -142,7 +142,7 @@ export function CandidateAssessment({
   const resolvedLabels = { ...DEFAULT_LABELS, ...labels };
   const evidenceContent = sectionContent(evidence, evidenceItems, (items) => <EvidenceList items={items} />);
   const caveatContent = sectionContent(caveats, caveatItems, (items) => <CaveatList items={items} />);
-  const signalContent = sectionContent(signals, signalItems, (items) => <CandidateSummaryBullets bullets={items} />);
+  const signalContent = sectionContent(signals, signalItems, (items) => <CandidateSummaryBullets bullets={items} presentation="body" />);
 
   return (
     <PanelSection data-slot="candidate-assessment" padding={padding} {...props}>
