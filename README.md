@@ -148,3 +148,9 @@ pnpm check:public
 Git dependencies consume committed, verified ESM, CommonJS, and declaration artifacts without running install-time build scripts. `pnpm check:dist` rebuilds those artifacts and fails if they differ from the committed distribution. The build keeps `@epicbagel/saas-kit` external, so the artifacts import the kit by package name exactly as the registry sources do. `pnpm check:imports` fails the build if a source imports an undeclared package, goes through a path alias, or names a kit module that the pinned kit release doesn't export; `pnpm check:registry` applies the same kit-module check to every registry payload. `pnpm check:empty-states` holds every blank slate to the kit's `EmptyState` with an explicit variant, size, icon and title.
 
 Each release, and every change to the public API it makes, is in `CHANGELOG.md`. See `CONTRIBUTING.md` for the public-source workflow and `SECURITY.md` for private vulnerability reporting.
+
+`CandidateCardList.scrollNavigation` opts into the shared avatar index. Supply
+`getItem(item)` with its display name and optional image, an accessible `label`,
+and a `topOffset` when the host has a sticky header. The navigator uses the
+filtered list and its existing cards-per-row preference. It collapses to a
+horizontal index on narrow screens and disappears outside the list.

@@ -2,6 +2,7 @@
 
 import { Grid } from "@epicbagel/saas-kit/primitives/grid";
 import { ResourceList } from "@epicbagel/saas-kit/primitives/resource-list";
+import { ScrollNavigator, type ScrollNavigatorItem } from "@epicbagel/saas-kit/primitives/scroll-navigator";
 import { Skeleton } from "@epicbagel/saas-kit/primitives/skeleton";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Fragment, type Key } from "react";
@@ -23,6 +24,12 @@ export type CandidateCardListProps<T> = Omit<
   /** Where the cards-per-row choice is remembered; see useCandidateCardColumns. */
   columnsViewId: string;
   columnsLabels?: Partial<CandidateCardColumnsToggleLabels>;
+  /** Optional avatar navigation for the cards currently visible after filtering. */
+  scrollNavigation?: {
+    label?: string;
+    topOffset?: number;
+    getItem: (item: T, index: number) => Pick<ScrollNavigatorItem, "label" | "imageSrc" | "fallback">;
+  };
 };
 
 /**
@@ -37,6 +44,7 @@ export function CandidateCardList<T>({
   getItemKey,
   columnsViewId,
   columnsLabels,
+  scrollNavigation,
   renderItem,
   renderLoading,
   actions,
@@ -44,7 +52,20 @@ export function CandidateCardList<T>({
   ...props
 }: CandidateCardListProps<T>) {
   const { columns, setColumns } = useCandidateCardColumns(columnsViewId);
-  const renderGrid = (items: T[]) => (
+  const renderGrid = (items: T[]) => scrollNavigation ? (
+    <Stack direction="vertical" gap="none" data-slot="candidate-card-list">
+      <ScrollNavigator
+        label={scrollNavigation.label}
+        topOffset={scrollNavigation.topOffset}
+        columns={columns}
+        items={items.map((item, index) => ({
+          ...scrollNavigation.getItem(item, index),
+          id: String(getItemKey(item, index)),
+          content: renderItem(item, index),
+        }))}
+      />
+    </Stack>
+  ) : (
     <Grid columns={columns} gap="md" responsive data-slot="candidate-card-list">
       {items.map((item, index) => (
         <Fragment key={getItemKey(item, index)}>

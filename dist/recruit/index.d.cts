@@ -67,6 +67,7 @@ import 'react';
 import '@epicbagel/saas-kit/primitives/icon';
 import '@epicbagel/saas-kit/primitives/timeline';
 import '@epicbagel/saas-kit/primitives/resource-list';
+import '@epicbagel/saas-kit/primitives/scroll-navigator';
 import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
 import '@epicbagel/saas-kit/primitives/badge';

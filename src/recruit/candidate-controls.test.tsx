@@ -219,6 +219,35 @@ describe("candidate card list", () => {
     const loading = document.querySelector('[data-slot="candidate-card-list-loading"]');
     expect(loading?.children).toHaveLength(4);
   });
+
+  it("indexes only the filtered cards, preserves drafts on a column change, and clears on loading", async () => {
+    const geometry = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(() => ({
+      top: 100, bottom: 1000, left: 100, right: 500, width: 400, height: 900,
+      x: 100, y: 100, toJSON() {},
+    }));
+    try {
+      const props = {
+        ...base,
+        renderItem: (person: (typeof people)[number]) => <input aria-label={`Note for ${person.name}`} />,
+        scrollNavigation: { label: "Browse candidates", getItem: (person: (typeof people)[number]) => ({ label: person.name }) },
+      };
+      const { rerender } = render(<CandidateCardList {...props} data={people} loading={false} />);
+      expect(within(screen.getByRole("navigation", { name: "Browse candidates" })).getAllByRole("button")).toHaveLength(2);
+      const draft = screen.getByRole("textbox", { name: "Note for Fictional Person One" });
+      fireEvent.change(draft, { target: { value: "Unsent note" } });
+      await userEvent.setup().click(screen.getByRole("radio", { name: "Two cards per row", hidden: true }));
+      expect(screen.getByRole("textbox", { name: "Note for Fictional Person One" })).toBe(draft);
+      expect(draft).toHaveValue("Unsent note");
+      fireEvent.change(screen.getByPlaceholderText("Search..."), { target: { value: "Person One" } });
+      expect(screen.queryByRole("navigation")).toBeNull();
+      expect(screen.queryByRole("textbox", { name: "Note for Fictional Person Two" })).toBeNull();
+      fireEvent.change(screen.getByPlaceholderText("Search..."), { target: { value: "" } });
+      expect(screen.getByRole("navigation")).toBeInTheDocument();
+      rerender(<CandidateCardList {...props} data={people} loading />);
+      expect(screen.queryByRole("navigation")).toBeNull();
+      expect(document.querySelector('[data-slot="candidate-card-list-loading"]')).toBeInTheDocument();
+    } finally { geometry.mockRestore(); }
+  });
 });
 
 describe("candidate contact channels menu", () => {

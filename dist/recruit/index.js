@@ -20,7 +20,7 @@ import {
 } from "../chunk-NYDSTZTE.js";
 import {
   JobBriefCard
-} from "../chunk-3LVC2PB4.js";
+} from "../chunk-RQU4FKDY.js";
 import {
   JobBriefChanges
 } from "../chunk-E7YOYUUV.js";
@@ -182,7 +182,7 @@ import {
 } from "../chunk-4PGLERSR.js";
 import {
   CandidateCardList
-} from "../chunk-AW7JWES5.js";
+} from "../chunk-GD3DDHSV.js";
 import {
   CandidateCardColumnsToggle,
   useCandidateCardColumns

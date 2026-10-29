@@ -52,12 +52,9 @@ var ITEM_NAME = {
 var COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
 var COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
 var SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
-var RULE_LIST = "[&_li]:[overflow-wrap:anywhere] [&_li>*]:min-w-0";
 var EDITABLE_LIST = [
   "pointer-coarse:[&_button]:opacity-100",
   "pointer-coarse:[&_input]:min-h-[max(44px,2.75rem)]",
-  "pointer-coarse:[&_li]:items-center",
-  "pointer-coarse:[&_li>:first-child]:mt-0",
   _chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGETS_WITHIN
 ].join(" ");
 function present(value) {
@@ -131,7 +128,7 @@ function RuleList({
       sentiment: SENTIMENT[kind],
       items: [...shown],
       onChange: onRulesChange ? (next) => save(kind, next) : void 0,
-      className: onRulesChange ? `${RULE_LIST} ${EDITABLE_LIST}` : RULE_LIST
+      className: onRulesChange ? EDITABLE_LIST : void 0
     }
   ) });
 }
@@ -143,15 +140,15 @@ function BriefSection({ section, level }) {
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: `h${level}`, variant: "inherit", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
     facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefFacts, { facts }) : null,
     items.length > 0 ? (
-      // The rule lists' rhythm: small type, 12px between entries.
+      // The same kit bullet row EditableList uses for the requirements.
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
         _list.List,
         {
           ordered: section.ordered,
-          marker: section.ordered ? "decimal" : "disc",
+          marker: section.ordered ? "decimal" : "none",
           spacing: "normal",
           textSize: "sm",
-          children: items.map((item, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _list.ListItem, { children: item }, index))
+          children: items.map((item, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _list.ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
         }
       )
     ) : null

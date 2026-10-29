@@ -69,6 +69,7 @@ import '@epicbagel/saas-kit/primitives/timeline';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import '@epicbagel/saas-kit/primitives/select';
 import '@epicbagel/saas-kit/primitives/resource-list';
+import '@epicbagel/saas-kit/primitives/scroll-navigator';
 import '@epicbagel/saas-kit/primitives/decision-actions';
 import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';

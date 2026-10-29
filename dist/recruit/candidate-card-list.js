@@ -1,7 +1,7 @@
 "use client";
 import {
   CandidateCardList
-} from "../chunk-AW7JWES5.js";
+} from "../chunk-GD3DDHSV.js";
 import "../chunk-4JMEZ7QY.js";
 export {
   CandidateCardList
