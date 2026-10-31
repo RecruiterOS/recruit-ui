@@ -140,13 +140,14 @@ function BriefSection({ section, level }) {
     /* @__PURE__ */ jsx(Text, { as: `h${level}`, variant: "inherit", children: /* @__PURE__ */ jsx(Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
     facts.length > 0 ? /* @__PURE__ */ jsx(BriefFacts, { facts }) : null,
     items.length > 0 ? (
-      // The same kit bullet row EditableList uses for the requirements.
+      // The same kit bullet row, and spacing, a read-only EditableList uses
+      // for the requirements: rows about 1.8em apart.
       /* @__PURE__ */ jsx(
         List,
         {
           ordered: section.ordered,
           marker: section.ordered ? "decimal" : "none",
-          spacing: "normal",
+          spacing: "tight",
           textSize: "sm",
           children: items.map((item, index) => /* @__PURE__ */ jsx(ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
         }

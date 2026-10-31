@@ -20,7 +20,7 @@ import {
 } from "../chunk-NYDSTZTE.js";
 import {
   JobBriefCard
-} from "../chunk-RQU4FKDY.js";
+} from "../chunk-4QVASEIH.js";
 import {
   JobBriefChanges
 } from "../chunk-E7YOYUUV.js";
