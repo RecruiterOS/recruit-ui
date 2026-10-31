@@ -368,11 +368,12 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
       </Text>
       {facts.length > 0 ? <BriefFacts facts={facts} /> : null}
       {items.length > 0 ? (
-        // The same kit bullet row EditableList uses for the requirements.
+        // The same kit bullet row, and spacing, a read-only EditableList uses
+        // for the requirements: rows about 1.8em apart.
         <List
           ordered={section.ordered}
           marker={section.ordered ? "decimal" : "none"}
-          spacing="normal"
+          spacing="tight"
           textSize="sm"
         >
           {items.map((item, index) => (

@@ -5,6 +5,16 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.20.1
+
+### Changed
+
+- A brief's further sections (target company types, the interview steps)
+  set their rows `tight`, about 1.8em apart, as saas-kit 1.24.0's read-only
+  `EditableList` sets the requirements, so every list in a read-only brief has
+  the same rhythm. With saas-kit 1.24.0 a read-only bullet row is also its text
+  height on a touchscreen, rather than a 44px row.
+
 ## 0.20.0
 
 ### Breaking
