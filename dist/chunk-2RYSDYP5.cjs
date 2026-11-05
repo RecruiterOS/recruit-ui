@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunkEMCDHZVIcjs = require('./chunk-EMCDHZVI.cjs');
+var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
 
 
 var _chunkGVQPJCZ6cjs = require('./chunk-GVQPJCZ6.cjs');
@@ -33,7 +33,9 @@ var DEFAULT_LABELS = {
   processingTitle: "Reading your document",
   processingDescription: "The brief will fill in shortly.",
   showMore: (hidden) => hidden > 0 ? `Show full brief (${hidden} more)` : "Show full brief",
-  showLess: "Show less"
+  showLess: "Show less",
+  sectionMore: (hidden) => `Show ${hidden} more`,
+  sectionLess: "Show fewer"
 };
 var RULE_KINDS = ["mustHaves", "niceToHaves", "redFlags"];
 var NO_ITEMS = [];
@@ -63,9 +65,17 @@ function present(value) {
 function sectionRows(section) {
   return (_nullishCoalesce(_optionalChain([section, 'access', _ => _.facts, 'optionalAccess', _2 => _2.length]), () => ( 0))) + (_nullishCoalesce(_optionalChain([section, 'access', _3 => _3.items, 'optionalAccess', _4 => _4.length]), () => ( 0)));
 }
+function sectionShownItems(section) {
+  const items = _nullishCoalesce(_optionalChain([section, 'access', _5 => _5.items, 'optionalAccess', _6 => _6.length]), () => ( 0));
+  const count = section.previewCount;
+  return typeof count === "number" && Number.isFinite(count) ? Math.min(items, Math.max(0, Math.floor(count))) : items;
+}
+function sectionOpenRows(section) {
+  return (_nullishCoalesce(_optionalChain([section, 'access', _7 => _7.facts, 'optionalAccess', _8 => _8.length]), () => ( 0))) + sectionShownItems(section);
+}
 function versionBadges(version) {
   if (!version) return null;
-  const secondary = _optionalChain([version, 'access', _5 => _5.secondaryLabel, 'optionalAccess', _6 => _6.trim, 'call', _7 => _7()]);
+  const secondary = _optionalChain([version, 'access', _9 => _9.secondaryLabel, 'optionalAccess', _10 => _10.trim, 'call', _11 => _11()]);
   return (
     // Phrasing content throughout, so it can sit in the collapsible's trigger.
     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
@@ -78,7 +88,7 @@ function versionBadges(version) {
         gap: "xs",
         align: "center",
         children: [
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _statusbadge.StatusBadge, { as: "span", tone: version.current ? "success" : "neutral", children: _chunkEMCDHZVIcjs.jobBriefVersionLabel.call(void 0, version) }),
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _statusbadge.StatusBadge, { as: "span", tone: version.current ? "success" : "neutral", children: _chunkCP5HCQPWcjs.jobBriefVersionLabel.call(void 0, version) }),
           secondary ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _statusbadge.StatusBadge, { as: "span", tone: "neutral", children: secondary }) : null
         ]
       }
@@ -132,32 +142,58 @@ function RuleList({
     }
   ) });
 }
-function BriefSection({ section, level }) {
+function BriefSection({
+  section,
+  level,
+  labels
+}) {
   const facts = _nullishCoalesce(section.facts, () => ( NO_FACTS));
   const items = _nullishCoalesce(section.items, () => ( []));
+  const [expanded, setExpanded] = _react.useState.call(void 0, false);
+  const headingId = _react.useId.call(void 0, );
+  const listId = _react.useId.call(void 0, );
   if (facts.length === 0 && items.length === 0) return null;
+  const limit = sectionShownItems(section);
+  const folds = items.length > limit;
+  const shown = folds && !expanded ? items.slice(0, limit) : items;
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "job-brief-section", border: "top", paddingTop: "base", gap: "compact", children: [
-    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: `h${level}`, variant: "inherit", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: `h${level}`, id: headingId, variant: "inherit", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
     facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefFacts, { facts }) : null,
-    items.length > 0 ? (
+    shown.length > 0 ? (
       // The same kit bullet row, and spacing, a read-only EditableList uses
       // for the requirements: rows about 1.8em apart.
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
         _list.List,
         {
+          id: listId,
           ordered: section.ordered,
           marker: section.ordered ? "decimal" : "none",
           spacing: "tight",
           textSize: "sm",
-          children: items.map((item, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _list.ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
+          children: shown.map((item, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _list.ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
         }
       )
-    ) : null
+    ) : null,
+    folds ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", gap: "none", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+      _button.Button,
+      {
+        type: "button",
+        variant: "link-muted",
+        size: "bare",
+        align: "start",
+        "aria-expanded": expanded,
+        "aria-controls": shown.length > 0 ? listId : void 0,
+        "aria-describedby": headingId,
+        onClick: () => setExpanded(!expanded),
+        className: _chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGET,
+        children: expanded ? labels.sectionLess : labels.sectionMore(items.length - limit)
+      }
+    ) }) : null
   ] });
 }
 function JobBriefCard({
   presentation = "collapsible",
-  title = _chunkEMCDHZVIcjs.jobBriefLabels.title,
+  title = _chunkCP5HCQPWcjs.jobBriefLabels.title,
   titleLevel = 2,
   status,
   version,
@@ -182,7 +218,7 @@ function JobBriefCard({
   ...props
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
-  const ruleText = { ..._chunkEMCDHZVIcjs.jobBriefLabels, ...ruleLabels };
+  const ruleText = { ..._chunkCP5HCQPWcjs.jobBriefLabels, ...ruleLabels };
   const titleId = _react.useId.call(void 0, );
   const statusId = _react.useId.call(void 0, );
   const bodyId = _react.useId.call(void 0, );
@@ -203,7 +239,7 @@ function JobBriefCard({
   const expanded = _nullishCoalesce(open, () => ( openState));
   const setExpanded = (next) => {
     if (open === void 0) setOpenState(next);
-    _optionalChain([onOpenChange, 'optionalCall', _8 => _8(next)]);
+    _optionalChain([onOpenChange, 'optionalCall', _12 => _12(next)]);
   };
   const returnTo = _react.useRef.call(void 0, null);
   _react.useEffect.call(void 0, () => {
@@ -265,7 +301,7 @@ function JobBriefCard({
     hasDescription ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "div", variant: "caption", children: description }) : null,
     facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefFacts, { facts, bordered: true }) : null,
     shownRules.map((kind) => ruleList(kind, lists[kind], editable)),
-    sections.map((section) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefSection, { section, level: subLevel }, section.id))
+    sections.map((section) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, BriefSection, { section, level: subLevel, labels: text }, section.id))
   ] });
   if (presentation === "collapsible") {
     return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
@@ -303,7 +339,8 @@ function JobBriefCard({
   const hidden = Math.max(0, facts.length - count) + shownRules.reduce(
     (sum, kind) => sum + (kind === first ? Math.max(0, lists[kind].length - count) : lists[kind].length),
     0
-  ) + sections.reduce((sum, section) => sum + sectionRows(section), 0);
+  ) + // Opening shows a long section's first items; the rest stay behind its own toggle.
+  sections.reduce((sum, section) => sum + sectionOpenRows(section), 0);
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;
   const hasBody = full || notice !== null || hasDescription || count > 0 && (facts.length > 0 || first !== void 0 && lists[first].length > 0);

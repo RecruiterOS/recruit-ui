@@ -20,12 +20,13 @@ import {
 } from "../chunk-NYDSTZTE.js";
 import {
   JobBriefCard
-} from "../chunk-4QVASEIH.js";
+} from "../chunk-RH6U2JAM.js";
 import {
   JobBriefChanges
-} from "../chunk-E7YOYUUV.js";
+} from "../chunk-E7ENIJVS.js";
 import {
   formatJobBriefSalary,
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   jobBriefLabels,
@@ -33,7 +34,7 @@ import {
   jobBriefVersionLabel,
   jobBriefVersionLabels,
   jobBriefView
-} from "../chunk-A3XKZFTB.js";
+} from "../chunk-5F2DPU3C.js";
 import {
   JobClientBadge
 } from "../chunk-4DPYKJJE.js";
@@ -310,6 +311,7 @@ export {
   formatFactValue,
   formatFileSize,
   formatJobBriefSalary,
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   jobBriefLabels,

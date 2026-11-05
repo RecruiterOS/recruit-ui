@@ -66,6 +66,12 @@ export interface JobBriefSection {
   items?: readonly ReactNode[];
   /** Number the items, such as for the steps of an interview process. */
   ordered?: boolean;
+  /**
+   * How many items show before the rest fold under a toggle that says how
+   * many more there are ("Show 7 more"), so a long list, such as dozens of
+   * target companies, stays short. All show without it.
+   */
+  previewCount?: number;
 }
 
 /**
@@ -87,6 +93,10 @@ export interface JobBriefCardLabels {
   showMore: (hidden: number) => ReactNode;
   /** The preview's toggle while the whole brief is shown. */
   showLess: ReactNode;
+  /** A long section's toggle while some of its items are folded, by how many: "Show 7 more". */
+  sectionMore: (hidden: number) => ReactNode;
+  /** A long section's toggle while all its items show. */
+  sectionLess: ReactNode;
 }
 
 const DEFAULT_LABELS: JobBriefCardLabels = {
@@ -95,6 +105,8 @@ const DEFAULT_LABELS: JobBriefCardLabels = {
   processingDescription: "The brief will fill in shortly.",
   showMore: (hidden) => (hidden > 0 ? `Show full brief (${hidden} more)` : "Show full brief"),
   showLess: "Show less",
+  sectionMore: (hidden) => `Show ${hidden} more`,
+  sectionLess: "Show fewer",
 };
 
 export interface JobBriefCardProps
@@ -247,6 +259,18 @@ function sectionRows(section: JobBriefSection): number {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
 }
 
+/** How many of a section's items show before its own toggle: all, without a `previewCount`. */
+function sectionShownItems(section: JobBriefSection): number {
+  const items = section.items?.length ?? 0;
+  const count = section.previewCount;
+  return typeof count === "number" && Number.isFinite(count) ? Math.min(items, Math.max(0, Math.floor(count))) : items;
+}
+
+/** The rows a section shows once the brief is open, before its own toggle. */
+function sectionOpenRows(section: JobBriefSection): number {
+  return (section.facts?.length ?? 0) + sectionShownItems(section);
+}
+
 /** The version's badges: its wording, then any second label. */
 function versionBadges(version: JobBriefVersion | undefined): ReactNode {
   if (!version) return null;
@@ -355,31 +379,65 @@ function RuleList({
   );
 }
 
-function BriefSection({ section, level }: { section: JobBriefSection; level: SubheadingLevel }) {
+function BriefSection({
+  section,
+  level,
+  labels,
+}: {
+  section: JobBriefSection;
+  level: SubheadingLevel;
+  labels: JobBriefCardLabels;
+}) {
   const facts = section.facts ?? NO_FACTS;
   const items = section.items ?? [];
+  const [expanded, setExpanded] = useState(false);
+  const headingId = useId();
+  const listId = useId();
   if (facts.length === 0 && items.length === 0) return null;
+  // A long list shows its first items and a toggle that counts the rest.
+  const limit = sectionShownItems(section);
+  const folds = items.length > limit;
+  const shown = folds && !expanded ? items.slice(0, limit) : items;
 
   return (
     <Stack data-slot="job-brief-section" border="top" paddingTop="base" gap="compact">
       {/* A heading holding the kit list's label, so it lines up with the lists'. */}
-      <Text as={`h${level}`} variant="inherit">
+      <Text as={`h${level}`} id={headingId} variant="inherit">
         <Text as="span" variant="caption" className={SECTION_LABEL}>{section.title}</Text>
       </Text>
       {facts.length > 0 ? <BriefFacts facts={facts} /> : null}
-      {items.length > 0 ? (
+      {shown.length > 0 ? (
         // The same kit bullet row, and spacing, a read-only EditableList uses
         // for the requirements: rows about 1.8em apart.
         <List
+          id={listId}
           ordered={section.ordered}
           marker={section.ordered ? "decimal" : "none"}
           spacing="tight"
           textSize="sm"
         >
-          {items.map((item, index) => (
+          {shown.map((item, index) => (
             <ListItem key={index} layout={section.ordered ? "plain" : "bullet"}>{item}</ListItem>
           ))}
         </List>
+      ) : null}
+      {folds ? (
+        <Stack direction="horizontal" gap="none">
+          {/* Described by the section's heading, so "Show 7 more" says more of what. */}
+          <Button
+            type="button"
+            variant="link-muted"
+            size="bare"
+            align="start"
+            aria-expanded={expanded}
+            aria-controls={shown.length > 0 ? listId : undefined}
+            aria-describedby={headingId}
+            onClick={() => setExpanded(!expanded)}
+            className={COARSE_POINTER_TOUCH_TARGET}
+          >
+            {expanded ? labels.sectionLess : labels.sectionMore(items.length - limit)}
+          </Button>
+        </Stack>
       ) : null}
     </Stack>
   );
@@ -402,6 +460,10 @@ function BriefSection({ section, level }: { section: JobBriefSection; level: Sub
  * then a toggle that opens the full brief in place; with nothing hidden, the
  * full brief shows and no toggle does. Closing it from the toggle brings the
  * card back into view, since a long brief's toggle sits far below its top.
+ * A section with a `previewCount` shows that many items and folds the rest
+ * under its own toggle, which counts them ("Show 7 more"), in both
+ * presentations, so a long list such as dozens of target companies stays
+ * short; the preview's own count includes only the items opening it shows.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps
@@ -562,7 +624,7 @@ export function JobBriefCard({
       {facts.length > 0 ? <BriefFacts facts={facts} bordered /> : null}
       {shownRules.map((kind) => ruleList(kind, lists[kind], editable))}
       {sections.map((section) => (
-        <BriefSection key={section.id} section={section} level={subLevel} />
+        <BriefSection key={section.id} section={section} level={subLevel} labels={text} />
       ))}
     </>
   );
@@ -607,7 +669,8 @@ export function JobBriefCard({
       (sum, kind) => sum + (kind === first ? Math.max(0, lists[kind].length - count) : lists[kind].length),
       0,
     ) +
-    sections.reduce((sum, section) => sum + sectionRows(section), 0);
+    // Opening shows a long section's first items; the rest stay behind its own toggle.
+    sections.reduce((sum, section) => sum + sectionOpenRows(section), 0);
   // Editing happens in the full brief, so an editable preview always offers it.
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;

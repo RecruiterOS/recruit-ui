@@ -69,6 +69,12 @@ interface JobBriefContent {
     redFlags?: readonly string[] | null;
     /** The kinds of company the role targets. */
     icp?: readonly string[] | null;
+    /**
+     * The companies the brief names as places to find people, such as the
+     * competitors whose sales leaders the role wants. Not the kinds of company
+     * (`icp`), the hiring company, or a company to avoid (a red flag).
+     */
+    targetCompanies?: readonly string[] | null;
     roleDetails?: JobBriefRoleDetails | null;
     buyingPersonas?: readonly JobBriefPersona[] | null;
     interviewSteps?: readonly JobBriefInterviewStep[] | null;
@@ -89,6 +95,11 @@ interface JobBriefViewSection {
     items?: readonly string[];
     /** Number the items, as for the steps of an interview process. */
     ordered?: boolean;
+    /**
+     * How many items show before the rest fold under a toggle that says how
+     * many more there are, so a long list stays short. All show without it.
+     */
+    previewCount?: number;
 }
 /** The fixed words of a brief, wherever it is shown. */
 interface JobBriefLabels {
@@ -121,6 +132,8 @@ interface JobBriefLabels {
     biggestDeal: string;
     salesCycle: string;
     motion: string;
+    /** The section listing the companies the brief names as places to find people. */
+    targetCompanies: string;
     /** The section listing the kinds of company the role targets. */
     targetCompanyTypes: string;
     buyingPersonas: string;
@@ -165,8 +178,9 @@ interface JobBriefViewOptions {
     title?: JobBriefTitleStyle;
     /**
      * `public` for a page anyone holding its link can open: the brief without
-     * its red flags, on-target earnings, role details, company figures or
-     * interviewers' names. Leave it out where the brief's own team reads it.
+     * its red flags, on-target earnings, role details, target companies,
+     * company figures or interviewers' names. Leave it out where the brief's
+     * own team reads it.
      */
     audience?: "public";
     labels?: Partial<JobBriefLabels>;
@@ -184,7 +198,11 @@ interface JobBriefView {
     redFlags: string[];
     /** The lists shown, in order. */
     rules: JobBriefRuleKind[];
-    /** Role details, target company types, buying personas, interview process, company, then any extra sections; only those with something in them. */
+    /**
+     * Role details, target companies, target company types, buying personas,
+     * interview process, company, then any extra sections; only those with
+     * something in them.
+     */
     sections: JobBriefViewSection[];
     previewCount: number;
     /** The lists' names and what one entry of each is called, from `labels`. */
@@ -218,16 +236,17 @@ declare function formatJobBriefSalary(content: Pick<JobBriefContent, "salaryMin"
  *   earnings, in that order, each only when the brief has it.
  * - The lists are the brief's own, in its order and as written, so an editable
  *   card hands back exactly what it was given.
- * - The sections are the role details, target company types, buying personas,
- *   the interview process in step order and the company, then
- *   `extraSections`; only those with something in them.
+ * - The sections are the role details, the target companies (the first five,
+ *   the rest folded), target company types, buying personas, the interview
+ *   process in step order and the company, then `extraSections`; only those
+ *   with something in them.
  * - A current brief previews three facts and entries, an earlier one none.
  * - The lists are named, and their entries called, by `labels`, so the
  *   card's controls ("Add must-have…") read the same as the brief.
  *
  * With `audience: "public"`, the red flags, on-target earnings, role details,
- * company section and interviewers' names are left out, and the red-flag list
- * isn't among the `rules`.
+ * target companies, company section and interviewers' names are left out, and
+ * the red-flag list isn't among the `rules`.
  */
 declare function jobBriefView(content: JobBriefContent, options?: JobBriefViewOptions): JobBriefView;
 /** The words a brief's version reads in, as `jobBriefVersionLabel` puts them together. */
@@ -296,6 +315,11 @@ type JobBriefChangeValue = string | number | readonly unknown[];
  * | `cleared` | Removed the location (was Remote) | `from` |
  * | `replaced` | Replaced the interview steps (3 entries) | `to` |
  *
+ * An `added` or `removed` change can be about several entries of one list at
+ * once, in `items`: "Added 12 target companies: Example Labs, Fictional
+ * Robotics, Sample Analytics and 9 more". `groupJobBriefChanges` makes these
+ * from a version's single changes, as `JobBriefChanges` does by default.
+ *
  * With `prose`, the line says only that the field was added, updated or
  * removed ("Updated the role description"), since its text would swamp a line.
  */
@@ -307,8 +331,18 @@ interface JobBriefChange {
     field: string;
     /** The field's name where it leads a `set` line: "Location". Defaults to `field` with a capital. */
     fieldTitle?: string;
+    /**
+     * The field's name for several of its entries, mid-sentence: "must-haves",
+     * "target companies". Defaults to `field` made plural by `labels.plural`.
+     */
+    fieldPlural?: string | null;
     /** The list entry an `added`, `removed` or `moved` change is about. */
     item?: string | null;
+    /**
+     * The entries of one list an `added` or `removed` change is about, when it
+     * is about several: the line counts them and names the first three.
+     */
+    items?: readonly string[] | null;
     /**
      * What it was: a `reworded` entry's old words, a `set` field's old value,
      * a `cleared` field's last value. Left out for a field set for the first time.
@@ -337,6 +371,26 @@ interface JobBriefChangeLabels {
     added: (field: string, item: string) => string;
     /** "Removed red flag: Job hopping". */
     removed: (field: string, item: string) => string;
+    /**
+     * Several entries added to one list, given the field's plural, how many,
+     * and `someEntries`' words for them: "Added 12 target companies: Example
+     * Labs, Fictional Robotics, Sample Analytics and 9 more".
+     */
+    addedSeveral: (fieldPlural: string, count: string, entries: string) => string;
+    /** Several entries removed from one list: "Removed 4 must-haves: Python, Go, Rust and 1 more". */
+    removedSeveral: (fieldPlural: string, count: string, entries: string) => string;
+    /**
+     * The entries a line names, then how many it leaves out: "Example Labs,
+     * Fictional Robotics, Sample Analytics and 9 more"; with none left out,
+     * "Python, Go and Rust".
+     */
+    someEntries: (entries: readonly string[], more: number) => string;
+    /**
+     * A field's name for several entries, from its name for one, for a change
+     * with no `fieldPlural`: "must-have" → "must-haves", "target company" →
+     * "target companies".
+     */
+    plural: (field: string) => string;
     /** 'Reworded must-have: "Python" → "Python 3"'. */
     reworded: (field: string, from: string, to: string) => string;
     /** 'Moved must-have "Python" to position 1'; without a position, 'Moved must-have "Python"'. */
@@ -369,8 +423,22 @@ declare const jobBriefChangeLabels: Readonly<JobBriefChangeLabels>;
  * for a line: text with its whitespace collapsed and cut to 80 characters
  * with an ellipsis, a number grouped ("80,000"), a list counted ("3
  * entries"). A `set` with nothing new and an old value reads as `cleared`; a
- * `prose` field says only that it was added, updated or removed.
+ * `prose` field says only that it was added, updated or removed. An `added`
+ * or `removed` change about several entries (`items`) counts them under the
+ * field's plural and names the first three: "Added 12 target companies:
+ * Example Labs, Fictional Robotics, Sample Analytics and 9 more".
  */
 declare function jobBriefChangeText(change: JobBriefChange, labels?: Partial<JobBriefChangeLabels>): string;
+/**
+ * A version's changes with the entries one list gained, or lost, read
+ * together once there are more than `above` of them (three by default): one
+ * `added` or `removed` change holding them all in `items`, in the place of the
+ * first, keyed by its `id` and named by its `field` and `fieldPlural`. So a
+ * version that adds a dozen target companies reads "Added 12 target
+ * companies: Example Labs, Fictional Robotics, Sample Analytics and 9 more",
+ * not twelve lines. Every other change stays as it is, in its order. Entries
+ * belong to one list when their changes name the same `field`.
+ */
+declare function groupJobBriefChanges(changes: readonly JobBriefChange[], above?: number): JobBriefChange[];
 
-export { type JobBriefChange, type JobBriefChangeKind, type JobBriefChangeLabels, type JobBriefChangeValue, type JobBriefCompanyOverview, type JobBriefContent, type JobBriefInterviewStep, type JobBriefLabels, type JobBriefPersona, type JobBriefRoleDetails, type JobBriefRuleKind, type JobBriefRuleLabels, type JobBriefTitleStyle, type JobBriefVersion, type JobBriefVersionLabels, type JobBriefView, type JobBriefViewFact, type JobBriefViewOptions, type JobBriefViewSection, formatJobBriefSalary, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView };
+export { type JobBriefChange, type JobBriefChangeKind, type JobBriefChangeLabels, type JobBriefChangeValue, type JobBriefCompanyOverview, type JobBriefContent, type JobBriefInterviewStep, type JobBriefLabels, type JobBriefPersona, type JobBriefRoleDetails, type JobBriefRuleKind, type JobBriefRuleLabels, type JobBriefTitleStyle, type JobBriefVersion, type JobBriefVersionLabels, type JobBriefView, type JobBriefViewFact, type JobBriefViewOptions, type JobBriefViewSection, formatJobBriefSalary, groupJobBriefChanges, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView };

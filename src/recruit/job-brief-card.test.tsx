@@ -688,6 +688,83 @@ describe("job brief card, one look", () => {
   });
 });
 
+describe("job brief card, long sections", () => {
+  // Fictional companies only.
+  const companies = [
+    "Example Labs",
+    "Fictional Robotics",
+    "Sample Analytics",
+    "Placeholder Systems",
+    "Demo Dynamics",
+    "Mock Industries",
+    "Specimen Works",
+  ];
+
+  function sectionItems(title: string) {
+    const section = screen.getByText(title).closest('[data-slot="job-brief-section"]') as HTMLElement;
+    return within(section).queryAllByRole("listitem").map((item) => item.textContent);
+  }
+
+  it("shows a section's first items and folds the rest under a toggle that counts them, in place", async () => {
+    const user = userEvent.setup();
+    render(
+      <JobBriefCard
+        {...jobBriefView({ roleTitle: "Account Executive", mustHaves: ["Example tooling"], targetCompanies: companies })}
+        defaultOpen
+      />,
+    );
+    expect(sectionItems("Target companies")).toEqual(companies.slice(0, 5));
+
+    const toggle = screen.getByRole("button", { name: "Show 2 more" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAccessibleDescription("Target companies");
+    const list = document.getElementById(toggle.getAttribute("aria-controls")!);
+    expect(list?.tagName).toBe("UL");
+    expect(toggle.className).toContain("pointer-coarse:min-h-[max(44px,2.75rem)]");
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(toggle).toHaveTextContent("Show fewer");
+    expect(sectionItems("Target companies")).toEqual(companies);
+
+    await user.click(toggle);
+    expect(sectionItems("Target companies")).toEqual(companies.slice(0, 5));
+  });
+
+  it("shows every item of a section without a previewCount, or with no more than it", () => {
+    const { rerender } = render(
+      <JobBriefCard defaultOpen sections={[{ id: "companies", title: "Target companies", items: companies }]} />,
+    );
+    expect(sectionItems("Target companies")).toEqual(companies);
+    expect(screen.queryByRole("button", { name: /^Show/ })).toBeNull();
+
+    rerender(
+      <JobBriefCard
+        defaultOpen
+        sections={[{ id: "companies", title: "Target companies", items: companies.slice(0, 5), previewCount: 5 }]}
+      />,
+    );
+    expect(sectionItems("Target companies")).toEqual(companies.slice(0, 5));
+    expect(screen.queryByRole("button", { name: /^Show/ })).toBeNull();
+  });
+
+  it("counts in the preview's toggle only the items opening the brief shows", async () => {
+    const user = userEvent.setup();
+    render(
+      <JobBriefCard
+        presentation="preview"
+        mustHaves={["Example tooling"]}
+        sections={[{ id: "companies", title: "Target companies", items: companies, previewCount: 5 }]}
+        labels={{ sectionMore: (hidden) => `${hidden} more companies`, sectionLess: "Fewer companies" }}
+      />,
+    );
+    await user.click(screen.getByRole("button", { name: "Show full brief (5 more)" }));
+    expect(sectionItems("Target companies")).toEqual(companies.slice(0, 5));
+    await user.click(screen.getByRole("button", { name: "2 more companies" }));
+    expect(screen.getByRole("button", { name: "Fewer companies" })).toBeInTheDocument();
+  });
+});
+
 describe("job brief card, version", () => {
   /** The class names the kit StatusBadge gives a tone, to compare a drawn badge with. */
   function toneClass(tone: "success" | "neutral") {

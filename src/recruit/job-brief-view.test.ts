@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   formatJobBriefSalary,
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   jobBriefLabels,
@@ -27,6 +28,15 @@ const brief: JobBriefContent = {
   niceToHaves: ["Example certification"],
   redFlags: ["Fictional red flag"],
   icp: ["Example retailers", "Fictional wholesalers"],
+  targetCompanies: [
+    "Example Labs",
+    "Fictional Robotics",
+    "Sample Analytics",
+    "Placeholder Systems",
+    "Demo Dynamics",
+    "Mock Industries",
+    "Specimen Works",
+  ],
   roleDetails: {
     ote: "120,000",
     quota: "500k a year",
@@ -149,6 +159,7 @@ describe("jobBriefView", () => {
     ]);
     expect(view.sections.map((section) => [section.id, section.title])).toEqual([
       ["role-details", "Role details"],
+      ["target-companies", "Target companies"],
       ["target-company-types", "Target company types"],
       ["buying-personas", "Buying personas"],
       ["interview-process", "Interview process"],
@@ -162,8 +173,8 @@ describe("jobBriefView", () => {
       { id: "salesCycle", label: "Sales cycle", value: "Three months" },
       { id: "motion", label: "Sales motion", value: "Outbound" },
     ]);
-    expect(view.sections[1]!.items).toEqual(["Example retailers", "Fictional wholesalers"]);
-    expect(view.sections[4]!.facts).toEqual([
+    expect(view.sections[2]!.items).toEqual(["Example retailers", "Fictional wholesalers"]);
+    expect(view.sections[5]!.facts).toEqual([
       { id: "website", label: "Website", value: "https://fernhill.example.com" },
       { id: "founded", label: "Founded", value: "2015" },
       { id: "headcount", label: "Headcount", value: "1,250" },
@@ -175,6 +186,26 @@ describe("jobBriefView", () => {
     const sparse = jobBriefView({ roleTitle: "Account Executive", location: " ", salaryMax: 80000, mustHaves: ["Travel"] });
     expect(sparse.facts).toEqual([{ id: "salary", label: "Salary", value: "Up to 80,000" }]);
     expect(sparse.sections).toEqual([]);
+  });
+
+  it("lists the companies the brief names to find people at, as written, folding all but the first five", () => {
+    const companies = jobBriefView(brief).sections.find((section) => section.id === "target-companies");
+    expect(companies).toEqual({
+      id: "target-companies",
+      title: "Target companies",
+      items: brief.targetCompanies,
+      previewCount: 5,
+    });
+    expect(companies?.items).not.toBe(brief.targetCompanies);
+    // With none named, no section.
+    expect(jobBriefView({ targetCompanies: [] }).sections).toEqual([]);
+    expect(jobBriefView({ targetCompanies: null }).sections).toEqual([]);
+    expect(jobBriefView({ roleTitle: "Account Executive" }).sections).toEqual([]);
+    // Apart from the kinds of company the role targets, which keep their own section.
+    expect(jobBriefView({ targetCompanies: ["Example Labs"], icp: ["Example retailers"] }).sections).toEqual([
+      { id: "target-companies", title: "Target companies", items: ["Example Labs"], previewCount: 5 },
+      { id: "target-company-types", title: "Target company types", items: ["Example retailers"] },
+    ]);
   });
 
   it("words each buying persona by its role and category", () => {
@@ -289,6 +320,7 @@ describe("jobBriefView", () => {
     });
     expect(view.sections.map((section) => section.id)).toEqual([
       "role-details",
+      "target-companies",
       "target-company-types",
       "buying-personas",
       "interview-process",
@@ -307,6 +339,7 @@ describe("jobBriefView", () => {
           salary: "Pay",
           salaryFrom: (amount) => `${amount} and up`,
           roleDetails: "The numbers",
+          targetCompanies: "Companies to search",
           personaCategories: { champion: "advocate" },
           interviewStep: (number) => `Stage ${number}`,
           interviewWith: (step, interviewer) => `${step} (${interviewer})`,
@@ -317,17 +350,18 @@ describe("jobBriefView", () => {
     expect(view.facts[1]).toEqual({ id: "salary", label: "Pay", value: "60,000 and up" });
     expect(view.sections.map((section) => section.title)).toEqual([
       "The numbers",
+      "Companies to search",
       "Target company types",
       "Buying personas",
       "Interview process",
       "Company",
     ]);
-    expect(view.sections[2]!.items).toEqual([
+    expect(view.sections[3]!.items).toEqual([
       "Head of Example Operations (economic buyer) — Signs off the budget",
       "Advocate",
       "Example Lead (end user)",
     ]);
-    expect(view.sections[3]!.items).toEqual([
+    expect(view.sections[4]!.items).toEqual([
       "Intro call (Alex Example)",
       "Case study",
       "Final panel (Sam Example) · On site",
@@ -495,6 +529,60 @@ describe("jobBriefChangeText", () => {
     expect(jobBriefChangeText({ kind: "set", field: "overview", to: "New", prose: true })).toBe("Added an overview");
   });
 
+  it("counts several entries of one list under the field's plural, naming the first three", () => {
+    const companies = [
+      "Example Labs",
+      "Fictional Robotics",
+      "Sample Analytics",
+      "Placeholder Systems",
+      "Demo Dynamics",
+      "Mock Industries",
+      "Specimen Works",
+      "Trial Partners",
+      "Pretend Data",
+      "Model Freight",
+      "Instance Health",
+      "Stand-in Studio",
+    ];
+    expect(
+      jobBriefChangeText({ kind: "added", field: "target company", fieldPlural: "target companies", items: companies }),
+    ).toBe("Added 12 target companies: Example Labs, Fictional Robotics, Sample Analytics and 9 more");
+    // The plural comes from the field's name when the host gives none.
+    expect(jobBriefChangeText({ kind: "removed", field: "must-have", items: ["Python", "Go", "Rust", "Kotlin"] })).toBe(
+      "Removed 4 must-haves: Python, Go, Rust and 1 more",
+    );
+    expect(jobBriefChangeText({ kind: "added", field: "target company", items: companies.slice(0, 4) })).toBe(
+      "Added 4 target companies: Example Labs, Fictional Robotics, Sample Analytics and 1 more",
+    );
+    // A few name every one; one is a single change; blanks don't count.
+    expect(jobBriefChangeText({ kind: "added", field: "must-have", items: ["Python", "Go"] })).toBe("Added 2 must-haves: Python and Go");
+    expect(jobBriefChangeText({ kind: "added", field: "must-have", items: ["Python", "Go", "Rust"] })).toBe(
+      "Added 3 must-haves: Python, Go and Rust",
+    );
+    expect(jobBriefChangeText({ kind: "added", field: "must-have", items: ["Python", "  "] })).toBe("Added must-have: Python");
+    expect(jobBriefChangeText({ kind: "added", field: "must-have", items: [], item: "Go" })).toBe("Added must-have: Go");
+    // Each named entry is cut as any value is.
+    expect(jobBriefChangeText({ kind: "added", field: "must-have", items: ["x".repeat(90), "Go", "Rust", "Kotlin"] })).toBe(
+      `Added 4 must-haves: ${"x".repeat(77)}…, Go, Rust and 1 more`,
+    );
+    // Only an addition or a removal counts entries.
+    expect(jobBriefChangeText({ kind: "moved", field: "must-have", item: "Go", items: ["Go", "Rust"], to: 1 })).toBe(
+      'Moved must-have "Go" to position 1',
+    );
+  });
+
+  it("makes a field's name plural for a line about several of its entries", () => {
+    expect(["must-have", "red flag", "target company", "target company type", "document", "address", "day"].map(jobBriefChangeLabels.plural)).toEqual([
+      "must-haves",
+      "red flags",
+      "target companies",
+      "target company types",
+      "documents",
+      "addresses",
+      "days",
+    ]);
+  });
+
   it("reads a kind it doesn't know as a new value", () => {
     const change = { kind: "renamed", field: "location", from: "Example City", to: "Example Town" } as unknown as JobBriefChange;
     expect(jobBriefChangeText(change)).toBe("Location: Example City → Example Town");
@@ -509,6 +597,96 @@ describe("jobBriefChangeText", () => {
     expect(jobBriefChangeText({ kind: "added", field: "must-have", item: "Python" }, labels)).toBe("must-have +Python");
     expect(jobBriefChangeText({ kind: "set", field: "steps", from: [1], to: [1, 2] }, labels)).toBe("Steps 1 items=>2 items");
     expect(jobBriefChangeText({ kind: "removed", field: "must-have", item: "Python" }, labels)).toBe("Removed must-have: Python");
+    expect(
+      jobBriefChangeText(
+        { kind: "added", field: "must-have", items: ["Python", "Go", "Rust", "Kotlin"] },
+        { addedSeveral: (plural, count, entries) => `${count} new ${plural} (${entries})`, plural: () => "essentials" },
+      ),
+    ).toBe("4 new essentials (Python, Go, Rust and 1 more)");
+  });
+});
+
+describe("groupJobBriefChanges", () => {
+  const added = (item: string, id?: string): JobBriefChange => ({
+    ...(id ? { id } : {}),
+    kind: "added",
+    field: "target company",
+    fieldPlural: "target companies",
+    item,
+  });
+
+  it("reads more than three entries one list gained as one change, in the place of the first", () => {
+    const location: JobBriefChange = { id: "1", kind: "set", field: "location", from: "Example City", to: "Example Town" };
+    const mustHave: JobBriefChange = { id: "3", kind: "added", field: "must-have", item: "Python" };
+    const grouped = groupJobBriefChanges([
+      added("Example Labs", "0"),
+      location,
+      added("Fictional Robotics", "2"),
+      mustHave,
+      added("Sample Analytics", "4"),
+      added("Placeholder Systems", "5"),
+    ]);
+    expect(grouped).toEqual([
+      {
+        id: "0",
+        kind: "added",
+        field: "target company",
+        fieldPlural: "target companies",
+        items: ["Example Labs", "Fictional Robotics", "Sample Analytics", "Placeholder Systems"],
+      },
+      location,
+      mustHave,
+    ]);
+    expect(jobBriefChangeText(grouped[0]!)).toBe(
+      "Added 4 target companies: Example Labs, Fictional Robotics, Sample Analytics and 1 more",
+    );
+  });
+
+  it("leaves three or fewer as they are, and keeps additions and removals apart", () => {
+    const three = ["Example Labs", "Fictional Robotics", "Sample Analytics"].map((item) => added(item));
+    expect(groupJobBriefChanges(three)).toEqual(three);
+    const removals = ["Demo Dynamics", "Mock Industries", "Specimen Works", "Trial Partners"].map(
+      (item): JobBriefChange => ({ kind: "removed", field: "target company", item }),
+    );
+    const grouped = groupJobBriefChanges([...three, ...removals]);
+    expect(grouped.slice(0, 3)).toEqual(three);
+    expect(grouped.slice(3)).toEqual([
+      { kind: "removed", field: "target company", items: ["Demo Dynamics", "Mock Industries", "Specimen Works", "Trial Partners"] },
+    ]);
+  });
+
+  it("groups by the list a change names, and never a prose field, an entry-less change or one already grouped", () => {
+    const changes: JobBriefChange[] = [
+      ...["Python", "Go", "Rust", "Kotlin"].map((item): JobBriefChange => ({ kind: "added", field: "must-have", item })),
+      ...["Example retailers", "Fictional wholesalers"].map((item): JobBriefChange => ({ kind: "added", field: "target company type", item })),
+      ...Array.from({ length: 4 }, (): JobBriefChange => ({ kind: "added", field: "summary", item: "Words", prose: true })),
+      ...Array.from({ length: 4 }, (): JobBriefChange => ({ kind: "added", field: "document" })),
+      { kind: "added", field: "red flag", items: ["One", "Two", "Three", "Four"] },
+    ];
+    const grouped = groupJobBriefChanges(changes);
+    expect(grouped.map((change) => jobBriefChangeText(change))).toEqual([
+      "Added 4 must-haves: Python, Go, Rust and 1 more",
+      "Added target company type: Example retailers",
+      "Added target company type: Fictional wholesalers",
+      "Added a summary",
+      "Added a summary",
+      "Added a summary",
+      "Added a summary",
+      "Added document",
+      "Added document",
+      "Added document",
+      "Added document",
+      "Added 4 red flags: One, Two, Three and 1 more",
+    ]);
+  });
+
+  it("takes how many a list can gain before its entries read as one line", () => {
+    const four = ["Example Labs", "Fictional Robotics", "Sample Analytics", "Placeholder Systems"].map((item) => added(item));
+    expect(groupJobBriefChanges(four, Number.POSITIVE_INFINITY)).toEqual(four);
+    expect(groupJobBriefChanges(four.slice(0, 2), 1)).toHaveLength(1);
+    expect(groupJobBriefChanges(four, Number.NaN)).toHaveLength(1);
+    // The changes passed in are left as they were.
+    expect(four.every((change) => change.items === undefined)).toBe(true);
   });
 });
 
