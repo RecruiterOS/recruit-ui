@@ -5,6 +5,37 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.21.0
+
+### Added
+
+- A brief's target companies: `JobBriefContent.targetCompanies`, the
+  companies a brief names as places to find people (not the kinds of company
+  in `icp`, the hiring company, or a company to avoid). `jobBriefView` shows
+  them as a "Target companies" section (`jobBriefLabels.targetCompanies`),
+  after the role details and before the target company types, and leaves them
+  out for `audience: "public"`.
+- `JobBriefSection.previewCount` (and `JobBriefViewSection.previewCount`): a
+  section with more items than that shows its first ones and folds the rest
+  under a toggle that counts them ("Show 7 more", then "Show fewer"; the card
+  labels `sectionMore` and `sectionLess`), described by the section's heading.
+  `jobBriefView`'s target companies show five. A preview's "Show full brief (N
+  more)" counts only the items opening it shows.
+- Several entries of one list in one change line: `JobBriefChange.items` and
+  `fieldPlural`, worded by the new `jobBriefChangeLabels.addedSeveral`,
+  `removedSeveral`, `someEntries` and `plural` ("Added 12 target companies:
+  Example Labs, Fictional Robotics, Sample Analytics and 9 more").
+  `groupJobBriefChanges` reads more than three entries (its `above`) one list
+  gained, or lost, in a version as one such change, in the place of the
+  first.
+
+### Changed
+
+- `JobBriefChanges` groups a list's entries that way by default, before it
+  folds its lines; `groupAbove` sets how many a list can gain or lose first
+  (`Infinity` keeps a line for every change). A version that changed four or
+  more entries of one list now shows one line for them.
+
 ## 0.20.1
 
 ### Changed

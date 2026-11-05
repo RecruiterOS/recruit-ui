@@ -68,6 +68,12 @@ export interface JobBriefContent {
   redFlags?: readonly string[] | null;
   /** The kinds of company the role targets. */
   icp?: readonly string[] | null;
+  /**
+   * The companies the brief names as places to find people, such as the
+   * competitors whose sales leaders the role wants. Not the kinds of company
+   * (`icp`), the hiring company, or a company to avoid (a red flag).
+   */
+  targetCompanies?: readonly string[] | null;
   roleDetails?: JobBriefRoleDetails | null;
   buyingPersonas?: readonly JobBriefPersona[] | null;
   interviewSteps?: readonly JobBriefInterviewStep[] | null;
@@ -90,6 +96,11 @@ export interface JobBriefViewSection {
   items?: readonly string[];
   /** Number the items, as for the steps of an interview process. */
   ordered?: boolean;
+  /**
+   * How many items show before the rest fold under a toggle that says how
+   * many more there are, so a long list stays short. All show without it.
+   */
+  previewCount?: number;
 }
 
 /** The fixed words of a brief, wherever it is shown. */
@@ -123,6 +134,8 @@ export interface JobBriefLabels {
   biggestDeal: string;
   salesCycle: string;
   motion: string;
+  /** The section listing the companies the brief names as places to find people. */
+  targetCompanies: string;
   /** The section listing the kinds of company the role targets. */
   targetCompanyTypes: string;
   buyingPersonas: string;
@@ -173,6 +186,7 @@ export const jobBriefLabels: Readonly<JobBriefLabels> = Object.freeze({
   biggestDeal: "Biggest deal",
   salesCycle: "Sales cycle",
   motion: "Sales motion",
+  targetCompanies: "Target companies",
   targetCompanyTypes: "Target company types",
   buyingPersonas: "Buying personas",
   personaCategories: Object.freeze({
@@ -212,8 +226,9 @@ export interface JobBriefViewOptions {
   title?: JobBriefTitleStyle;
   /**
    * `public` for a page anyone holding its link can open: the brief without
-   * its red flags, on-target earnings, role details, company figures or
-   * interviewers' names. Leave it out where the brief's own team reads it.
+   * its red flags, on-target earnings, role details, target companies,
+   * company figures or interviewers' names. Leave it out where the brief's
+   * own team reads it.
    */
   audience?: "public";
   labels?: Partial<JobBriefLabels>;
@@ -232,7 +247,11 @@ export interface JobBriefView {
   redFlags: string[];
   /** The lists shown, in order. */
   rules: JobBriefRuleKind[];
-  /** Role details, target company types, buying personas, interview process, company, then any extra sections; only those with something in them. */
+  /**
+   * Role details, target companies, target company types, buying personas,
+   * interview process, company, then any extra sections; only those with
+   * something in them.
+   */
   sections: JobBriefViewSection[];
   previewCount: number;
   /** The lists' names and what one entry of each is called, from `labels`. */
@@ -243,6 +262,10 @@ const LOCALE = "en-GB";
 const plain = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 0 });
 
 const ROLE_DETAILS = ["quota", "equity", "avgDealSize", "biggestDeal", "salesCycle", "motion"] as const;
+
+// A brief can name dozens of target companies: the section shows this many
+// and folds the rest under a toggle that counts them.
+const TARGET_COMPANIES_SHOWN = 5;
 
 // A title fits a sidebar row and a card heading alike.
 const MAX_TITLE_LENGTH = 72;
@@ -412,16 +435,17 @@ const PUBLIC_RULES: readonly JobBriefRuleKind[] = ["mustHaves", "niceToHaves"];
  *   earnings, in that order, each only when the brief has it.
  * - The lists are the brief's own, in its order and as written, so an editable
  *   card hands back exactly what it was given.
- * - The sections are the role details, target company types, buying personas,
- *   the interview process in step order and the company, then
- *   `extraSections`; only those with something in them.
+ * - The sections are the role details, the target companies (the first five,
+ *   the rest folded), target company types, buying personas, the interview
+ *   process in step order and the company, then `extraSections`; only those
+ *   with something in them.
  * - A current brief previews three facts and entries, an earlier one none.
  * - The lists are named, and their entries called, by `labels`, so the
  *   card's controls ("Add must-have…") read the same as the brief.
  *
  * With `audience: "public"`, the red flags, on-target earnings, role details,
- * company section and interviewers' names are left out, and the red-flag list
- * isn't among the `rules`.
+ * target companies, company section and interviewers' names are left out, and
+ * the red-flag list isn't among the `rules`.
  */
 export function jobBriefView(content: JobBriefContent, options: JobBriefViewOptions = {}): JobBriefView {
   const { current = true, title = "role", audience, extraSections = [] } = options;
@@ -438,6 +462,12 @@ export function jobBriefView(content: JobBriefContent, options: JobBriefViewOpti
       id: "role-details",
       title: labels.roleDetails,
       facts: internal ? ROLE_DETAILS.flatMap((key) => fact(key, labels[key], text(details[key]))) : [],
+    },
+    {
+      id: "target-companies",
+      title: labels.targetCompanies,
+      items: internal ? [...(content.targetCompanies ?? [])] : [],
+      previewCount: TARGET_COMPANIES_SHOWN,
     },
     { id: "target-company-types", title: labels.targetCompanyTypes, items: [...(content.icp ?? [])] },
     {
@@ -575,6 +605,11 @@ export type JobBriefChangeValue = string | number | readonly unknown[];
  * | `cleared` | Removed the location (was Remote) | `from` |
  * | `replaced` | Replaced the interview steps (3 entries) | `to` |
  *
+ * An `added` or `removed` change can be about several entries of one list at
+ * once, in `items`: "Added 12 target companies: Example Labs, Fictional
+ * Robotics, Sample Analytics and 9 more". `groupJobBriefChanges` makes these
+ * from a version's single changes, as `JobBriefChanges` does by default.
+ *
  * With `prose`, the line says only that the field was added, updated or
  * removed ("Updated the role description"), since its text would swamp a line.
  */
@@ -586,8 +621,18 @@ export interface JobBriefChange {
   field: string;
   /** The field's name where it leads a `set` line: "Location". Defaults to `field` with a capital. */
   fieldTitle?: string;
+  /**
+   * The field's name for several of its entries, mid-sentence: "must-haves",
+   * "target companies". Defaults to `field` made plural by `labels.plural`.
+   */
+  fieldPlural?: string | null;
   /** The list entry an `added`, `removed` or `moved` change is about. */
   item?: string | null;
+  /**
+   * The entries of one list an `added` or `removed` change is about, when it
+   * is about several: the line counts them and names the first three.
+   */
+  items?: readonly string[] | null;
   /**
    * What it was: a `reworded` entry's old words, a `set` field's old value,
    * a `cleared` field's last value. Left out for a field set for the first time.
@@ -617,6 +662,26 @@ export interface JobBriefChangeLabels {
   added: (field: string, item: string) => string;
   /** "Removed red flag: Job hopping". */
   removed: (field: string, item: string) => string;
+  /**
+   * Several entries added to one list, given the field's plural, how many,
+   * and `someEntries`' words for them: "Added 12 target companies: Example
+   * Labs, Fictional Robotics, Sample Analytics and 9 more".
+   */
+  addedSeveral: (fieldPlural: string, count: string, entries: string) => string;
+  /** Several entries removed from one list: "Removed 4 must-haves: Python, Go, Rust and 1 more". */
+  removedSeveral: (fieldPlural: string, count: string, entries: string) => string;
+  /**
+   * The entries a line names, then how many it leaves out: "Example Labs,
+   * Fictional Robotics, Sample Analytics and 9 more"; with none left out,
+   * "Python, Go and Rust".
+   */
+  someEntries: (entries: readonly string[], more: number) => string;
+  /**
+   * A field's name for several entries, from its name for one, for a change
+   * with no `fieldPlural`: "must-have" → "must-haves", "target company" →
+   * "target companies".
+   */
+  plural: (field: string) => string;
   /** 'Reworded must-have: "Python" → "Python 3"'. */
   reworded: (field: string, from: string, to: string) => string;
   /** 'Moved must-have "Python" to position 1'; without a position, 'Moved must-have "Python"'. */
@@ -645,6 +710,18 @@ export interface JobBriefChangeLabels {
 export const jobBriefChangeLabels: Readonly<JobBriefChangeLabels> = Object.freeze({
   added: (field: string, item: string) => (item ? `Added ${field}: ${item}` : `Added ${field}`),
   removed: (field: string, item: string) => (item ? `Removed ${field}: ${item}` : `Removed ${field}`),
+  addedSeveral: (fieldPlural: string, count: string, entries: string) =>
+    entries ? `Added ${count} ${fieldPlural}: ${entries}` : `Added ${count} ${fieldPlural}`,
+  removedSeveral: (fieldPlural: string, count: string, entries: string) =>
+    entries ? `Removed ${count} ${fieldPlural}: ${entries}` : `Removed ${count} ${fieldPlural}`,
+  someEntries: (entries: readonly string[], more: number) => {
+    if (more > 0) return `${entries.join(", ")} and ${plain.format(more)} more`;
+    return entries.length > 1 ? `${entries.slice(0, -1).join(", ")} and ${entries.at(-1)}` : (entries[0] ?? "");
+  },
+  plural: (field: string) => {
+    if (/[^aeiou]y$/i.test(field)) return `${field.slice(0, -1)}ies`;
+    return /(?:s|x|z|ch|sh)$/i.test(field) ? `${field}es` : `${field}s`;
+  },
   reworded: (field: string, from: string, to: string) =>
     from && to ? `Reworded ${field}: "${from}" → "${to}"` : to ? `Reworded ${field}: "${to}"` : `Reworded ${field}`,
   moved: (field: string, item: string, position: string) => {
@@ -667,6 +744,8 @@ export const jobBriefChangeLabels: Readonly<JobBriefChangeLabels> = Object.freez
 // A value longer than this is cut, so one change never swamps its line.
 const MAX_CHANGE_VALUE_LENGTH = 80;
 const grouped = new Intl.NumberFormat(LOCALE);
+// A line about several entries of a list names this many and counts the rest.
+const NAMED_ENTRIES = 3;
 
 /** A change's value as a line shows it, or an empty string for none. */
 function changeValue(value: unknown, labels: JobBriefChangeLabels): string {
@@ -689,17 +768,29 @@ function changeValue(value: unknown, labels: JobBriefChangeLabels): string {
  * for a line: text with its whitespace collapsed and cut to 80 characters
  * with an ellipsis, a number grouped ("80,000"), a list counted ("3
  * entries"). A `set` with nothing new and an old value reads as `cleared`; a
- * `prose` field says only that it was added, updated or removed.
+ * `prose` field says only that it was added, updated or removed. An `added`
+ * or `removed` change about several entries (`items`) counts them under the
+ * field's plural and names the first three: "Added 12 target companies:
+ * Example Labs, Fictional Robotics, Sample Analytics and 9 more".
  */
 export function jobBriefChangeText(change: JobBriefChange, labels: Partial<JobBriefChangeLabels> = {}): string {
   const words: JobBriefChangeLabels = { ...jobBriefChangeLabels, ...labels };
   const field = text(change.field) ?? "";
   const from = changeValue(change.from, words);
   const to = changeValue(change.to, words);
-  const item = changeValue(change.item, words);
+  const entries = (Array.isArray(change.items) ? change.items : []).map((entry) => changeValue(entry, words)).filter(Boolean);
+  // One entry in `items` is a single change, worded as one.
+  const item = entries.length === 1 ? entries[0]! : changeValue(change.item, words);
   if (change.prose) {
     if (change.kind === "cleared" || change.kind === "removed") return words.proseCleared(field);
     return from ? words.proseUpdated(field) : words.proseAdded(field);
+  }
+  if (entries.length > 1 && (change.kind === "added" || change.kind === "removed")) {
+    const plural = text(change.fieldPlural) ?? words.plural(field);
+    const named = entries.slice(0, NAMED_ENTRIES);
+    const listed = words.someEntries(named, entries.length - named.length);
+    const count = plain.format(entries.length);
+    return change.kind === "added" ? words.addedSeveral(plural, count, listed) : words.removedSeveral(plural, count, listed);
   }
   switch (change.kind) {
     case "added":
@@ -720,4 +811,56 @@ export function jobBriefChangeText(change: JobBriefChange, labels: Partial<JobBr
       if (!to && from) return words.cleared(field, from);
       return words.set(text(change.fieldTitle) ?? capitalise(field), from, to);
   }
+}
+
+// How many entries one list can gain, or lose, in a version before they read as one line.
+const GROUP_ABOVE = 3;
+
+/** An added or removed entry of a list, as a group can hold it: its key, and its words. */
+function groupableEntry(change: JobBriefChange): { key: string; entry: string } | null {
+  if ((change.kind !== "added" && change.kind !== "removed") || change.prose || change.items != null) return null;
+  const entry = typeof change.item === "string" ? change.item.trim() : "";
+  const field = text(change.field);
+  return entry && field ? { key: `${change.kind}\u0000${field}`, entry } : null;
+}
+
+/**
+ * A version's changes with the entries one list gained, or lost, read
+ * together once there are more than `above` of them (three by default): one
+ * `added` or `removed` change holding them all in `items`, in the place of the
+ * first, keyed by its `id` and named by its `field` and `fieldPlural`. So a
+ * version that adds a dozen target companies reads "Added 12 target
+ * companies: Example Labs, Fictional Robotics, Sample Analytics and 9 more",
+ * not twelve lines. Every other change stays as it is, in its order. Entries
+ * belong to one list when their changes name the same `field`.
+ */
+export function groupJobBriefChanges(
+  changes: readonly JobBriefChange[],
+  above: number = GROUP_ABOVE,
+): JobBriefChange[] {
+  const limit = Number.isNaN(above) ? GROUP_ABOVE : above;
+  const counts = new Map<string, number>();
+  for (const change of changes) {
+    const groupable = groupableEntry(change);
+    if (groupable) counts.set(groupable.key, (counts.get(groupable.key) ?? 0) + 1);
+  }
+  const groups = new Map<string, string[]>();
+  const lines: JobBriefChange[] = [];
+  for (const change of changes) {
+    const groupable = groupableEntry(change);
+    if (!groupable || (counts.get(groupable.key) ?? 0) <= limit) {
+      lines.push(change);
+      continue;
+    }
+    const entries = groups.get(groupable.key);
+    if (entries) {
+      entries.push(groupable.entry);
+      continue;
+    }
+    const first = [groupable.entry];
+    groups.set(groupable.key, first);
+    const { item: _item, from: _from, to: _to, ...rest } = change;
+    lines.push({ ...rest, items: first });
+  }
+  return lines;
 }

@@ -163,6 +163,38 @@ describe("job brief changes", () => {
     expect(screen.getByText("Location: Example Town")).toBeInTheDocument();
   });
 
+  it("reads more than three entries one list gained as one line that counts them, before folding the lines", async () => {
+    const user = userEvent.setup();
+    const companies = ["Example Labs", "Fictional Robotics", "Sample Analytics", "Placeholder Systems", "Demo Dynamics"];
+    const version: JobBriefChange[] = [
+      ...companies.map((item, index): JobBriefChange => ({
+        id: `company-${index}`,
+        kind: "added",
+        field: "target company",
+        fieldPlural: "target companies",
+        item,
+      })),
+      { id: "location", kind: "set", field: "location", from: "Example City", to: "Example Town" },
+      { id: "must", kind: "added", field: "must-have", item: "Example tooling" },
+      { id: "removed", kind: "removed", field: "nice-to-have", item: "Fictional buyers" },
+    ];
+    const { rerender } = render(<JobBriefChanges version={4} changes={version} />);
+    const group = screen.getByRole("group", { name: "What changed in v4" });
+    expect(lines(group)).toEqual([
+      "added: Added 5 target companies: Example Labs, Fictional Robotics, Sample Analytics and 2 more",
+      "set: Location: Example City → Example Town",
+      "added: Added must-have: Example tooling",
+    ]);
+    // The fold counts lines, not the changes inside them.
+    await user.click(within(group).getByRole("button", { name: "1 more change" }));
+    expect(lines(group).at(-1)).toBe("removed: Removed nice-to-have: Fictional buyers");
+
+    // A host can keep a line for every change.
+    rerender(<JobBriefChanges version={4} changes={version} groupAbove={Number.POSITIVE_INFINITY} previewCount={10} />);
+    expect(lines(screen.getByRole("group"))).toHaveLength(8);
+    expect(screen.getByText("Added target company: Demo Dynamics")).toBeInTheDocument();
+  });
+
   it("draws nothing for a version with no changes to list", () => {
     const { container } = render(<JobBriefChanges version={1} changes={[]} />);
     expect(container).toBeEmptyDOMElement();

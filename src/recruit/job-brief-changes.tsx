@@ -15,6 +15,7 @@ import { ArrowRight, ArrowUpDown, Minus, Plus, RefreshCw, type LucideIcon } from
 import type { HTMLAttributes } from "react";
 
 import {
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   type JobBriefChange,
@@ -26,6 +27,7 @@ import {
 // server can word a change too; it is re-exported here, beside the list
 // that shows it.
 export {
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   type JobBriefChange,
@@ -44,6 +46,12 @@ export interface JobBriefChangesProps extends Omit<HTMLAttributes<HTMLElement>, 
   version?: number;
   /** How many changes show before the rest fold under "N more changes". Defaults to 3. */
   previewCount?: number;
+  /**
+   * How many entries one list can gain, or lose, before they read as one
+   * line ("Added 12 target companies: …", `groupJobBriefChanges`). Defaults
+   * to 3; `Infinity` keeps a line for every change.
+   */
+  groupAbove?: number;
   /** Any of the wording in `jobBriefChangeLabels`: the lines, the toggle and the group's name. */
   labels?: Partial<JobBriefChangeLabels>;
 }
@@ -81,7 +89,10 @@ function ChangeLine({ change, labels }: { change: JobBriefChange; labels: JobBri
  * What a version of a brief changed, for under its JobBriefCard: one quiet
  * line per change, in the kit's trace lines, each leading with an icon for
  * its kind (added, removed or cleared, set or reworded, moved, replaced) and
- * worded by `jobBriefChangeText`. The first `previewCount` show; the rest
+ * worded by `jobBriefChangeText`. More than `groupAbove` entries added to, or
+ * removed from, one list read as one line that counts them and names the
+ * first three ("Added 12 target companies: Example Labs, Fictional Robotics,
+ * Sample Analytics and 9 more"). The first `previewCount` lines show; the rest
  * fold under a "N more changes" toggle that opens them in place. A version
  * with no changes to list (the first, which is the whole brief) draws
  * nothing.
@@ -95,13 +106,19 @@ export function JobBriefChanges({
   changes,
   version,
   previewCount = DEFAULT_PREVIEW_COUNT,
+  groupAbove,
   labels,
   ...props
 }: JobBriefChangesProps) {
   if (changes.length === 0) return null;
   const words: JobBriefChangeLabels = { ...jobBriefChangeLabels, ...labels };
   const count = Number.isFinite(previewCount) ? Math.max(0, Math.floor(previewCount)) : DEFAULT_PREVIEW_COUNT;
-  const lines = changes.map((change, index) => ({ key: change.id ?? String(index), change }));
+  // A grouped line keeps its first change's id, or its place among the changes.
+  const ids = new Map(changes.map((change, index) => [change, change.id ?? String(index)]));
+  const lines = groupJobBriefChanges(changes, groupAbove).map((change, index) => ({
+    key: ids.get(change) ?? change.id ?? `group-${index}`,
+    change,
+  }));
   const shown = lines.slice(0, count);
   const folded = lines.slice(count);
 

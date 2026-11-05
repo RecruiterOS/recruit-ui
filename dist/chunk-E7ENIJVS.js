@@ -1,7 +1,8 @@
 import {
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText
-} from "./chunk-A3XKZFTB.js";
+} from "./chunk-5F2DPU3C.js";
 
 // src/recruit/job-brief-changes.tsx
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
@@ -37,13 +38,18 @@ function JobBriefChanges({
   changes,
   version,
   previewCount = DEFAULT_PREVIEW_COUNT,
+  groupAbove,
   labels,
   ...props
 }) {
   if (changes.length === 0) return null;
   const words = { ...jobBriefChangeLabels, ...labels };
   const count = Number.isFinite(previewCount) ? Math.max(0, Math.floor(previewCount)) : DEFAULT_PREVIEW_COUNT;
-  const lines = changes.map((change, index) => ({ key: change.id ?? String(index), change }));
+  const ids = new Map(changes.map((change, index) => [change, change.id ?? String(index)]));
+  const lines = groupJobBriefChanges(changes, groupAbove).map((change, index) => ({
+    key: ids.get(change) ?? change.id ?? `group-${index}`,
+    change
+  }));
   const shown = lines.slice(0, count);
   const folded = lines.slice(count);
   return /* @__PURE__ */ jsx(Stack, { "data-slot": "job-brief-changes", role: "group", "aria-label": words.groupName(version), gap: "none", ...props, children: /* @__PURE__ */ jsxs(Trace, { children: [

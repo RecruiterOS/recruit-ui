@@ -2,13 +2,15 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkI5YV7WNHcjs = require('../chunk-I5YV7WNH.cjs');
-
-
-
-var _chunkEMCDHZVIcjs = require('../chunk-EMCDHZVI.cjs');
+var _chunkCOHYVDIUcjs = require('../chunk-COHYVDIU.cjs');
 
 
 
 
-exports.JobBriefChanges = _chunkI5YV7WNHcjs.JobBriefChanges; exports.jobBriefChangeLabels = _chunkEMCDHZVIcjs.jobBriefChangeLabels; exports.jobBriefChangeText = _chunkEMCDHZVIcjs.jobBriefChangeText;
+var _chunkCP5HCQPWcjs = require('../chunk-CP5HCQPW.cjs');
+
+
+
+
+
+exports.JobBriefChanges = _chunkCOHYVDIUcjs.JobBriefChanges; exports.groupJobBriefChanges = _chunkCP5HCQPWcjs.groupJobBriefChanges; exports.jobBriefChangeLabels = _chunkCP5HCQPWcjs.jobBriefChangeLabels; exports.jobBriefChangeText = _chunkCP5HCQPWcjs.jobBriefChangeText;

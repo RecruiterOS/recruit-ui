@@ -2,7 +2,7 @@ import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.js';
 import { JobBriefVersion, JobBriefRuleKind, JobBriefRuleLabels } from './job-brief-view.js';
-export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefTitleStyle, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './job-brief-view.js';
+export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefTitleStyle, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, groupJobBriefChanges, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './job-brief-view.js';
 
 /**
  * How a JobBriefCard sits. `collapsible` is a card whose whole body folds
@@ -34,6 +34,12 @@ interface JobBriefSection {
     items?: readonly ReactNode[];
     /** Number the items, such as for the steps of an interview process. */
     ordered?: boolean;
+    /**
+     * How many items show before the rest fold under a toggle that says how
+     * many more there are ("Show 7 more"), so a long list, such as dozens of
+     * target companies, stays short. All show without it.
+     */
+    previewCount?: number;
 }
 /**
  * Host-owned wording for a JobBriefCard's states and toggle. The lists' names
@@ -54,6 +60,10 @@ interface JobBriefCardLabels {
     showMore: (hidden: number) => ReactNode;
     /** The preview's toggle while the whole brief is shown. */
     showLess: ReactNode;
+    /** A long section's toggle while some of its items are folded, by how many: "Show 7 more". */
+    sectionMore: (hidden: number) => ReactNode;
+    /** A long section's toggle while all its items show. */
+    sectionLess: ReactNode;
 }
 interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | "children"> {
     /** `collapsible` (the default) for a page, `preview` for a message. */
@@ -171,6 +181,10 @@ interface JobBriefCardProps extends Omit<HTMLAttributes<HTMLElement>, "title" | 
  * then a toggle that opens the full brief in place; with nothing hidden, the
  * full brief shows and no toggle does. Closing it from the toggle brings the
  * card back into view, since a long brief's toggle sits far below its top.
+ * A section with a `previewCount` shows that many items and folds the rest
+ * under its own toggle, which counts them ("Show 7 more"), in both
+ * presentations, so a long list such as dozens of target companies stays
+ * short; the preview's own count includes only the items opening it shows.
  *
  * Given `onRulesChange`, the lists are editable in place, and saving stays
  * with the host. A read-only empty list draws nothing; an editable one keeps

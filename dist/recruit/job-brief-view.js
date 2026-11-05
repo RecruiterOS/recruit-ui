@@ -1,5 +1,6 @@
 import {
   formatJobBriefSalary,
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   jobBriefLabels,
@@ -7,9 +8,10 @@ import {
   jobBriefVersionLabel,
   jobBriefVersionLabels,
   jobBriefView
-} from "../chunk-A3XKZFTB.js";
+} from "../chunk-5F2DPU3C.js";
 export {
   formatJobBriefSalary,
+  groupJobBriefChanges,
   jobBriefChangeLabels,
   jobBriefChangeText,
   jobBriefLabels,

@@ -1,4 +1,4 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// src/recruit/job-brief-view.ts
+// src/recruit/job-brief-view.ts
 var jobBriefLabels = Object.freeze({
   title: "Job brief",
   mustHaves: "Must-haves",
@@ -19,6 +19,7 @@ var jobBriefLabels = Object.freeze({
   biggestDeal: "Biggest deal",
   salesCycle: "Sales cycle",
   motion: "Sales motion",
+  targetCompanies: "Target companies",
   targetCompanyTypes: "Target company types",
   buyingPersonas: "Buying personas",
   personaCategories: Object.freeze({
@@ -41,6 +42,7 @@ var jobBriefLabels = Object.freeze({
 var LOCALE = "en-GB";
 var plain = new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 0 });
 var ROLE_DETAILS = ["quota", "equity", "avgDealSize", "biggestDeal", "salesCycle", "motion"];
+var TARGET_COMPANIES_SHOWN = 5;
 var MAX_TITLE_LENGTH = 72;
 var ABSENT_VALUE = /^(?:n\/?a|none|null|nil|unknown|tbd|tbc|not (?:specified|provided|stated|known)|unspecified|confidential|undisclosed|untitled|role|job|position|title|various|multiple(?: roles)?|-+)$/i;
 function text(value) {
@@ -73,7 +75,7 @@ function amountFormat(currency) {
       maximumFractionDigits: 0
     });
     return (value) => money.format(value);
-  } catch (e) {
+  } catch {
     return (value) => /\p{L}$/u.test(code) ? `${code} ${plain.format(value)}` : `${code}${plain.format(value)}`;
   }
 }
@@ -97,8 +99,8 @@ function formatJobBriefSalary(content, labels = {}) {
   if (min !== void 0 && max !== void 0) {
     return min === max ? amount(min) : `${amount(Math.min(min, max))}\u2013${amount(Math.max(min, max))}`;
   }
-  if (min !== void 0) return (_nullishCoalesce(labels.salaryFrom, () => ( jobBriefLabels.salaryFrom)))(amount(min));
-  if (max !== void 0) return (_nullishCoalesce(labels.salaryUpTo, () => ( jobBriefLabels.salaryUpTo)))(amount(max));
+  if (min !== void 0) return (labels.salaryFrom ?? jobBriefLabels.salaryFrom)(amount(min));
+  if (max !== void 0) return (labels.salaryUpTo ?? jobBriefLabels.salaryUpTo)(amount(max));
   return null;
 }
 function persona({ role, category, notes }, categories) {
@@ -110,22 +112,22 @@ function persona({ role, category, notes }, categories) {
 }
 function interviewSteps(steps, named, labels) {
   return steps.map((step, index) => ({ step, index })).sort(
-    (left, right) => (_nullishCoalesce(finite(left.step.stepNumber), () => ( left.index + 1))) - (_nullishCoalesce(finite(right.step.stepNumber), () => ( right.index + 1))) || left.index - right.index
+    (left, right) => (finite(left.step.stepNumber) ?? left.index + 1) - (finite(right.step.stepNumber) ?? right.index + 1) || left.index - right.index
   ).map(({ step }, index) => {
     const label = text(step.label);
     const format = text(step.expectedFormat);
     const interviewer = text(step.interviewerName);
-    const name = _nullishCoalesce(_nullishCoalesce(label, () => ( format)), () => ( labels.interviewStep(_nullishCoalesce(finite(step.stepNumber), () => ( index + 1)))));
+    const name = label ?? format ?? labels.interviewStep(finite(step.stepNumber) ?? index + 1);
     const run = named && interviewer ? labels.interviewWith(name, interviewer) : name;
     return label && format ? `${run} \xB7 ${format}` : run;
   });
 }
 function companyFacts(content, labels) {
-  const company = _nullishCoalesce(content.companyOverview, () => ( {}));
+  const company = content.companyOverview ?? {};
   const founded = finite(company.founded);
   const headcount = finite(company.headcount);
-  const arr = [..._nullishCoalesce(company.arr, () => ( []))].filter(({ year, value }) => finite(year) !== void 0 && text(value)).sort((left, right) => left.year - right.year).map(({ year, value }) => `${year}: ${text(value)}`);
-  const team = (_nullishCoalesce(company.teamDistribution, () => ( []))).filter(({ region, count }) => text(region) && finite(count) !== void 0).map(({ region, count }) => `${text(region)} ${plain.format(count)}`);
+  const arr = [...company.arr ?? []].filter(({ year, value }) => finite(year) !== void 0 && text(value)).sort((left, right) => left.year - right.year).map(({ year, value }) => `${year}: ${text(value)}`);
+  const team = (company.teamDistribution ?? []).filter(({ region, count }) => text(region) && finite(count) !== void 0).map(({ region, count }) => `${text(region)} ${plain.format(count)}`);
   return [
     ...fact("website", labels.website, text(content.companyWebsite)),
     ...fact("founded", labels.founded, founded === void 0 ? null : String(founded)),
@@ -142,44 +144,50 @@ function jobBriefView(content, options = {}) {
   const labels = {
     ...jobBriefLabels,
     ...options.labels,
-    personaCategories: { ...jobBriefLabels.personaCategories, ..._optionalChain([options, 'access', _ => _.labels, 'optionalAccess', _2 => _2.personaCategories]) }
+    personaCategories: { ...jobBriefLabels.personaCategories, ...options.labels?.personaCategories }
   };
   const internal = audience !== "public";
-  const details = _nullishCoalesce(content.roleDetails, () => ( {}));
+  const details = content.roleDetails ?? {};
   const sections = [
     {
       id: "role-details",
       title: labels.roleDetails,
       facts: internal ? ROLE_DETAILS.flatMap((key) => fact(key, labels[key], text(details[key]))) : []
     },
-    { id: "target-company-types", title: labels.targetCompanyTypes, items: [..._nullishCoalesce(content.icp, () => ( []))] },
+    {
+      id: "target-companies",
+      title: labels.targetCompanies,
+      items: internal ? [...content.targetCompanies ?? []] : [],
+      previewCount: TARGET_COMPANIES_SHOWN
+    },
+    { id: "target-company-types", title: labels.targetCompanyTypes, items: [...content.icp ?? []] },
     {
       id: "buying-personas",
       title: labels.buyingPersonas,
-      items: (_nullishCoalesce(content.buyingPersonas, () => ( []))).map((entry) => persona(entry, labels.personaCategories)).filter(Boolean)
+      items: (content.buyingPersonas ?? []).map((entry) => persona(entry, labels.personaCategories)).filter(Boolean)
     },
     {
       id: "interview-process",
       title: labels.interviewProcess,
       ordered: true,
-      items: interviewSteps(_nullishCoalesce(content.interviewSteps, () => ( [])), internal, labels)
+      items: interviewSteps(content.interviewSteps ?? [], internal, labels)
     },
     { id: "company", title: labels.company, facts: internal ? companyFacts(content, labels) : [] },
     ...extraSections
   ];
   return {
     title: title === "generic" ? labels.title : jobBriefTitle(content, labels.title),
-    description: _nullishCoalesce(text(content.roleDescription), () => ( text(content.summary))),
+    description: text(content.roleDescription) ?? text(content.summary),
     facts: [
       ...fact("location", labels.location, text(content.location)),
       ...fact("salary", labels.salary, formatJobBriefSalary(content, labels)),
       ...internal ? fact("ote", labels.ote, text(details.ote)) : []
     ],
-    mustHaves: [..._nullishCoalesce(content.mustHaves, () => ( []))],
-    niceToHaves: [..._nullishCoalesce(content.niceToHaves, () => ( []))],
-    redFlags: internal ? [..._nullishCoalesce(content.redFlags, () => ( []))] : [],
+    mustHaves: [...content.mustHaves ?? []],
+    niceToHaves: [...content.niceToHaves ?? []],
+    redFlags: internal ? [...content.redFlags ?? []] : [],
     rules: [...internal ? ALL_RULES : PUBLIC_RULES],
-    sections: sections.filter((section) => (_nullishCoalesce(_optionalChain([section, 'access', _3 => _3.facts, 'optionalAccess', _4 => _4.length]), () => ( 0))) + (_nullishCoalesce(_optionalChain([section, 'access', _5 => _5.items, 'optionalAccess', _6 => _6.length]), () => ( 0))) > 0),
+    sections: sections.filter((section) => (section.facts?.length ?? 0) + (section.items?.length ?? 0) > 0),
     previewCount: current ? 3 : 0,
     ruleLabels: {
       mustHaves: labels.mustHaves,
@@ -211,6 +219,16 @@ function validVersion(value) {
 var jobBriefChangeLabels = Object.freeze({
   added: (field, item) => item ? `Added ${field}: ${item}` : `Added ${field}`,
   removed: (field, item) => item ? `Removed ${field}: ${item}` : `Removed ${field}`,
+  addedSeveral: (fieldPlural, count, entries) => entries ? `Added ${count} ${fieldPlural}: ${entries}` : `Added ${count} ${fieldPlural}`,
+  removedSeveral: (fieldPlural, count, entries) => entries ? `Removed ${count} ${fieldPlural}: ${entries}` : `Removed ${count} ${fieldPlural}`,
+  someEntries: (entries, more) => {
+    if (more > 0) return `${entries.join(", ")} and ${plain.format(more)} more`;
+    return entries.length > 1 ? `${entries.slice(0, -1).join(", ")} and ${entries.at(-1)}` : entries[0] ?? "";
+  },
+  plural: (field) => {
+    if (/[^aeiou]y$/i.test(field)) return `${field.slice(0, -1)}ies`;
+    return /(?:s|x|z|ch|sh)$/i.test(field) ? `${field}es` : `${field}s`;
+  },
   reworded: (field, from, to) => from && to ? `Reworded ${field}: "${from}" \u2192 "${to}"` : to ? `Reworded ${field}: "${to}"` : `Reworded ${field}`,
   moved: (field, item, position) => {
     const moved = item ? `Moved ${field} "${item}"` : `Moved ${field}`;
@@ -228,6 +246,7 @@ var jobBriefChangeLabels = Object.freeze({
 });
 var MAX_CHANGE_VALUE_LENGTH = 80;
 var grouped = new Intl.NumberFormat(LOCALE);
+var NAMED_ENTRIES = 3;
 function changeValue(value, labels) {
   if (typeof value === "string") {
     const characters = Array.from(value.replace(/\s+/g, " ").trim());
@@ -239,13 +258,21 @@ function changeValue(value, labels) {
 }
 function jobBriefChangeText(change, labels = {}) {
   const words = { ...jobBriefChangeLabels, ...labels };
-  const field = _nullishCoalesce(text(change.field), () => ( ""));
+  const field = text(change.field) ?? "";
   const from = changeValue(change.from, words);
   const to = changeValue(change.to, words);
-  const item = changeValue(change.item, words);
+  const entries = (Array.isArray(change.items) ? change.items : []).map((entry) => changeValue(entry, words)).filter(Boolean);
+  const item = entries.length === 1 ? entries[0] : changeValue(change.item, words);
   if (change.prose) {
     if (change.kind === "cleared" || change.kind === "removed") return words.proseCleared(field);
     return from ? words.proseUpdated(field) : words.proseAdded(field);
+  }
+  if (entries.length > 1 && (change.kind === "added" || change.kind === "removed")) {
+    const plural = text(change.fieldPlural) ?? words.plural(field);
+    const named = entries.slice(0, NAMED_ENTRIES);
+    const listed = words.someEntries(named, entries.length - named.length);
+    const count = plain.format(entries.length);
+    return change.kind === "added" ? words.addedSeveral(plural, count, listed) : words.removedSeveral(plural, count, listed);
   }
   switch (change.kind) {
     case "added":
@@ -263,17 +290,52 @@ function jobBriefChangeText(change, labels = {}) {
     case "set":
     default:
       if (!to && from) return words.cleared(field, from);
-      return words.set(_nullishCoalesce(text(change.fieldTitle), () => ( capitalise(field))), from, to);
+      return words.set(text(change.fieldTitle) ?? capitalise(field), from, to);
   }
 }
+var GROUP_ABOVE = 3;
+function groupableEntry(change) {
+  if (change.kind !== "added" && change.kind !== "removed" || change.prose || change.items != null) return null;
+  const entry = typeof change.item === "string" ? change.item.trim() : "";
+  const field = text(change.field);
+  return entry && field ? { key: `${change.kind}\0${field}`, entry } : null;
+}
+function groupJobBriefChanges(changes, above = GROUP_ABOVE) {
+  const limit = Number.isNaN(above) ? GROUP_ABOVE : above;
+  const counts = /* @__PURE__ */ new Map();
+  for (const change of changes) {
+    const groupable = groupableEntry(change);
+    if (groupable) counts.set(groupable.key, (counts.get(groupable.key) ?? 0) + 1);
+  }
+  const groups = /* @__PURE__ */ new Map();
+  const lines = [];
+  for (const change of changes) {
+    const groupable = groupableEntry(change);
+    if (!groupable || (counts.get(groupable.key) ?? 0) <= limit) {
+      lines.push(change);
+      continue;
+    }
+    const entries = groups.get(groupable.key);
+    if (entries) {
+      entries.push(groupable.entry);
+      continue;
+    }
+    const first = [groupable.entry];
+    groups.set(groupable.key, first);
+    const { item: _item, from: _from, to: _to, ...rest } = change;
+    lines.push({ ...rest, items: first });
+  }
+  return lines;
+}
 
-
-
-
-
-
-
-
-
-
-exports.jobBriefLabels = jobBriefLabels; exports.jobBriefTitle = jobBriefTitle; exports.formatJobBriefSalary = formatJobBriefSalary; exports.jobBriefView = jobBriefView; exports.jobBriefVersionLabels = jobBriefVersionLabels; exports.jobBriefVersionLabel = jobBriefVersionLabel; exports.jobBriefChangeLabels = jobBriefChangeLabels; exports.jobBriefChangeText = jobBriefChangeText;
+export {
+  jobBriefLabels,
+  jobBriefTitle,
+  formatJobBriefSalary,
+  jobBriefView,
+  jobBriefVersionLabels,
+  jobBriefVersionLabel,
+  jobBriefChangeLabels,
+  jobBriefChangeText,
+  groupJobBriefChanges
+};

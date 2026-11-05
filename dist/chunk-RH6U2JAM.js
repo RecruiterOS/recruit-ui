@@ -1,7 +1,7 @@
 import {
   jobBriefLabels,
   jobBriefVersionLabel
-} from "./chunk-A3XKZFTB.js";
+} from "./chunk-5F2DPU3C.js";
 import {
   usePendingCall
 } from "./chunk-SBRXJRL4.js";
@@ -33,7 +33,9 @@ var DEFAULT_LABELS = {
   processingTitle: "Reading your document",
   processingDescription: "The brief will fill in shortly.",
   showMore: (hidden) => hidden > 0 ? `Show full brief (${hidden} more)` : "Show full brief",
-  showLess: "Show less"
+  showLess: "Show less",
+  sectionMore: (hidden) => `Show ${hidden} more`,
+  sectionLess: "Show fewer"
 };
 var RULE_KINDS = ["mustHaves", "niceToHaves", "redFlags"];
 var NO_ITEMS = [];
@@ -62,6 +64,14 @@ function present(value) {
 }
 function sectionRows(section) {
   return (section.facts?.length ?? 0) + (section.items?.length ?? 0);
+}
+function sectionShownItems(section) {
+  const items = section.items?.length ?? 0;
+  const count = section.previewCount;
+  return typeof count === "number" && Number.isFinite(count) ? Math.min(items, Math.max(0, Math.floor(count))) : items;
+}
+function sectionOpenRows(section) {
+  return (section.facts?.length ?? 0) + sectionShownItems(section);
 }
 function versionBadges(version) {
   if (!version) return null;
@@ -132,27 +142,53 @@ function RuleList({
     }
   ) });
 }
-function BriefSection({ section, level }) {
+function BriefSection({
+  section,
+  level,
+  labels
+}) {
   const facts = section.facts ?? NO_FACTS;
   const items = section.items ?? [];
+  const [expanded, setExpanded] = useState(false);
+  const headingId = useId();
+  const listId = useId();
   if (facts.length === 0 && items.length === 0) return null;
+  const limit = sectionShownItems(section);
+  const folds = items.length > limit;
+  const shown = folds && !expanded ? items.slice(0, limit) : items;
   return /* @__PURE__ */ jsxs(Stack, { "data-slot": "job-brief-section", border: "top", paddingTop: "base", gap: "compact", children: [
-    /* @__PURE__ */ jsx(Text, { as: `h${level}`, variant: "inherit", children: /* @__PURE__ */ jsx(Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
+    /* @__PURE__ */ jsx(Text, { as: `h${level}`, id: headingId, variant: "inherit", children: /* @__PURE__ */ jsx(Text, { as: "span", variant: "caption", className: SECTION_LABEL, children: section.title }) }),
     facts.length > 0 ? /* @__PURE__ */ jsx(BriefFacts, { facts }) : null,
-    items.length > 0 ? (
+    shown.length > 0 ? (
       // The same kit bullet row, and spacing, a read-only EditableList uses
       // for the requirements: rows about 1.8em apart.
       /* @__PURE__ */ jsx(
         List,
         {
+          id: listId,
           ordered: section.ordered,
           marker: section.ordered ? "decimal" : "none",
           spacing: "tight",
           textSize: "sm",
-          children: items.map((item, index) => /* @__PURE__ */ jsx(ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
+          children: shown.map((item, index) => /* @__PURE__ */ jsx(ListItem, { layout: section.ordered ? "plain" : "bullet", children: item }, index))
         }
       )
-    ) : null
+    ) : null,
+    folds ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "none", children: /* @__PURE__ */ jsx(
+      Button,
+      {
+        type: "button",
+        variant: "link-muted",
+        size: "bare",
+        align: "start",
+        "aria-expanded": expanded,
+        "aria-controls": shown.length > 0 ? listId : void 0,
+        "aria-describedby": headingId,
+        onClick: () => setExpanded(!expanded),
+        className: COARSE_POINTER_TOUCH_TARGET,
+        children: expanded ? labels.sectionLess : labels.sectionMore(items.length - limit)
+      }
+    ) }) : null
   ] });
 }
 function JobBriefCard({
@@ -265,7 +301,7 @@ function JobBriefCard({
     hasDescription ? /* @__PURE__ */ jsx(Text, { as: "div", variant: "caption", children: description }) : null,
     facts.length > 0 ? /* @__PURE__ */ jsx(BriefFacts, { facts, bordered: true }) : null,
     shownRules.map((kind) => ruleList(kind, lists[kind], editable)),
-    sections.map((section) => /* @__PURE__ */ jsx(BriefSection, { section, level: subLevel }, section.id))
+    sections.map((section) => /* @__PURE__ */ jsx(BriefSection, { section, level: subLevel, labels: text }, section.id))
   ] });
   if (presentation === "collapsible") {
     return /* @__PURE__ */ jsx(
@@ -303,7 +339,8 @@ function JobBriefCard({
   const hidden = Math.max(0, facts.length - count) + shownRules.reduce(
     (sum, kind) => sum + (kind === first ? Math.max(0, lists[kind].length - count) : lists[kind].length),
     0
-  ) + sections.reduce((sum, section) => sum + sectionRows(section), 0);
+  ) + // Opening shows a long section's first items; the rest stay behind its own toggle.
+  sections.reduce((sum, section) => sum + sectionOpenRows(section), 0);
   const hasToggle = state === "content" && (hidden > 0 || editable);
   const full = !hasToggle || expanded;
   const hasBody = full || notice !== null || hasDescription || count > 0 && (facts.length > 0 || first !== void 0 && lists[first].length > 0);
