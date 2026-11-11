@@ -19,7 +19,7 @@ function JobSearchProgress({ steps, labels, ...props }) {
       "data-slot": "job-search-step",
       "data-state": step.state,
       "aria-current": step.state === "current" ? "step" : void 0,
-      children: /* @__PURE__ */ jsx(
+      children: /* @__PURE__ */ jsxs(
         TimelineRow,
         {
           surface: step.state === "current" ? "muted" : "transparent",
@@ -48,9 +48,11 @@ function JobSearchProgress({ steps, labels, ...props }) {
               children: step.title
             }
           ),
-          subtitle: step.description,
           timestamp: step.meta,
-          children: step.action != null && step.action !== false ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "sm", wrap: true, marginTop: "sm", children: step.action }) : null
+          children: [
+            step.description != null && step.description !== false && step.description !== "" ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: step.description }) : null,
+            step.action != null && step.action !== false ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "sm", wrap: true, marginTop: "sm", children: step.action }) : null
+          ]
         }
       )
     },

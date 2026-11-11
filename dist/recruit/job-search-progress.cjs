@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkLTWXW3PQcjs = require('../chunk-LTWXW3PQ.cjs');
+var _chunkWSPL3WKEcjs = require('../chunk-WSPL3WKE.cjs');
 
 
-exports.JobSearchProgress = _chunkLTWXW3PQcjs.JobSearchProgress;
+exports.JobSearchProgress = _chunkWSPL3WKEcjs.JobSearchProgress;

@@ -1,7 +1,7 @@
 "use client";
 import {
   JobSearchProgress
-} from "../chunk-UFNNGB55.js";
+} from "../chunk-TPB2PWPX.js";
 export {
   JobSearchProgress
 };

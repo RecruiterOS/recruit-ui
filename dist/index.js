@@ -5,7 +5,7 @@ import {
 } from "./chunk-4DPYKJJE.js";
 import {
   JobSearchProgress
-} from "./chunk-UFNNGB55.js";
+} from "./chunk-TPB2PWPX.js";
 import {
   JobSummaryCard
 } from "./chunk-RMPILAI4.js";

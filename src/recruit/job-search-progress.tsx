@@ -99,9 +99,14 @@ export function JobSearchProgress({ steps, labels, ...props }: JobSearchProgress
                     {step.title}
                   </Text>
                 }
-                subtitle={step.description}
                 timestamp={step.meta}
               >
+                {/* Under the title rather than as the row's subtitle, which the kit keeps to one line. */}
+                {step.description != null && step.description !== false && step.description !== "" ? (
+                  <Text size="sm" tone="muted">
+                    {step.description}
+                  </Text>
+                ) : null}
                 {step.action != null && step.action !== false ? (
                   <Stack direction="horizontal" gap="sm" wrap marginTop="sm">
                     {step.action}
