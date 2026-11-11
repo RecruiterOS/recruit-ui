@@ -14,6 +14,7 @@ export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateC
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './recruit/candidate-contact-details.cjs';
 export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps, CandidateCoverImageSize } from './recruit/candidate-cover-header.cjs';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './recruit/candidate-decision-bar.cjs';
+export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps } from './recruit/candidate-client-decision.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './recruit/candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './recruit/candidate-decision-reason-dialog.cjs';
 export { CandidateDecisionSummary, CandidateDecisionSummaryAssessment, CandidateDecisionSummaryDecision, CandidateDecisionSummaryProps } from './recruit/candidate-decision-summary.cjs';
@@ -58,6 +59,7 @@ export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone,
 export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefSection } from './recruit/job-brief-card.cjs';
 export { JobBriefChanges, JobBriefChangesProps } from './recruit/job-brief-changes.cjs';
 export { JobClientBadge, JobClientBadgeProps } from './recruit/job-client-badge.cjs';
+export { JobSearchProgress, JobSearchProgressLabels, JobSearchProgressProps, JobSearchStep, JobSearchStepState } from './recruit/job-search-progress.cjs';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './recruit/job-summary-card.cjs';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './recruit/matched-call-card.cjs';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './recruit/call-data.cjs';

@@ -5,6 +5,24 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.22.0
+
+### Added
+
+- `JobSearchProgress`: where a search stands, for the person it is run for.
+  Its steps in order (`JobSearchStep`: a title, a state of `done`, `current`
+  or `upcoming`, and an optional description, meta and action), each a kit
+  timeline row with a glyph and a visually hidden word for its state
+  (`labels`), the current one marked `aria-current="step"` with its next
+  action under it. The host decides the steps and which is current.
+- `CandidateClientDecision`: a client's Yes or No on a candidate, with why,
+  as the action row of a `CandidateReviewCard` on a shortlist the client
+  reviews. Yes and No ask for the reason (`CandidateDecisionReasonDialog`,
+  with one-tap `suggestions` for each answer) before `onDecide` is called; a
+  recorded `decision` shows in words with its `reason` and a Change control;
+  a failed save brings the buttons back with an error line. The host owns
+  the record and every word (`labels`).
+
 ## 0.21.0
 
 ### Added

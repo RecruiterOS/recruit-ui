@@ -13,6 +13,7 @@ export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateC
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './candidate-contact-details.cjs';
 export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps, CandidateCoverImageSize } from './candidate-cover-header.cjs';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './candidate-decision-bar.cjs';
+export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps } from './candidate-client-decision.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './candidate-decision-reason-dialog.cjs';
 export { CandidateDecisionSummary, CandidateDecisionSummaryAssessment, CandidateDecisionSummaryDecision, CandidateDecisionSummaryProps } from './candidate-decision-summary.cjs';
@@ -57,6 +58,7 @@ export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone,
 export { JobBriefCard, JobBriefCardLabels, JobBriefCardPresentation, JobBriefCardProps, JobBriefFact, JobBriefSection } from './job-brief-card.cjs';
 export { JobBriefChanges, JobBriefChangesProps } from './job-brief-changes.cjs';
 export { JobClientBadge, JobClientBadgeProps } from './job-client-badge.cjs';
+export { JobSearchProgress, JobSearchProgressLabels, JobSearchProgressProps, JobSearchStep, JobSearchStepState } from './job-search-progress.cjs';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './job-summary-card.cjs';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './matched-call-card.cjs';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './call-data.cjs';
