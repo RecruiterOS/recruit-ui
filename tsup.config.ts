@@ -22,6 +22,7 @@ export default defineConfig({
     "src/recruit/candidate-contact-details.tsx",
     "src/recruit/candidate-cover-header.tsx",
     "src/recruit/candidate-decision-bar.tsx",
+    "src/recruit/candidate-client-decision.tsx",
     "src/recruit/candidate-decision-buttons.tsx",
     "src/recruit/candidate-decision-reason-dialog.tsx",
     "src/recruit/candidate-decision-summary.tsx",
@@ -66,6 +67,7 @@ export default defineConfig({
     "src/recruit/job-brief-changes.tsx",
     "src/recruit/job-brief-view.ts",
     "src/recruit/job-client-badge.tsx",
+    "src/recruit/job-search-progress.tsx",
     "src/recruit/job-summary-card.tsx",
     "src/recruit/matched-call-card.tsx"
   ],

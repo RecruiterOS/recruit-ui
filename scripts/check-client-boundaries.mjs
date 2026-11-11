@@ -20,6 +20,7 @@ const clientEntryBases = [
   "recruit/candidate-channel-actions",
   "recruit/candidate-contact-channels-menu",
   "recruit/candidate-decision-bar",
+  "recruit/candidate-client-decision",
   "recruit/candidate-decision-buttons",
   "recruit/candidate-decision-reason-dialog",
   "recruit/candidate-destination-status",
@@ -53,6 +54,7 @@ const clientEntryBases = [
   "recruit/document-list",
   "recruit/job-brief-card",
   "recruit/job-brief-changes",
+  "recruit/job-search-progress",
   "recruit/job-summary-card",
   "recruit/matched-call-card",
 ];
