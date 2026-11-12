@@ -5,6 +5,22 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.23.0
+
+### Added
+
+- `SourcingTrace`: how a sourcing run went, for the person the search is run
+  for. A line per step (`SourcingTraceStep`: a key, a title, a status of
+  `pending`, `running`, `done`, `error` or `skipped`, and an optional
+  description and Markdown detail), each with a glyph a screen reader names
+  (`labels`). A `live` run shows every step, the running one shimmering with
+  its detail open; any other run folds into one line ("How Scout searched ·
+  3 of 5 steps done · stopped") that opens to its steps, a step it left
+  unfinished shown stopped. `markdownComponents` takes a host's Markdown
+  overrides. `sourcingStepShownStatus()` and `sourcingTraceSummary()` are the
+  rules it draws by. Its timeline is adapted from Prompt Kit's ChainOfThought
+  (MIT; see `THIRD_PARTY_NOTICES.md`).
+
 ## 0.22.0
 
 ### Added

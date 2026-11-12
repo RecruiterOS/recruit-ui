@@ -62,6 +62,7 @@ export { JobClientBadge, JobClientBadgeProps } from './recruit/job-client-badge.
 export { JobSearchProgress, JobSearchProgressLabels, JobSearchProgressProps, JobSearchStep, JobSearchStepState } from './recruit/job-search-progress.js';
 export { JobSummaryCard, JobSummaryCardProps, JobSummaryFact } from './recruit/job-summary-card.js';
 export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCallLinkPerson } from './recruit/matched-call-card.js';
+export { SourcingStepShownStatus, SourcingStepStatus, SourcingTrace, SourcingTraceLabels, SourcingTraceProps, SourcingTraceStep, sourcingStepShownStatus, sourcingTraceLabels, sourcingTraceSummary } from './recruit/sourcing-trace.js';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './recruit/call-data.js';
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
 export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefRuleKind, JobBriefRuleLabels, JobBriefTitleStyle, JobBriefVersion, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, groupJobBriefChanges, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './recruit/job-brief-view.js';
@@ -77,3 +78,4 @@ import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/connection-status-bar';
 import '@epicbagel/saas-kit/primitives/notes';
 import '@epicbagel/saas-kit/primitives/document-preview';
+import '@epicbagel/saas-kit/primitives/markdown';

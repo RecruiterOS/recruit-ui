@@ -63,3 +63,4 @@ export * from "./job-client-badge";
 export * from "./job-search-progress";
 export * from "./job-summary-card";
 export * from "./matched-call-card";
+export * from "./sourcing-trace";
