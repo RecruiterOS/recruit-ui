@@ -57,6 +57,7 @@ const clientEntryBases = [
   "recruit/job-search-progress",
   "recruit/job-summary-card",
   "recruit/matched-call-card",
+  "recruit/sourcing-trace",
 ];
 const clientEntries = clientEntryBases.flatMap((entry) => [
   `dist/${entry}.js`,

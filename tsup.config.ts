@@ -69,7 +69,8 @@ export default defineConfig({
     "src/recruit/job-client-badge.tsx",
     "src/recruit/job-search-progress.tsx",
     "src/recruit/job-summary-card.tsx",
-    "src/recruit/matched-call-card.tsx"
+    "src/recruit/matched-call-card.tsx",
+    "src/recruit/sourcing-trace.tsx"
   ],
   format: ["esm", "cjs"],
   dts: true,

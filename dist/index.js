@@ -1,5 +1,5 @@
 "use client";
-import "./chunk-S37RLLUN.js";
+import "./chunk-2A64EP4Z.js";
 import {
   JobClientBadge
 } from "./chunk-4DPYKJJE.js";
@@ -12,6 +12,12 @@ import {
 import {
   MatchedCallCard
 } from "./chunk-YEUNNP4X.js";
+import {
+  SourcingTrace,
+  sourcingStepShownStatus,
+  sourcingTraceLabels,
+  sourcingTraceSummary
+} from "./chunk-JVTDFZNJ.js";
 import {
   useCandidateVoiceNote
 } from "./chunk-S6VNT7YQ.js";
@@ -316,6 +322,7 @@ export {
   JobSearchProgress,
   JobSummaryCard,
   MatchedCallCard,
+  SourcingTrace,
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,
@@ -337,6 +344,9 @@ export {
   normalizeCandidateGrade,
   outreachDraftCopyText,
   parseCalendarDate,
+  sourcingStepShownStatus,
+  sourcingTraceLabels,
+  sourcingTraceSummary,
   supportedRecordingMimeType,
   useCandidateCardColumns,
   useCandidateVoiceNote
