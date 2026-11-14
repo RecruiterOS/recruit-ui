@@ -7,13 +7,13 @@ export { CandidateCallList, CandidateCallListProps } from './candidate-call-list
 export { CandidateCardColumns, CandidateCardColumnsState, CandidateCardColumnsToggle, CandidateCardColumnsToggleLabels, CandidateCardColumnsToggleProps, useCandidateCardColumns } from './candidate-card-columns-toggle.js';
 export { CandidateCardList, CandidateCardListProps } from './candidate-card-list.js';
 export { CandidateCareerHistoryPanel, CandidateCareerHistoryPanelProps } from './candidate-career-history-panel.js';
-export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, CareerDateRange, CareerDateRangeProps, CareerHistoryItem } from './candidate-career-history-timeline.js';
+export { CandidateCareerHistoryTimeline, CandidateCareerHistoryTimelineProps, CareerDateRange, CareerDateRangeProps, CareerHistoryItem, CareerHistoryTitleLevel } from './candidate-career-history-timeline.js';
 export { CandidateChannel, CandidateChannelActions, CandidateChannelActionsProps } from './candidate-channel-actions.js';
 export { CandidateContactChannelOption, CandidateContactChannelsMenu, CandidateContactChannelsMenuLabels, CandidateContactChannelsMenuProps } from './candidate-contact-channels-menu.js';
 export { CandidateChannelLog, CandidateChannelLogEntry, CandidateChannelLogProps, CandidateContactDetails, CandidateContactDetailsLabels, CandidateContactDetailsProps, CandidateDefinitionItem, CandidateDefinitionSection, CandidateDefinitionSectionProps } from './candidate-contact-details.js';
 export { CandidateCoverHeader, CandidateCoverHeaderPadding, CandidateCoverHeaderProps, CandidateCoverImage, CandidateCoverImageProps, CandidateCoverImageSize } from './candidate-cover-header.js';
 export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOption } from './candidate-decision-bar.js';
-export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps } from './candidate-client-decision.js';
+export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps, CandidateClientDecisionReasonPrompt, CandidateClientDecisionSheetProps } from './candidate-client-decision.js';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './candidate-decision-buttons.js';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './candidate-decision-reason-dialog.js';
 export { CandidateDecisionReasonSheet, CandidateDecisionReasonSheetLabels, CandidateDecisionReasonSheetProps } from './candidate-decision-reason-sheet.js';
@@ -45,7 +45,10 @@ export { CandidateReviewActionRow, CandidateReviewActionRowProps } from './candi
 export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } from './candidate-review-card.js';
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './candidate-role-matches.js';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './candidate-selectable-avatar.js';
+export { CandidateShareAudience, CandidateShareChoices, CandidateShareDialog, CandidateShareDialogLabels, CandidateShareDialogProps, CandidateShareNoteFormat, candidateShareDialogLabels, candidateShareLinkText } from './candidate-share-dialog.js';
+export { CandidateSharedProfile, CandidateSharedProfileEducationItem, CandidateSharedProfileProps, CandidateSharedProfileRecording, CandidateSharedProfileWrittenNote } from './candidate-shared-profile.js';
 export { CandidateSharedProfileButton, CandidateSharedProfileButtonProps } from './candidate-shared-profile-button.js';
+export { CandidateSharedProfileAnswer, CandidateSharedProfileAnswerProps, CandidateSharedProfileAssessment, CandidateSharedProfileClientNote, CandidateSharedProfileFit, CandidateSharedProfileFitProps, CandidateSharedProfileGrade, CandidateSharedProfileHeader, CandidateSharedProfileHeaderProps, CandidateSharedProfileLabels, CandidateSharedProfileLink, CandidateSharedProfileNote, CandidateSharedProfileNoteProps, CandidateSharedProfileNotes, CandidateSharedProfileNotesProps, CandidateSharedProfilePerson, CandidateSharedProfilePersonOption, CandidateSharedProfileRootProps, CandidateSharedProfileSection, CandidateSharedProfileSectionLevel, CandidateSharedProfileSectionProps, CandidateSharedProfileSwitcher, CandidateSharedProfileSwitcherProps, CandidateSharedProfileVoiceNote, CandidateSharedProfileVoiceNoteProps, candidateSharedProfileLabels } from './candidate-shared-profile-sections.js';
 export { CandidateShortlist, CandidateShortlistEmptySize, CandidateShortlistProps } from './candidate-shortlist.js';
 export { CandidateShortlistNote, CandidateShortlistNoteProps } from './candidate-shortlist-note.js';
 export { CandidateSignalDetail, CandidateSignalItem, CandidateSignalList, CandidateSignalListProps } from './candidate-signal-list.js';

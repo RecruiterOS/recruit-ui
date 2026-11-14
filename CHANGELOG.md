@@ -5,6 +5,217 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.26.0
+
+Both new components are built on kit primitives that `@epicbagel/saas-kit`
+1.16.0 already has (`ResponsiveDialog`, `Tabs`, `RadioGroup`, `Field`,
+`Toggle`, `Callout`, `Avatar`, the notes and the dictation hook), so the
+minimum kit version doesn't move. The chips that switch between people, and
+that pick who a link is for, are the kit's `Toggle` in a named group, as
+`CandidateFilterChips` are: the kit's own `ChipTabs` names its group and
+marks the pressed chip only in a later release.
+
+### Added
+
+- `CandidateSharedProfile`: the content of the page someone opens from a
+  link to a candidate, as one composition built from display values and
+  callbacks. It is the content and no more: it draws no header, brand, theme
+  or shell, so the host wraps it in its own page and decides its width. In
+  order it shows an `eyebrow`, such as the search the person was shared for;
+  the people the link shares, when it shares several (`people`, `personId`);
+  a notice on an `archived` link, over a profile that dims; then the profile
+  (`CandidateProfile`): who the person is (`person`), a spoken note with its
+  transcript (`voiceNote`) and a written note with its author (`note`) from
+  whoever shared them, how well they fit a role (`fit`), a `summary`,
+  `experience` (`CandidateCareerHistoryTimeline`), `education`, `skills`,
+  `certifications` and `languages`, the host's own sections as `children`,
+  the reader's Yes or No with why (`decision`, `onDecide`), their own notes
+  (`clientNotes`, `onAddNote`) and a `credit`. Every part is optional and
+  shows only when the host passes what it shows: a profile given a name
+  alone is a heading, a host that passes no `onDecide` gets no Yes or No,
+  and one that passes no `onAddNote` no note field, though an answer or
+  notes already given still show. It fetches nothing, navigates nowhere,
+  stores nothing and holds no timer: what the reader does goes out through
+  `onPersonChange(id)`, `onDecide(decision, reason)` and `onAddNote(text)`.
+  While a promise from `onPersonChange` is pending, or the host names an
+  `openingPersonId`, the switcher says who is opening and it, the Yes or No
+  and the note field are held, since an answer then would be about whoever
+  is on screen; a reason being given at that moment is dropped, and the
+  answer and a half-written note start afresh for each person. A switch that
+  fails says so under the switcher. `anonymised` is enforced here, not left
+  to the host: the name, the avatar, the cover and the profile link are
+  never drawn, the switcher names nobody ("Candidate 2") and shows no faces,
+  and the questions say "this candidate", whatever `person` and `people`
+  hold. What the host passes as an employer's name or a note is the host's
+  to redact. There is no prop for a record: a note is its words and who they
+  are from, the grade and the fit are passed on field by field, and every
+  root takes an id, a class, a style and `data-` and `aria-` attributes and
+  drops anything else, so a field spread in by mistake, off a record or a
+  view model, is never written into the page as an attribute, nor taken for
+  a section's heading. `readOnly` shows the answer and the notes and takes
+  none, for someone who can't act for the reader. `titleLevel` puts the name
+  under a page's own h1; every section sits one level under the name, the
+  reader's answer and notes among them, and each role and line of education
+  one under that, so the outline skips no level. A word longer than its
+  line, such as a link pasted into a note, wraps inside the profile and
+  isn't cut off at its edge. Printed, it is a resume: the profile loses its
+  border, and the switcher, the archived notice, the profile link, the audio
+  player, the answer, the notes, the credit and a career's "Show more" are
+  left out, so a description folded on screen prints folded; a spoken note
+  prints as its transcript. Print colours, margins and the page's surface
+  are the host's page's. Wording is `labels`
+  (`CandidateSharedProfileLabels`, with its defaults in
+  `candidateSharedProfileLabels`), and `decisionLabels` words the Yes or No.
+- `CandidateSharedProfileSwitcher`: the people one link shares, as a row of
+  chips that switches between their profiles (`people`, `value`,
+  `onChange`). Each chip is a toggle button, so a screen reader says which
+  is showing, in a group named by the caption over it ("3 people shared with
+  you"); a face beside a name is hidden from a screen reader, which has the
+  name. Two people with one name are told apart by their `detail`, such as a
+  company. While a promise from `onChange` is pending, or the host names who
+  is `opening`, the caption says so ("Opening Mei Tanaka…"), is read out,
+  and the chips are held: said to be disabled but not disabled outright, so
+  the keyboard's focus stays on the chip that was pressed. A promise that
+  rejects, or an `onChange` that throws, brings the chips back with a line
+  under them (`labels.switchFailed`, which is given the cause, or the host's
+  own `error`). With fewer than two people, or a `value` that isn't one of
+  them, it draws nothing. `anonymised` names nobody and shows no face.
+- `CandidateSharedProfileHeader`: who the profile is about, on
+  `CandidateProfileHeader`: their face (the `avatar` slot), their name as
+  the heading, their title and company (`CurrentCompanyLabel`), where they
+  are and how long they have worked, and a link to their own profile beside
+  it all (`CandidateProfileLinkButton`, with the host's glyph and URL). An
+  `anonymised` header has the heading `labels.anonymous` and a glyph where
+  the face would be: never initials, which would be somebody's.
+- `CandidateSharedProfileVoiceNote` and `CandidateSharedProfileNote`: what
+  whoever shared the profile says about the person. The spoken note is a
+  player over its transcript (`src`, `transcript`), through the host's own
+  player with `renderAudio`, as `CandidatePresentationRecorder` takes one.
+  The written note is its words under who it is from (`text`, `author`).
+- `CandidateSharedProfileFit`: how well the person fits a role (`roleTitle`):
+  the grade as a `CandidateGradeBadge` in the host's own wording and tone
+  (`grade`), a line on why (`summary`), and the evidence, each line with its
+  sentiment as a dot and a word a screen reader says (`evidence`, as
+  `CandidateSummaryBullets` takes them). The tone and the dots print in
+  colour, so a printed caution doesn't read like a strength. With no grade,
+  summary or evidence it draws nothing.
+- `CandidateSharedProfileAnswer`: the reader's Yes or No with why, as a
+  section of the profile: `CandidateClientDecision` under a heading, asking
+  why in a dialog or, with `reasonPrompt="sheet"`, voice first.
+  `reasonOptional`, `reasonSuggestions`, `readOnly` and `disabled` are the
+  decision row's own. The heading is the kit's small section header, said at
+  `titleLevel` (2 unless told otherwise), so it is a section of the profile
+  in the page's outline. On a touchscreen Yes, No and Change are each a 44px
+  target.
+- `CandidateSharedProfileNotes`: the notes the reader has left on the
+  person, and room for another (`notes`, `onAdd`), on `CandidateNoteCard`
+  and `CandidateNoteComposer`, under the kit's small section header with a
+  count, said at `titleLevel`. It is spoken first where dictation can run
+  (the host's `DictationProvider`, or the browser's speech recognition) and
+  typed otherwise, or with `voice={false}`; no composer is drawn until it is
+  known which, so a page rendered on a server never opens one way and turns
+  into the other. A typed note that doesn't save stays in the field with
+  `labels.noteFailed`, which is given what the host's promise rejected with.
+  A spoken note holds the composer while it saves, so it can't be sent
+  twice; one that doesn't save, or runs past `maxLength`
+  (`labels.noteTooLong`), is put in the field, so it needn't be said again.
+  A note is its words, who it is from ("You" unless the host says) and when,
+  and nothing else.
+- `CandidateSharedProfileSection`: a heading over the host's own content,
+  for a section of its own that sits and prints like the profile's
+  (`title`, `titleLevel`, and `printVisibility="hidden"` to leave it off
+  paper).
+- `CandidateShareDialog`: the dialog that makes a link to a candidate's
+  profile and hands it over, with every part optional. At the top, the
+  person's summary: their `avatar`, name and `headline`, and the sharer's
+  own `reason` for putting them forward. Then who the link is for, from the
+  host's `audiences` (`CandidateShareAudience`: an id, a label, a
+  `description` of what that audience sees, its own `fields` as a slot whose
+  values the host holds, `ready` to hold the share button until they are
+  filled in, and `live` where a link for it already exists, which its chip
+  says); whether the page names the person (`anonymisable`: "Named" or
+  "Anonymised", each radio named by its title and described by the line
+  under it); and a note for whoever opens it, typed (`note`,
+  `noteMaxLength`) or spoken through a `recorder` slot, such as
+  `CandidatePresentationRecorder`. With both, they sit behind a switch, the
+  recorder first unless `defaultNoteFormat` says `written`, and the side not
+  showing stays mounted, so a take is never lost to the switch. The host
+  makes the link: `onShare` is given the choices (`CandidateShareChoices`:
+  the audience, whether it is anonymised, and the note, trimmed) and returns
+  the link or a promise for it, and the dialog holds its controls meanwhile.
+  The link then shows cut short (`candidateShareLinkText`, with the whole
+  link in its tooltip) with Copy and a line saying it is ready, which is in
+  the dialog from the start so a screen reader announces it. Copy writes to
+  the clipboard inside its own click, since some browsers take a write only
+  from the gesture, says "Copied", announces it, and goes back to Copy;
+  where the browser refuses, or has no clipboard to ask, the whole link is
+  put in a field, focused and selected, to copy by hand. `copyOnShare`
+  copies in the click that makes the link: the clipboard is asked there for
+  a link that arrives later, a browser that can't be asked ahead is written
+  to once the link is here, and one that refuses leaves the link with its
+  Copy button and claims nothing. A host that already has a link for the
+  choices passes it as `url`: it shows beside the form with Copy, and the
+  share button says "Save changes"; with no `onShare` the dialog is the link
+  and its Copy alone. A `live` audience whose link the host doesn't pass
+  says so (`liveDescription`, or `labels.live`) in place of everything it
+  would ask, and makes no second one. A promise that resolves with no link
+  closes the dialog, for a host that shows the link somewhere else; one that
+  rejects, or an `onShare` that throws, keeps the dialog as it was with
+  `labels.failed`, which is given the cause. `waitingFor` holds the share
+  button and shows on it, such as a recording still uploading, and `error`
+  shows an error of the host's own. Every opening starts afresh from
+  `defaultChoices`, with the first audience that isn't live, and a share
+  that settles after the dialog has been opened again is dropped; a host
+  that keeps a link's note or audience passes them as `choices` and hears of
+  each change through `onChoicesChange`. It fetches nothing and stores
+  nothing. It is the kit's responsive dialog, a centred dialog or a bottom
+  sheet on a phone; what it holds for one opening (the choices, a share on
+  its way, the link) is kept above that swap, so a window narrowed or a
+  tablet turned loses none of it. Wording is `labels`
+  (`CandidateShareDialogLabels`, with its defaults in
+  `candidateShareDialogLabels`).
+- `CandidateClientDecision` takes `reasonPrompt="sheet"`, which asks why in
+  the voice-first `CandidateDecisionReasonSheet` in place of the typed
+  dialog: speaking is the default, a suggested reason is one tap, typing is
+  a tap away, and Skip saves with no reason where `reasonOptional` allows
+  it. The sheet is downloaded only by a row that asks through it, as the row
+  mounts, so a row that asks in the dialog never fetches the kit's `Chat`;
+  if the download fails, the row asks in the dialog, and the page it sits on
+  stays up. A save that fails stays in the sheet, with the reason and the
+  sheet's own error; if the sheet was closed meanwhile, the row says so
+  under its buttons. `reasonSheet` passes the sheet's own settings (its
+  wording, footer, actions and dictation), as an object or as a function of
+  the answer being explained; they are taken one by one, so nothing else
+  such an object carries changes who the sheet is about or what it requires.
+- `CandidateClientDecision` takes `disabled`, which keeps Yes, No and Change
+  and holds them, dropping a reason being asked for when it turns on, and
+  `padding="none"`, which sits the row flush, with no keyline, in a
+  container that already pads and rules it. Without them nothing changes: it
+  is a review card's action row.
+- `CandidateDecisionButtons` takes `disabled`, which holds both buttons.
+- `CandidateNoteComposer`'s `labels` take `input`, the text field's name
+  for a screen reader, and `error`, the line under a note that didn't save.
+  Both are the kit composer's own, there in 1.16.0, the oldest kit this
+  package runs on; the five labels hosts have always passed are unchanged.
+- `CandidateCareerHistoryTimeline` takes `titleLevel`, the heading level of
+  each role's title: 5 as before, or 3, 4 or 6 to sit one under whatever
+  heads the history, so a page's outline skips no level. Only the tag
+  changes, and when it is given the "Earlier" label is said at the same
+  level.
+
+### Fixed
+
+- `CandidateClientDecision`: Yes, No and Change are held while a save is on
+  its way. The dialog that asks why could be closed with Escape while a slow
+  save was pending, leaving the buttons live, so a second answer could be
+  sent on top of the first and the two would land in whichever order they
+  arrived.
+- `CandidateCareerHistoryTimeline`: a role's description is set in the muted
+  tone whether it is a paragraph, a host's own node or a bulleted list. The
+  paragraph and the node were in the fainter `subtle` tone, about 2.5:1
+  against the page on the kit's neutral palette, under the contrast body
+  text needs.
+
 ## 0.25.0
 
 The client's search page is built on kit primitives that `@epicbagel/saas-kit`

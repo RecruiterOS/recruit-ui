@@ -43,6 +43,21 @@ import {
   type CandidatePipelineBoardProps,
 } from "@recruiteros/recruit-ui/recruit/candidate-pipeline-board";
 import {
+  CandidateShareDialog,
+  candidateShareLinkText,
+  type CandidateShareChoices,
+  type CandidateShareDialogProps,
+} from "@recruiteros/recruit-ui/recruit/candidate-share-dialog";
+import {
+  CandidateSharedProfile,
+  type CandidateSharedProfileProps,
+} from "@recruiteros/recruit-ui/recruit/candidate-shared-profile";
+import {
+  CandidateSharedProfileNotes,
+  CandidateSharedProfileSwitcher,
+  type CandidateSharedProfileClientNote,
+} from "@recruiteros/recruit-ui/recruit/candidate-shared-profile-sections";
+import {
   ClientSearchConversation,
   type ClientSearchConversationItem,
   type ClientSearchTurn,
@@ -118,6 +133,47 @@ const searchPage: ClientSearchPageProps = {
 };
 void searchPage;
 void ClientSearchPage;
+void CandidateSharedProfile;
+void CandidateSharedProfileNotes;
+void CandidateSharedProfileSwitcher;
+const clientNote: CandidateSharedProfileClientNote = { id: 1, text: "Fictional note", date: "Fictional date" };
+const sharedProfile: CandidateSharedProfileProps = {
+  person: { name: "Fictional Person", title: "Fictional role", yearsExperience: 9 },
+  anonymised: false,
+  people: [{ id: "p1", name: "Fictional Person" }, { id: "p2", name: "Another Fictional Person" }],
+  personId: "p1",
+  onPersonChange: async (id: string) => void id,
+  note: { text: "Fictional note", author: "Fictional Author" },
+  fit: {
+    roleTitle: "Fictional role",
+    grade: { grade: "A", label: "Fictional fit", tone: "success" },
+    evidence: [{ text: "Fictional evidence", sentiment: "positive" }],
+  },
+  experience: [{ title: "Fictional role", company: "Fictional company", dateRange: "2020 – 2024" }],
+  education: [{ title: "Fictional degree", institution: "Fictional university", date: "2012" }],
+  skills: ["Fictional skill"],
+  decision: "yes",
+  onDecide: async (decision, reason) => void [decision, reason],
+  reasonPrompt: "sheet",
+  clientNotes: [clientNote],
+  onAddNote: async (text: string) => void text,
+};
+void sharedProfile;
+void CandidateShareDialog;
+const shareChoices: CandidateShareChoices = { audience: "client", anonymised: false, note: "" };
+const shareDialog: CandidateShareDialogProps = {
+  open: true,
+  onOpenChange: (open: boolean) => void open,
+  candidateName: "Fictional Person",
+  audiences: [{ id: "client", label: "Fictional audience", live: false }],
+  anonymisable: true,
+  note: true,
+  defaultChoices: shareChoices,
+  onShare: async (choices) => "https://example.com/p/" + (choices.audience ?? ""),
+};
+void shareDialog;
+const shortLink: string = candidateShareLinkText("https://example.com/p/fictional");
+void shortLink;
 `;
 
 try {
@@ -158,6 +214,8 @@ try {
     join(fixtureRoot, "runtime.mjs"),
     `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
       `if (!recruit.ClientSearchPage || !recruit.ClientSearchConversation || !recruit.ClientSearchDelivery || !recruit.clientSearchThread || !recruit.clientSearchLabels) process.exit(1);\n` +
+      `if (!recruit.CandidateSharedProfile || !recruit.CandidateSharedProfileSwitcher || !recruit.CandidateSharedProfileNotes || !recruit.candidateSharedProfileLabels || !recruit.CandidateShareDialog || !recruit.candidateShareDialogLabels) process.exit(1);\n` +
+      `if (recruit.candidateShareLinkText("https://www.example.com/p/fictional/") !== "example.com/p/fictional") process.exit(1);\n` +
       // A search's conversation is put in order outside a client boundary too.
       `import { clientSearchThread } from "@recruiteros/recruit-ui/recruit/client-search-thread";\n` +
       `if (clientSearchThread({ turns: [{ id: "t2", createdAt: "2026-01-01T10:01:00Z" }, { id: "t1", createdAt: "2026-01-01T10:00:00Z" }] }).map((item) => item.turn.id).join() !== "t1,t2") process.exit(1);\n` +
@@ -170,6 +228,8 @@ try {
     join(fixtureRoot, "runtime.cjs"),
     `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
       `if (!recruit.ClientSearchPage || !recruit.ClientSearchConversation || !recruit.ClientSearchDelivery || !recruit.clientSearchThread || !recruit.clientSearchLabels) process.exit(1);\n` +
+      `if (!recruit.CandidateSharedProfile || !recruit.CandidateSharedProfileSwitcher || !recruit.CandidateSharedProfileNotes || !recruit.candidateSharedProfileLabels || !recruit.CandidateShareDialog || !recruit.candidateShareDialogLabels) process.exit(1);\n` +
+      `if (recruit.candidateShareLinkText("https://www.example.com/p/fictional/") !== "example.com/p/fictional") process.exit(1);\n` +
       `const { clientSearchThread } = require("@recruiteros/recruit-ui/recruit/client-search-thread");\n` +
       `if (clientSearchThread({ turns: [{ id: "t2", createdAt: "2026-01-01T10:01:00Z" }, { id: "t1", createdAt: "2026-01-01T10:00:00Z" }] }).map((item) => item.turn.id).join() !== "t1,t2") process.exit(1);\n` +
       `const { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +

@@ -23,9 +23,13 @@ export type CandidateNoteScope = NoteScope;
 export type CandidateNoteCardLabels = NoteCardLabels;
 export type CandidateNoteCardProps = NoteCardProps;
 
-/** The existing five-label contract remains valid for current consumers. */
+/**
+ * The composer's wording. `input` names the text field to a screen reader
+ * and `error` is the line under a note that didn't save; the five labels
+ * before them are the ones hosts have always passed.
+ */
 export type CandidateNoteComposerLabels = Pick<
-  NoteComposerLabels, "voice" | "type" | "placeholder" | "cancel" | "submit"
+  NoteComposerLabels, "voice" | "type" | "placeholder" | "cancel" | "submit" | "input" | "error"
 >;
 
 export interface CandidateNoteComposerProps extends Omit<NoteComposerProps, "labels"> {

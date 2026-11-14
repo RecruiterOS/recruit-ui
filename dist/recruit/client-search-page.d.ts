@@ -8,6 +8,7 @@ import { ClientSearchAction, ClientSearchPerson, ClientSearchCall, ClientSearchL
 import { JobBriefContent, JobBriefViewOptions } from './job-brief-view.js';
 import { JobSearchStep, JobSearchProgressLabels } from './job-search-progress.js';
 import { SourcingTraceStep, SourcingTraceLabels } from './sourcing-trace.js';
+import './candidate-decision-reason-sheet.js';
 import '@epicbagel/saas-kit/primitives/chat';
 import './client-search-thread.js';
 import '../candidate-empty-copy-CZmg2ZoX.js';

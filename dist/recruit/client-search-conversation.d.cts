@@ -9,6 +9,7 @@ import { ClientSearchThreadTime, ClientSearchThreadItem } from './client-search-
 export { ClientSearchThreadBriefVersion, ClientSearchThreadDelivery, ClientSearchThreadInput, ClientSearchThreadTurn, clientSearchThread } from './client-search-thread.cjs';
 import { JobBriefContent, JobBriefViewOptions } from './job-brief-view.cjs';
 import { SourcingTraceLabels } from './sourcing-trace.cjs';
+import './candidate-decision-reason-sheet.cjs';
 import '../candidate-empty-copy-CZmg2ZoX.cjs';
 import './candidate-review-card.cjs';
 import './job-search-progress.cjs';

@@ -65,6 +65,19 @@ describe("candidate decision buttons", () => {
       expect(button).toHaveAttribute("data-size", "default");
     }
   });
+
+  it("holds both buttons where the host says to, and nothing else", async () => {
+    const user = userEvent.setup();
+    const onChoose = vi.fn();
+    const { rerender } = render(<CandidateDecisionButtons onChoose={onChoose} disabled />);
+
+    for (const name of ["Yes", "No"]) expect(screen.getByRole("button", { name })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    expect(onChoose).not.toHaveBeenCalled();
+
+    rerender(<CandidateDecisionButtons onChoose={onChoose} />);
+    for (const name of ["Yes", "No"]) expect(screen.getByRole("button", { name })).toBeEnabled();
+  });
 });
 
 describe("candidate review action row", () => {

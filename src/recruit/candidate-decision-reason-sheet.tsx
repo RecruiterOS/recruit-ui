@@ -1,6 +1,5 @@
 "use client";
 
-import { useDictation } from "@epicbagel/saas-kit/hooks/use-dictation";
 import { Button } from "@epicbagel/saas-kit/primitives/button";
 import { Chat } from "@epicbagel/saas-kit/primitives/chat";
 import {
@@ -13,9 +12,10 @@ import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { ArrowRight, Loader2, X } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 
 import type { CandidateDecisionChoice } from "./candidate-decision-buttons";
+import { useDictationSupport } from "./dictation-support";
 
 /** Host-owned wording for the sheet's fixed parts. */
 export interface CandidateDecisionReasonSheetLabels {
@@ -130,20 +130,6 @@ function defaultSkipLabel(decision: CandidateDecisionChoice | undefined): string
   if (decision === "yes") return "Skip — just mark Yes";
   if (decision === "no") return "Skip — just mark No";
   return "Skip";
-}
-
-/**
- * Whether dictation can run here, as the kit's own mic decides it: the
- * host's transport from a `DictationProvider`, or else the browser's speech
- * recognition. `null` until the first effects have run, which is when the
- * kit finds out.
- */
-function useDictationSupport(): boolean | null {
-  const { supported } = useDictation();
-  const [known, setKnown] = useState(false);
-  // Declared after the kit's own effect, so both land in one render.
-  useEffect(() => setKnown(true), []);
-  return known ? supported : null;
 }
 
 /**
