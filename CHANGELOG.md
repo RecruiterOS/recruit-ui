@@ -5,6 +5,143 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.25.0
+
+The client's search page is built on kit primitives that `@epicbagel/saas-kit`
+1.16.0 already has (`Chat`, `PageShell`, `PageHeader`, `Suggestion`,
+`ResponsiveDialog`), so the minimum kit version doesn't move. Two things a
+newer kit's `Chat` adds still reach a host that has one: the agency's turns in
+the conversation are named from kit 1.26.0, which draws a turn's author, and
+`mobileCompactSuggestions` (kit 1.20.0) or any later setting passes through
+the conversation's `chat` prop. On 1.16.0 the turns are simply unnamed.
+
+### Added
+
+- `ClientSearchPage`: a search as the person it is run for sees it, as one
+  page built from display values and callbacks. While the search is a `draft`
+  it is the conversation that gets the brief ready
+  (`ClientSearchConversation`). Once it is open the page is managed, with no
+  reply box, and shows in order: a question put to the reader with its
+  suggested answers, or `labels.reading` while their reply is being read
+  (`awaitingReply`); the search under way with its reasoning (`searching`,
+  `liveSteps`); what they can ask for next (`actions`); each delivery newest
+  first (`deliveries`, given oldest first), with a Yes or No on each person
+  and how that run searched; any run that delivered nobody (`otherRuns`); and
+  the brief. Over both is a header: the `title`, an `eyebrow` such as a link
+  back, the `subtitle` followed by the current step ("Now: Shortlist to
+  review", `labels.now`), and buttons that open the brief and the progress
+  (`steps`). `call` is how a call is booked, a link (`href`), a callback
+  (`onSelect`) or both: an open search offers it in the header, and a draft
+  as the current step's next action (`labels.callInstead`) unless the step
+  has its own. The page fetches nothing, navigates nowhere and holds no
+  timer: the host passes new values when there are some, and everything the
+  reader does goes out through `onReply(words, files)`, `onAnswer(answer)`
+  (which defaults to `onReply` with no files), `onAction(action)`,
+  `onDecide(person, decision, reason)` and `call`. A promise from `onAnswer`
+  or `onAction` holds both the answers and the actions until it settles, so
+  the two never cross, and a rejected one brings them back with
+  `labels.failed` in the section it was sent from. `actionsNeedCall` offers
+  the actions but opens a prompt to book a call in place of `onAction`;
+  `callPromptOpen` and `onCallPromptOpenChange` let a host open that prompt
+  itself, such as when its server turns a request down. `readOnly` shows the
+  same page with nothing to send, for someone who can't act for the reader,
+  such as the team that runs the search: no composer, no suggested replies,
+  no answers or requests to press (they show as text), no Yes, No or Change,
+  no call and no step's `action`; what only opens or folds (the brief, the
+  progress, a run's steps) still does. `reasonOptional`, `reasonSuggestions`,
+  `maxFiles`, `chat`, `briefOptions` and `markdownComponents` pass to the
+  sections that use them, and `decisionLabels`, `traceLabels` and
+  `progressLabels` word the components it is built from. It fills its
+  container's height, the header staying put while the rest scrolls, so it
+  needs a container with a height of its own; an open search's sections
+  scroll in a region the keyboard can reach, named by `labels.sections`.
+- `ClientSearchConversation`: the kit's `Chat`, as the whole surface, over a
+  search's `thread`: each turn (`ClientSearchTurn`: who said it, the words as
+  Markdown, when, and the names of its files), each version of the brief
+  under the turn that wrote it (`JobBriefCard` as a preview, badged "v2 ·
+  Current" or "v1 · Earlier"), and each delivery where it landed. The
+  composer stages the files the reader picks, up to `maxFiles` (5; 0 leaves
+  files out; picking more keeps the first and says so), and `onReply(words,
+  files)` is handed the words and the files themselves. A suggested reply
+  (`suggestedReplies`) goes alone, leaving the draft and the staged files
+  where they are. While a promise from `onReply` is pending the composer is
+  held under a running line (`labels.sending`); when it resolves the files
+  it sent leave the composer; when it rejects the words go back, the files
+  stay, focus returns to the composer and `labels.failed` shows under it.
+  `awaitingReply` holds the composer under `labels.reading`. The kit Chat's
+  other settings (`voice`, `attachmentAccept`, `fileDrop`,
+  `onOpenAttachment` and the rest) pass through `chat`, and dictation runs
+  through the host's `DictationProvider`, as the kit's mic does everywhere.
+  `readOnly`, or no `onReply`, shows the thread alone.
+- `ClientSearchQuestion`, `ClientSearchLive` and `ClientSearchNextActions`:
+  the three sections at the top of an open search, each on the kit's Card
+  under a heading that names the section (an h2, or `titleLevel` 3 or 4).
+  The question is Markdown over its suggested `answers`, one tap each
+  (`onAnswer`). The live search says who is searching and what to expect
+  (`labels.searchingFirst`, or `labels.searchingMore` with `more`, or the
+  host's `description`) over the run under way as a live `SourcingTrace`.
+  The next actions are `ClientSearchAction`s (an id and a label), one tap
+  each (`onAction`), and nothing is drawn with none. A promise from either
+  callback holds the section's controls, marked `aria-busy`, and a rejected
+  one, or a callback that throws, brings them back with `labels.failed`;
+  `disabled` holds them from outside, and `readOnly`, or no callback, lists
+  them as text.
+- `ClientSearchDelivery`: one delivery of people. Its `title` and
+  `description` head a `CandidateShortlist` of a `CandidateReviewCard` for
+  each `ClientSearchPerson` (a name, and optionally an avatar, cover,
+  headline, header actions, facts, `evidence` lines under "Why we picked
+  them", a `decision` and the reader's own `reason`), each with a
+  `CandidateClientDecision` under it, then how the run that found them
+  searched (`runSteps`), folded to one line. A person is display values only:
+  there is no field for a record and none for notes, so a card shows no more
+  than the host passed. `onDecide(person, decision, reason)` saves an answer;
+  `readOnly`, or no `onDecide`, shows the answers and takes none.
+- `ClientSearchBriefPanel` and `ClientSearchProgressPanel`: the brief
+  (`JobBriefCard` over `jobBriefView`, read only) and the progress
+  (`JobSearchProgress`), each behind a button that opens it in the kit's
+  responsive dialog, a centred dialog or a bottom sheet on a phone.
+- `ClientSearchCallPrompt` and `ClientSearchCallButton`: a prompt, opened by
+  the host, that says what was asked for needs a call first, and the control
+  that books one, a link where `call.href` is given (in a new tab with
+  `external`) and otherwise a button that calls `call.onSelect`.
+- `ClientSearchLabels`, with its defaults in `clientSearchLabels`: the fixed
+  words of the page and of every section of it, in one object. `failed` is
+  given what the host's promise rejected with, so a host can say why where it
+  knows (a file was too large) and something general where it doesn't.
+- `clientSearchThread`: puts a search's turns, brief versions and deliveries
+  in one order. Everything is ordered by time, read as an instant (a string
+  in any precision or offset, a number or a Date); at one instant a turn
+  comes first, then a brief, then a delivery, and within a kind the order
+  given holds. A brief that names its turn (`replyTurnId`) sits straight
+  under that turn; one that names none, or a turn the search doesn't hold,
+  takes its own place by time. The highest `revision` is marked `current`,
+  and a time that can't be read puts its item last. The host's own records
+  come back untouched in each item (`ClientSearchThreadItem`). It also ships
+  from `@recruiteros/recruit-ui/recruit/client-search-thread`, a subpath
+  without a client boundary, so a server can call it.
+- `CandidateClientDecision` takes `reasonOptional`, for a host whose clients
+  may answer without saying why. The dialog still asks, its field labelled
+  "Why? (optional)" unless `labels.reason` words it, the confirm button is
+  enabled with no reason, and `onDecide` is called with an empty string.
+  Without it nothing changes: the reason is required.
+- `CandidateClientDecision` takes `readOnly`, for someone looking at a
+  client's shortlist who can't answer for them. The row shows the recorded
+  answer in the third person with its reason (`labels.readOnlyYes`, "Said
+  Yes"; `labels.readOnlyNo`), or `labels.unanswered` ("No answer yet"), with
+  no Yes, No or Change, and is marked `data-read-only`. The three labels are
+  optional in `CandidateClientDecisionLabels`, so code that builds the whole
+  object needn't change.
+
+### Fixed
+
+- A registry install now gets `CandidateClientDecision`, `JobSearchProgress`
+  and `SourcingTrace`, with the timeline `SourcingTrace` draws. The four
+  files were added in 0.22.0 and 0.23.0 without being listed in
+  `registry/recruit-workflows.json`, so the package shipped them and the
+  registry didn't. `pnpm validate:registry` now fails when a source under
+  `src/recruit` is missing from the catalog, or a listed file imports one
+  that isn't listed.
+
 ## 0.24.0
 
 Both new components are built on kit primitives that `@epicbagel/saas-kit`

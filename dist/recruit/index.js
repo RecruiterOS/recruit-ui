@@ -1,14 +1,5 @@
 "use client";
-import "../chunk-AUNFUB62.js";
-import {
-  JobBriefChanges
-} from "../chunk-E7ENIJVS.js";
-import {
-  JobClientBadge
-} from "../chunk-4DPYKJJE.js";
-import {
-  JobSearchProgress
-} from "../chunk-TPB2PWPX.js";
+import "../chunk-Q4T2JRO3.js";
 import {
   JobSummaryCard
 } from "../chunk-RMPILAI4.js";
@@ -16,11 +7,20 @@ import {
   MatchedCallCard
 } from "../chunk-YEUNNP4X.js";
 import {
-  SourcingTrace,
-  sourcingStepShownStatus,
-  sourcingTraceLabels,
-  sourcingTraceSummary
-} from "../chunk-JVTDFZNJ.js";
+  CurrentCompanyPopover
+} from "../chunk-QXRY3PXD.js";
+import {
+  DocumentList,
+  DocumentListItem,
+  DocumentUploadPanel,
+  formatFileSize
+} from "../chunk-NYDSTZTE.js";
+import {
+  JobBriefChanges
+} from "../chunk-E7ENIJVS.js";
+import {
+  JobClientBadge
+} from "../chunk-4DPYKJJE.js";
 import {
   CandidateSuggestedRolesPanel
 } from "../chunk-VYIPKB27.js";
@@ -28,17 +28,28 @@ import {
   useCandidateVoiceNote
 } from "../chunk-S6VNT7YQ.js";
 import {
-  CurrentCompanyPopover
-} from "../chunk-QXRY3PXD.js";
+  ClientSearchPage
+} from "../chunk-PGROXXPC.js";
 import {
-  CurrentCompanyLabel
-} from "../chunk-XTAH2XJR.js";
+  ClientSearchConversation
+} from "../chunk-CXIIJO6L.js";
 import {
-  DocumentList,
-  DocumentListItem,
-  DocumentUploadPanel,
-  formatFileSize
-} from "../chunk-NYDSTZTE.js";
+  ClientSearchBriefPanel,
+  ClientSearchCallButton,
+  ClientSearchCallPrompt,
+  ClientSearchDelivery,
+  ClientSearchLive,
+  ClientSearchNextActions,
+  ClientSearchProgressPanel,
+  ClientSearchQuestion,
+  clientSearchLabels
+} from "../chunk-7XINCBV3.js";
+import {
+  SourcingTrace,
+  sourcingStepShownStatus,
+  sourcingTraceLabels,
+  sourcingTraceSummary
+} from "../chunk-JVTDFZNJ.js";
 import {
   JobBriefCard
 } from "../chunk-RH6U2JAM.js";
@@ -53,6 +64,15 @@ import {
   jobBriefVersionLabels,
   jobBriefView
 } from "../chunk-5F2DPU3C.js";
+import {
+  JobSearchProgress
+} from "../chunk-TPB2PWPX.js";
+import {
+  clientSearchThread
+} from "../chunk-5OU6GGD4.js";
+import {
+  CurrentCompanyLabel
+} from "../chunk-XTAH2XJR.js";
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
@@ -210,7 +230,7 @@ import {
 import "../chunk-YKEE5RQG.js";
 import {
   CandidateClientDecision
-} from "../chunk-LZ2XCCEV.js";
+} from "../chunk-NKSQDNLW.js";
 import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";
@@ -315,6 +335,16 @@ export {
   CandidateSuggestedRolesPanel,
   CandidateSummaryBullets,
   CareerDateRange,
+  ClientSearchBriefPanel,
+  ClientSearchCallButton,
+  ClientSearchCallPrompt,
+  ClientSearchConversation,
+  ClientSearchDelivery,
+  ClientSearchLive,
+  ClientSearchNextActions,
+  ClientSearchPage,
+  ClientSearchProgressPanel,
+  ClientSearchQuestion,
   CurrentCompanyLabel,
   CurrentCompanyPopover,
   DocumentList,
@@ -330,6 +360,8 @@ export {
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,
+  clientSearchLabels,
+  clientSearchThread,
   defaultOutreachDraftActions,
   formatFactValue,
   formatFileSize,

@@ -83,7 +83,7 @@
       "name": "recruit-workflows",
       "type": "registry:ui",
       "title": "Recruit UI candidate workflows",
-      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, typed in a dialog or given voice first in a sheet, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message, badged with its version, with the helper that maps a brief's fields onto it) and what each version of it changed, job summary cards, a job's pipeline as a board (a column for each stage, with a move by drag or from each card's menu) and its cards, and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
+      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, typed in a dialog or given voice first in a sheet, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message, badged with its version, with the helper that maps a brief's fields onto it) and what each version of it changed, job summary cards, a job's pipeline as a board (a column for each stage, with a move by drag or from each card's menu) and its cards, a client's view of a search (where it stands, how a sourcing run went, a Yes or No with why on each person, and the whole search page: the conversation that gets the brief ready, then a question to answer, the search under way, what to ask for next, each delivery of people and the brief, with the helper that puts a search's conversation in order), and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
       "dependencies": [
         "@epicbagel/saas-kit@^1.16.0",
         "lucide-react@>=0.400.0 <2"
@@ -174,6 +174,11 @@
         {
           "path": "src/recruit/candidate-channel-actions.tsx",
           "target": "components/recruit-ui/recruit/candidate-channel-actions.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-client-decision.tsx",
+          "target": "components/recruit-ui/recruit/candidate-client-decision.tsx",
           "type": "registry:ui"
         },
         {
@@ -397,6 +402,31 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/chain-of-thought.tsx",
+          "target": "components/recruit-ui/recruit/chain-of-thought.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/client-search-conversation.tsx",
+          "target": "components/recruit-ui/recruit/client-search-conversation.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/client-search-page.tsx",
+          "target": "components/recruit-ui/recruit/client-search-page.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/client-search-sections.tsx",
+          "target": "components/recruit-ui/recruit/client-search-sections.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/client-search-thread.ts",
+          "target": "components/recruit-ui/recruit/client-search-thread.ts",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/current-company-label.tsx",
           "target": "components/recruit-ui/recruit/current-company-label.tsx",
           "type": "registry:ui"
@@ -432,6 +462,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/job-search-progress.tsx",
+          "target": "components/recruit-ui/recruit/job-search-progress.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/job-summary-card.tsx",
           "target": "components/recruit-ui/recruit/job-summary-card.tsx",
           "type": "registry:ui"
@@ -444,6 +479,11 @@
         {
           "path": "src/recruit/pending-action.ts",
           "target": "components/recruit-ui/recruit/pending-action.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/sourcing-trace.tsx",
+          "target": "components/recruit-ui/recruit/sourcing-trace.tsx",
           "type": "registry:ui"
         },
         {

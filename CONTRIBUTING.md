@@ -7,7 +7,7 @@ Before opening a change:
 1. Keep data access, authentication, routing, scoring, status mapping, and persistence outside the package.
 2. Use semantic theme classes and accessible HTML.
 3. Add focused behavior and accessibility tests.
-4. Add registry metadata when a new public entry point is introduced.
+4. Add registry metadata when a new public entry point is introduced, and list every new source file in `registry/recruit-workflows.json`: `pnpm validate:registry` fails on one left out.
 5. Use only explicitly fictional test content. Never paste production data, private links, screenshots, environment files, or credentials.
 6. Run `pnpm verify`.
 

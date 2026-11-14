@@ -31,10 +31,19 @@ export interface CandidateClientDecisionLabels {
   noPlaceholder: string;
   confirmYes: ReactNode;
   confirmNo: ReactNode;
-  /** The dialog's reason label. */
+  /** The dialog's reason label. Defaults to "Why?", or to "Why? (optional)" with `reasonOptional`. */
   reason: ReactNode;
   /** Shown under the buttons when saving fails. */
   failed: ReactNode;
+  /**
+   * The recorded answer where it is only shown (`readOnly`), to someone other
+   * than the client, such as "Said Yes". Optional in the type, like the two
+   * after it, so code that builds this whole object needn't change.
+   */
+  readOnlyYes?: ReactNode;
+  readOnlyNo?: ReactNode;
+  /** A `readOnly` row the client hasn't answered. */
+  unanswered?: ReactNode;
 }
 
 const DEFAULT_LABELS: CandidateClientDecisionLabels = {
@@ -51,6 +60,9 @@ const DEFAULT_LABELS: CandidateClientDecisionLabels = {
   confirmNo: "Save No",
   reason: "Why?",
   failed: "That didn't save. Try again.",
+  readOnlyYes: "Said Yes",
+  readOnlyNo: "Said No",
+  unanswered: "No answer yet",
 };
 
 export interface CandidateClientDecisionProps {
@@ -63,11 +75,25 @@ export interface CandidateClientDecisionProps {
   /**
    * Saves the answer and its reason. The dialog stays open, its buttons
    * disabled, until the promise settles, then closes. When the promise
-   * rejects, the buttons come back with an error line under them.
+   * rejects, the buttons come back with an error line under them. The reason
+   * is an empty string when `reasonOptional` let the client answer without
+   * one.
    */
   onDecide: (decision: CandidateDecisionChoice, reason: string) => Promise<void>;
   /** One-tap reasons for each answer, already worded. */
   suggestions?: { yes?: readonly string[]; no?: readonly string[] };
+  /**
+   * Lets the client answer without a reason: the dialog still asks why, and
+   * saves with none given. The reason is required without it.
+   */
+  reasonOptional?: boolean;
+  /**
+   * Shows the answer and takes none, for someone looking at a client's
+   * shortlist who can't answer for them: the recorded answer in words
+   * (`labels.readOnlyYes`, `labels.readOnlyNo`) with its reason, or
+   * `labels.unanswered`, and no Yes, No or Change. `onDecide` is never called.
+   */
+  readOnly?: boolean;
   labels?: Partial<CandidateClientDecisionLabels>;
 }
 
@@ -77,14 +103,20 @@ export interface CandidateClientDecisionProps {
  *
  * With no answer yet it shows Yes and No as equal buttons; pressing one asks
  * for the reason (`CandidateDecisionReasonDialog`) and only then calls
- * `onDecide`. Once an answer is recorded (`decision`) it shows that answer
- * in words with its reason and a Change control that asks again. The host
- * owns the record: the component saves nothing and marks nothing recorded
- * before `decision` says so.
+ * `onDecide`. The reason is required unless `reasonOptional` lets the answer
+ * be saved without one. Once an answer is recorded (`decision`) it shows that
+ * answer in words with its reason and a Change control that asks again. The
+ * host owns the record: the component saves nothing and marks nothing
+ * recorded before `decision` says so.
+ *
+ * `readOnly` shows the same row to someone who can't answer for the client:
+ * the answer in words with its reason, or that there is none yet, and no
+ * controls.
  *
  * Pass it as `CandidateReviewCard`'s `actions`: its root is a
  * `CandidateReviewActionRow`, marked `data-slot="candidate-client-decision"`
- * with the recorded answer in `data-decision`.
+ * with the recorded answer in `data-decision`, and `data-read-only` on a
+ * read-only row.
  */
 export function CandidateClientDecision({
   candidateName,
@@ -92,6 +124,8 @@ export function CandidateClientDecision({
   reason,
   onDecide,
   suggestions,
+  reasonOptional = false,
+  readOnly = false,
   labels,
 }: CandidateClientDecisionProps) {
   const text = { ...DEFAULT_LABELS, ...labels };
@@ -119,22 +153,30 @@ export function CandidateClientDecision({
       suggestions={asking === "no" ? suggestions?.no : suggestions?.yes}
       placeholder={asking === "no" ? text.noPlaceholder : text.yesPlaceholder}
       confirmLabel={asking === "no" ? text.confirmNo : text.confirmYes}
+      reasonOptional={reasonOptional}
       onSubmit={submit}
       onClose={() => {
         setAsking(null);
         setFailed(false);
       }}
-      labels={{ reason: text.reason }}
+      // The dialog words the field itself ("Why?", or "Why? (optional)")
+      // unless the host has.
+      labels={labels?.reason === undefined ? undefined : { reason: labels.reason }}
     />
   );
 
   // A failed save shows the buttons again, with the error under them.
-  const recorded = decision !== null && !changing && !failed;
+  const recorded = decision !== null && (readOnly || (!changing && !failed));
+  const said =
+    decision === "yes"
+      ? readOnly ? text.readOnlyYes : text.saidYes
+      : readOnly ? text.readOnlyNo : text.saidNo;
 
   return (
     <CandidateReviewActionRow
       data-slot="candidate-client-decision"
       data-decision={decision ?? "none"}
+      data-read-only={readOnly || undefined}
       isolateClicks
     >
       {recorded ? (
@@ -143,7 +185,7 @@ export function CandidateClientDecision({
             <Stack direction="horizontal" gap="sm" align="center">
               <Icon icon={decision === "yes" ? ThumbsUp : ThumbsDown} size="sm" />
               <Text as="span" size="sm" weight="semibold">
-                {decision === "yes" ? text.saidYes : text.saidNo}
+                {said}
               </Text>
             </Stack>
             {reason != null && reason !== "" ? (
@@ -152,10 +194,16 @@ export function CandidateClientDecision({
               </Text>
             ) : null}
           </FlexItem>
-          <Button type="button" variant="ghost" size="sm" onClick={() => setChanging(true)}>
-            {text.change}
-          </Button>
+          {readOnly ? null : (
+            <Button type="button" variant="ghost" size="sm" onClick={() => setChanging(true)}>
+              {text.change}
+            </Button>
+          )}
         </>
+      ) : readOnly ? (
+        <Text size="sm" tone="muted">
+          {text.unanswered}
+        </Text>
       ) : (
         <FlexItem grow minWidth="zero">
           <CandidateDecisionButtons

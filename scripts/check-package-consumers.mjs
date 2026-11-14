@@ -42,6 +42,18 @@ import {
   CandidatePipelineBoard,
   type CandidatePipelineBoardProps,
 } from "@recruiteros/recruit-ui/recruit/candidate-pipeline-board";
+import {
+  ClientSearchConversation,
+  type ClientSearchConversationItem,
+  type ClientSearchTurn,
+} from "@recruiteros/recruit-ui/recruit/client-search-conversation";
+import { ClientSearchPage, type ClientSearchPageProps } from "@recruiteros/recruit-ui/recruit/client-search-page";
+import {
+  ClientSearchDelivery,
+  ClientSearchQuestion,
+  type ClientSearchPerson,
+} from "@recruiteros/recruit-ui/recruit/client-search-sections";
+import { clientSearchThread } from "@recruiteros/recruit-ui/recruit/client-search-thread";
 import { JobBriefChanges, type JobBriefChangesProps } from "@recruiteros/recruit-ui/recruit/job-brief-changes";
 import {
   jobBriefChangeText,
@@ -84,6 +96,28 @@ const board: CandidatePipelineBoardProps<FictionalPerson> = {
   onSearchChange: (term) => void term,
 };
 void board;
+void ClientSearchConversation;
+void ClientSearchDelivery;
+void ClientSearchQuestion;
+const turns: ClientSearchTurn[] = [
+  { id: "t1", from: "client", body: "Fictional brief", createdAt: "2026-01-01T10:00:00Z" },
+  { id: "t2", from: "agency", body: "Fictional reply", createdAt: "2026-01-01T10:01:00Z" },
+];
+const person: ClientSearchPerson = { id: "p1", name: "Fictional Person", decision: "yes", reason: "Fictional reason" };
+// A thread built from the turns alone still fits what the conversation takes.
+const thread: readonly ClientSearchConversationItem[] = clientSearchThread({ turns });
+const searchPage: ClientSearchPageProps = {
+  title: "Fictional role",
+  agentName: "Fictional agency",
+  draft: true,
+  thread,
+  deliveries: [{ id: "d1", title: "Fictional shortlist", people: [person], deliveredAt: "2026-01-02T09:00:00Z" }],
+  onReply: async (words: string, files: File[]) => void [words, files.length],
+  onDecide: async (who, decision, reason) => void [who.id, decision, reason],
+  call: { href: "https://example.com/book" },
+};
+void searchPage;
+void ClientSearchPage;
 `;
 
 try {
@@ -123,6 +157,10 @@ try {
   writeFileSync(
     join(fixtureRoot, "runtime.mjs"),
     `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
+      `if (!recruit.ClientSearchPage || !recruit.ClientSearchConversation || !recruit.ClientSearchDelivery || !recruit.clientSearchThread || !recruit.clientSearchLabels) process.exit(1);\n` +
+      // A search's conversation is put in order outside a client boundary too.
+      `import { clientSearchThread } from "@recruiteros/recruit-ui/recruit/client-search-thread";\n` +
+      `if (clientSearchThread({ turns: [{ id: "t2", createdAt: "2026-01-01T10:01:00Z" }, { id: "t1", createdAt: "2026-01-01T10:00:00Z" }] }).map((item) => item.turn.id).join() !== "t1,t2") process.exit(1);\n` +
       // A brief maps, and its changes and versions are worded, outside a client boundary too.
       `import { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
       `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
@@ -131,6 +169,9 @@ try {
   writeFileSync(
     join(fixtureRoot, "runtime.cjs"),
     `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
+      `if (!recruit.ClientSearchPage || !recruit.ClientSearchConversation || !recruit.ClientSearchDelivery || !recruit.clientSearchThread || !recruit.clientSearchLabels) process.exit(1);\n` +
+      `const { clientSearchThread } = require("@recruiteros/recruit-ui/recruit/client-search-thread");\n` +
+      `if (clientSearchThread({ turns: [{ id: "t2", createdAt: "2026-01-01T10:01:00Z" }, { id: "t1", createdAt: "2026-01-01T10:00:00Z" }] }).map((item) => item.turn.id).join() !== "t1,t2") process.exit(1);\n` +
       `const { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
       `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
       `if (jobBriefVersionLabel({ number: 2, current: false }) !== "v2 · Earlier") process.exit(1);\n`,
