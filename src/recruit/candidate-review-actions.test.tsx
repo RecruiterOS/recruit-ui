@@ -540,6 +540,7 @@ describe("candidate decision reason dialog", () => {
     const field = screen.getByLabelText("Why?");
     expect(field).toHaveAttribute("id", "fictional-reason");
     expect(field).toHaveAttribute("placeholder", "e.g. A fictional reason");
+    expect(field).toBeRequired();
     await user.click(screen.getByText("Outside salary band"));
     await user.click(screen.getByText("Too senior"));
     expect(field).toHaveValue("Outside salary band · Too senior");
@@ -565,5 +566,48 @@ describe("candidate decision reason dialog", () => {
     rerender(<CandidateDecisionReasonDialog {...props} suggestions={[]} open={false} />);
     rerender(<CandidateDecisionReasonDialog {...props} suggestions={[]} open />);
     expect(screen.getByLabelText("Why?")).toHaveValue("");
+  });
+
+  it("goes ahead without a reason where the host makes it optional, and says so on the field", async () => {
+    const user = userEvent.setup();
+    const { onSubmit } = renderDialog({ reasonOptional: true });
+
+    const field = screen.getByLabelText("Why? (optional)");
+    expect(field).not.toBeRequired();
+    const confirm = screen.getByRole("button", { name: "Reject" });
+    expect(confirm).toBeEnabled();
+
+    // No reason is an empty one, never a missing argument.
+    await user.type(field, "   ");
+    await user.click(confirm);
+    expect(onSubmit.mock.calls).toEqual([[""]]);
+
+    // A reason given is still sent, trimmed. Spaces alone are nothing for a
+    // tapped suggestion to be joined onto.
+    await waitFor(() => expect(confirm).toBeEnabled());
+    await user.click(screen.getByText("Too senior"));
+    expect(field).toHaveValue("Too senior");
+    await user.type(field, " ");
+    await user.click(confirm);
+    expect(onSubmit.mock.calls).toEqual([[""], ["Too senior"]]);
+  });
+
+  it("words a decision on several people through its title, confirm label and labels", () => {
+    renderDialog({
+      reasonOptional: true,
+      title: "Reject 3 candidates",
+      confirmLabel: "Reject 3",
+      labels: {
+        suggestions: "Tap a reason (optional), applied to all 3",
+        reason: "Why these 3? (optional)",
+        cancel: "Keep them",
+      },
+    });
+
+    expect(screen.getByRole("dialog", { name: "Reject 3 candidates" })).toBeInTheDocument();
+    expect(screen.getByText("Tap a reason (optional), applied to all 3")).toBeInTheDocument();
+    expect(screen.getByLabelText("Why these 3? (optional)")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Reject 3" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Keep them" })).toBeInTheDocument();
   });
 });

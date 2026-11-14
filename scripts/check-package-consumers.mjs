@@ -34,6 +34,14 @@ import {
   CandidateDecisionBar,
   CandidateProfileDialog,
 } from "@recruiteros/recruit-ui/recruit";
+import {
+  CandidateDecisionReasonSheet,
+  type CandidateDecisionReasonSheetProps,
+} from "@recruiteros/recruit-ui/recruit/candidate-decision-reason-sheet";
+import {
+  CandidatePipelineBoard,
+  type CandidatePipelineBoardProps,
+} from "@recruiteros/recruit-ui/recruit/candidate-pipeline-board";
 import { JobBriefChanges, type JobBriefChangesProps } from "@recruiteros/recruit-ui/recruit/job-brief-changes";
 import {
   jobBriefChangeText,
@@ -54,6 +62,28 @@ const props: JobBriefChangesProps = { changes: [change], version: 2 };
 const words: string = jobBriefChangeText(change) + jobBriefVersionLabel({ number: 2, current: true });
 void props;
 void words;
+void CandidateDecisionReasonSheet;
+const sheet: CandidateDecisionReasonSheetProps = {
+  open: true,
+  decision: "no",
+  reasons: ["Fictional reason"],
+  onConfirm: async (reason?: string) => void reason,
+  onClose: () => undefined,
+};
+void sheet;
+void CandidatePipelineBoard;
+interface FictionalPerson { id: number; name: string; stage: string }
+const board: CandidatePipelineBoardProps<FictionalPerson> = {
+  columns: [{ id: "fictional-stage", title: "Fictional stage", count: 1, tone: "success" }],
+  items: [{ id: 1, name: "Fictional Person", stage: "fictional-stage" }],
+  getId: (person) => person.id,
+  getStage: (person) => person.stage,
+  getName: (person) => person.name,
+  onMove: async (person, toStage) => void [person.id, toStage],
+  searchTerm: "",
+  onSearchChange: (term) => void term,
+};
+void board;
 `;
 
 try {
@@ -92,7 +122,7 @@ try {
 
   writeFileSync(
     join(fixtureRoot, "runtime.mjs"),
-    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges) process.exit(1);\n` +
+    `import * as recruit from "@recruiteros/recruit-ui/recruit";\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
       // A brief maps, and its changes and versions are worded, outside a client boundary too.
       `import { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } from "@recruiteros/recruit-ui/recruit/job-brief-view";\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
       `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
@@ -100,7 +130,7 @@ try {
   );
   writeFileSync(
     join(fixtureRoot, "runtime.cjs"),
-    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges) process.exit(1);\n` +
+    `const recruit = require("@recruiteros/recruit-ui/recruit");\nif (!recruit.CandidateProfileDialog || !recruit.JobBriefChanges || !recruit.CandidateDecisionReasonSheet || !recruit.CandidatePipelineBoard) process.exit(1);\n` +
       `const { jobBriefChangeText, jobBriefVersionLabel, jobBriefView } = require("@recruiteros/recruit-ui/recruit/job-brief-view");\nif (jobBriefView({ roleTitle: "Fictional role" }).title !== "Fictional role") process.exit(1);\n` +
       `if (jobBriefChangeText({ kind: "added", field: "must-have", item: "Fictional skill" }) !== "Added must-have: Fictional skill") process.exit(1);\n` +
       `if (jobBriefVersionLabel({ number: 2, current: false }) !== "v2 · Earlier") process.exit(1);\n`,

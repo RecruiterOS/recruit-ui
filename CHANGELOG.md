@@ -5,6 +5,85 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.24.0
+
+Both new components are built on kit primitives that `@epicbagel/saas-kit`
+1.16.0 already has (`Chat`, `Dialog`, `ResourceList` in board mode), so the
+minimum kit version doesn't move.
+
+### Added
+
+- `CandidateDecisionReasonSheet`: the voice-first "Why?" asked once a
+  reviewer has said Yes or No. It is the kit's `Chat` as a one-shot prompt
+  inside the kit's `Dialog`: speaking the reason is the default, a suggested
+  reason (`reasons`) is one tap, typing is a tap away, and each calls
+  `onConfirm(reason)`. Skip calls it with no reason, unless `reasonRequired`
+  takes Skip away; the close button and Escape call `onClose` and decide
+  nothing. `decision` and `candidateName` only word the defaults ("Why no?",
+  "Skip — just mark No"), which `title`, `subtitle`, `voiceTitle`,
+  `skipLabel` and `labels` replace, so any other question, such as why a
+  candidate declined, is the host's wording with no `decision`. `footer` puts
+  host content over the bottom row, such as a switch that changes what the
+  decision does, and `actions` puts host controls in that row before Skip.
+  While a promise from `onConfirm` is pending the sheet shows `labels.saving`
+  in place of the composer; if it rejects, the composer comes back with the
+  typed or spoken reason and `labels.failed` under it. Dictation runs through
+  the host's `DictationProvider`, as the kit's mic does everywhere, or the
+  browser's speech recognition without one; where neither can run, or with
+  `voice={false}`, the sheet opens on the typed reason. Clicks and key
+  presses inside it never reach a clickable card it is rendered in, it keeps
+  its focus when opened from another dialog, and closing it returns focus to
+  the control that opened it.
+- `CandidatePipelineBoard`: a job's pipeline as a board, with a column for
+  each stage (`columns`: an id, a title and an optional `count` and `tone`)
+  and a card for each person (`items`, `getId`, `getStage`, `getName`).
+  `renderCard(item, stage)` draws a card, by default a
+  `CandidatePipelineCard` with the name that calls `onSelect`. It is the
+  kit's board (`ResourceList` in board mode), which takes the drag and, below
+  768px, shows one stage at a time. The kit moves a card by mouse only, so
+  each card also has a move menu, which is how a keyboard or a touchscreen
+  moves one: over the card's corner and shown on hover or focus where a mouse
+  can hover, and beside the card, always shown, anywhere else, at 44px on a
+  touchscreen. It stands in for the kit's own per-card select on a phone, so
+  there is one move control at every width. `onMove(item, toStage)` may
+  return a promise: the card shows in its new stage while the move saves and
+  goes back if the promise rejects. Once it resolves, the card stays where it
+  was moved until the host says something new about the person, by passing
+  another record for them or changing their stage, and `items` decide from
+  then on: a host that reloads after saving shows no flicker, and the board
+  never keeps a move the host's own data doesn't have. A move is announced to
+  a screen reader (`labels.moved`, `labels.moveFailed`) and focus follows a
+  card moved from its menu. Each column says why it is empty, differently
+  when a search or a filter is narrowing the board (`narrowed`, worked out
+  from `searchTerm` and `filters` when left out); a board holding nobody
+  shows `empty` in place of its columns, `loading` draws skeleton cards and
+  `error` a failed load. The kit's toolbar props (`searchTerm` and
+  `onSearchChange`, `filterSchema`, `filters` and `onFiltersChange`,
+  `quickFilters`, the sort props, `actions` and `filterActions`) pass
+  straight through, each shown only when wired; the board narrows nothing
+  itself, so the host passes the `items` that match. `columnWidth` (`wide`,
+  400px, or `narrow`, 280px) and `height` (`viewport`, each column scrolling
+  under its heading, or `content`) size it, and `columnHeadingLevel` fits its
+  headings to the page's outline. A long name or headline truncates inside
+  its card: in the kit's board alone it widens every card in the column past
+  the column's edge.
+- `CandidateDecisionReasonDialog` takes `reasonOptional`, for a quick
+  decision where a reason helps but mustn't slow it down, such as one on
+  several people at once. The confirm button is then enabled with no reason,
+  `onSubmit` is called with an empty string, and the field's label defaults
+  to "Why? (optional)". Without it nothing changes: the reason is required.
+
+### Changed
+
+- `CandidateDecisionReasonDialog`'s reason field tells a screen reader
+  whether it is required (`aria-required`).
+
+### Fixed
+
+- `CandidateDecisionReasonDialog`: tapping a suggestion after typing only
+  spaces starts the reason with the suggestion. It used to join the
+  suggestion onto the spaces, and submit "· Too senior".
+
 ## 0.23.0
 
 ### Added

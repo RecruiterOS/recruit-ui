@@ -21,7 +21,10 @@ import { useEffect, useId, useState, type ReactNode } from "react";
 export interface CandidateDecisionReasonDialogLabels {
   /** The eyebrow over the suggestion chips. */
   suggestions: ReactNode;
-  /** The reason field's label. */
+  /**
+   * The reason field's label. Defaults to "Why?", or to "Why? (optional)"
+   * with `reasonOptional`.
+   */
   reason: ReactNode;
   cancel: ReactNode;
 }
@@ -32,12 +35,18 @@ const DEFAULT_LABELS: CandidateDecisionReasonDialogLabels = {
   cancel: "Cancel",
 };
 
+/** The field's default label where the decision can be confirmed without a reason. */
+const OPTIONAL_REASON_LABEL = "Why? (optional)";
+
 /** Joins a tapped suggestion onto the reason typed so far. */
 const SUGGESTION_SEPARATOR = " · ";
 
 export interface CandidateDecisionReasonDialogProps {
   open: boolean;
-  /** Names the decision and the candidate, such as "Reject: Mei Tanaka". */
+  /**
+   * Names the decision and who it is about, such as "Reject: Mei Tanaka", or
+   * "Reject 12 candidates" for a decision on several people at once.
+   */
   title: ReactNode;
   /** One-tap reasons, already worded. Tapping one adds it to the reason. */
   suggestions?: readonly string[];
@@ -46,9 +55,16 @@ export interface CandidateDecisionReasonDialogProps {
   /** `destructive` for a rejection, `default` to move forward. */
   confirmTone?: "default" | "destructive";
   /**
-   * Called with the trimmed reason. The confirm button shows a spinner and
-   * the dialog's buttons stay disabled until it settles; the host closes the
-   * dialog once the decision is saved.
+   * Lets the decision be confirmed with no reason, for a quick decision
+   * where a reason helps but mustn't slow it down, such as one on several
+   * people at once. The reason is required without it.
+   */
+  reasonOptional?: boolean;
+  /**
+   * Called with the trimmed reason, which is an empty string when
+   * `reasonOptional` let the person confirm without one. The confirm button
+   * shows a spinner and the dialog's buttons stay disabled until it settles;
+   * the host closes the dialog once the decision is saved.
    */
   onSubmit: (reason: string) => Promise<void>;
   /** Called from Cancel, Escape and the close button. */
@@ -59,12 +75,15 @@ export interface CandidateDecisionReasonDialogProps {
 }
 
 /**
- * Asks why before a decision on a candidate is recorded: a required reason,
- * optionally started from one-tap suggestions.
+ * Asks why before a decision is recorded, on one candidate or on several: a
+ * typed reason, optionally started from one-tap suggestions. The reason is
+ * required unless `reasonOptional` says the decision can go ahead without
+ * one.
  *
  * The reason resets each time the dialog opens. The host owns the decision,
- * its wording and what is saved; the root is the kit's dialog content and
- * keeps its `data-slot="dialog-content"`.
+ * its wording (the title, the confirm label and `labels`) and what is saved;
+ * the root is the kit's dialog content and keeps its
+ * `data-slot="dialog-content"`.
  */
 export function CandidateDecisionReasonDialog(props: CandidateDecisionReasonDialogProps) {
   // Only generate an id when the host has not supplied one, so a host id
@@ -88,12 +107,18 @@ function ReasonDialog({
   placeholder,
   confirmLabel,
   confirmTone = "default",
+  reasonOptional = false,
   onSubmit,
   onClose,
   labels,
   id,
 }: CandidateDecisionReasonDialogProps & { id: string }) {
-  const text = { ...DEFAULT_LABELS, ...labels };
+  const text = {
+    ...DEFAULT_LABELS,
+    // The field says so itself where it can be left empty.
+    ...(reasonOptional ? { reason: OPTIONAL_REASON_LABEL } : null),
+    ...labels,
+  };
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -133,7 +158,10 @@ function ReasonDialog({
                     weight="normal"
                     interactive
                     onClick={() =>
-                      setReason((current) => (current ? `${current}${SUGGESTION_SEPARATOR}${suggestion}` : suggestion))
+                      // Spaces alone are no reason to join the suggestion onto.
+                      setReason((current) =>
+                        current.trim() ? `${current}${SUGGESTION_SEPARATOR}${suggestion}` : suggestion,
+                      )
                     }
                   >
                     {suggestion}
@@ -152,6 +180,7 @@ function ReasonDialog({
               onChange={(event) => setReason(event.target.value)}
               rows={3}
               placeholder={placeholder}
+              aria-required={!reasonOptional}
               autoFocus
             />
           </Stack>
@@ -162,7 +191,7 @@ function ReasonDialog({
           </Button>
           <Button
             onClick={submit}
-            disabled={submitting || reason.trim().length === 0}
+            disabled={submitting || (!reasonOptional && reason.trim().length === 0)}
             variant={confirmTone}
           >
             {submitting ? <Icon icon={Loader2} size="md" spin /> : null}
