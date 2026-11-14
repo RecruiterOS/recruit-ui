@@ -30,6 +30,8 @@ export interface CandidateDecisionButtonsProps
   size?: "sm" | "default";
   /** Share the available width between the two buttons, as in an action bar. */
   stretch?: boolean;
+  /** Holds both buttons, such as while the page they sit on is loading someone else. */
+  disabled?: boolean;
   labels?: Partial<CandidateDecisionButtonsLabels>;
   /**
    * Rendered inside the group after the buttons, usually the host's reason
@@ -53,6 +55,7 @@ export function CandidateDecisionButtons({
   onChoose,
   size = "sm",
   stretch = false,
+  disabled = false,
   labels,
   children,
   onClick,
@@ -72,10 +75,10 @@ export function CandidateDecisionButtons({
         onClick?.(event);
       }}
     >
-      <Button grow={stretch} size={size} variant="outline" onClick={() => onChoose("yes")}>
+      <Button grow={stretch} size={size} variant="outline" disabled={disabled} onClick={() => onChoose("yes")}>
         <Icon icon={ThumbsUp} size="sm" /> {text.yes}
       </Button>
-      <Button grow={stretch} size={size} variant="outline" onClick={() => onChoose("no")}>
+      <Button grow={stretch} size={size} variant="outline" disabled={disabled} onClick={() => onChoose("no")}>
         <Icon icon={ThumbsDown} size="sm" /> {text.no}
       </Button>
       {children}

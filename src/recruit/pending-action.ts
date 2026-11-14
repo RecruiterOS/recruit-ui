@@ -48,3 +48,47 @@ export function usePendingAction(action: (() => unknown) | undefined) {
   const [pending, run] = usePendingCall(action);
   return [pending, () => run()] as const;
 }
+
+/**
+ * Runs a host callback and follows what it returns, for a control that
+ * says so when the call fails: `pendingArgs` holds what the latest call
+ * passed while its promise is pending, and `failure` what that promise
+ * rejected with, or what the callback threw, until the next call. Only the
+ * latest call settles the state.
+ */
+export function useLatestCall<TArgs extends unknown[]>(
+  action: ((...args: TArgs) => unknown) | undefined,
+) {
+  const [pendingArgs, setPendingArgs] = useState<TArgs | null>(null);
+  const [failure, setFailure] = useState<{ cause: unknown } | null>(null);
+  const latest = useRef(0);
+  const run = (...args: TArgs) => {
+    if (!action) return;
+    const call = ++latest.current;
+    setFailure(null);
+    let result: unknown;
+    try {
+      result = action(...args);
+    } catch (cause) {
+      setPendingArgs(null);
+      setFailure({ cause });
+      return;
+    }
+    if (!isPromiseLike(result)) {
+      setPendingArgs(null);
+      return;
+    }
+    setPendingArgs(args);
+    void Promise.resolve(result).then(
+      () => {
+        if (latest.current === call) setPendingArgs(null);
+      },
+      (cause: unknown) => {
+        if (latest.current !== call) return;
+        setPendingArgs(null);
+        setFailure({ cause });
+      },
+    );
+  };
+  return { pendingArgs, failure, run };
+}

@@ -17,6 +17,8 @@ interface CandidateDecisionButtonsProps extends Omit<HTMLAttributes<HTMLElement>
     size?: "sm" | "default";
     /** Share the available width between the two buttons, as in an action bar. */
     stretch?: boolean;
+    /** Holds both buttons, such as while the page they sit on is loading someone else. */
+    disabled?: boolean;
     labels?: Partial<CandidateDecisionButtonsLabels>;
     /**
      * Rendered inside the group after the buttons, usually the host's reason
@@ -35,6 +37,6 @@ interface CandidateDecisionButtonsProps extends Omit<HTMLAttributes<HTMLElement>
  * inside a clickable candidate card. The root is marked
  * `data-slot="candidate-decision-buttons"`.
  */
-declare function CandidateDecisionButtons({ onChoose, size, stretch, labels, children, onClick, ...props }: CandidateDecisionButtonsProps): react.JSX.Element;
+declare function CandidateDecisionButtons({ onChoose, size, stretch, disabled, labels, children, onClick, ...props }: CandidateDecisionButtonsProps): react.JSX.Element;
 
 export { CandidateDecisionButtons, type CandidateDecisionButtonsLabels, type CandidateDecisionButtonsProps, type CandidateDecisionChoice };

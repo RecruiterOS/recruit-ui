@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 
@@ -252,5 +252,99 @@ describe("candidate client decision", () => {
   it("marks no row read-only unless asked", () => {
     const { container } = render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={vi.fn()} />);
     expect(container.querySelector("[data-slot=candidate-client-decision]")).not.toHaveAttribute("data-read-only");
+  });
+
+  it("holds its controls without hiding them where the host says to", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockResolvedValue(undefined);
+    const { rerender } = render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} disabled />);
+
+    for (const name of ["Yes", "No"]) expect(screen.getByRole("button", { name })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    // A recorded answer still shows, and can't be changed for now.
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" decision="yes" onDecide={onDecide} disabled />);
+    expect(screen.getByText("You said Yes")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Change" })).toBeDisabled();
+
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" decision="yes" onDecide={onDecide} />);
+    expect(screen.getByRole("button", { name: "Change" })).toBeEnabled();
+    expect(onDecide).not.toHaveBeenCalled();
+  });
+
+  it("holds the buttons while a save is on its way with the dialog closed, and says if it then fails", async () => {
+    const user = userEvent.setup();
+    let fail: (cause: Error) => void = () => undefined;
+    const onDecide = vi.fn(() => new Promise<void>((_resolve, reject) => { fail = reject; }));
+    render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} reasonOptional />);
+
+    await user.click(screen.getByRole("button", { name: "No" }));
+    await user.click(screen.getByRole("button", { name: "Save No" }));
+    // Escape still closes a dialog whose save is slow.
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    // A second answer can't be started on top of the first.
+    for (const name of ["Yes", "No"]) expect(screen.getByRole("button", { name })).toBeDisabled();
+
+    await act(async () => fail(new Error("offline")));
+    expect(screen.getByRole("alert")).toHaveTextContent("That didn't save. Try again.");
+    for (const name of ["Yes", "No"]) expect(screen.getByRole("button", { name })).toBeEnabled();
+    expect(onDecide).toHaveBeenCalledTimes(1);
+  });
+
+  it("drops a reason being asked for when the host holds the row", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockResolvedValue(undefined);
+    const { rerender } = render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} />);
+
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    expect(screen.getByRole("dialog", { name: "Yes to Mei Tanaka" })).toBeInTheDocument();
+
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} disabled />);
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(onDecide).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("is a review card's inset row under a keyline, or sits flush where a container pads it", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockResolvedValue(undefined);
+    const onCard = vi.fn();
+    const { container, rerender } = render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} />);
+
+    const root = () => container.querySelector("[data-slot=candidate-client-decision]") as HTMLElement;
+    const padded = /(^|\s)p[xytb]?-/;
+    // The action row: inset, with its controls under a rule.
+    expect(root().tagName).toBe("SECTION");
+    expect(root().className).toMatch(padded);
+    expect(root().querySelector("[data-slot=candidate-review-action-row-controls]")).toHaveClass("border-t");
+
+    rerender(
+      <div onClick={onCard}>
+        <CandidateClientDecision
+          candidateName="Mei Tanaka"
+          decision="no"
+          reason="Fictional reason"
+          onDecide={onDecide}
+          padding="none"
+        />
+      </div>,
+    );
+    // Flush: the same marks on a plain row, with no inset and no rule.
+    expect(root()).toHaveAttribute("data-decision", "no");
+    expect(root().className).not.toMatch(padded);
+    expect(root().className).not.toContain("border-t");
+    expect(container.querySelector("[data-slot=candidate-review-action-row-controls]")).toBeNull();
+    expect(screen.getByText("You said No")).toBeInTheDocument();
+    expect(screen.getByText("Fictional reason")).toBeInTheDocument();
+
+    // It asks and saves as the row does, and still keeps its clicks from a card.
+    await user.click(screen.getByRole("button", { name: "Change" }));
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    await user.type(within(screen.getByRole("dialog", { name: "Yes to Mei Tanaka" })).getByRole("textbox"), "Fictional reason");
+    await user.click(screen.getByRole("button", { name: "Save Yes" }));
+    expect(onDecide.mock.calls).toEqual([["yes", "Fictional reason"]]);
+    expect(onCard).not.toHaveBeenCalled();
   });
 });

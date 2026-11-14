@@ -99,9 +99,11 @@ function descriptionParts(description: string): string[] {
 function CareerDescription({ description }: { description: ReactNode }) {
   const [expanded, setExpanded] = useState(false);
 
+  // The muted tone, as a bulleted description below has: the fainter
+  // `subtle` falls under the contrast body text needs.
   if (typeof description !== "string") {
     return (
-      <Text as="div" variant="caption" size="xs" tone="subtle">
+      <Text as="div" variant="caption" size="xs" tone="muted">
         {description}
       </Text>
     );
@@ -131,7 +133,7 @@ function CareerDescription({ description }: { description: ReactNode }) {
         <Text
           variant="caption"
           size="xs"
-          tone="subtle"
+          tone="muted"
           lineClamp={!expanded && hasMore ? 3 : undefined}
         >
           {trimmed}
@@ -157,11 +159,13 @@ function CareerRole({
   detailed,
   locale,
   presentLabel,
+  titleLevel,
 }: {
   item: CareerHistoryItem;
   detailed: boolean;
   locale: string;
   presentLabel: ReactNode;
+  titleLevel: CareerHistoryTitleLevel;
 }) {
   const date = item.dateRange ?? (
     <CareerDateRange
@@ -176,7 +180,10 @@ function CareerRole({
 
   return (
     <Stack gap="xs" minWidth="zero">
-      <Heading level={5}>{item.title}</Heading>
+      {/* The level-5 look at every level: only the tag changes. */}
+      <Heading level={5} as={`h${titleLevel}` as const}>
+        {item.title}
+      </Heading>
       {item.company != null || hasDate ? (
         <Text variant="caption" size="xs">
           {item.company}
@@ -191,6 +198,9 @@ function CareerRole({
   );
 }
 
+/** The heading level of a role's title in a career history. */
+export type CareerHistoryTitleLevel = 3 | 4 | 5 | 6;
+
 export interface CandidateCareerHistoryTimelineProps {
   items: readonly CareerHistoryItem[];
   loading?: boolean;
@@ -204,6 +214,13 @@ export interface CandidateCareerHistoryTimelineProps {
   presentLabel?: ReactNode;
   detailedCompanyGroups?: number;
   locale?: string;
+  /**
+   * The heading level of each role's title: 5 (the default), or 3, 4 or 6
+   * to sit one under whatever heads the history, so a page's outline skips
+   * no level. Only the tag changes: a title looks the same at every level.
+   * When it is given, the "Earlier" label is said at the same level.
+   */
+  titleLevel?: CareerHistoryTitleLevel;
   className?: string;
 }
 
@@ -217,8 +234,10 @@ export function CandidateCareerHistoryTimeline({
   presentLabel = "Present",
   detailedCompanyGroups = 2,
   locale = "en",
+  titleLevel: askedLevel,
   className,
 }: CandidateCareerHistoryTimelineProps) {
+  const titleLevel = askedLevel ?? 5;
   if (loading && items.length === 0) {
     return (
       <Stack data-slot="candidate-career-history-loading" gap="compact" className={className}>
@@ -258,13 +277,16 @@ export function CandidateCareerHistoryTimeline({
             detailed
             locale={locale}
             presentLabel={presentLabel}
+            titleLevel={titleLevel}
           />
         ))}
       </Stack>
       {earlierItems.length > 0 ? (
         <Stack gap="md">
           <Separator />
-          <SectionHeader label={earlierLabel} spacing="none" />
+          {/* The kit's header is an h3. Where a level was asked for, it is
+              said at the roles' own, so it never outranks what heads them. */}
+          <SectionHeader label={earlierLabel} spacing="none" aria-level={askedLevel} />
           <List spacing="normal">
             {earlierItems.map((item, index) => (
               <ListItem key={index}>
@@ -273,6 +295,7 @@ export function CandidateCareerHistoryTimeline({
                   detailed={false}
                   locale={locale}
                   presentLabel={presentLabel}
+                  titleLevel={titleLevel}
                 />
               </ListItem>
             ))}

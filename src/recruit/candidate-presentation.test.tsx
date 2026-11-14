@@ -221,6 +221,48 @@ describe("candidate presentation", () => {
     expect(screen.getByRole("button", { name: "Show less" })).toBeInTheDocument();
   });
 
+  it("puts each role's title at the heading level asked for, looking the same", () => {
+    const items = [
+      { title: "Lead Example Role", company: "Fictional North" },
+      { title: "Example Role", company: "Fictional South" },
+      { title: "Earlier Example Role", company: "Fictional West" },
+    ];
+    const { rerender } = render(<CandidateCareerHistoryTimeline items={items} />);
+    // An h5 unless told otherwise, as it has always been.
+    const look = screen.getByRole("heading", { level: 5, name: "Lead Example Role" }).className;
+    expect(screen.getAllByRole("heading", { level: 5 })).toHaveLength(3);
+
+    // Under an h2 that heads the history, an h3: the outline skips no level.
+    rerender(<CandidateCareerHistoryTimeline items={items} titleLevel={3} />);
+    expect(screen.queryByRole("heading", { level: 5 })).toBeNull();
+    for (const name of ["Lead Example Role", "Example Role", "Earlier Example Role"]) {
+      expect(screen.getByRole("heading", { level: 3, name }).className).toBe(look);
+    }
+  });
+
+  it("sets a role's description in a tone that can be read, bulleted or not", () => {
+    render(
+      <CandidateCareerHistoryTimeline
+        items={[
+          { title: "Lead Example Role", company: "Fictional North", description: "One fictional paragraph." },
+          { title: "Example Role", company: "Fictional South", description: "First point\nSecond point" },
+          { title: "Third Example Role", company: "Fictional East", description: <em>Host-drawn fictional description</em> },
+        ]}
+        detailedCompanyGroups={3}
+      />,
+    );
+
+    // A paragraph, a host's own node and a bulleted list share one tone: the
+    // fainter one fell under the contrast body text needs.
+    const paragraph = screen.getByText("One fictional paragraph.");
+    const drawn = screen.getByText("Host-drawn fictional description").parentElement!;
+    const list = screen.getByText("First point").closest("ul")!;
+    for (const element of [paragraph, drawn, list]) {
+      expect(element).toHaveClass("text-muted-foreground");
+      expect(element.className).not.toContain("text-muted-foreground/");
+    }
+  });
+
   it("draws evidence, caveats and signals from items in the package's own lists", () => {
     render(
       <CandidateAssessment

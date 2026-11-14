@@ -8,6 +8,7 @@ import { CandidateReviewFact } from './candidate-review-card.js';
 import { JobBriefContent, JobBriefViewOptions } from './job-brief-view.js';
 import { JobSearchStep, JobSearchProgressLabels } from './job-search-progress.js';
 import { SourcingTraceStep, SourcingTraceLabels } from './sourcing-trace.js';
+import './candidate-decision-reason-sheet.js';
 
 /**
  * The fixed words of a client's search page, and of each section of it. A

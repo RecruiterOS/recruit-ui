@@ -7,8 +7,12 @@ type CandidateNotePinned = NotePinned;
 type CandidateNoteScope = NoteScope;
 type CandidateNoteCardLabels = NoteCardLabels;
 type CandidateNoteCardProps = NoteCardProps;
-/** The existing five-label contract remains valid for current consumers. */
-type CandidateNoteComposerLabels = Pick<NoteComposerLabels, "voice" | "type" | "placeholder" | "cancel" | "submit">;
+/**
+ * The composer's wording. `input` names the text field to a screen reader
+ * and `error` is the line under a note that didn't save; the five labels
+ * before them are the ones hosts have always passed.
+ */
+type CandidateNoteComposerLabels = Pick<NoteComposerLabels, "voice" | "type" | "placeholder" | "cancel" | "submit" | "input" | "error">;
 interface CandidateNoteComposerProps extends Omit<NoteComposerProps, "labels"> {
     labels?: Partial<CandidateNoteComposerLabels>;
 }

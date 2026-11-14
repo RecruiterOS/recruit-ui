@@ -1,7 +1,8 @@
 "use client";
 import {
   CandidateFilterChips
-} from "../chunk-D6X6QQ7K.js";
+} from "../chunk-TBFQMGTL.js";
+import "../chunk-P5VLMURO.js";
 import "../chunk-YKEE5RQG.js";
 export {
   CandidateFilterChips

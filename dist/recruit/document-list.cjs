@@ -5,11 +5,11 @@
 
 
 
-var _chunkXY2SKBYScjs = require('../chunk-XY2SKBYS.cjs');
-require('../chunk-GVQPJCZ6.cjs');
+var _chunkAGGMKDXHcjs = require('../chunk-AGGMKDXH.cjs');
+require('../chunk-X6GX3U3X.cjs');
 
 
 
 
 
-exports.DocumentList = _chunkXY2SKBYScjs.DocumentList; exports.DocumentListItem = _chunkXY2SKBYScjs.DocumentListItem; exports.DocumentUploadPanel = _chunkXY2SKBYScjs.DocumentUploadPanel; exports.formatFileSize = _chunkXY2SKBYScjs.formatFileSize;
+exports.DocumentList = _chunkAGGMKDXHcjs.DocumentList; exports.DocumentListItem = _chunkAGGMKDXHcjs.DocumentListItem; exports.DocumentUploadPanel = _chunkAGGMKDXHcjs.DocumentUploadPanel; exports.formatFileSize = _chunkAGGMKDXHcjs.formatFileSize;

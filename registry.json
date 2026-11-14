@@ -83,7 +83,7 @@
       "name": "recruit-workflows",
       "type": "registry:ui",
       "title": "Recruit UI candidate workflows",
-      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, typed in a dialog or given voice first in a sheet, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message, badged with its version, with the helper that maps a brief's fields onto it) and what each version of it changed, job summary cards, a job's pipeline as a board (a column for each stage, with a move by drag or from each card's menu) and its cards, a client's view of a search (where it stands, how a sourcing run went, a Yes or No with why on each person, and the whole search page: the conversation that gets the brief ready, then a question to answer, the search under way, what to ask for next, each delivery of people and the brief, with the helper that puts a search's conversation in order), and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
+      "description": "Slot-driven candidate review, profile, assessment, decision, contact and destination compositions, shortlists and the sender's note over one, review-card actions (decisions and their reasons, typed in a dialog or given voice first in a sheet, stage moves, notes and batch selection), relationship cards with their signals and suggested roles, call cards (a person's linked calls, matched calls and calls awaiting a person), a person's activity timeline and the links that reach them, a person's detail pane (its header, tabs, decision summary, role evidence, notes, facts, contact details, outreach drafting and drafted messages, and pipeline rows), document lists with their upload panel, a voice note recorder for presenting a person, a popover that adds people to a job, a job's brief (its facts, must-have, nice-to-have and red-flag lists and further sections, editable in place, as a collapsible page section or a preview that opens in a message, badged with its version, with the helper that maps a brief's fields onto it) and what each version of it changed, job summary cards, a job's pipeline as a board (a column for each stage, with a move by drag or from each card's menu) and its cards, a client's view of a search (where it stands, how a sourcing run went, a Yes or No with why on each person, and the whole search page: the conversation that gets the brief ready, then a question to answer, the search under way, what to ask for next, each delivery of people and the brief, with the helper that puts a search's conversation in order), a candidate's shared profile (the content of the page a link to a candidate opens: who they are, what whoever shared them says, how well they fit, their career, and the reader's Yes or No and notes, with a switcher between the people one link shares, an anonymised mode and a print layout) and the dialog that makes that link (who it is for, whether it names the person, a note, then the link with Copy), and the list controls around them. Needs a shadcn project on Radix UI (a radix-* style; start one with `shadcn init --base radix --preset nova`): with a Base UI style the CLI rewrites asChild and the files fail tsc.",
       "dependencies": [
         "@epicbagel/saas-kit@^1.16.0",
         "lucide-react@>=0.400.0 <2"
@@ -357,8 +357,23 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/candidate-share-dialog.tsx",
+          "target": "components/recruit-ui/recruit/candidate-share-dialog.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/candidate-shared-profile-button.tsx",
           "target": "components/recruit-ui/recruit/candidate-shared-profile-button.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-shared-profile-sections.tsx",
+          "target": "components/recruit-ui/recruit/candidate-shared-profile-sections.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/candidate-shared-profile.tsx",
+          "target": "components/recruit-ui/recruit/candidate-shared-profile.tsx",
           "type": "registry:ui"
         },
         {
@@ -407,6 +422,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/choice-chips.tsx",
+          "target": "components/recruit-ui/recruit/choice-chips.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/client-search-conversation.tsx",
           "target": "components/recruit-ui/recruit/client-search-conversation.tsx",
           "type": "registry:ui"
@@ -434,6 +454,11 @@
         {
           "path": "src/recruit/current-company-popover.tsx",
           "target": "components/recruit-ui/recruit/current-company-popover.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/dictation-support.ts",
+          "target": "components/recruit-ui/recruit/dictation-support.ts",
           "type": "registry:ui"
         },
         {
@@ -479,6 +504,11 @@
         {
           "path": "src/recruit/pending-action.ts",
           "target": "components/recruit-ui/recruit/pending-action.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/shared-profile-attributes.ts",
+          "target": "components/recruit-ui/recruit/shared-profile-attributes.ts",
           "type": "registry:ui"
         },
         {

@@ -1,7 +1,7 @@
 "use client";
 import {
   CandidateDecisionButtons
-} from "../chunk-YAL7V43Q.js";
+} from "../chunk-2LWKIODP.js";
 export {
   CandidateDecisionButtons
 };
