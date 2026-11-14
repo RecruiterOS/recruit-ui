@@ -14,6 +14,7 @@ import {
   FieldTitle
 } from "@epicbagel/saas-kit/primitives/field";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Grid } from "@epicbagel/saas-kit/primitives/grid";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Input } from "@epicbagel/saas-kit/primitives/input";
 import { RadioGroup, RadioGroupItem } from "@epicbagel/saas-kit/primitives/radio-group";
@@ -33,7 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@epicbagel/saas-kit/pr
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { Textarea } from "@epicbagel/saas-kit/primitives/textarea";
 import { Check, Copy, Link2, Loader2 } from "lucide-react";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var candidateShareDialogLabels = Object.freeze({
   title: (name) => `Share ${name}`,
@@ -71,6 +72,14 @@ function candidateShareLinkText(url, maxLength = 36) {
 }
 var NO_AUDIENCES = [];
 var INACTIVE_PANEL = "data-[state=inactive]:hidden";
+var WRAP = "[overflow-wrap:anywhere]";
+var DESKTOP_HEIGHT = "data-[slot=dialog-content]:max-h-[calc(100dvh-2rem)]";
+var DESKTOP_CLOSE_ROOM = "data-[slot=dialog-header]:pe-12";
+var HEADER = `${DESKTOP_CLOSE_ROOM} ${WRAP}`;
+var TITLE_LINES = "leading-snug";
+var BESIDE_A_FACE = "text-start";
+var BODY_END = "pb-4";
+var useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 function present(value) {
   return value != null && value !== false && value !== "";
 }
@@ -136,6 +145,8 @@ function ShareDialogSession({
   noteMaxLength,
   recorder,
   defaultNoteFormat = "voice",
+  noteFormat: heldNoteFormat,
+  onNoteFormatChange,
   choices: heldChoices,
   defaultChoices,
   onChoicesChange,
@@ -155,11 +166,17 @@ function ShareDialogSession({
   const [sharing, setSharing] = useState(false);
   const [failure, setFailure] = useState(null);
   const [copy, setCopy] = useState("idle");
-  const [noteFormat, setNoteFormat] = useState(defaultNoteFormat);
+  const [ownNoteFormat, setOwnNoteFormat] = useState(defaultNoteFormat);
+  const noteFormat = heldNoteFormat ?? ownNoteFormat;
   const inFlight = useRef(false);
   const mounted = useRef(true);
   const copyButton = useRef(null);
   const linkField = useRef(null);
+  const voiceSide = useRef(null);
+  const writtenSide = useRef(null);
+  const voiceTab = useRef(null);
+  const writtenTab = useRef(null);
+  const problem = useRef(null);
   useEffect(() => {
     mounted.current = true;
     return () => {
@@ -179,12 +196,27 @@ function ShareDialogSession({
     linkField.current?.focus();
     linkField.current?.select();
   }, [copy]);
+  useBrowserLayoutEffect(() => {
+    const hidden = noteFormat === "written" ? voiceSide.current : writtenSide.current;
+    if (hidden?.contains(document.activeElement)) {
+      (noteFormat === "written" ? writtenTab : voiceTab).current?.focus();
+    }
+  }, [noteFormat]);
+  const failed = failure !== null || present(error);
+  useEffect(() => {
+    if (failed) problem.current?.scrollIntoView?.({ block: "nearest" });
+  }, [failed, failure]);
   const link = madeLink ?? (url?.trim() || null);
   const result = madeLink !== null || onShare == null && link !== null;
   const audience = audiences.find((candidate) => candidate.id === choices.audience);
   const taken = audience?.live === true && link === null;
   const waiting = present(waitingFor);
   const canShare = onShare != null && !waiting && !taken && audience?.ready !== false;
+  const switchNoteFormat = (next) => {
+    if (next === noteFormat) return;
+    setOwnNoteFormat(next);
+    onNoteFormatChange?.(next);
+  };
   const change = (patch) => {
     const next = { ...choices, ...patch };
     setOwnChoices(next);
@@ -240,6 +272,7 @@ function ShareDialogSession({
   const linkTitleId = `${id}-link`;
   const noteDescribed = present(text.noteDescription);
   const said = copy === "refused" ? text.copyFailed : copy === "copied" ? text.linkCopied : result ? text.ready : "";
+  const saidInView = result || copy === "refused";
   const noteField = /* @__PURE__ */ jsxs(Stack, { gap: "xs", children: [
     /* @__PURE__ */ jsx(
       Textarea,
@@ -248,16 +281,16 @@ function ShareDialogSession({
         "aria-describedby": noteDescribed ? noteDescriptionId : void 0,
         value: choices.note,
         onChange: (event) => change({ note: event.target.value }),
-        rows: 4,
+        rows: 3,
         maxLength: noteMaxLength,
         placeholder: text.notePlaceholder,
         disabled: sharing
       }
     ),
-    noteDescribed ? /* @__PURE__ */ jsx(Text, { id: noteDescriptionId, size: "sm", tone: "muted", children: text.noteDescription }) : null
+    noteDescribed ? /* @__PURE__ */ jsx(Text, { id: noteDescriptionId, size: "sm", tone: "muted", leading: "snug", children: text.noteDescription }) : null
   ] });
-  const linkBlock = link !== null ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-link", gap: "none", children: [
-    /* @__PURE__ */ jsx(SectionHeader, { id: linkTitleId, label: text.link }),
+  const linkBlock = link !== null ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-link", gap: "sm", children: [
+    /* @__PURE__ */ jsx(SectionHeader, { id: linkTitleId, label: text.link, spacing: "none" }),
     /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", surface: "muted", radius: "lg", padding: "control", children: [
       /* @__PURE__ */ jsx(Icon, { icon: Link2, size: "md", tone: "muted" }),
       /* @__PURE__ */ jsx(FlexItem, { grow: true, minWidth: "zero", children: copy === "refused" ? /* @__PURE__ */ jsx(
@@ -288,114 +321,149 @@ function ShareDialogSession({
       )
     ] })
   ] }) : null;
-  return /* @__PURE__ */ jsx(ResponsiveDialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs(ResponsiveDialogContent, { ...described ? {} : { "aria-describedby": void 0 }, children: [
-    /* @__PURE__ */ jsxs(ResponsiveDialogHeader, { children: [
-      /* @__PURE__ */ jsx(ResponsiveDialogTitle, { children: text.title(candidateName) }),
-      described ? /* @__PURE__ */ jsx(ResponsiveDialogDescription, { children: text.description }) : null
-    ] }),
-    /* @__PURE__ */ jsx(ResponsiveDialogBody, { "data-slot": "candidate-share-dialog", "data-view": result ? "result" : "compose", children: /* @__PURE__ */ jsxs(Stack, { gap: "lg", className: "[overflow-wrap:anywhere]", children: [
-      present(avatar) || present(headline) || present(reason) ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-summary", gap: "md", children: [
-        /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "center", children: [
-          avatar,
-          /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
-            /* @__PURE__ */ jsx(Text, { size: "sm", weight: "semibold", truncate: true, children: candidateName }),
-            present(headline) ? /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", truncate: true, children: headline }) : null
-          ] })
-        ] }),
-        present(reason) ? /* @__PURE__ */ jsxs(Stack, { gap: "xs", children: [
-          /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", children: text.reason }),
-          /* @__PURE__ */ jsx(Text, { size: "sm", children: reason })
-        ] }) : null
-      ] }) : null,
-      result ? null : /* @__PURE__ */ jsxs(Fragment, { children: [
-        audiences.length > 0 && choices.audience !== void 0 ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-audience", gap: "sm", children: [
-          /* @__PURE__ */ jsx(SectionHeader, { id: audienceTitleId, label: text.audience, spacing: "none" }),
-          /* @__PURE__ */ jsx(
-            ChoiceChips,
-            {
-              "aria-labelledby": audienceTitleId,
-              chips: audiences.map((candidate) => ({
-                id: candidate.id,
-                label: candidate.label,
-                trailing: candidate.live ? /* @__PURE__ */ jsx(Badge, { as: "span", variant: "success", size: "micro", children: text.liveBadge }) : void 0
-              })),
-              value: choices.audience,
-              disabled: sharing,
-              onChange: (next) => change({ audience: next })
-            }
-          ),
-          taken ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: present(audience?.liveDescription) ? audience?.liveDescription : text.live }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-            present(audience?.description) ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: audience?.description }) : null,
-            audience?.fields
-          ] })
-        ] }) : null,
-        anonymisable && !taken ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-visibility", gap: "sm", children: [
-          /* @__PURE__ */ jsx(SectionHeader, { id: visibilityTitleId, label: text.visibility, spacing: "none" }),
-          /* @__PURE__ */ jsx(
-            RadioGroup,
-            {
-              "aria-labelledby": visibilityTitleId,
-              value: choices.anonymised ? "anonymised" : "named",
-              onValueChange: (next) => change({ anonymised: next === "anonymised" }),
-              disabled: sharing,
-              children: ["named", "anonymised"].map((option) => (
-                // The label makes the whole card the target. The radio
-                // is named by the title and described by the line under
-                // it outright, not left to how a browser reads a label
-                // that wraps a group.
-                /* @__PURE__ */ jsx(FieldLabel, { htmlFor: `${id}-${option}`, children: /* @__PURE__ */ jsxs(Field, { orientation: "horizontal", children: [
-                  /* @__PURE__ */ jsxs(FieldContent, { children: [
-                    /* @__PURE__ */ jsx(FieldTitle, { id: `${id}-${option}-title`, children: option === "named" ? text.named : text.anonymised }),
-                    /* @__PURE__ */ jsx(FieldDescription, { id: `${id}-${option}-description`, children: option === "named" ? text.namedDescription : text.anonymisedDescription })
-                  ] }),
-                  /* @__PURE__ */ jsx(
-                    RadioGroupItem,
-                    {
-                      value: option,
-                      id: `${id}-${option}`,
-                      "aria-labelledby": `${id}-${option}-title`,
-                      "aria-describedby": `${id}-${option}-description`
-                    }
-                  )
-                ] }) }, option)
-              ))
-            }
-          )
-        ] }) : null,
-        (takesNote || present(recorder)) && !taken ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-note", gap: "sm", children: [
-          /* @__PURE__ */ jsx(SectionHeader, { id: noteTitleId, label: text.note, spacing: "none" }),
-          takesNote && present(recorder) ? /* @__PURE__ */ jsxs(
-            Tabs,
-            {
-              value: noteFormat,
-              onValueChange: (next) => setNoteFormat(next === "written" ? "written" : "voice"),
-              children: [
-                /* @__PURE__ */ jsxs(TabsList, { "aria-label": text.noteFormat, children: [
-                  /* @__PURE__ */ jsx(TabsTrigger, { value: "voice", padding: "md", children: text.voiceNote }),
-                  /* @__PURE__ */ jsx(TabsTrigger, { value: "written", padding: "md", children: text.writtenNote })
-                ] }),
-                /* @__PURE__ */ jsx(TabsContent, { value: "voice", marginTop: "md", forceMount: true, className: INACTIVE_PANEL, children: recorder }),
-                /* @__PURE__ */ jsx(TabsContent, { value: "written", marginTop: "md", forceMount: true, className: INACTIVE_PANEL, children: noteField })
-              ]
-            }
-          ) : takesNote ? noteField : recorder
-        ] }) : null
-      ] }),
-      /* @__PURE__ */ jsxs(Stack, { gap: "none", className: link === null ? "sr-only" : void 0, children: [
-        linkBlock,
-        /* @__PURE__ */ jsx(
-          Text,
+  const title = /* @__PURE__ */ jsx(ResponsiveDialogTitle, { className: TITLE_LINES, children: text.title(candidateName) });
+  const summarised = present(avatar) || present(headline);
+  return /* @__PURE__ */ jsx(ResponsiveDialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs(ResponsiveDialogContent, { className: DESKTOP_HEIGHT, ...described ? {} : { "aria-describedby": void 0 }, children: [
+    /* @__PURE__ */ jsxs(ResponsiveDialogHeader, { className: summarised ? `${HEADER} ${BESIDE_A_FACE}` : HEADER, children: [
+      summarised ? (
+        // The title names the person, so their face and headline sit
+        // with it and the name is said once.
+        /* @__PURE__ */ jsxs(
+          Stack,
           {
-            role: "status",
-            size: "sm",
-            tone: copy === "refused" ? "destructive" : "muted",
-            marginTop: said ? "sm" : "none",
-            children: said
+            "data-slot": "candidate-share-dialog-summary",
+            direction: "horizontal",
+            gap: "compact",
+            align: "center",
+            minWidth: "zero",
+            children: [
+              avatar,
+              /* @__PURE__ */ jsx(FlexItem, { grow: true, minWidth: "zero", children: /* @__PURE__ */ jsxs(Stack, { gap: "none", children: [
+                title,
+                present(headline) ? /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", leading: "snug", truncate: true, children: headline }) : null
+              ] }) })
+            ]
           }
         )
-      ] }),
-      failure || present(error) ? /* @__PURE__ */ jsx(Alert, { variant: "destructive", role: "alert", children: /* @__PURE__ */ jsx(AlertDescription, { children: failure ? text.failed(failure.cause) : error }) }) : null
-    ] }) }),
+      ) : title,
+      described ? /* @__PURE__ */ jsx(ResponsiveDialogDescription, { children: text.description }) : null
+    ] }),
+    /* @__PURE__ */ jsx(
+      ResponsiveDialogBody,
+      {
+        className: BODY_END,
+        "data-slot": "candidate-share-dialog",
+        "data-view": result ? "result" : "compose",
+        children: /* @__PURE__ */ jsxs(Stack, { gap: "compact", className: WRAP, children: [
+          present(reason) ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-reason", gap: "xs", children: [
+            /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", leading: "snug", children: text.reason }),
+            /* @__PURE__ */ jsx(Text, { size: "sm", leading: "snug", children: reason })
+          ] }) : null,
+          /* @__PURE__ */ jsxs(Stack, { gap: "none", className: link === null ? "sr-only" : void 0, children: [
+            linkBlock,
+            /* @__PURE__ */ jsx(
+              Text,
+              {
+                role: "status",
+                size: "sm",
+                leading: "snug",
+                tone: copy === "refused" ? "destructive" : "muted",
+                marginTop: said && saidInView ? "sm" : "none",
+                className: saidInView ? void 0 : "sr-only",
+                children: said
+              }
+            )
+          ] }),
+          result ? null : /* @__PURE__ */ jsxs(Fragment, { children: [
+            audiences.length > 0 && choices.audience !== void 0 ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-audience", gap: "sm", children: [
+              /* @__PURE__ */ jsx(SectionHeader, { id: audienceTitleId, label: text.audience, spacing: "none" }),
+              /* @__PURE__ */ jsx(
+                ChoiceChips,
+                {
+                  "aria-labelledby": audienceTitleId,
+                  chips: audiences.map((candidate) => ({
+                    id: candidate.id,
+                    label: candidate.label,
+                    trailing: candidate.live ? /* @__PURE__ */ jsx(Badge, { as: "span", variant: "success", size: "micro", children: text.liveBadge }) : void 0
+                  })),
+                  value: choices.audience,
+                  disabled: sharing,
+                  onChange: (next) => change({ audience: next })
+                }
+              ),
+              taken ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: present(audience?.liveDescription) ? audience?.liveDescription : text.live }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                present(audience?.description) ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: audience?.description }) : null,
+                audience?.fields
+              ] })
+            ] }) : null,
+            anonymisable && !taken ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-share-dialog-visibility", gap: "sm", children: [
+              /* @__PURE__ */ jsx(SectionHeader, { id: visibilityTitleId, label: text.visibility, spacing: "none" }),
+              /* @__PURE__ */ jsx(
+                RadioGroup,
+                {
+                  "aria-labelledby": visibilityTitleId,
+                  value: choices.anonymised ? "anonymised" : "named",
+                  onValueChange: (next) => change({ anonymised: next === "anonymised" }),
+                  disabled: sharing,
+                  children: /* @__PURE__ */ jsx(Grid, { columns: 2, gap: "compact", children: ["named", "anonymised"].map((option) => (
+                    // The label makes the whole card the target. The radio
+                    // is named by the title and described by the line under
+                    // it outright, not left to how a browser reads a label
+                    // that wraps a group.
+                    /* @__PURE__ */ jsx(FieldLabel, { htmlFor: `${id}-${option}`, children: /* @__PURE__ */ jsxs(Field, { orientation: "horizontal", children: [
+                      /* @__PURE__ */ jsxs(FieldContent, { children: [
+                        /* @__PURE__ */ jsx(FieldTitle, { id: `${id}-${option}-title`, children: option === "named" ? text.named : text.anonymised }),
+                        /* @__PURE__ */ jsx(FieldDescription, { id: `${id}-${option}-description`, children: option === "named" ? text.namedDescription : text.anonymisedDescription })
+                      ] }),
+                      /* @__PURE__ */ jsx(
+                        RadioGroupItem,
+                        {
+                          value: option,
+                          id: `${id}-${option}`,
+                          "aria-labelledby": `${id}-${option}-title`,
+                          "aria-describedby": `${id}-${option}-description`
+                        }
+                      )
+                    ] }) }, option)
+                  )) })
+                }
+              )
+            ] }) : null,
+            (takesNote || present(recorder)) && !taken ? /* @__PURE__ */ jsx(Stack, { "data-slot": "candidate-share-dialog-note", gap: "sm", children: takesNote && present(recorder) ? (
+              // A side shows when its tab is pressed, not when focus
+              // reaches the tab. A host that holds the side can
+              // change it while focus, or the place Shift+Tab comes
+              // back to, is still on the other side's tab: a tab that
+              // took the side with it on focus would undo the host's
+              // switch as soon as focus came round again.
+              /* @__PURE__ */ jsxs(
+                Tabs,
+                {
+                  activationMode: "manual",
+                  value: noteFormat,
+                  onValueChange: (next) => switchNoteFormat(next === "written" ? "written" : "voice"),
+                  children: [
+                    /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "between", wrap: true, children: [
+                      /* @__PURE__ */ jsx(SectionHeader, { id: noteTitleId, label: text.note, spacing: "none" }),
+                      /* @__PURE__ */ jsxs(TabsList, { "aria-label": text.noteFormat, scrollable: true, children: [
+                        /* @__PURE__ */ jsx(TabsTrigger, { ref: voiceTab, value: "voice", padding: "md", children: text.voiceNote }),
+                        /* @__PURE__ */ jsx(TabsTrigger, { ref: writtenTab, value: "written", padding: "md", children: text.writtenNote })
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsx(TabsContent, { ref: voiceSide, value: "voice", forceMount: true, className: INACTIVE_PANEL, children: recorder }),
+                    /* @__PURE__ */ jsx(TabsContent, { ref: writtenSide, value: "written", forceMount: true, className: INACTIVE_PANEL, children: noteField })
+                  ]
+                }
+              )
+            ) : /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsx(SectionHeader, { id: noteTitleId, label: text.note, spacing: "none" }),
+              takesNote ? noteField : recorder
+            ] }) }) : null
+          ] }),
+          failed ? /* @__PURE__ */ jsx(Alert, { ref: problem, variant: "destructive", role: "alert", children: /* @__PURE__ */ jsx(AlertDescription, { children: failure ? text.failed(failure.cause) : error }) }) : null
+        ] })
+      }
+    ),
     /* @__PURE__ */ jsx(ResponsiveDialogFooter, { layout: "fill", children: result ? /* @__PURE__ */ jsx(ResponsiveDialogClose, { asChild: true, children: /* @__PURE__ */ jsx(Button, { type: "button", variant: "outline", children: text.done }) }) : /* @__PURE__ */ jsx(Button, { type: "button", onClick: share, disabled: !canShare || sharing, "aria-busy": sharing || void 0, children: sharing ? /* @__PURE__ */ jsxs(Fragment, { children: [
       /* @__PURE__ */ jsx(Icon, { icon: Loader2, size: "md", spin: true }),
       text.sharing

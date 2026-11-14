@@ -11,6 +11,7 @@ import {
   FieldTitle,
 } from "@epicbagel/saas-kit/primitives/field";
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
+import { Grid } from "@epicbagel/saas-kit/primitives/grid";
 import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Input } from "@epicbagel/saas-kit/primitives/input";
 import { RadioGroup, RadioGroupItem } from "@epicbagel/saas-kit/primitives/radio-group";
@@ -30,7 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@epicbagel/saas-kit/pr
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { Textarea } from "@epicbagel/saas-kit/primitives/textarea";
 import { Check, Copy, Link2, Loader2 } from "lucide-react";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 
 import { ChoiceChips } from "./choice-chips";
 
@@ -75,11 +76,15 @@ export interface CandidateShareChoices {
 
 /** The fixed words of the share dialog. Pass `labels` to change any. */
 export interface CandidateShareDialogLabels {
-  /** The dialog's title, given who is being shared. */
+  /**
+   * The dialog's title, given who is being shared. It is where the person
+   * is named: the summary beside it is their face and `headline`, and says
+   * the name no second time.
+   */
   title: (name: string) => ReactNode;
   /** A line under the title, which also describes the dialog to a screen reader. None by default. */
   description: ReactNode;
-  /** Over the sharer's own reason in the summary. */
+  /** Over the sharer's own reason, under the summary. */
   reason: ReactNode;
   /** Over the audiences, and their group's accessible name. */
   audience: string;
@@ -180,13 +185,13 @@ export interface CandidateShareDialogProps {
   open: boolean;
   /** Called when the dialog should close: from its close control, Done, or a share that made no link to show. */
   onOpenChange: (open: boolean) => void;
-  /** Who is being shared, for the title and the summary. */
+  /** Who is being shared, for the title. */
   candidateName: string;
-  /** Their face in the summary, usually the kit's PersonAvatar at 44px. */
+  /** Their face beside the title, usually the kit's PersonAvatar at 44px. */
   avatar?: ReactNode;
-  /** Under their name in the summary, such as their title and company. */
+  /** Under the title, such as their title and company. */
   headline?: ReactNode;
-  /** The sharer's own reason for putting them forward, under the summary. */
+  /** The sharer's own reason for putting them forward, under the title. */
   reason?: ReactNode;
   /**
    * Who the link can be for. With none, the dialog doesn't ask, and
@@ -203,15 +208,31 @@ export interface CandidateShareDialogProps {
    * A recorder for a spoken note, such as `CandidatePresentationRecorder`.
    * The host owns the recording and what happens to it. With `note` as
    * well, the two sit behind a switch, the recorder first, and the one not
-   * showing stays mounted, so a take is never lost to the switch.
+   * showing stays mounted, so a take is never lost to the switch. A side
+   * shows when its tab is pressed, with a pointer, Enter or Space; the
+   * arrow keys move between the two tabs and change nothing.
    */
   recorder?: ReactNode;
   /**
    * Which side of that switch shows as the dialog opens: `voice` (the
    * default), or `written` for a link that already has a typed note and no
-   * recording.
+   * recording. It is read as each opening starts; a host that learns the
+   * side later holds it as `noteFormat`.
    */
   defaultNoteFormat?: CandidateShareNoteFormat;
+  /**
+   * Which side of that switch shows, for a host that holds it, such as one
+   * that learns which side a link's note is on only once it has read its
+   * links, or as the person sharing changes who the link names. Changing it
+   * remounts neither side, so a take in the recorder is kept, and leaves
+   * focus where it is.
+   */
+  noteFormat?: CandidateShareNoteFormat;
+  /**
+   * Called with the side the person sharing asks for, once each time they
+   * press the other side's tab, whether or not the host holds the side.
+   */
+  onNoteFormatChange?: (format: CandidateShareNoteFormat) => void;
   /**
    * The choices, for a host that holds them, such as one that fills the
    * note in from a link it already has. Any left out are the dialog's own.
@@ -223,8 +244,9 @@ export interface CandidateShareDialogProps {
   onChoicesChange?: (choices: CandidateShareChoices) => void;
   /**
    * The link, where the host already has one for these choices. The dialog
-   * shows it with Copy, and the share button then says `labels.update`.
-   * With no `onShare`, the dialog is the link and its Copy alone.
+   * shows it with Copy above everything it asks, where it is in view as the
+   * dialog opens, and the share button then says `labels.update`. With no
+   * `onShare`, the dialog is the link and its Copy alone.
    */
   url?: string | null;
   /**
@@ -257,6 +279,40 @@ const NO_AUDIENCES: readonly CandidateShareAudience[] = [];
 // The two sides of the note stay mounted, so a recording survives the
 // switch: the one not showing is hidden instead.
 const INACTIVE_PANEL = "data-[state=inactive]:hidden";
+
+// A reason, a description or a name with a long word in it wraps, not
+// widens the dialog.
+const WRAP = "[overflow-wrap:anywhere]";
+
+// What the kit's responsive dialog has no setting for. The first two are set
+// on the kit's own marks for the centred dialog and its header, so the
+// bottom sheet a phone gets keeps the kit's height and padding.
+//
+// The kit caps its centred dialog at 85% of the window's height, which on a
+// laptop puts the last of what the dialog asks under its own fold. It takes
+// the height the kit's Dialog calls `viewport` instead: the window's, less a
+// margin.
+const DESKTOP_HEIGHT = "data-[slot=dialog-content]:max-h-[calc(100dvh-2rem)]";
+// Room for the close control the kit sets over the centred dialog's corner:
+// a long title wraps beside it, not under it.
+const DESKTOP_CLOSE_ROOM = "data-[slot=dialog-header]:pe-12";
+// A long word in the title or the line under it wraps too. Left whole it
+// would widen a bottom sheet's header past the sheet.
+const HEADER = `${DESKTOP_CLOSE_ROOM} ${WRAP}`;
+// The kit sets a bottom sheet's title with no room between its lines, which
+// is right for one line. A long name runs to two or three.
+const TITLE_LINES = "leading-snug";
+// The kit centres what heads a bottom sheet. Beside a face the title reads
+// from the face instead, as it does in the centred dialog, and a line
+// under the two starts where they do.
+const BESIDE_A_FACE = "text-start";
+// The footer's rule closes the body, so it needs less under it than the kit
+// leaves under a body with no footer.
+const BODY_END = "pb-4";
+
+// A layout effect where there is a layout, and nothing to warn about where
+// the dialog is rendered on a server.
+const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function present(value: ReactNode): boolean {
   return value != null && value !== false && value !== "";
@@ -327,19 +383,22 @@ function resolveChoices(
  * shared, who the link is for, whether the page names them, a note for
  * whoever opens it, then the link with Copy.
  *
- * Each part is optional. `avatar`, `headline` and `reason` are the summary
- * at the top. `audiences` asks who the link is for: each has its own
- * description, its own fields as a slot, and may already have a live link.
- * `anonymisable` asks whether the page names the person. `note` is a typed
- * note and `recorder` a slot for a spoken one.
+ * Each part is optional. `avatar` and `headline` sit with the title, which
+ * names the person, and `reason` under them. `audiences` asks who the link
+ * is for: each has its own description, its own fields as a slot, and may
+ * already have a live link. `anonymisable` asks whether the page names the
+ * person. `note` is a typed note and `recorder` a slot for a spoken one;
+ * with both, a switch shows one side at a time, which the host may hold as
+ * `noteFormat`.
  *
  * The host makes the link. `onShare` is given the choices and returns the
  * link, or a promise for it; the dialog then shows the link, cut short, with
- * Copy. A host that already has the link passes it as `url`. Copy writes to
- * the clipboard inside its own click, says "Copied" and announces it; where
- * the browser refuses, the whole link is put in a field and selected, to
- * copy by hand. `copyOnShare` asks the clipboard in the click that makes
- * the link.
+ * Copy. A host that already has the link passes it as `url`, and it shows
+ * above everything the dialog asks, in view as the dialog opens. Copy
+ * writes to the clipboard inside its own click, says "Copied" and announces
+ * it; where the browser refuses, the whole link is put in a field and
+ * selected, to copy by hand. `copyOnShare` asks the clipboard in the click
+ * that makes the link.
  *
  * It fetches nothing and stores nothing: every opening starts from
  * `defaultChoices`, and a host that keeps a link's note or audience passes
@@ -350,7 +409,9 @@ function resolveChoices(
  * It is the kit's responsive dialog (a centred dialog, or a bottom sheet on
  * a phone), which keeps the kit's `data-slot` on its content; the dialog's
  * own body is marked `data-slot="candidate-share-dialog"`, with `data-view`
- * (`compose` or `result`).
+ * (`compose` or `result`). The centred dialog may be as tall as the window,
+ * less a margin, so what it asks fits a laptop without scrolling; past
+ * that, its body scrolls between the title and the share button.
  */
 export function CandidateShareDialog(props: CandidateShareDialogProps) {
   // One opening is one session, and each starts afresh. The session is
@@ -387,6 +448,8 @@ function ShareDialogSession({
   noteMaxLength,
   recorder,
   defaultNoteFormat = "voice",
+  noteFormat: heldNoteFormat,
+  onNoteFormatChange,
   choices: heldChoices,
   defaultChoices,
   onChoicesChange,
@@ -406,12 +469,19 @@ function ShareDialogSession({
   const [sharing, setSharing] = useState(false);
   const [failure, setFailure] = useState<{ cause: unknown } | null>(null);
   const [copy, setCopy] = useState<"idle" | "copied" | "refused">("idle");
-  const [noteFormat, setNoteFormat] = useState<CandidateShareNoteFormat>(defaultNoteFormat);
+  const [ownNoteFormat, setOwnNoteFormat] = useState<CandidateShareNoteFormat>(defaultNoteFormat);
+  const noteFormat = heldNoteFormat ?? ownNoteFormat;
   // A second press before the first re-render must not share twice.
   const inFlight = useRef(false);
   const mounted = useRef(true);
   const copyButton = useRef<HTMLButtonElement>(null);
   const linkField = useRef<HTMLInputElement>(null);
+  // The two sides of the note, and the tab that shows each.
+  const voiceSide = useRef<HTMLDivElement>(null);
+  const writtenSide = useRef<HTMLDivElement>(null);
+  const voiceTab = useRef<HTMLButtonElement>(null);
+  const writtenTab = useRef<HTMLButtonElement>(null);
+  const problem = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     mounted.current = true;
@@ -439,12 +509,37 @@ function ShareDialogSession({
     linkField.current?.select();
   }, [copy]);
 
+  // A host that switches the note's side leaves focus where it is. The one
+  // place it can't stay is inside the side that has just been hidden, where
+  // the browser would drop it on the page behind the dialog: it goes to the
+  // tab of the side now showing instead. Looked at before the browser
+  // paints, while it still says where focus was.
+  useBrowserLayoutEffect(() => {
+    const hidden = noteFormat === "written" ? voiceSide.current : writtenSide.current;
+    if (hidden?.contains(document.activeElement)) {
+      (noteFormat === "written" ? writtenTab : voiceTab).current?.focus();
+    }
+  }, [noteFormat]);
+
+  // A link that couldn't be made says so under everything the dialog asks,
+  // which on a small window is under its fold: it is brought into view.
+  const failed = failure !== null || present(error);
+  useEffect(() => {
+    if (failed) problem.current?.scrollIntoView?.({ block: "nearest" });
+  }, [failed, failure]);
+
   const link = madeLink ?? (url?.trim() || null);
   const result = madeLink !== null || (onShare == null && link !== null);
   const audience = audiences.find((candidate) => candidate.id === choices.audience);
   const taken = audience?.live === true && link === null;
   const waiting = present(waitingFor);
   const canShare = onShare != null && !waiting && !taken && audience?.ready !== false;
+
+  const switchNoteFormat = (next: CandidateShareNoteFormat) => {
+    if (next === noteFormat) return;
+    setOwnNoteFormat(next);
+    onNoteFormatChange?.(next);
+  };
 
   const change = (patch: Partial<CandidateShareChoices>) => {
     const next = { ...choices, ...patch };
@@ -511,6 +606,7 @@ function ShareDialogSession({
   const linkTitleId = `${id}-link`;
   const noteDescribed = present(text.noteDescription);
   const said = copy === "refused" ? text.copyFailed : copy === "copied" ? text.linkCopied : result ? text.ready : "";
+  const saidInView = result || copy === "refused";
 
   const noteField = (
     <Stack gap="xs">
@@ -519,13 +615,13 @@ function ShareDialogSession({
         aria-describedby={noteDescribed ? noteDescriptionId : undefined}
         value={choices.note}
         onChange={(event) => change({ note: event.target.value })}
-        rows={4}
+        rows={3}
         maxLength={noteMaxLength}
         placeholder={text.notePlaceholder}
         disabled={sharing}
       />
       {noteDescribed ? (
-        <Text id={noteDescriptionId} size="sm" tone="muted">
+        <Text id={noteDescriptionId} size="sm" tone="muted" leading="snug">
           {text.noteDescription}
         </Text>
       ) : null}
@@ -534,8 +630,8 @@ function ShareDialogSession({
 
   const linkBlock =
     link !== null ? (
-      <Stack data-slot="candidate-share-dialog-link" gap="none">
-        <SectionHeader id={linkTitleId} label={text.link} />
+      <Stack data-slot="candidate-share-dialog-link" gap="sm">
+        <SectionHeader id={linkTitleId} label={text.link} spacing="none" />
         <Stack direction="horizontal" gap="sm" align="center" surface="muted" radius="lg" padding="control">
           <Icon icon={Link2} size="md" tone="muted" />
           <FlexItem grow minWidth="zero">
@@ -569,42 +665,80 @@ function ShareDialogSession({
       </Stack>
     ) : null;
 
+  const title = <ResponsiveDialogTitle className={TITLE_LINES}>{text.title(candidateName)}</ResponsiveDialogTitle>;
+  const summarised = present(avatar) || present(headline);
+
   return (
     <ResponsiveDialog open={open} onOpenChange={onOpenChange}>
       {/* Described by its own line, or told there is none rather than pointed at nothing. */}
-      <ResponsiveDialogContent {...(described ? {} : { "aria-describedby": undefined })}>
-        <ResponsiveDialogHeader>
-          <ResponsiveDialogTitle>{text.title(candidateName)}</ResponsiveDialogTitle>
+      <ResponsiveDialogContent className={DESKTOP_HEIGHT} {...(described ? {} : { "aria-describedby": undefined })}>
+        <ResponsiveDialogHeader className={summarised ? `${HEADER} ${BESIDE_A_FACE}` : HEADER}>
+          {summarised ? (
+            // The title names the person, so their face and headline sit
+            // with it and the name is said once.
+            <Stack
+              data-slot="candidate-share-dialog-summary"
+              direction="horizontal"
+              gap="compact"
+              align="center"
+              minWidth="zero"
+            >
+              {avatar}
+              <FlexItem grow minWidth="zero">
+                <Stack gap="none">
+                  {title}
+                  {present(headline) ? (
+                    <Text size="xs" tone="muted" leading="snug" truncate>
+                      {headline}
+                    </Text>
+                  ) : null}
+                </Stack>
+              </FlexItem>
+            </Stack>
+          ) : (
+            title
+          )}
           {described ? <ResponsiveDialogDescription>{text.description}</ResponsiveDialogDescription> : null}
         </ResponsiveDialogHeader>
-        <ResponsiveDialogBody data-slot="candidate-share-dialog" data-view={result ? "result" : "compose"}>
-          {/* A reason or a description with a long word in it wraps, not widens the dialog. */}
-          <Stack gap="lg" className="[overflow-wrap:anywhere]">
-            {present(avatar) || present(headline) || present(reason) ? (
-              <Stack data-slot="candidate-share-dialog-summary" gap="md">
-                <Stack direction="horizontal" gap="md" align="center">
-                  {avatar}
-                  <FlexItem grow minWidth="zero">
-                    <Text size="sm" weight="semibold" truncate>
-                      {candidateName}
-                    </Text>
-                    {present(headline) ? (
-                      <Text size="xs" tone="muted" truncate>
-                        {headline}
-                      </Text>
-                    ) : null}
-                  </FlexItem>
-                </Stack>
-                {present(reason) ? (
-                  <Stack gap="xs">
-                    <Text size="xs" tone="muted">
-                      {text.reason}
-                    </Text>
-                    <Text size="sm">{reason}</Text>
-                  </Stack>
-                ) : null}
+        <ResponsiveDialogBody
+          className={BODY_END}
+          data-slot="candidate-share-dialog"
+          data-view={result ? "result" : "compose"}
+        >
+          <Stack gap="compact" className={WRAP}>
+            {present(reason) ? (
+              <Stack data-slot="candidate-share-dialog-reason" gap="xs">
+                <Text size="xs" tone="muted" leading="snug">
+                  {text.reason}
+                </Text>
+                <Text size="sm" leading="snug">
+                  {reason}
+                </Text>
               </Stack>
             ) : null}
+
+            {/* A link there already is comes before anything the dialog
+                asks, so someone back for it finds it without scrolling. The
+                line that says the link is ready, or copied, is in the dialog
+                from the start, before there is anything to say, so a screen
+                reader announces it when there is. With no link yet it takes
+                no room. Nor does it over the questions, where the Copy
+                button saying "Copied" is enough to see and a line coming
+                and going would push everything under it down and back: there
+                it is only heard, unless the browser wouldn't copy. */}
+            <Stack gap="none" className={link === null ? "sr-only" : undefined}>
+              {linkBlock}
+              <Text
+                role="status"
+                size="sm"
+                leading="snug"
+                tone={copy === "refused" ? "destructive" : "muted"}
+                marginTop={said && saidInView ? "sm" : "none"}
+                className={saidInView ? undefined : "sr-only"}
+              >
+                {said}
+              </Text>
+            </Stack>
 
             {result ? null : (
               <>
@@ -652,85 +786,85 @@ function ShareDialogSession({
                       onValueChange={(next) => change({ anonymised: next === "anonymised" })}
                       disabled={sharing}
                     >
-                      {(["named", "anonymised"] as const).map((option) => (
-                        // The label makes the whole card the target. The radio
-                        // is named by the title and described by the line under
-                        // it outright, not left to how a browser reads a label
-                        // that wraps a group.
-                        <FieldLabel key={option} htmlFor={`${id}-${option}`}>
-                          <Field orientation="horizontal">
-                            <FieldContent>
-                              <FieldTitle id={`${id}-${option}-title`}>
-                                {option === "named" ? text.named : text.anonymised}
-                              </FieldTitle>
-                              <FieldDescription id={`${id}-${option}-description`}>
-                                {option === "named" ? text.namedDescription : text.anonymisedDescription}
-                              </FieldDescription>
-                            </FieldContent>
-                            <RadioGroupItem
-                              value={option}
-                              id={`${id}-${option}`}
-                              aria-labelledby={`${id}-${option}-title`}
-                              aria-describedby={`${id}-${option}-description`}
-                            />
-                          </Field>
-                        </FieldLabel>
-                      ))}
+                      {/* Side by side where there is room, which halves their
+                          height, and one over the other on a phone. */}
+                      <Grid columns={2} gap="compact">
+                        {(["named", "anonymised"] as const).map((option) => (
+                          // The label makes the whole card the target. The radio
+                          // is named by the title and described by the line under
+                          // it outright, not left to how a browser reads a label
+                          // that wraps a group.
+                          <FieldLabel key={option} htmlFor={`${id}-${option}`}>
+                            <Field orientation="horizontal">
+                              <FieldContent>
+                                <FieldTitle id={`${id}-${option}-title`}>
+                                  {option === "named" ? text.named : text.anonymised}
+                                </FieldTitle>
+                                <FieldDescription id={`${id}-${option}-description`}>
+                                  {option === "named" ? text.namedDescription : text.anonymisedDescription}
+                                </FieldDescription>
+                              </FieldContent>
+                              <RadioGroupItem
+                                value={option}
+                                id={`${id}-${option}`}
+                                aria-labelledby={`${id}-${option}-title`}
+                                aria-describedby={`${id}-${option}-description`}
+                              />
+                            </Field>
+                          </FieldLabel>
+                        ))}
+                      </Grid>
                     </RadioGroup>
                   </Stack>
                 ) : null}
 
                 {(takesNote || present(recorder)) && !taken ? (
                   <Stack data-slot="candidate-share-dialog-note" gap="sm">
-                    <SectionHeader id={noteTitleId} label={text.note} spacing="none" />
                     {takesNote && present(recorder) ? (
+                      // A side shows when its tab is pressed, not when focus
+                      // reaches the tab. A host that holds the side can
+                      // change it while focus, or the place Shift+Tab comes
+                      // back to, is still on the other side's tab: a tab that
+                      // took the side with it on focus would undo the host's
+                      // switch as soon as focus came round again.
                       <Tabs
+                        activationMode="manual"
                         value={noteFormat}
-                        onValueChange={(next) => setNoteFormat(next === "written" ? "written" : "voice")}
+                        onValueChange={(next) => switchNoteFormat(next === "written" ? "written" : "voice")}
                       >
-                        <TabsList aria-label={text.noteFormat}>
-                          <TabsTrigger value="voice" padding="md">
-                            {text.voiceNote}
-                          </TabsTrigger>
-                          <TabsTrigger value="written" padding="md">
-                            {text.writtenNote}
-                          </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="voice" marginTop="md" forceMount className={INACTIVE_PANEL}>
+                        {/* The switch sits on the note's own heading line, and
+                            drops under it where the two don't fit side by side. */}
+                        <Stack direction="horizontal" gap="sm" align="center" justify="between" wrap>
+                          <SectionHeader id={noteTitleId} label={text.note} spacing="none" />
+                          <TabsList aria-label={text.noteFormat} scrollable>
+                            <TabsTrigger ref={voiceTab} value="voice" padding="md">
+                              {text.voiceNote}
+                            </TabsTrigger>
+                            <TabsTrigger ref={writtenTab} value="written" padding="md">
+                              {text.writtenNote}
+                            </TabsTrigger>
+                          </TabsList>
+                        </Stack>
+                        <TabsContent ref={voiceSide} value="voice" forceMount className={INACTIVE_PANEL}>
                           {recorder}
                         </TabsContent>
-                        <TabsContent value="written" marginTop="md" forceMount className={INACTIVE_PANEL}>
+                        <TabsContent ref={writtenSide} value="written" forceMount className={INACTIVE_PANEL}>
                           {noteField}
                         </TabsContent>
                       </Tabs>
-                    ) : takesNote ? (
-                      noteField
                     ) : (
-                      recorder
+                      <>
+                        <SectionHeader id={noteTitleId} label={text.note} spacing="none" />
+                        {takesNote ? noteField : recorder}
+                      </>
                     )}
                   </Stack>
                 ) : null}
               </>
             )}
 
-            {/* The line that says the link is ready, or copied, is in the
-                dialog from the start, before there is anything to say, so a
-                screen reader announces it when there is. With no link yet it
-                takes no room. */}
-            <Stack gap="none" className={link === null ? "sr-only" : undefined}>
-              {linkBlock}
-              <Text
-                role="status"
-                size="sm"
-                tone={copy === "refused" ? "destructive" : "muted"}
-                marginTop={said ? "sm" : "none"}
-              >
-                {said}
-              </Text>
-            </Stack>
-
-            {failure || present(error) ? (
-              <Alert variant="destructive" role="alert">
+            {failed ? (
+              <Alert ref={problem} variant="destructive" role="alert">
                 <AlertDescription>{failure ? text.failed(failure.cause) : error}</AlertDescription>
               </Alert>
             ) : null}

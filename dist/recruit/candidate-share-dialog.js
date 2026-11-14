@@ -3,7 +3,7 @@ import {
   CandidateShareDialog,
   candidateShareDialogLabels,
   candidateShareLinkText
-} from "../chunk-WXXCJL4T.js";
+} from "../chunk-UCS7XUN4.js";
 import "../chunk-P5VLMURO.js";
 import "../chunk-YKEE5RQG.js";
 export {
