@@ -87,7 +87,7 @@ import {
   CandidateShareDialog,
   candidateShareDialogLabels,
   candidateShareLinkText
-} from "../chunk-WXXCJL4T.js";
+} from "../chunk-UCS7XUN4.js";
 import {
   CandidateSharedProfileButton
 } from "../chunk-3PLNO5JF.js";

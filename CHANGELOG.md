@@ -5,6 +5,89 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.26.1
+
+`CandidateShareDialog` fits a laptop, and a host can hold which side of its
+note shows. It is built on the same kit primitives as before, with the kit's
+`Grid` beside them, so the minimum kit version doesn't move.
+
+### Added
+
+- `CandidateShareDialog` takes `noteFormat` and `onNoteFormatChange`, beside
+  `defaultNoteFormat`, as it takes `choices` and `onChoicesChange`: a host
+  holds which side of the note shows, the recorder or the written note.
+  `defaultNoteFormat` is read as each opening starts, but a host learns
+  which side a link's note is on only once it has read its links, or as the
+  person sharing switches between a named page and an anonymised one, each
+  with its own link. Until now it had to remount the dialog by `key`, which
+  drew it twice and dropped focus. Changing `noteFormat` remounts nothing:
+  both sides stay mounted, so a take in the recorder and a half-written
+  note are kept, and focus stays where it was. The one place focus can't
+  stay is inside the side that has just been hidden, where it goes to the
+  tab of the side now showing and isn't dropped on the page behind the
+  dialog. `onNoteFormatChange` is called with the side the person sharing
+  asks for, once each time they press the other side's tab, whether or not
+  the host holds the side; a host that holds it decides whether the side
+  changes.
+
+### Changed
+
+- `CandidateShareDialog` fits a laptop. In a window 1280 by 720 everything
+  it asks is in view without scrolling: the person's summary with the
+  sharer's reason, named or anonymised, and a note with a recorder or a
+  written note, with or without a link that already exists. It was capped
+  at 85% of the window's height and set looser, so at 1280 by 800 a
+  recorder's button was under the dialog's own fold, and so was a link that
+  already existed. What changed:
+  - The centred dialog may be as tall as the window, less a margin of 1rem
+    above and below: the height the kit's own `Dialog` calls `viewport`. Past
+    that its body scrolls between the title and the share button, as
+    before. A phone keeps the kit's bottom sheet at the kit's height.
+  - The person's `avatar` and `headline` sit beside the title, which names
+    them, so the summary no longer says the name a second time. A host
+    whose `labels.title` leaves the name out now shows it nowhere, and
+    should put it in the title. The summary's `data-slot`,
+    `candidate-share-dialog-summary`, is that line, in the dialog's header;
+    the sharer's `reason` is under it, first in the body, marked
+    `candidate-share-dialog-reason`.
+  - A link the host already has (`url`) shows above everything the dialog
+    asks, where it showed under it, so someone who opens the dialog again
+    to copy the link finds it in view, with Copy the first control in the
+    dialog.
+  - Named and anonymised sit side by side where there is room, on the kit's
+    `Grid`, and one over the other on a phone. They are one radio group to
+    the arrow keys either way.
+  - With both a recorder and a written note, the switch between them sits
+    on the note's own heading line, and drops under it where the two don't
+    fit side by side. Labels too long for the dialog scroll inside the
+    switch, and can't scroll the whole dialog sideways.
+  - Over the questions, a link that is copied says so on its button and to
+    a screen reader, and no longer in a line under the link, which pushed
+    every question down and back. The line shows once the link is made, and
+    when the browser wouldn't copy.
+  - The gaps between sections are a step tighter, the reason and the line
+    under the written note are set closer, and the written note's field
+    opens at three rows, where it opened at four.
+- `CandidateShareDialog`'s switch between a spoken and a written note
+  changes sides when a tab is pressed, with a pointer, Enter or Space. The
+  arrow keys move between the two tabs and change nothing, where they took
+  the side with them. A host that holds the side can change it while focus,
+  or the place Shift+Tab comes back to, is on the other side's tab; a tab
+  that took its side with it on focus would undo the host's switch as soon
+  as focus came round again.
+
+### Fixed
+
+- `CandidateShareDialog`: a title long enough to reach the centred dialog's
+  close control wraps beside it. It ran under it. On a bottom sheet a title
+  that wraps has room between its lines, and a long word in the line under
+  the title (`labels.description`) wraps, so it can't widen the sheet's
+  header past the sheet.
+- `CandidateShareDialog`: a link that couldn't be made, and an error of the
+  host's own, are brought into view. They show under everything the dialog
+  asks, which on a small window is under the dialog's own fold, so a failed
+  share could look as though nothing had happened.
+
 ## 0.26.0
 
 Both new components are built on kit primitives that `@epicbagel/saas-kit`

@@ -1,6 +1,6 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -10,6 +10,7 @@ import {
   type CandidateShareAudience,
   type CandidateShareChoices,
   type CandidateShareDialogProps,
+  type CandidateShareNoteFormat,
 } from "./candidate-share-dialog";
 
 // A window whose width the tests decide. The kit's responsive dialog asks
@@ -61,6 +62,10 @@ function renderDialog(overrides: Partial<CandidateShareDialogProps> = {}) {
 
 const dialog = () => screen.getByRole("dialog", { name: "Share Mei Tanaka" });
 const body = () => dialog().querySelector("[data-slot='candidate-share-dialog']") as HTMLElement;
+const part = (name: string) => dialog().querySelector(`[data-slot='candidate-share-dialog-${name}']`) as HTMLElement;
+/** Whether `later` comes after `earlier` as the dialog is read, top to bottom. */
+const follows = (earlier: Node, later: Node) =>
+  Boolean(earlier.compareDocumentPosition(later) & Node.DOCUMENT_POSITION_FOLLOWING);
 
 /** Puts a clipboard of the test's own on the browser, after user-event has put its stub there. */
 const clipboardBefore = Object.getOwnPropertyDescriptor(navigator, "clipboard");
@@ -103,8 +108,8 @@ describe("candidate share dialog, before a link is made", () => {
     expect(within(dialog()).getByRole("button", { name: "Create link" })).toBeEnabled();
   });
 
-  it("shows who is being shared, and the sharer's own reason", () => {
-    renderDialog({
+  it("shows who is being shared beside the title, which names them once, and the sharer's own reason", () => {
+    const { rerender, props } = renderDialog({
       avatar: <img alt="Mei Tanaka's photo" src="https://example.com/mei.png" />,
       headline: "Staff Engineer · Sample Analytics",
       reason: "Has done the fictional rebuild twice.",
@@ -114,9 +119,28 @@ describe("candidate share dialog, before a link is made", () => {
     expect(dialog()).toHaveAccessibleDescription("Make a link to their profile.");
     // A reason with a pasted link in it wraps, not widens the dialog.
     expect(body().firstElementChild).toHaveClass("[overflow-wrap:anywhere]");
-    const summary = dialog().querySelector("[data-slot='candidate-share-dialog-summary']") as HTMLElement;
+    // Their face and headline sit with the title, above the part that scrolls.
+    const summary = part("summary");
     expect(within(summary).getByAltText("Mei Tanaka's photo")).toBeInTheDocument();
-    expect(summary).toHaveTextContent("Mei TanakaStaff Engineer · Sample AnalyticsYour reasonHas done the fictional rebuild twice.");
+    expect(within(summary).getByRole("heading", { level: 2, name: "Share Mei Tanaka" })).toBeInTheDocument();
+    expect(summary).toHaveTextContent("Share Mei TanakaStaff Engineer · Sample Analytics");
+    expect(body()).not.toContainElement(summary);
+    // The title says the name, so nothing says it again.
+    expect(dialog().textContent?.match(/Mei Tanaka/g)).toHaveLength(1);
+    // The reason is under them, first in the part that scrolls.
+    expect(part("reason")).toHaveTextContent("Your reasonHas done the fictional rebuild twice.");
+    expect(body()).toContainElement(part("reason"));
+
+    // A headline needs no face, nor a face a headline.
+    rerender(<CandidateShareDialog {...props} avatar={undefined} reason={undefined} />);
+    expect(part("summary")).toHaveTextContent("Share Mei TanakaStaff Engineer · Sample Analytics");
+    expect(part("reason")).toBeNull();
+    rerender(<CandidateShareDialog {...props} headline={undefined} />);
+    expect(part("summary")).toHaveTextContent("Share Mei Tanaka");
+    // With neither, the title stands alone, as the kit sets it.
+    rerender(<CandidateShareDialog {...props} avatar={undefined} headline={undefined} />);
+    expect(part("summary")).toBeNull();
+    expect(within(dialog()).getByRole("heading", { level: 2, name: "Share Mei Tanaka" })).toBeInTheDocument();
   });
 
   it("asks who the link is for, each with its own words and its own fields", async () => {
@@ -245,6 +269,15 @@ describe("candidate share dialog, before a link is made", () => {
 
     await user.click(anonymised);
     expect(anonymised).toBeChecked();
+    // The two sit side by side where there is room, and are still one
+    // group to the arrow keys. The choice follows focus while the key is
+    // down, so each is held as a person holds it.
+    await user.keyboard("{ArrowLeft>}");
+    await waitFor(() => expect(named).toBeChecked());
+    expect(named).toHaveFocus();
+    await user.keyboard("{/ArrowLeft}{ArrowDown>}");
+    await waitFor(() => expect(anonymised).toBeChecked());
+    await user.keyboard("{/ArrowDown}");
     await user.click(screen.getByRole("button", { name: "Create link" }));
     expect(onShare.mock.calls).toEqual([[{ audience: undefined, anonymised: true, note: "" }]]);
   });
@@ -430,6 +463,218 @@ describe("candidate share dialog, before a link is made", () => {
   });
 });
 
+describe("candidate share dialog, the note's side held by the host", () => {
+  const mounts = vi.fn();
+  function Recorder() {
+    const [takes, setTakes] = useState(0);
+    useEffect(() => {
+      mounts();
+    }, []);
+    return (
+      <button type="button" onClick={() => setTakes((count) => count + 1)}>
+        Fictional recorder, {takes} takes
+      </button>
+    );
+  }
+  const side = (name: string) => screen.getByRole("tab", { name });
+  const held = (noteFormat: CandidateShareNoteFormat, overrides: Partial<CandidateShareDialogProps> = {}) =>
+    renderDialog({ onShare: vi.fn(), anonymisable: true, note: true, recorder: <Recorder />, noteFormat, ...overrides });
+
+  afterEach(() => mounts.mockClear());
+
+  it("switches sides when the host says, remounting nothing and leaving focus where it was", async () => {
+    const user = userEvent.setup();
+    const { rerender, props } = held("voice");
+    const surface = dialog();
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+
+    // A take in the recorder.
+    await user.click(screen.getByRole("button", { name: "Fictional recorder, 0 takes" }));
+    const recorder = screen.getByRole("button", { name: "Fictional recorder, 1 takes" });
+    // The person sharing has just asked for an anonymised page. The host
+    // has a link for that already, and its note is a written one.
+    const anonymised = screen.getByRole("radio", { name: /^Anonymised/ });
+    await user.click(anonymised);
+    expect(anonymised).toHaveFocus();
+
+    rerender(<CandidateShareDialog {...props} noteFormat="written" choices={{ note: "A fictional saved note" }} />);
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tabpanel", { name: "Written note" })).toHaveAttribute("data-state", "active");
+    expect(screen.getByRole("textbox", { name: "A note for them" })).toHaveValue("A fictional saved note");
+    // The same dialog, and the same recorder with its take, hidden and not unmounted.
+    expect(dialog()).toBe(surface);
+    expect(screen.getByText("Fictional recorder, 1 takes")).toBe(recorder);
+    expect(recorder.closest("[role='tabpanel']")).toHaveAttribute("data-state", "inactive");
+    expect(mounts).toHaveBeenCalledTimes(1);
+    // Focus is where the person sharing left it.
+    expect(anonymised).toHaveFocus();
+
+    rerender(<CandidateShareDialog {...props} noteFormat="voice" />);
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("button", { name: "Fictional recorder, 1 takes" })).toBe(recorder);
+    expect(dialog()).toBe(surface);
+    expect(mounts).toHaveBeenCalledTimes(1);
+    expect(anonymised).toHaveFocus();
+  });
+
+  it("tells the host which side the person sharing asks for, once a press, and shows the side the host holds", async () => {
+    const user = userEvent.setup();
+    const onNoteFormatChange = vi.fn();
+    const { rerender, props } = held("voice", { onNoteFormatChange });
+
+    await user.click(side("Written note"));
+    expect(onNoteFormatChange.mock.calls).toEqual([["written"]]);
+    // Held, so it is the host that switches.
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    // Asked again, the host is told again.
+    await user.click(side("Written note"));
+    expect(onNoteFormatChange.mock.calls).toEqual([["written"], ["written"]]);
+    // The side already showing is nothing to ask for.
+    await user.click(side("Voice note"));
+    expect(onNoteFormatChange).toHaveBeenCalledTimes(2);
+
+    rerender(<CandidateShareDialog {...props} noteFormat="written" />);
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    await user.click(side("Voice note"));
+    expect(onNoteFormatChange.mock.calls).toEqual([["written"], ["written"], ["voice"]]);
+  });
+
+  it("switches on a press, Enter or Space, and never because focus reached a tab", async () => {
+    const user = userEvent.setup();
+    const onNoteFormatChange = vi.fn();
+    renderDialog({ note: true, recorder: <Recorder />, onNoteFormatChange });
+
+    // The arrow keys move between the two tabs, and change nothing.
+    await user.click(side("Voice note"));
+    await user.keyboard("{ArrowRight}");
+    await waitFor(() => expect(side("Written note")).toHaveFocus());
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    expect(onNoteFormatChange).not.toHaveBeenCalled();
+
+    await user.keyboard("{Enter}");
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    expect(onNoteFormatChange.mock.calls).toEqual([["written"]]);
+
+    await user.keyboard("{ArrowLeft}");
+    await waitFor(() => expect(side("Voice note")).toHaveFocus());
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    await user.keyboard(" ");
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    expect(onNoteFormatChange.mock.calls).toEqual([["written"], ["voice"]]);
+  });
+
+  it("keeps the host's side when focus comes back to the other side's tab", async () => {
+    const user = userEvent.setup();
+    const onNoteFormatChange = vi.fn();
+    const { rerender, props } = held("voice", { onNoteFormatChange });
+
+    // Focus is on the tab of the side showing when the host switches sides.
+    await user.click(side("Voice note"));
+    expect(side("Voice note")).toHaveFocus();
+    rerender(<CandidateShareDialog {...props} noteFormat="written" />);
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    expect(side("Voice note")).toHaveFocus();
+
+    // Another window comes in front and goes: focus leaves the tab and
+    // returns to it. A tab that took its side with it on focus would switch
+    // back here, and tell the host a side nobody asked for.
+    act(() => {
+      side("Voice note").blur();
+      side("Voice note").focus();
+    });
+    // The same from the keyboard, away and back.
+    await user.tab();
+    await user.tab({ shift: true });
+
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tabpanel", { name: "Written note" })).toHaveAttribute("data-state", "active");
+    expect(onNoteFormatChange).not.toHaveBeenCalled();
+  });
+
+  it("follows a host that keeps the side in its own state", async () => {
+    const user = userEvent.setup();
+    function Host() {
+      const [format, setFormat] = useState<CandidateShareNoteFormat>("written");
+      return (
+        <CandidateShareDialog
+          open
+          onOpenChange={() => undefined}
+          candidateName="Mei Tanaka"
+          note
+          recorder={<Recorder />}
+          noteFormat={format}
+          onNoteFormatChange={setFormat}
+        />
+      );
+    }
+    render(<Host />);
+
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    await user.click(side("Voice note"));
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tabpanel", { name: "Voice note" })).toHaveAttribute("data-state", "active");
+  });
+
+  it("still switches by itself where the host holds nothing, and says which side", async () => {
+    const user = userEvent.setup();
+    const onNoteFormatChange = vi.fn();
+    renderDialog({ note: true, recorder: <Recorder />, defaultNoteFormat: "written", onNoteFormatChange });
+
+    expect(side("Written note")).toHaveAttribute("aria-selected", "true");
+    await user.click(side("Voice note"));
+    expect(side("Voice note")).toHaveAttribute("aria-selected", "true");
+    expect(onNoteFormatChange.mock.calls).toEqual([["voice"]]);
+  });
+
+  it("puts focus on the switch when the side it was in is the one hidden", async () => {
+    const user = userEvent.setup();
+    const { rerender, props } = held("written", { defaultChoices: { note: "A fictional note" } });
+
+    // In the note, as someone reading it over would be.
+    const field = screen.getByRole("textbox", { name: "A note for them" });
+    await user.click(field);
+    expect(field).toHaveFocus();
+
+    // Hidden, the field could not keep it, and the browser would drop it on
+    // the page behind the dialog.
+    rerender(<CandidateShareDialog {...props} noteFormat="voice" />);
+    expect(side("Voice note")).toHaveFocus();
+    // The note is still there for when the switch goes back.
+    expect(field).toHaveValue("A fictional note");
+    expect(field).toBe(screen.getByRole("textbox", { name: "A note for them" }));
+  });
+
+  it("finds its own hidden side, not a hidden panel inside the recorder", async () => {
+    const user = userEvent.setup();
+    // A host's recorder with tabs of its own, one of them not showing.
+    const recorder = (
+      <div>
+        <div role="tabpanel" data-state="inactive" aria-label="Fictional recorder settings">
+          <button type="button">Fictional setting</button>
+        </div>
+        <button type="button">Fictional recorder</button>
+      </div>
+    );
+    const { rerender, props } = held("written", { recorder, defaultChoices: { note: "A fictional note" } });
+
+    await user.click(screen.getByRole("textbox", { name: "A note for them" }));
+    rerender(<CandidateShareDialog {...props} noteFormat="voice" />);
+    expect(side("Voice note")).toHaveFocus();
+
+    // And focus in the recorder is its own to keep while the recorder shows.
+    await user.click(screen.getByRole("button", { name: "Fictional setting" }));
+    rerender(<CandidateShareDialog {...props} noteFormat="voice" choices={{ note: "Another fictional note" }} />);
+    expect(screen.getByRole("button", { name: "Fictional setting" })).toHaveFocus();
+  });
+
+  it("ignores a held side where there is no switch", () => {
+    renderDialog({ note: true, noteFormat: "voice" });
+
+    expect(screen.queryByRole("tablist")).toBeNull();
+    expect(screen.getByRole("textbox", { name: "A note for them" })).toBeInTheDocument();
+  });
+});
+
 describe("candidate share dialog, making the link", () => {
   it("holds itself while the host makes the link, then shows it with Copy", async () => {
     const user = userEvent.setup();
@@ -526,6 +771,44 @@ describe("candidate share dialog, making the link", () => {
     expect(onShare).toHaveBeenCalledTimes(2);
   });
 
+  it("brings a link that couldn't be made, or an error of the host's, into view", async () => {
+    // It is under everything the dialog asks, which on a small window is
+    // under the dialog's own fold. This DOM has no scrolling of its own.
+    const scrolled: Array<[Element, unknown]> = [];
+    const prototype = Element.prototype as { scrollIntoView?: (options?: unknown) => void };
+    const before = prototype.scrollIntoView;
+    prototype.scrollIntoView = function scrollIntoView(this: Element, options?: unknown) {
+      scrolled.push([this, options]);
+    };
+    try {
+      const user = userEvent.setup();
+      const onShare = vi.fn().mockRejectedValue(new Error("offline"));
+      const { rerender, props } = renderDialog({ onShare, note: true });
+      expect(scrolled).toEqual([]);
+
+      await user.click(screen.getByRole("button", { name: "Create link" }));
+      const alert = await within(dialog()).findByRole("alert");
+      expect(scrolled).toEqual([[alert, { block: "nearest" }]]);
+
+      // Again each time it fails, since the person may have scrolled away.
+      await user.click(screen.getByRole("button", { name: "Create link" }));
+      await waitFor(() => expect(scrolled).toHaveLength(2));
+      expect(scrolled[1]).toEqual([within(dialog()).getByRole("alert"), { block: "nearest" }]);
+
+      // An error of the host's own, the same.
+      rerender(<CandidateShareDialog {...props} open={false} />);
+      await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+      scrolled.length = 0;
+      rerender(<CandidateShareDialog {...props} onShare={vi.fn()} />);
+      expect(scrolled).toEqual([]);
+      rerender(<CandidateShareDialog {...props} onShare={vi.fn()} error="This person's links couldn't be read." />);
+      expect(scrolled).toEqual([[within(dialog()).getByRole("alert"), { block: "nearest" }]]);
+    } finally {
+      if (before) prototype.scrollIntoView = before;
+      else delete prototype.scrollIntoView;
+    }
+  });
+
   it("says the default when the host throws, and clears it once something is changed", async () => {
     const user = userEvent.setup();
     renderDialog({
@@ -618,6 +901,90 @@ describe("candidate share dialog, across openings and window sizes", () => {
     expect(screen.getByText("example.com/p/V1StGXR8Z5jdHi6BmyT")).toBeInTheDocument();
     expect(within(dialog()).getByRole("status")).toHaveTextContent("Your link is ready.");
     expect(onShare.mock.calls).toEqual([[{ audience: undefined, anonymised: false, note: "A fictional note" }]]);
+  });
+});
+
+describe("candidate share dialog, fitting a laptop", () => {
+  it("lets the centred dialog be as tall as the window, and leaves a phone the kit's bottom sheet", () => {
+    renderDialog({ onShare: vi.fn(), avatar: <span>Fictional face</span>, note: true });
+
+    // The kit caps its centred dialog at 85% of the window. The dialog asks
+    // for the window's height less a margin, and for room beside the close
+    // control, on the kit's own marks for the centred dialog and its header.
+    expect(dialog()).toHaveAttribute("data-slot", "dialog-content");
+    expect(dialog()).toHaveClass("data-[slot=dialog-content]:max-h-[calc(100dvh-2rem)]");
+    const header = dialog().querySelector("[data-slot='dialog-header']") as HTMLElement;
+    expect(header).toContainElement(part("summary"));
+    expect(header).toHaveClass("data-[slot=dialog-header]:pe-12");
+    // A long word in the title, or in the line under it, wraps: left whole
+    // it would widen a bottom sheet's header past the sheet.
+    expect(header).toHaveClass("[overflow-wrap:anywhere]");
+
+    // Those marks aren't on a bottom sheet, so the same classes change
+    // nothing there: it keeps the kit's height, and has no close control to
+    // leave room for. Nothing sets either outright.
+    act(() => viewport.resize(false));
+    expect(dialog()).toHaveAttribute("data-slot", "drawer-content");
+    const sheetHeader = dialog().querySelector("[data-slot='drawer-header']") as HTMLElement;
+    expect(sheetHeader).toContainElement(part("summary"));
+    expect([...dialog().classList].filter((name) => name.endsWith("max-h-[calc(100dvh-2rem)]"))).toEqual([
+      "data-[slot=dialog-content]:max-h-[calc(100dvh-2rem)]",
+    ]);
+    expect([...sheetHeader.classList].filter((name) => name.endsWith("pe-12"))).toEqual(["data-[slot=dialog-header]:pe-12"]);
+    // Beside a face, the sheet's title reads from the face, not from the middle.
+    expect(sheetHeader).toHaveClass("text-start");
+    expect(sheetHeader).not.toHaveClass("text-center");
+  });
+
+  it("leaves a title with no face beside it as the kit sets it", () => {
+    renderDialog({ onShare: vi.fn() });
+
+    act(() => viewport.resize(false));
+    const sheetHeader = dialog().querySelector("[data-slot='drawer-header']") as HTMLElement;
+    expect(sheetHeader).not.toHaveClass("text-start");
+    expect(part("summary")).toBeNull();
+  });
+
+  it("shows a link there already is before anything it asks, with Copy the first thing to reach", () => {
+    renderDialog({
+      url: LINK,
+      onShare: vi.fn(),
+      avatar: <span>Fictional face</span>,
+      reason: "Has done the fictional rebuild twice.",
+      audiences: AUDIENCES,
+      anonymisable: true,
+      note: true,
+      recorder: <button type="button">Fictional recorder</button>,
+    });
+
+    const link = part("link");
+    expect(body()).toHaveAttribute("data-view", "compose");
+    // Under the summary and the reason, above every question.
+    expect(follows(part("reason"), link)).toBe(true);
+    for (const question of ["audience", "visibility", "note"]) expect(follows(link, part(question))).toBe(true);
+    // So someone back for the link reaches Copy before anything else in the dialog's body.
+    const first = body().querySelector("button, input, textarea, [tabindex]");
+    expect(first).toBe(within(link).getByRole("button", { name: "Copy" }));
+  });
+
+  it("sets the note's switch on the note's own heading line", () => {
+    renderDialog({ onShare: vi.fn(), note: true, recorder: <button type="button">Fictional recorder</button> });
+
+    const line = within(part("note")).getByRole("heading", { name: "A note for them" }).parentElement as HTMLElement;
+    expect(within(line).getByRole("tablist", { name: "Note format" })).toBeInTheDocument();
+    // The two sides are under the line, not on it.
+    expect(within(line).queryByRole("tabpanel")).toBeNull();
+    expect(within(part("note")).getAllByRole("tabpanel", { hidden: true })).toHaveLength(2);
+  });
+
+  it("keeps the side of the note showing when the window narrows to a bottom sheet", async () => {
+    const user = userEvent.setup();
+    renderDialog({ onShare: vi.fn(), note: true, recorder: <button type="button">Fictional recorder</button> });
+
+    await user.click(screen.getByRole("tab", { name: "Written note" }));
+    act(() => viewport.resize(false));
+    expect(dialog()).toHaveAttribute("data-slot", "drawer-content");
+    expect(screen.getByRole("tab", { name: "Written note" })).toHaveAttribute("aria-selected", "true");
   });
 });
 
@@ -720,12 +1087,36 @@ describe("candidate share dialog, with a link", () => {
     await user.click(within(link).getByRole("button", { name: "Copy" }));
     expect(writeText.mock.calls).toEqual([[LINK]]);
     expect(await within(link).findByRole("button", { name: "Copied" })).toBeInTheDocument();
+    // Over the questions the button says so, and the line that says it too
+    // is only heard: shown, it would push every question down and back.
+    const status = within(dialog()).getByRole("status");
+    expect(status).toHaveTextContent("Link copied.");
+    expect(status).toHaveClass("sr-only");
 
     await user.click(screen.getByRole("button", { name: "Save changes" }));
     expect(onShare).toHaveBeenCalledTimes(1);
     // The link the host hands back is the one shown from then on.
     expect(await screen.findByText("example.com/p/updated")).toBeInTheDocument();
     expect(body()).toHaveAttribute("data-view", "result");
+    // With the questions gone, the line is there to read, in the same element.
+    expect(within(dialog()).getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent("Your link is ready.");
+    expect(status).not.toHaveClass("sr-only");
+  });
+
+  it("says in view that the browser wouldn't copy a link shown over the questions", async () => {
+    const user = userEvent.setup();
+    renderDialog({ url: LINK, onShare: vi.fn(), note: true });
+    useClipboard({ writeText: vi.fn().mockRejectedValue(new Error("NotAllowedError")) });
+
+    await user.click(screen.getByRole("button", { name: "Copy" }));
+
+    expect(await screen.findByRole("textbox", { name: "Link" })).toHaveValue(LINK);
+    expect(body()).toHaveAttribute("data-view", "compose");
+    const status = within(dialog()).getByRole("status");
+    expect(status).toHaveTextContent("Copying didn't work in this browser. The link is selected, so you can copy it yourself.");
+    // Nothing else says it, so this is to be read.
+    expect(status).not.toHaveClass("sr-only");
   });
 });
 

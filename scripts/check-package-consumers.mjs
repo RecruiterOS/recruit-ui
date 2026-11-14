@@ -47,6 +47,7 @@ import {
   candidateShareLinkText,
   type CandidateShareChoices,
   type CandidateShareDialogProps,
+  type CandidateShareNoteFormat,
 } from "@recruiteros/recruit-ui/recruit/candidate-share-dialog";
 import {
   CandidateSharedProfile,
@@ -168,6 +169,8 @@ const shareDialog: CandidateShareDialogProps = {
   audiences: [{ id: "client", label: "Fictional audience", live: false }],
   anonymisable: true,
   note: true,
+  noteFormat: "written",
+  onNoteFormatChange: (format: CandidateShareNoteFormat) => void format,
   defaultChoices: shareChoices,
   onShare: async (choices) => "https://example.com/p/" + (choices.audience ?? ""),
 };

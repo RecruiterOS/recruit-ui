@@ -39,11 +39,15 @@ interface CandidateShareChoices {
 }
 /** The fixed words of the share dialog. Pass `labels` to change any. */
 interface CandidateShareDialogLabels {
-    /** The dialog's title, given who is being shared. */
+    /**
+     * The dialog's title, given who is being shared. It is where the person
+     * is named: the summary beside it is their face and `headline`, and says
+     * the name no second time.
+     */
     title: (name: string) => ReactNode;
     /** A line under the title, which also describes the dialog to a screen reader. None by default. */
     description: ReactNode;
-    /** Over the sharer's own reason in the summary. */
+    /** Over the sharer's own reason, under the summary. */
     reason: ReactNode;
     /** Over the audiences, and their group's accessible name. */
     audience: string;
@@ -105,13 +109,13 @@ interface CandidateShareDialogProps {
     open: boolean;
     /** Called when the dialog should close: from its close control, Done, or a share that made no link to show. */
     onOpenChange: (open: boolean) => void;
-    /** Who is being shared, for the title and the summary. */
+    /** Who is being shared, for the title. */
     candidateName: string;
-    /** Their face in the summary, usually the kit's PersonAvatar at 44px. */
+    /** Their face beside the title, usually the kit's PersonAvatar at 44px. */
     avatar?: ReactNode;
-    /** Under their name in the summary, such as their title and company. */
+    /** Under the title, such as their title and company. */
     headline?: ReactNode;
-    /** The sharer's own reason for putting them forward, under the summary. */
+    /** The sharer's own reason for putting them forward, under the title. */
     reason?: ReactNode;
     /**
      * Who the link can be for. With none, the dialog doesn't ask, and
@@ -128,15 +132,31 @@ interface CandidateShareDialogProps {
      * A recorder for a spoken note, such as `CandidatePresentationRecorder`.
      * The host owns the recording and what happens to it. With `note` as
      * well, the two sit behind a switch, the recorder first, and the one not
-     * showing stays mounted, so a take is never lost to the switch.
+     * showing stays mounted, so a take is never lost to the switch. A side
+     * shows when its tab is pressed, with a pointer, Enter or Space; the
+     * arrow keys move between the two tabs and change nothing.
      */
     recorder?: ReactNode;
     /**
      * Which side of that switch shows as the dialog opens: `voice` (the
      * default), or `written` for a link that already has a typed note and no
-     * recording.
+     * recording. It is read as each opening starts; a host that learns the
+     * side later holds it as `noteFormat`.
      */
     defaultNoteFormat?: CandidateShareNoteFormat;
+    /**
+     * Which side of that switch shows, for a host that holds it, such as one
+     * that learns which side a link's note is on only once it has read its
+     * links, or as the person sharing changes who the link names. Changing it
+     * remounts neither side, so a take in the recorder is kept, and leaves
+     * focus where it is.
+     */
+    noteFormat?: CandidateShareNoteFormat;
+    /**
+     * Called with the side the person sharing asks for, once each time they
+     * press the other side's tab, whether or not the host holds the side.
+     */
+    onNoteFormatChange?: (format: CandidateShareNoteFormat) => void;
     /**
      * The choices, for a host that holds them, such as one that fills the
      * note in from a link it already has. Any left out are the dialog's own.
@@ -148,8 +168,9 @@ interface CandidateShareDialogProps {
     onChoicesChange?: (choices: CandidateShareChoices) => void;
     /**
      * The link, where the host already has one for these choices. The dialog
-     * shows it with Copy, and the share button then says `labels.update`.
-     * With no `onShare`, the dialog is the link and its Copy alone.
+     * shows it with Copy above everything it asks, where it is in view as the
+     * dialog opens, and the share button then says `labels.update`. With no
+     * `onShare`, the dialog is the link and its Copy alone.
      */
     url?: string | null;
     /**
@@ -181,19 +202,22 @@ interface CandidateShareDialogProps {
  * shared, who the link is for, whether the page names them, a note for
  * whoever opens it, then the link with Copy.
  *
- * Each part is optional. `avatar`, `headline` and `reason` are the summary
- * at the top. `audiences` asks who the link is for: each has its own
- * description, its own fields as a slot, and may already have a live link.
- * `anonymisable` asks whether the page names the person. `note` is a typed
- * note and `recorder` a slot for a spoken one.
+ * Each part is optional. `avatar` and `headline` sit with the title, which
+ * names the person, and `reason` under them. `audiences` asks who the link
+ * is for: each has its own description, its own fields as a slot, and may
+ * already have a live link. `anonymisable` asks whether the page names the
+ * person. `note` is a typed note and `recorder` a slot for a spoken one;
+ * with both, a switch shows one side at a time, which the host may hold as
+ * `noteFormat`.
  *
  * The host makes the link. `onShare` is given the choices and returns the
  * link, or a promise for it; the dialog then shows the link, cut short, with
- * Copy. A host that already has the link passes it as `url`. Copy writes to
- * the clipboard inside its own click, says "Copied" and announces it; where
- * the browser refuses, the whole link is put in a field and selected, to
- * copy by hand. `copyOnShare` asks the clipboard in the click that makes
- * the link.
+ * Copy. A host that already has the link passes it as `url`, and it shows
+ * above everything the dialog asks, in view as the dialog opens. Copy
+ * writes to the clipboard inside its own click, says "Copied" and announces
+ * it; where the browser refuses, the whole link is put in a field and
+ * selected, to copy by hand. `copyOnShare` asks the clipboard in the click
+ * that makes the link.
  *
  * It fetches nothing and stores nothing: every opening starts from
  * `defaultChoices`, and a host that keeps a link's note or audience passes
@@ -204,7 +228,9 @@ interface CandidateShareDialogProps {
  * It is the kit's responsive dialog (a centred dialog, or a bottom sheet on
  * a phone), which keeps the kit's `data-slot` on its content; the dialog's
  * own body is marked `data-slot="candidate-share-dialog"`, with `data-view`
- * (`compose` or `result`).
+ * (`compose` or `result`). The centred dialog may be as tall as the window,
+ * less a margin, so what it asks fits a laptop without scrolling; past
+ * that, its body scrolls between the title and the share button.
  */
 declare function CandidateShareDialog(props: CandidateShareDialogProps): react.JSX.Element;
 
