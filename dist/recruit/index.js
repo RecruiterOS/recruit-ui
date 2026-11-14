@@ -1,5 +1,8 @@
 "use client";
-import "../chunk-2A64EP4Z.js";
+import "../chunk-AUNFUB62.js";
+import {
+  JobBriefChanges
+} from "../chunk-E7ENIJVS.js";
 import {
   JobClientBadge
 } from "../chunk-4DPYKJJE.js";
@@ -19,6 +22,9 @@ import {
   sourcingTraceSummary
 } from "../chunk-JVTDFZNJ.js";
 import {
+  CandidateSuggestedRolesPanel
+} from "../chunk-VYIPKB27.js";
+import {
   useCandidateVoiceNote
 } from "../chunk-S6VNT7YQ.js";
 import {
@@ -37,9 +43,6 @@ import {
   JobBriefCard
 } from "../chunk-RH6U2JAM.js";
 import {
-  JobBriefChanges
-} from "../chunk-E7ENIJVS.js";
-import {
   formatJobBriefSalary,
   groupJobBriefChanges,
   jobBriefChangeLabels,
@@ -50,6 +53,13 @@ import {
   jobBriefVersionLabels,
   jobBriefView
 } from "../chunk-5F2DPU3C.js";
+import {
+  CandidateRoleMatchList,
+  CandidateRoleMatchSummary
+} from "../chunk-TRPMV2DM.js";
+import {
+  CandidateSelectableAvatar
+} from "../chunk-55QNF7Q2.js";
 import {
   CandidateSharedProfileButton
 } from "../chunk-3PLNO5JF.js";
@@ -69,8 +79,12 @@ import {
   CandidateStageActions
 } from "../chunk-A4CA7P4F.js";
 import {
-  CandidateSuggestedRolesPanel
-} from "../chunk-VYIPKB27.js";
+  CandidatePresentationRecorder,
+  supportedRecordingMimeType
+} from "../chunk-H2QEKGHY.js";
+import {
+  CandidateProfileDialog
+} from "../chunk-JKIRGRRB.js";
 import {
   CandidateProfileLinkButton
 } from "../chunk-MQMPVZLZ.js";
@@ -90,12 +104,8 @@ import {
   CandidateReviewCard
 } from "../chunk-5CTC3QPI.js";
 import {
-  CandidateRoleMatchList,
-  CandidateRoleMatchSummary
-} from "../chunk-TRPMV2DM.js";
-import {
-  CandidateSelectableAvatar
-} from "../chunk-55QNF7Q2.js";
+  CandidateJobEvidence
+} from "../chunk-43WWASGQ.js";
 import {
   CandidateNoteCard,
   CandidateNoteComposer,
@@ -114,15 +124,14 @@ import {
   CandidatePendingNote
 } from "../chunk-3OWWB6XI.js";
 import {
+  CandidatePipelineBoard
+} from "../chunk-ELPC5EHL.js";
+import {
   CandidatePipelineCard
 } from "../chunk-MMB4GPLS.js";
 import {
-  CandidatePresentationRecorder,
-  supportedRecordingMimeType
-} from "../chunk-H2QEKGHY.js";
-import {
-  CandidateProfileDialog
-} from "../chunk-JKIRGRRB.js";
+  CandidateDestinationStatus
+} from "../chunk-WM5SRBTX.js";
 import {
   CandidateActionMenu,
   CandidateDetailHeader,
@@ -155,9 +164,6 @@ import {
 } from "../chunk-F2DBAQLW.js";
 import "../chunk-NBZS6VTO.js";
 import {
-  CandidateJobEvidence
-} from "../chunk-43WWASGQ.js";
-import {
   CandidateContactChannelsMenu
 } from "../chunk-LBAMUWXA.js";
 import {
@@ -173,11 +179,11 @@ import {
   CandidateDecisionBar
 } from "../chunk-TMC65IQ7.js";
 import {
+  CandidateDecisionReasonSheet
+} from "../chunk-AGCV77HE.js";
+import {
   CandidateDecisionSummary
 } from "../chunk-YNTWWYCE.js";
-import {
-  CandidateDestinationStatus
-} from "../chunk-WM5SRBTX.js";
 import {
   CandidateCallCard
 } from "../chunk-N75IMABN.js";
@@ -204,7 +210,7 @@ import {
 import "../chunk-YKEE5RQG.js";
 import {
   CandidateClientDecision
-} from "../chunk-FEAHQ2K4.js";
+} from "../chunk-LZ2XCCEV.js";
 import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";
@@ -213,7 +219,7 @@ import {
 } from "../chunk-YAL7V43Q.js";
 import {
   CandidateDecisionReasonDialog
-} from "../chunk-3RBD3Y2K.js";
+} from "../chunk-JNUWDHFV.js";
 import "../chunk-KCKE3KQE.js";
 import {
   normalizeCallParticipants,
@@ -261,6 +267,7 @@ export {
   CandidateDecisionBar,
   CandidateDecisionButtons,
   CandidateDecisionReasonDialog,
+  CandidateDecisionReasonSheet,
   CandidateDecisionSummary,
   CandidateDefinitionSection,
   CandidateDestinationStatus,
@@ -281,6 +288,7 @@ export {
   CandidateOutreachComposer,
   CandidateOutreachDraftList,
   CandidatePendingNote,
+  CandidatePipelineBoard,
   CandidatePipelineCard,
   CandidatePipelineList,
   CandidatePresentationRecorder,

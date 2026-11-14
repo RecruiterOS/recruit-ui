@@ -6,7 +6,7 @@ var _chunkVVPSU63Ncjs = require('./chunk-VVPSU63N.cjs');
 var _chunkOFF5LAYRcjs = require('./chunk-OFF5LAYR.cjs');
 
 
-var _chunkFZZAX737cjs = require('./chunk-FZZAX737.cjs');
+var _chunkUSK6QY5Zcjs = require('./chunk-USK6QY5Z.cjs');
 
 // src/recruit/candidate-client-decision.tsx
 var _button = require('@epicbagel/saas-kit/primitives/button');
@@ -57,7 +57,7 @@ function CandidateClientDecision({
     }
   };
   const dialog = /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-    _chunkFZZAX737cjs.CandidateDecisionReasonDialog,
+    _chunkUSK6QY5Zcjs.CandidateDecisionReasonDialog,
     {
       open: asking !== null,
       title: asking === "no" ? text.noTitle(candidateName) : text.yesTitle(candidateName),

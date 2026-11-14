@@ -21,6 +21,7 @@ var DEFAULT_LABELS = {
   reason: "Why?",
   cancel: "Cancel"
 };
+var OPTIONAL_REASON_LABEL = "Why? (optional)";
 var SUGGESTION_SEPARATOR = " \xB7 ";
 function CandidateDecisionReasonDialog(props) {
   return props.id ? /* @__PURE__ */ jsx(ReasonDialog, { ...props, id: props.id }) : /* @__PURE__ */ jsx(ReasonDialogWithGeneratedId, { ...props });
@@ -36,12 +37,18 @@ function ReasonDialog({
   placeholder,
   confirmLabel,
   confirmTone = "default",
+  reasonOptional = false,
   onSubmit,
   onClose,
   labels,
   id
 }) {
-  const text = { ...DEFAULT_LABELS, ...labels };
+  const text = {
+    ...DEFAULT_LABELS,
+    // The field says so itself where it can be left empty.
+    ...reasonOptional ? { reason: OPTIONAL_REASON_LABEL } : null,
+    ...labels
+  };
   const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
   useEffect(() => {
@@ -69,7 +76,12 @@ function ReasonDialog({
             size: "micro",
             weight: "normal",
             interactive: true,
-            onClick: () => setReason((current) => current ? `${current}${SUGGESTION_SEPARATOR}${suggestion}` : suggestion),
+            onClick: () => (
+              // Spaces alone are no reason to join the suggestion onto.
+              setReason(
+                (current) => current.trim() ? `${current}${SUGGESTION_SEPARATOR}${suggestion}` : suggestion
+              )
+            ),
             children: suggestion
           },
           index
@@ -85,6 +97,7 @@ function ReasonDialog({
             onChange: (event) => setReason(event.target.value),
             rows: 3,
             placeholder,
+            "aria-required": !reasonOptional,
             autoFocus: true
           }
         )
@@ -96,7 +109,7 @@ function ReasonDialog({
         Button,
         {
           onClick: submit,
-          disabled: submitting || reason.trim().length === 0,
+          disabled: submitting || !reasonOptional && reason.trim().length === 0,
           variant: confirmTone,
           children: [
             submitting ? /* @__PURE__ */ jsx(Icon, { icon: Loader2, size: "md", spin: true }) : null,
