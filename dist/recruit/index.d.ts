@@ -54,6 +54,9 @@ export { CandidateStageActions, CandidateStageActionsLabels, CandidateStageActio
 export { CandidateStageOption, CandidateStageSelect, CandidateStageSelectProps } from './candidate-stage-select.js';
 export { CandidateSuggestedRolesPanel, CandidateSuggestedRolesPanelProps } from './candidate-suggested-roles-panel.js';
 export { CandidateVoiceNote, UseCandidateVoiceNoteOptions, useCandidateVoiceNote } from './candidate-voice-note.js';
+export { ClientSearchBriefVersion, ClientSearchChatProps, ClientSearchConversation, ClientSearchConversationItem, ClientSearchConversationProps, ClientSearchDeliveryItem, ClientSearchTurn } from './client-search-conversation.js';
+export { ClientSearchPage, ClientSearchPageProps, ClientSearchRun } from './client-search-page.js';
+export { ClientSearchAction, ClientSearchBriefPanel, ClientSearchBriefPanelProps, ClientSearchCall, ClientSearchCallButton, ClientSearchCallButtonProps, ClientSearchCallPrompt, ClientSearchCallPromptProps, ClientSearchDelivery, ClientSearchDeliveryProps, ClientSearchLabels, ClientSearchLive, ClientSearchLiveProps, ClientSearchNextActions, ClientSearchNextActionsProps, ClientSearchPerson, ClientSearchProgressPanel, ClientSearchProgressPanelProps, ClientSearchQuestion, ClientSearchQuestionProps, ClientSearchTitleLevel, clientSearchLabels } from './client-search-sections.js';
 export { CurrentCompanyLabel, CurrentCompanyLabelProps } from './current-company-label.js';
 export { CurrentCompanyPopover, CurrentCompanyPopoverProps } from './current-company-popover.js';
 export { DocumentKind, DocumentKindOption, DocumentKindSelect, DocumentKindTone, DocumentList, DocumentListDensity, DocumentListItem, DocumentListItemAction, DocumentListItemLabels, DocumentListItemProps, DocumentListProps, DocumentUploadPanel, DocumentUploadPanelLabels, DocumentUploadPanelProps, formatFileSize } from './document-list.js';
@@ -66,6 +69,7 @@ export { MatchedCallCard, MatchedCallCardLabels, MatchedCallCardProps, MatchedCa
 export { SourcingStepShownStatus, SourcingStepStatus, SourcingTrace, SourcingTraceLabels, SourcingTraceProps, SourcingTraceStep, sourcingStepShownStatus, sourcingTraceLabels, sourcingTraceSummary } from './sourcing-trace.js';
 export { CallInsights, CallInsightsStatus, CallPerson, CallTranscript, SearchCallPeople, normalizeCallParticipants, normalizeCallSegments } from './call-data.js';
 export { CallParticipant, CallSegment } from '@epicbagel/saas-kit/primitives/call-card';
+export { ClientSearchThreadBriefVersion, ClientSearchThreadDelivery, ClientSearchThreadInput, ClientSearchThreadItem, ClientSearchThreadTime, ClientSearchThreadTurn, clientSearchThread } from './client-search-thread.js';
 export { JobBriefChange, JobBriefChangeKind, JobBriefChangeLabels, JobBriefChangeValue, JobBriefCompanyOverview, JobBriefContent, JobBriefInterviewStep, JobBriefLabels, JobBriefPersona, JobBriefRoleDetails, JobBriefRuleKind, JobBriefRuleLabels, JobBriefTitleStyle, JobBriefVersion, JobBriefVersionLabels, JobBriefView, JobBriefViewFact, JobBriefViewOptions, JobBriefViewSection, formatJobBriefSalary, groupJobBriefChanges, jobBriefChangeLabels, jobBriefChangeText, jobBriefLabels, jobBriefTitle, jobBriefVersionLabel, jobBriefVersionLabels, jobBriefView } from './job-brief-view.js';
 import '../core/calendar-date.js';
 import 'react';
@@ -79,5 +83,6 @@ import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import '@epicbagel/saas-kit/primitives/notes';
 import '@epicbagel/saas-kit/primitives/select';
-import '@epicbagel/saas-kit/primitives/document-preview';
+import '@epicbagel/saas-kit/primitives/chat';
 import '@epicbagel/saas-kit/primitives/markdown';
+import '@epicbagel/saas-kit/primitives/document-preview';

@@ -142,4 +142,115 @@ describe("candidate client decision", () => {
     expect(screen.queryByRole("alert")).toBeNull();
     expect(screen.getByText("You said No")).toBeInTheDocument();
   });
+
+  it("still asks why, and saves with no reason, where the reason is optional", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockResolvedValue(undefined);
+    const { rerender } = render(
+      <CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} reasonOptional />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    const dialog = screen.getByRole("dialog", { name: "Yes to Mei Tanaka" });
+    // The field says it can be left empty, and tells a screen reader so.
+    const field = within(dialog).getByLabelText("Why? (optional)");
+    expect(field).toHaveAttribute("aria-required", "false");
+    expect(onDecide).not.toHaveBeenCalled();
+    await user.click(within(dialog).getByRole("button", { name: "Save Yes" }));
+
+    expect(onDecide.mock.calls).toEqual([["yes", ""]]);
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    // A reason given is still handed over, trimmed.
+    await user.click(screen.getByRole("button", { name: "No" }));
+    await user.type(within(screen.getByRole("dialog")).getByRole("textbox"), "  Fictional reason  ");
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Save No" }));
+    expect(onDecide.mock.calls[1]).toEqual(["no", "Fictional reason"]);
+
+    // An answer recorded without a reason shows without one.
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" decision="yes" reason="" onDecide={onDecide} reasonOptional />);
+    expect(screen.getByText("You said Yes").closest("[data-slot=candidate-client-decision]")).toHaveTextContent(/^You said YesChange$/);
+  });
+
+  it("words the reason field as the host asks, optional or not", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockResolvedValue(undefined);
+    const { rerender } = render(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        onDecide={onDecide}
+        reasonOptional
+        labels={{ reason: "Anything to add?" }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "No" }));
+    expect(within(screen.getByRole("dialog")).getByLabelText("Anything to add?")).toBeInTheDocument();
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Cancel" }));
+
+    // Without the mode, nothing has changed: the reason is required and asked for plainly.
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} />);
+    await user.click(screen.getByRole("button", { name: "No" }));
+    const dialog = screen.getByRole("dialog");
+    expect(within(dialog).getByLabelText("Why?")).toHaveAttribute("aria-required", "true");
+    expect(within(dialog).getByRole("button", { name: "Save No" })).toBeDisabled();
+    expect(onDecide).not.toHaveBeenCalled();
+  });
+
+  it("shows the answer and takes none where it is only read", () => {
+    const onDecide = vi.fn();
+    const { container, rerender } = render(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        decision="no"
+        reason="Fictional reason"
+        onDecide={onDecide}
+        readOnly
+      />,
+    );
+
+    const root = container.querySelector("[data-slot=candidate-client-decision]")!;
+    expect(root).toHaveAttribute("data-decision", "no");
+    expect(root).toHaveAttribute("data-read-only", "true");
+    // In the third person: the reader isn't the client.
+    expect(screen.getByText("Said No")).toBeInTheDocument();
+    expect(screen.getByText("Fictional reason")).toBeInTheDocument();
+    expect(screen.queryByText("You said No")).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" decision="yes" onDecide={onDecide} readOnly />);
+    expect(screen.getByText("Said Yes")).toBeInTheDocument();
+
+    // No answer yet: that is said, and there is still nothing to press.
+    rerender(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={onDecide} readOnly />);
+    expect(container.querySelector("[data-slot=candidate-client-decision]")).toHaveAttribute("data-decision", "none");
+    expect(screen.getByText("No answer yet")).toBeInTheDocument();
+    expect(screen.queryByRole("button")).toBeNull();
+
+    rerender(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        onDecide={onDecide}
+        readOnly
+        labels={{ unanswered: "Waiting on the client", readOnlyYes: "The client said Yes" }}
+      />,
+    );
+    expect(screen.getByText("Waiting on the client")).toBeInTheDocument();
+    rerender(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        decision="yes"
+        onDecide={onDecide}
+        readOnly
+        labels={{ unanswered: "Waiting on the client", readOnlyYes: "The client said Yes" }}
+      />,
+    );
+    expect(screen.getByText("The client said Yes")).toBeInTheDocument();
+    expect(onDecide).not.toHaveBeenCalled();
+  });
+
+  it("marks no row read-only unless asked", () => {
+    const { container } = render(<CandidateClientDecision candidateName="Mei Tanaka" onDecide={vi.fn()} />);
+    expect(container.querySelector("[data-slot=candidate-client-decision]")).not.toHaveAttribute("data-read-only");
+  });
 });

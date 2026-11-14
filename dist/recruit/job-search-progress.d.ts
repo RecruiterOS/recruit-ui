@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { HTMLAttributes, Key, ReactNode } from 'react';
+import { Key, ReactNode, HTMLAttributes } from 'react';
 
 /** Where a step of a search stands. */
 type JobSearchStepState = "done" | "current" | "upcoming";

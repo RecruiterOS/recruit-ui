@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 import { existsSync, readFileSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { dirname, join, posix, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isTestFile, sourceFiles, specifiers } from "./imports.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceRegistry = readJson(join(root, "registry.json"));
@@ -106,6 +107,36 @@ function validateWorkflows(item, { source }) {
   }
 }
 
+// Every workflow source installs with the registry: all of src/recruit but
+// its tests and its barrel, which an install has no use for. A file left out
+// of registry/recruit-workflows.json is missing from an install, and whatever
+// imports it fails to resolve there, so a new file is listed with the release
+// that adds it.
+function validateCoverage(item) {
+  const listed = new Set(item.files.map((file) => file.path));
+  const shipped = sourceFiles(join(root, "src/recruit"))
+    .filter((path) => !isTestFile(path))
+    .map((path) => relative(root, path).split(sep).join("/"))
+    .filter((path) => path !== "src/recruit/index.ts");
+  const missing = shipped.filter((path) => !listed.has(path));
+  if (missing.length > 0) {
+    throw new Error(
+      `Workflow sources missing from registry/recruit-workflows.json, so a registry install lacks them:\n- ${missing.join("\n- ")}`,
+    );
+  }
+  // And nothing listed reaches outside the list.
+  for (const { path } of item.files) {
+    if (!/\.tsx?$/.test(path)) continue;
+    for (const specifier of specifiers(readFileSync(join(root, path), "utf8"))) {
+      if (!specifier.startsWith(".")) continue;
+      const target = posix.join(posix.dirname(path), specifier);
+      if (![`${target}.ts`, `${target}.tsx`].some((candidate) => listed.has(candidate))) {
+        throw new Error(`${path} imports ${specifier}, which the registry doesn't install.`);
+      }
+    }
+  }
+}
+
 function validateCatalog(registry, { source }) {
   if (registry.name !== "recruit-ui" || registry.items?.length !== 2) {
     throw new Error("Registry must contain exactly the tokens and recruit namespaces.");
@@ -116,8 +147,11 @@ function validateCatalog(registry, { source }) {
   }
   validateTokens(registry.items[0]);
   validateWorkflows(registry.items[1], { source });
+  if (source) validateCoverage(registry.items[1]);
 }
 
 validateCatalog(sourceRegistry, { source: true });
 validateCatalog(staticRegistry, { source: false });
-console.log("registry valid: GitHub source and static outputs agree on the tokens and workflows items");
+console.log(
+  "registry valid: GitHub source and static outputs agree on the tokens and workflows items, and every workflow source is listed",
+);

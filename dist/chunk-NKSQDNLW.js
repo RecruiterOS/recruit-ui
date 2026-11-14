@@ -30,7 +30,10 @@ var DEFAULT_LABELS = {
   confirmYes: "Save Yes",
   confirmNo: "Save No",
   reason: "Why?",
-  failed: "That didn't save. Try again."
+  failed: "That didn't save. Try again.",
+  readOnlyYes: "Said Yes",
+  readOnlyNo: "Said No",
+  unanswered: "No answer yet"
 };
 function CandidateClientDecision({
   candidateName,
@@ -38,6 +41,8 @@ function CandidateClientDecision({
   reason,
   onDecide,
   suggestions,
+  reasonOptional = false,
+  readOnly = false,
   labels
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
@@ -64,31 +69,34 @@ function CandidateClientDecision({
       suggestions: asking === "no" ? suggestions?.no : suggestions?.yes,
       placeholder: asking === "no" ? text.noPlaceholder : text.yesPlaceholder,
       confirmLabel: asking === "no" ? text.confirmNo : text.confirmYes,
+      reasonOptional,
       onSubmit: submit,
       onClose: () => {
         setAsking(null);
         setFailed(false);
       },
-      labels: { reason: text.reason }
+      labels: labels?.reason === void 0 ? void 0 : { reason: labels.reason }
     }
   );
-  const recorded = decision !== null && !changing && !failed;
+  const recorded = decision !== null && (readOnly || !changing && !failed);
+  const said = decision === "yes" ? readOnly ? text.readOnlyYes : text.saidYes : readOnly ? text.readOnlyNo : text.saidNo;
   return /* @__PURE__ */ jsx(
     CandidateReviewActionRow,
     {
       "data-slot": "candidate-client-decision",
       "data-decision": decision ?? "none",
+      "data-read-only": readOnly || void 0,
       isolateClicks: true,
       children: recorded ? /* @__PURE__ */ jsxs(Fragment, { children: [
         /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
           /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", children: [
             /* @__PURE__ */ jsx(Icon, { icon: decision === "yes" ? ThumbsUp : ThumbsDown, size: "sm" }),
-            /* @__PURE__ */ jsx(Text, { as: "span", size: "sm", weight: "semibold", children: decision === "yes" ? text.saidYes : text.saidNo })
+            /* @__PURE__ */ jsx(Text, { as: "span", size: "sm", weight: "semibold", children: said })
           ] }),
           reason != null && reason !== "" ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", marginTop: "xs", children: reason }) : null
         ] }),
-        /* @__PURE__ */ jsx(Button, { type: "button", variant: "ghost", size: "sm", onClick: () => setChanging(true), children: text.change })
-      ] }) : /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
+        readOnly ? null : /* @__PURE__ */ jsx(Button, { type: "button", variant: "ghost", size: "sm", onClick: () => setChanging(true), children: text.change })
+      ] }) : readOnly ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", children: text.unanswered }) : /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
         /* @__PURE__ */ jsx(
           CandidateDecisionButtons,
           {
