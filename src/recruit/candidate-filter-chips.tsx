@@ -8,7 +8,11 @@ import type { ElementType, HTMLAttributes, ReactNode } from "react";
 import { PRESSED_CHIP_STATES } from "./choice-chips";
 import { COARSE_POINTER_TOUCH_TARGET } from "./touch-targets";
 
-const CHIP_CLASSES = `${PRESSED_CHIP_STATES} ${COARSE_POINTER_TOUCH_TARGET}`;
+// A chip keeps its label's width and the row scrolls: `shrink-0` says so.
+// Without it the row relied on a flex item's automatic minimum, which the
+// touch target's own minimum width replaces, so on a touchscreen a crowded
+// row squeezed every chip to a 44px circle with its label spilling out.
+const CHIP_CLASSES = `shrink-0 ${PRESSED_CHIP_STATES} ${COARSE_POINTER_TOUCH_TARGET}`;
 
 /** One chip: a value the list can be narrowed to. */
 export interface CandidateFilterChipOption<TValue extends string = string> {

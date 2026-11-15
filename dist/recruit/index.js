@@ -186,7 +186,7 @@ import {
 } from "../chunk-63LXPDYZ.js";
 import {
   CandidateFilterChips
-} from "../chunk-TBFQMGTL.js";
+} from "../chunk-XA2B7TH2.js";
 import "../chunk-P5VLMURO.js";
 import {
   CandidateGradeBadge,

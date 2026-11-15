@@ -10,7 +10,7 @@ var _icon = require('@epicbagel/saas-kit/primitives/icon');
 var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _toggle = require('@epicbagel/saas-kit/primitives/toggle');
 var _jsxruntime = require('react/jsx-runtime');
-var CHIP_CLASSES = `${_chunkL2JVZDKScjs.PRESSED_CHIP_STATES} ${_chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGET}`;
+var CHIP_CLASSES = `shrink-0 ${_chunkL2JVZDKScjs.PRESSED_CHIP_STATES} ${_chunkD5BXTRVNcjs.COARSE_POINTER_TOUCH_TARGET}`;
 function CandidateFilterChips({
   value,
   onChange,
