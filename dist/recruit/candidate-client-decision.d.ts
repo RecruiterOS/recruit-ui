@@ -21,8 +21,11 @@ interface CandidateClientDecisionLabels {
     confirmNo: ReactNode;
     /** The dialog's reason label. Defaults to "Why?", or to "Why? (optional)" with `reasonOptional`. */
     reason: ReactNode;
-    /** Shown under the buttons when saving fails. */
-    failed: ReactNode;
+    /**
+     * Shown under the buttons when saving fails: a line, or a function given
+     * what `onDecide` rejected with, for a host whose rejection says why.
+     */
+    failed: ReactNode | ((cause: unknown) => ReactNode);
     /**
      * The recorded answer where it is only shown (`readOnly`), to someone other
      * than the client, such as "Said Yes". Optional in the type, like the two

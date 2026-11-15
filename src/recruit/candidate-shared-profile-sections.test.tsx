@@ -553,6 +553,45 @@ describe("candidate shared profile fit", () => {
     expect(section).toHaveClass("[print-color-adjust:exact]");
   });
 
+  it("keeps further lists with the assessment, each under its own heading, one level under the section's", () => {
+    const { container, rerender } = render(
+      <CandidateSharedProfileFit
+        roleTitle="Staff Engineer"
+        titleLevel={3}
+        evidence={[{ text: "Rebuilt a fictional platform", sentiment: "positive" }]}
+        groups={[
+          { title: "What to test", items: [{ text: "Has only led small teams", sentiment: "warning", sentimentLabel: "To test" }] },
+          { title: "Nothing here", items: [] },
+          { title: "What stands out", items: [{ text: "Above the fictional salary band", sentiment: "negative" }] },
+        ]}
+      />,
+    );
+
+    const section = screen.getByRole("region", { name: "Fit for Staff Engineer" });
+    // The evidence first, then each group that holds a line, in the host's order.
+    const groups = [...section.querySelectorAll('[data-slot="candidate-shared-profile-fit-group"]')];
+    expect(groups.map((group) => within(group as HTMLElement).getByRole("heading", { level: 4 }).textContent)).toEqual([
+      "What to test",
+      "What stands out",
+    ]);
+    expect(within(section).queryByText("Nothing here")).toBeNull();
+    expect(within(section).getAllByRole("listitem").map((line) => line.textContent)).toEqual([
+      "Positive: Rebuilt a fictional platform",
+      "To test: Has only led small teams",
+      "Negative: Above the fictional salary band",
+    ]);
+    // Each is a region of its own, named by its heading, inside the fit's, so its dots print in colour too.
+    expect(screen.getByRole("region", { name: "What to test" })).toBe(groups[0]);
+    expect(section).toHaveClass("[print-color-adjust:exact]");
+    expect(section).toContainElement(groups[1] as HTMLElement);
+
+    // A group alone is a fit; groups with no lines are none.
+    rerender(<CandidateSharedProfileFit groups={[{ title: "What to test", items: [{ text: "A fictional line", sentiment: "neutral" }] }]} />);
+    expect(within(screen.getByRole("region", { name: "Fit" })).getByRole("heading", { level: 3, name: "What to test" })).toBeInTheDocument();
+    rerender(<CandidateSharedProfileFit roleTitle="Staff Engineer" groups={[{ title: "What to test", items: [] }]} />);
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it("draws nothing with no grade, summary or evidence, and takes each alone", () => {
     const { container, rerender } = render(<CandidateSharedProfileFit roleTitle="Staff Engineer" />);
     expect(container).toBeEmptyDOMElement();

@@ -128,11 +128,11 @@ function ReasonSheetBody({
   const text = { ...DEFAULT_LABELS, ...labels };
   const dictation = useDictationSupport();
   const [saving, setSaving] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failure, setFailure] = useState(null);
   const inFlight = useRef(false);
   const confirm = async (reason) => {
     if (inFlight.current) return;
-    setFailed(false);
+    setFailure(null);
     try {
       const result = onConfirm(reason);
       if (isPromiseLike(result)) {
@@ -141,7 +141,7 @@ function ReasonSheetBody({
         await result;
       }
     } catch (cause) {
-      setFailed(true);
+      setFailure({ cause });
       throw cause;
     } finally {
       inFlight.current = false;
@@ -194,7 +194,7 @@ function ReasonSheetBody({
                 }
               ) })
             ),
-            error: failed ? text.failed : null,
+            error: failure ? typeof text.failed === "function" ? text.failed(failure.cause) : text.failed : null,
             defaultMode: voice && dictation ? "voice" : "text",
             voice,
             voiceLang,

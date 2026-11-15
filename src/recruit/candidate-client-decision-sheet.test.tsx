@@ -93,6 +93,38 @@ describe("candidate client decision, asking why through the voice-first sheet", 
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 
+  it("gives the sheet's wording, and the row's, what the save rejected with", async () => {
+    const user = userEvent.setup();
+    const reject: Array<(cause: Error) => void> = [];
+    const onDecide = vi.fn<(decision: "yes" | "no", reason: string) => Promise<void>>(
+      () => new Promise<void>((_resolve, fail) => { reject.push(fail); }),
+    );
+    const why = (cause: unknown) => (cause instanceof Error ? cause.message : "Not saved.");
+    render(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        onDecide={onDecide}
+        reasonPrompt="sheet"
+        suggestions={{ no: ["Too senior"] }}
+        reasonSheet={{ labels: { failed: why } }}
+        labels={{ failed: (cause) => <>Row: {why(cause)}</> }}
+      />,
+    );
+
+    // In the sheet, the sheet says why.
+    await user.click(screen.getByRole("button", { name: "No" }));
+    const sheet = await screen.findByRole("dialog", { name: "Why no?" });
+    await user.click(within(sheet).getByRole("button", { name: "Too senior" }));
+    await act(async () => reject[0]!(new Error("This link has stopped.")));
+    expect(within(sheet).getByRole("alert")).toHaveTextContent(/^This link has stopped\.$/);
+
+    // Closed while the next save is on its way, the row says why.
+    await user.click(within(sheet).getByRole("button", { name: "Too senior" }));
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+    await act(async () => reject[1]!(new Error("Too many answers for now.")));
+    expect(screen.getByRole("alert")).toHaveTextContent("Row: Too many answers for now.");
+  });
+
   it("keeps a failed save in the sheet, with the reason, and shows no error of its own", async () => {
     const user = userEvent.setup();
     let fail: (cause: Error) => void = () => undefined;

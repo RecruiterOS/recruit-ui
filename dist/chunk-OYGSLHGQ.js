@@ -1,6 +1,6 @@
 import {
   ClientSearchConversation
-} from "./chunk-7X6JCNUX.js";
+} from "./chunk-SD22Q7I3.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -11,7 +11,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "./chunk-36L74GBW.js";
+} from "./chunk-5PDGCKKW.js";
 import {
   SourcingTrace
 } from "./chunk-JVTDFZNJ.js";

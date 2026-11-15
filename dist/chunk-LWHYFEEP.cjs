@@ -128,11 +128,11 @@ function ReasonSheetBody({
   const text = { ...DEFAULT_LABELS, ...labels };
   const dictation = _chunkLIC3YNUNcjs.useDictationSupport.call(void 0, );
   const [saving, setSaving] = _react.useState.call(void 0, false);
-  const [failed, setFailed] = _react.useState.call(void 0, false);
+  const [failure, setFailure] = _react.useState.call(void 0, null);
   const inFlight = _react.useRef.call(void 0, false);
   const confirm = async (reason) => {
     if (inFlight.current) return;
-    setFailed(false);
+    setFailure(null);
     try {
       const result = onConfirm(reason);
       if (isPromiseLike(result)) {
@@ -141,7 +141,7 @@ function ReasonSheetBody({
         await result;
       }
     } catch (cause) {
-      setFailed(true);
+      setFailure({ cause });
       throw cause;
     } finally {
       inFlight.current = false;
@@ -194,7 +194,7 @@ function ReasonSheetBody({
                 }
               ) })
             ),
-            error: failed ? text.failed : null,
+            error: failure ? typeof text.failed === "function" ? text.failed(failure.cause) : text.failed : null,
             defaultMode: voice && dictation ? "voice" : "text",
             voice,
             voiceLang,

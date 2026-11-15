@@ -111,6 +111,25 @@ describe("candidate client decision", () => {
     expect(screen.getByRole("button", { name: "No" })).toBeInTheDocument();
   });
 
+  it("says why the save failed, in the host's words for what it rejected with", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn().mockRejectedValue(new Error("This link has stopped."));
+    render(
+      <CandidateClientDecision
+        candidateName="Mei Tanaka"
+        onDecide={onDecide}
+        reasonOptional
+        labels={{ failed: (cause) => (cause instanceof Error ? cause.message : "Not saved.") }}
+      />,
+    );
+
+    await user.click(screen.getByRole("button", { name: "Yes" }));
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Save Yes" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("This link has stopped.");
+    expect(screen.getByRole("button", { name: "Yes" })).toBeInTheDocument();
+  });
+
   it("brings the buttons back with an error when the save fails", async () => {
     const user = userEvent.setup();
     const onDecide = vi.fn().mockRejectedValue(new Error("offline"));

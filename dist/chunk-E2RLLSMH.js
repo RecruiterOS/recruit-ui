@@ -32,7 +32,7 @@ import {
 } from "./chunk-YKEE5RQG.js";
 import {
   CandidateClientDecision
-} from "./chunk-2RVLZ7C5.js";
+} from "./chunk-BSPHJDGR.js";
 import {
   CandidateSummaryBullets
 } from "./chunk-RZD4G4NP.js";
@@ -301,15 +301,18 @@ function CandidateSharedProfileFit({
   grade,
   summary,
   evidence,
+  groups,
   titleLevel = 2,
   labels,
   className,
   ...props
 }) {
   const text = { ...candidateSharedProfileLabels, ...labels };
+  const groupId = useId();
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = evidence ?? [];
-  if (!graded && !present(summary) && lines.length === 0) return null;
+  const lists = (groups ?? []).filter((group) => group.items.length > 0);
+  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
   return /* @__PURE__ */ jsx(
     CandidateSharedProfileSection,
     {
@@ -337,7 +340,21 @@ function CandidateSharedProfileFit({
           }
         ) }) : null,
         present(summary) ? /* @__PURE__ */ jsx(Text, { variant: "small", whitespace: "pre-line", children: summary }) : null,
-        lines.length > 0 ? /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null
+        lines.length > 0 ? /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
+        lists.map((group, index) => /* @__PURE__ */ jsxs(
+          Stack,
+          {
+            as: "section",
+            "data-slot": "candidate-shared-profile-fit-group",
+            "aria-labelledby": `${groupId}-${index}`,
+            gap: "sm",
+            children: [
+              /* @__PURE__ */ jsx(Heading, { id: `${groupId}-${index}`, level: 5, as: `h${titleLevel + 1}`, children: group.title }),
+              /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: group.items, presentation: "body" })
+            ]
+          },
+          index
+        ))
       ] })
     }
   );

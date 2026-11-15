@@ -32,7 +32,7 @@ var _chunkLIC3YNUNcjs = require('./chunk-LIC3YNUN.cjs');
 var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
 
 
-var _chunkV5HT5NRVcjs = require('./chunk-V5HT5NRV.cjs');
+var _chunkANK2TWM2cjs = require('./chunk-ANK2TWM2.cjs');
 
 
 var _chunkTWVXTT47cjs = require('./chunk-TWVXTT47.cjs');
@@ -301,15 +301,18 @@ function CandidateSharedProfileFit({
   grade,
   summary,
   evidence,
+  groups,
   titleLevel = 2,
   labels,
   className,
   ...props
 }) {
   const text = { ...candidateSharedProfileLabels, ...labels };
+  const groupId = _react.useId.call(void 0, );
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = _nullishCoalesce(evidence, () => ( []));
-  if (!graded && !present(summary) && lines.length === 0) return null;
+  const lists = (_nullishCoalesce(groups, () => ( []))).filter((group) => group.items.length > 0);
+  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
     CandidateSharedProfileSection,
     {
@@ -337,7 +340,21 @@ function CandidateSharedProfileFit({
           }
         ) }) : null,
         present(summary) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", whitespace: "pre-line", children: summary }) : null,
-        lines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null
+        lines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
+        lists.map((group, index) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+          _stack.Stack,
+          {
+            as: "section",
+            "data-slot": "candidate-shared-profile-fit-group",
+            "aria-labelledby": `${groupId}-${index}`,
+            gap: "sm",
+            children: [
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: `${groupId}-${index}`, level: 5, as: `h${titleLevel + 1}`, children: group.title }),
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: group.items, presentation: "body" })
+            ]
+          },
+          index
+        ))
       ] })
     }
   );
@@ -381,7 +398,7 @@ function CandidateSharedProfileAnswer({
           }
         ),
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkV5HT5NRVcjs.CandidateClientDecision,
+          _chunkANK2TWM2cjs.CandidateClientDecision,
           {
             padding: "none",
             candidateName,

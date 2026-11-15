@@ -16,8 +16,12 @@ interface CandidateDecisionReasonSheetLabels {
     placeholder: string;
     /** In place of the composer while a promise from `onConfirm` is pending. */
     saving: string;
-    /** Under the composer when a promise from `onConfirm` rejects. */
-    failed: string;
+    /**
+     * Under the composer when a promise from `onConfirm` rejects: a line, or
+     * a function given what it rejected with, for a host whose rejection says
+     * why.
+     */
+    failed: string | ((cause: unknown) => string);
 }
 interface CandidateDecisionReasonSheetProps {
     open: boolean;

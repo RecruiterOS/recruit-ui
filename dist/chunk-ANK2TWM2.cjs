@@ -68,7 +68,8 @@ function CandidateClientDecision({
   const text = { ...DEFAULT_LABELS, ...labels };
   const [asking, setAsking] = _react.useState.call(void 0, null);
   const [changing, setChanging] = _react.useState.call(void 0, false);
-  const [failed, setFailed] = _react.useState.call(void 0, false);
+  const [failure, setFailure] = _react.useState.call(void 0, null);
+  const failed = failure !== null;
   const [sheetUnavailable, setSheetUnavailable] = _react.useState.call(void 0, false);
   const [saving, setSaving] = _react.useState.call(void 0, false);
   const askingNow = _react.useRef.call(void 0, asking);
@@ -78,22 +79,22 @@ function CandidateClientDecision({
   }, [disabled]);
   const submit = async (why) => {
     if (!asking) return;
-    setFailed(false);
+    setFailure(null);
     setSaving(true);
     try {
       await onDecide(asking, why);
       setAsking(null);
       setChanging(false);
-    } catch (e) {
+    } catch (cause) {
       setAsking(null);
-      setFailed(true);
+      setFailure({ cause });
     } finally {
       setSaving(false);
     }
   };
   const close = () => {
     setAsking(null);
-    setFailed(false);
+    setFailure(null);
   };
   const sheet = typeof reasonSheet === "function" ? asking ? reasonSheet(asking) : void 0 : reasonSheet;
   const held = disabled || saving;
@@ -125,7 +126,7 @@ function CandidateClientDecision({
             setAsking(null);
             setChanging(false);
           } catch (cause) {
-            if (askingNow.current === null) setFailed(true);
+            if (askingNow.current === null) setFailure({ cause });
             throw cause;
           } finally {
             setSaving(false);
@@ -167,13 +168,13 @@ function CandidateClientDecision({
         disabled: held,
         labels: { yes: text.yes, no: text.no },
         onChoose: (choice) => {
-          setFailed(false);
+          setFailure(null);
           setAsking(choice);
         },
         children: prompt
       }
     ),
-    failed ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "destructive", marginTop: "xs", role: "alert", children: text.failed }) : null
+    failure ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "destructive", marginTop: "xs", role: "alert", children: typeof text.failed === "function" ? text.failed(failure.cause) : text.failed }) : null
   ] });
   const marks = {
     "data-slot": "candidate-client-decision",

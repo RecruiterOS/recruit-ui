@@ -31,8 +31,12 @@ export interface CandidateDecisionReasonSheetLabels {
   placeholder: string;
   /** In place of the composer while a promise from `onConfirm` is pending. */
   saving: string;
-  /** Under the composer when a promise from `onConfirm` rejects. */
-  failed: string;
+  /**
+   * Under the composer when a promise from `onConfirm` rejects: a line, or
+   * a function given what it rejected with, for a host whose rejection says
+   * why.
+   */
+  failed: string | ((cause: unknown) => string);
 }
 
 const DEFAULT_LABELS: CandidateDecisionReasonSheetLabels = {
@@ -273,13 +277,14 @@ function ReasonSheetBody({
   const text = { ...DEFAULT_LABELS, ...labels };
   const dictation = useDictationSupport();
   const [saving, setSaving] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // What a save rejected with, for the line that says it failed.
+  const [failure, setFailure] = useState<{ cause: unknown } | null>(null);
   // A second tap before the first re-render must not confirm twice.
   const inFlight = useRef(false);
 
   const confirm = async (reason?: string) => {
     if (inFlight.current) return;
-    setFailed(false);
+    setFailure(null);
     try {
       const result = onConfirm(reason);
       if (isPromiseLike(result)) {
@@ -288,7 +293,7 @@ function ReasonSheetBody({
         await result;
       }
     } catch (cause) {
-      setFailed(true);
+      setFailure({ cause });
       // The composer puts a typed or spoken reason back when it sees this.
       throw cause;
     } finally {
@@ -347,7 +352,7 @@ function ReasonSheetBody({
                   />
                 </Stack>
               )}
-              error={failed ? text.failed : null}
+              error={failure ? (typeof text.failed === "function" ? text.failed(failure.cause) : text.failed) : null}
               defaultMode={voice && dictation ? "voice" : "text"}
               voice={voice}
               voiceLang={voiceLang}

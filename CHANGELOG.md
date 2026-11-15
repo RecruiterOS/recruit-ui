@@ -5,6 +5,34 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.27.0
+
+A shared profile keeps the whole of an assessment together, and a host can
+say why a Yes or No didn't save. Nothing changes for a host that passes
+neither, and the minimum kit version doesn't move.
+
+### Added
+
+- `CandidateSharedProfileFit`, and `CandidateSharedProfile`'s `fit`, take
+  `groups`: further lists that belong with the assessment, under the
+  evidence, each a `CandidateSharedProfileFitGroup` of a `title` and its
+  `items`, such as what to test in an interview and what stands out. The
+  fit held one unnamed list, so a host with more than evidence had to put
+  the rest in sections of its own, which the profile draws after the career,
+  away from the grade they qualify. Each group is a `section` named by its
+  heading, one level under the fit's, marked
+  `data-slot="candidate-shared-profile-fit-group"`. The host names each and
+  gives each line its sentiment, a group with no lines isn't drawn, a group
+  alone is a fit, and the lines print in colour as the evidence does.
+- `CandidateClientDecision`'s `labels.failed` may be a function given what
+  `onDecide` rejected with, beside the line it could already be, as a
+  note's `noteFailed` and a share's `failed` are. A host whose rejection
+  says why, such as a link that has stopped, shows that under the buttons.
+- `CandidateDecisionReasonSheet`'s `labels.failed` may be a function given
+  what `onConfirm` rejected with, the same way, so the reason is said in the
+  sheet, where the person still is. Both reach a shared profile through
+  `decisionLabels` and `reasonSheet.labels`.
+
 ## 0.26.1
 
 `CandidateShareDialog` fits a laptop, and a host can hold which side of its

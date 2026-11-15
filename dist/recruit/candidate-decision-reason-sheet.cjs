@@ -2,8 +2,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkIJMVGJSWcjs = require('../chunk-IJMVGJSW.cjs');
+var _chunkLWHYFEEPcjs = require('../chunk-LWHYFEEP.cjs');
 require('../chunk-LIC3YNUN.cjs');
 
 
-exports.CandidateDecisionReasonSheet = _chunkIJMVGJSWcjs.CandidateDecisionReasonSheet;
+exports.CandidateDecisionReasonSheet = _chunkLWHYFEEPcjs.CandidateDecisionReasonSheet;

@@ -68,7 +68,8 @@ function CandidateClientDecision({
   const text = { ...DEFAULT_LABELS, ...labels };
   const [asking, setAsking] = useState(null);
   const [changing, setChanging] = useState(false);
-  const [failed, setFailed] = useState(false);
+  const [failure, setFailure] = useState(null);
+  const failed = failure !== null;
   const [sheetUnavailable, setSheetUnavailable] = useState(false);
   const [saving, setSaving] = useState(false);
   const askingNow = useRef(asking);
@@ -78,22 +79,22 @@ function CandidateClientDecision({
   }, [disabled]);
   const submit = async (why) => {
     if (!asking) return;
-    setFailed(false);
+    setFailure(null);
     setSaving(true);
     try {
       await onDecide(asking, why);
       setAsking(null);
       setChanging(false);
-    } catch {
+    } catch (cause) {
       setAsking(null);
-      setFailed(true);
+      setFailure({ cause });
     } finally {
       setSaving(false);
     }
   };
   const close = () => {
     setAsking(null);
-    setFailed(false);
+    setFailure(null);
   };
   const sheet = typeof reasonSheet === "function" ? asking ? reasonSheet(asking) : void 0 : reasonSheet;
   const held = disabled || saving;
@@ -125,7 +126,7 @@ function CandidateClientDecision({
             setAsking(null);
             setChanging(false);
           } catch (cause) {
-            if (askingNow.current === null) setFailed(true);
+            if (askingNow.current === null) setFailure({ cause });
             throw cause;
           } finally {
             setSaving(false);
@@ -167,13 +168,13 @@ function CandidateClientDecision({
         disabled: held,
         labels: { yes: text.yes, no: text.no },
         onChoose: (choice) => {
-          setFailed(false);
+          setFailure(null);
           setAsking(choice);
         },
         children: prompt
       }
     ),
-    failed ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "destructive", marginTop: "xs", role: "alert", children: text.failed }) : null
+    failure ? /* @__PURE__ */ jsx(Text, { size: "sm", tone: "destructive", marginTop: "xs", role: "alert", children: typeof text.failed === "function" ? text.failed(failure.cause) : text.failed }) : null
   ] });
   const marks = {
     "data-slot": "candidate-client-decision",

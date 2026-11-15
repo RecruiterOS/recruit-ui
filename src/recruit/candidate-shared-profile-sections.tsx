@@ -597,6 +597,14 @@ export type CandidateSharedProfileGrade = Pick<
   "grade" | "label" | "labels" | "tone" | "showLabel" | "size" | "format" | "appearance" | "sentiment" | "title"
 >;
 
+/** A further list under the fit's evidence, under a heading of its own. */
+export interface CandidateSharedProfileFitGroup {
+  /** The list's heading, such as "What to test". */
+  title: ReactNode;
+  /** Its lines, each with the host's sentiment. */
+  items: readonly CandidateSummaryBullet[];
+}
+
 /** How well the person fits a role, as the profile shows it. */
 export interface CandidateSharedProfileAssessment {
   /** The role they were assessed for, for the heading ("Fit for Staff Engineer"). */
@@ -612,6 +620,13 @@ export interface CandidateSharedProfileAssessment {
   summary?: ReactNode;
   /** The evidence, a line each, each with the host's sentiment. */
   evidence?: readonly CandidateSummaryBullet[];
+  /**
+   * Further lists that belong with the assessment, under the evidence and
+   * each under its own heading, such as what to test in an interview and
+   * what stands out. The host names each and gives each line its
+   * sentiment. A group with no lines isn't drawn.
+   */
+  groups?: readonly CandidateSharedProfileFitGroup[];
 }
 
 export interface CandidateSharedProfileFitProps
@@ -626,27 +641,35 @@ export interface CandidateSharedProfileFitProps
  * How well the person fits the role they were shared for: the grade
  * (`CandidateGradeBadge`), a line on why, and the evidence, each line with
  * its sentiment as a dot and a word a screen reader says
- * (`CandidateSummaryBullets`). The host owns the grade, its wording and
- * every line. With no grade, summary or evidence it draws nothing.
+ * (`CandidateSummaryBullets`). `groups` are further lists that belong with
+ * the assessment, each under a heading one level under the section's, such
+ * as what to test and what stands out. The host owns the grade, its
+ * wording, each group's name and every line. With no grade, summary,
+ * evidence or group with a line in it, it draws nothing.
  *
  * The root is a `section` named by its heading and marked
- * `data-slot="candidate-shared-profile-fit"`.
+ * `data-slot="candidate-shared-profile-fit"`; each group is a `section`
+ * named by its own heading and marked
+ * `data-slot="candidate-shared-profile-fit-group"`.
  */
 export function CandidateSharedProfileFit({
   roleTitle,
   grade,
   summary,
   evidence,
+  groups,
   titleLevel = 2,
   labels,
   className,
   ...props
 }: CandidateSharedProfileFitProps) {
   const text = { ...candidateSharedProfileLabels, ...labels };
+  const groupId = useId();
   // A grade, or the host's wording for a record that has none yet.
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = evidence ?? [];
-  if (!graded && !present(summary) && lines.length === 0) return null;
+  const lists = (groups ?? []).filter((group) => group.items.length > 0);
+  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
 
   return (
     <CandidateSharedProfileSection
@@ -682,6 +705,21 @@ export function CandidateSharedProfileFit({
           </Text>
         ) : null}
         {lines.length > 0 ? <CandidateSummaryBullets bullets={lines} presentation="body" /> : null}
+        {lists.map((group, index) => (
+          <Stack
+            key={index}
+            as="section"
+            data-slot="candidate-shared-profile-fit-group"
+            aria-labelledby={`${groupId}-${index}`}
+            gap="sm"
+          >
+            {/* One level under the section's heading, in the look of a role's title in the career under it. */}
+            <Heading id={`${groupId}-${index}`} level={5} as={`h${(titleLevel + 1) as 3 | 4 | 5 | 6}` as const}>
+              {group.title}
+            </Heading>
+            <CandidateSummaryBullets bullets={group.items} presentation="body" />
+          </Stack>
+        ))}
       </Stack>
     </CandidateSharedProfileSection>
   );

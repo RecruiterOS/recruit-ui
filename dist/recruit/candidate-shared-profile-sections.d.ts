@@ -264,6 +264,13 @@ interface CandidateSharedProfileNoteProps extends CandidateSharedProfileRootProp
 declare function CandidateSharedProfileNote({ text: words, author, titleLevel, labels, className, ...props }: CandidateSharedProfileNoteProps): react.JSX.Element;
 /** A grade as the profile shows it: the settings of a `CandidateGradeBadge` that say what it reads and how it looks. */
 type CandidateSharedProfileGrade = Pick<CandidateGradeBadgeProps, "grade" | "label" | "labels" | "tone" | "showLabel" | "size" | "format" | "appearance" | "sentiment" | "title">;
+/** A further list under the fit's evidence, under a heading of its own. */
+interface CandidateSharedProfileFitGroup {
+    /** The list's heading, such as "What to test". */
+    title: ReactNode;
+    /** Its lines, each with the host's sentiment. */
+    items: readonly CandidateSummaryBullet[];
+}
 /** How well the person fits a role, as the profile shows it. */
 interface CandidateSharedProfileAssessment {
     /** The role they were assessed for, for the heading ("Fit for Staff Engineer"). */
@@ -279,6 +286,13 @@ interface CandidateSharedProfileAssessment {
     summary?: ReactNode;
     /** The evidence, a line each, each with the host's sentiment. */
     evidence?: readonly CandidateSummaryBullet[];
+    /**
+     * Further lists that belong with the assessment, under the evidence and
+     * each under its own heading, such as what to test in an interview and
+     * what stands out. The host names each and gives each line its
+     * sentiment. A group with no lines isn't drawn.
+     */
+    groups?: readonly CandidateSharedProfileFitGroup[];
 }
 interface CandidateSharedProfileFitProps extends CandidateSharedProfileRootProps, CandidateSharedProfileAssessment {
     /** The heading's level: 2 (the default), or 3 to 5 to fit the page's outline. */
@@ -289,13 +303,18 @@ interface CandidateSharedProfileFitProps extends CandidateSharedProfileRootProps
  * How well the person fits the role they were shared for: the grade
  * (`CandidateGradeBadge`), a line on why, and the evidence, each line with
  * its sentiment as a dot and a word a screen reader says
- * (`CandidateSummaryBullets`). The host owns the grade, its wording and
- * every line. With no grade, summary or evidence it draws nothing.
+ * (`CandidateSummaryBullets`). `groups` are further lists that belong with
+ * the assessment, each under a heading one level under the section's, such
+ * as what to test and what stands out. The host owns the grade, its
+ * wording, each group's name and every line. With no grade, summary,
+ * evidence or group with a line in it, it draws nothing.
  *
  * The root is a `section` named by its heading and marked
- * `data-slot="candidate-shared-profile-fit"`.
+ * `data-slot="candidate-shared-profile-fit"`; each group is a `section`
+ * named by its own heading and marked
+ * `data-slot="candidate-shared-profile-fit-group"`.
  */
-declare function CandidateSharedProfileFit({ roleTitle, grade, summary, evidence, titleLevel, labels, className, ...props }: CandidateSharedProfileFitProps): react.JSX.Element | null;
+declare function CandidateSharedProfileFit({ roleTitle, grade, summary, evidence, groups, titleLevel, labels, className, ...props }: CandidateSharedProfileFitProps): react.JSX.Element | null;
 interface CandidateSharedProfileAnswerProps extends CandidateSharedProfileRootProps, Pick<CandidateClientDecisionProps, "reasonOptional" | "reasonPrompt" | "reasonSheet"> {
     /** The person's name as the question should say it. */
     candidateName: string;
@@ -408,4 +427,4 @@ interface CandidateSharedProfileNotesProps extends CandidateSharedProfileRootPro
  */
 declare function CandidateSharedProfileNotes({ notes, candidateName, onAdd, readOnly, disabled, voice, maxLength, titleLevel, labels, className, ...props }: CandidateSharedProfileNotesProps): react.JSX.Element;
 
-export { CandidateSharedProfileAnswer, type CandidateSharedProfileAnswerProps, type CandidateSharedProfileAssessment, type CandidateSharedProfileClientNote, CandidateSharedProfileFit, type CandidateSharedProfileFitProps, type CandidateSharedProfileGrade, CandidateSharedProfileHeader, type CandidateSharedProfileHeaderProps, type CandidateSharedProfileLabels, type CandidateSharedProfileLink, CandidateSharedProfileNote, type CandidateSharedProfileNoteProps, CandidateSharedProfileNotes, type CandidateSharedProfileNotesProps, type CandidateSharedProfilePerson, type CandidateSharedProfilePersonOption, type CandidateSharedProfileRootProps, CandidateSharedProfileSection, type CandidateSharedProfileSectionLevel, type CandidateSharedProfileSectionProps, CandidateSharedProfileSwitcher, type CandidateSharedProfileSwitcherProps, CandidateSharedProfileVoiceNote, type CandidateSharedProfileVoiceNoteProps, candidateSharedProfileLabels };
+export { CandidateSharedProfileAnswer, type CandidateSharedProfileAnswerProps, type CandidateSharedProfileAssessment, type CandidateSharedProfileClientNote, CandidateSharedProfileFit, type CandidateSharedProfileFitGroup, type CandidateSharedProfileFitProps, type CandidateSharedProfileGrade, CandidateSharedProfileHeader, type CandidateSharedProfileHeaderProps, type CandidateSharedProfileLabels, type CandidateSharedProfileLink, CandidateSharedProfileNote, type CandidateSharedProfileNoteProps, CandidateSharedProfileNotes, type CandidateSharedProfileNotesProps, type CandidateSharedProfilePerson, type CandidateSharedProfilePersonOption, type CandidateSharedProfileRootProps, CandidateSharedProfileSection, type CandidateSharedProfileSectionLevel, type CandidateSharedProfileSectionProps, CandidateSharedProfileSwitcher, type CandidateSharedProfileSwitcherProps, CandidateSharedProfileVoiceNote, type CandidateSharedProfileVoiceNoteProps, candidateSharedProfileLabels };
