@@ -1,7 +1,7 @@
 "use client";
 import {
   JobBriefCard
-} from "../chunk-FEMDFAQE.js";
+} from "../chunk-F353R6EY.js";
 import {
   formatJobBriefSalary,
   groupJobBriefChanges,

@@ -5,6 +5,31 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.32.0
+
+Padding and insets: the fourth batch of a polish audit. The minimum kit
+version moves to 1.39.0.
+
+### Breaking
+
+- The peer range for `@epicbagel/saas-kit` is `^1.39.0` (it was `^1.38.0`).
+  With it:
+  - On a viewport under 768px, every card, panel section and padded stack
+    the library draws has padding that scales with the type and controls
+    inside it, to 87.5%: a card's 26px is 22.75px on a phone. It was fixed
+    in pixels, so padding stayed full size while its content shrank.
+    Nothing changes on a desktop.
+  - A select at its default size and a textarea start their text 16px
+    from the left edge, where an input does; they were at 12px. That is
+    `CandidateStageSelect` at its default size, the selects in
+    `CandidateAddToJobPopover`, and every composer and reason field.
+
+### Fixed
+
+- `JobBriefCard`'s collapsible presentation set its inset in fixed pixels
+  too. It is in rem, so it still lines up with the preview presentation on
+  a phone.
+
 ## 0.31.0
 
 Tap targets on a touchscreen: the third batch of a polish audit. The minimum

@@ -187,7 +187,7 @@ describe("candidate review action row", () => {
     // The facts end on a rule; the row's keyline under it is hidden by the card.
     expect(facts.className).toContain("border-y");
     // Inset as far as the header and the action row (26px), so the edges line up.
-    expect(facts.className).toContain("px-[26px]");
+    expect(facts.className).toContain("px-6.5");
     const controls = container.querySelector("[data-slot='candidate-review-action-row-controls']")!;
     expect(controls.className).toContain("border-t");
     const content = container.querySelector("[data-slot='candidate-review-card-content']")!;

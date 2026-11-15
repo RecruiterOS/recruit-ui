@@ -51,8 +51,8 @@ var ITEM_NAME = {
   niceToHaves: "niceToHaveItem",
   redFlags: "redFlagItem"
 };
-var COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
-var COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
+var COLLAPSIBLE_TRIGGER = "gap-4 p-6.5 text-[length:inherit] data-[state=open]:pb-4";
+var COLLAPSIBLE_BODY = "px-6.5 pb-6.5";
 var SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";
 var EDITABLE_LIST = [
   "pointer-coarse:[&_button]:opacity-100",

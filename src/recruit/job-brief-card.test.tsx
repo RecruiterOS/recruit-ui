@@ -613,11 +613,11 @@ describe("job brief card, one look", () => {
     const collapsible = read();
     // The trigger takes the preview card's inset, and not the kit trigger's
     // small type, whose line height would make the status taller there.
-    expect(trigger.className).toContain("p-[26px]");
+    expect(trigger.className).toContain("p-6.5");
     expect(trigger.className).not.toMatch(/\btext-sm\b/);
 
     rerender(card("preview"));
-    expect(container.querySelector('[data-slot="card"]')!.className).toContain("p-[26px]");
+    expect(container.querySelector('[data-slot="card"]')!.className).toContain("p-6.5");
     expect(screen.getByRole("heading", { level: 2, name: "Account Executive · Fernhill Example Co" })).toBeInTheDocument();
     expect(read()).toEqual(collapsible);
     expect(collapsible.facts).toEqual(["Location", "Salary", "OTE"]);

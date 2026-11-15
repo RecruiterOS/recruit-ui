@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunk7IVBABRPcjs = require('../chunk-7IVBABRP.cjs');
+var _chunk6GJXBVDHcjs = require('../chunk-6GJXBVDH.cjs');
 
 
 
@@ -27,4 +27,4 @@ require('../chunk-D5BXTRVN.cjs');
 
 
 
-exports.JobBriefCard = _chunk7IVBABRPcjs.JobBriefCard; exports.formatJobBriefSalary = _chunkCP5HCQPWcjs.formatJobBriefSalary; exports.groupJobBriefChanges = _chunkCP5HCQPWcjs.groupJobBriefChanges; exports.jobBriefChangeLabels = _chunkCP5HCQPWcjs.jobBriefChangeLabels; exports.jobBriefChangeText = _chunkCP5HCQPWcjs.jobBriefChangeText; exports.jobBriefLabels = _chunkCP5HCQPWcjs.jobBriefLabels; exports.jobBriefTitle = _chunkCP5HCQPWcjs.jobBriefTitle; exports.jobBriefVersionLabel = _chunkCP5HCQPWcjs.jobBriefVersionLabel; exports.jobBriefVersionLabels = _chunkCP5HCQPWcjs.jobBriefVersionLabels; exports.jobBriefView = _chunkCP5HCQPWcjs.jobBriefView;
+exports.JobBriefCard = _chunk6GJXBVDHcjs.JobBriefCard; exports.formatJobBriefSalary = _chunkCP5HCQPWcjs.formatJobBriefSalary; exports.groupJobBriefChanges = _chunkCP5HCQPWcjs.groupJobBriefChanges; exports.jobBriefChangeLabels = _chunkCP5HCQPWcjs.jobBriefChangeLabels; exports.jobBriefChangeText = _chunkCP5HCQPWcjs.jobBriefChangeText; exports.jobBriefLabels = _chunkCP5HCQPWcjs.jobBriefLabels; exports.jobBriefTitle = _chunkCP5HCQPWcjs.jobBriefTitle; exports.jobBriefVersionLabel = _chunkCP5HCQPWcjs.jobBriefVersionLabel; exports.jobBriefVersionLabels = _chunkCP5HCQPWcjs.jobBriefVersionLabels; exports.jobBriefView = _chunkCP5HCQPWcjs.jobBriefView;

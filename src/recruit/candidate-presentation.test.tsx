@@ -236,7 +236,7 @@ describe("candidate presentation", () => {
 
     const { rerender } = render(profile({ footer: <CandidateProfileFooter>Fictional actions</CandidateProfileFooter> }));
     expect(root()?.className).not.toMatch(/print:/);
-    expect(footer()).toHaveClass("px-[26px]", "py-[26px]", "flex", "gap-2");
+    expect(footer()).toHaveClass("px-6.5", "py-6.5", "flex", "gap-2");
     expect(footer()?.className).not.toMatch(/justify-|print:/);
 
     rerender(
@@ -251,8 +251,8 @@ describe("candidate presentation", () => {
     );
     expect(root()).toHaveClass("print:border-0");
     expect(footer()?.tagName).toBe("FOOTER");
-    expect(footer()).toHaveClass("justify-center", "px-[22px]", "py-[18px]", "print:hidden");
-    expect(footer()).not.toHaveClass("px-[26px]");
+    expect(footer()).toHaveClass("justify-center", "px-5.5", "py-4.5", "print:hidden");
+    expect(footer()).not.toHaveClass("px-6.5");
   });
 
   it("renders quiet quotes without nested card treatment", () => {
@@ -362,7 +362,7 @@ describe("candidate presentation", () => {
     );
 
     const assessment = document.querySelector('[data-slot="candidate-assessment"]') as HTMLElement;
-    expect(assessment).toHaveClass("px-[26px]", "py-[26px]");
+    expect(assessment).toHaveClass("px-6.5", "py-6.5");
     expect([...assessment.querySelectorAll("h3")].map((heading) => heading.textContent)).toEqual([
       "Why they fit",
       "Evidence",

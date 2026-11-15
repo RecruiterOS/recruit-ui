@@ -6,7 +6,7 @@ var _chunkWSPL3WKEcjs = require('./chunk-WSPL3WKE.cjs');
 var _chunkTAFMPPOTcjs = require('./chunk-TAFMPPOT.cjs');
 
 
-var _chunk7IVBABRPcjs = require('./chunk-7IVBABRP.cjs');
+var _chunk6GJXBVDHcjs = require('./chunk-6GJXBVDH.cjs');
 
 
 var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
@@ -373,7 +373,7 @@ function ClientSearchBriefPanel({ brief, briefOptions, labels }) {
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTrigger, { asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { type: "button", variant: "outline", size: "sm", children: text.brief }) }),
     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _responsivedialog.ResponsiveDialogContent, { "aria-describedby": void 0, children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogHeader, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTitle, { children: text.briefTitle }) }),
-      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { "data-slot": "client-search-brief-panel", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk7IVBABRPcjs.JobBriefCard, { ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, brief, briefOptions), presentation: "preview", titleLevel: 3, defaultOpen: true }) })
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { "data-slot": "client-search-brief-panel", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk6GJXBVDHcjs.JobBriefCard, { ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, brief, briefOptions), presentation: "preview", titleLevel: 3, defaultOpen: true }) })
     ] })
   ] });
 }

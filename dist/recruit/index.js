@@ -35,10 +35,10 @@ import {
 } from "../chunk-VYIPKB27.js";
 import {
   ClientSearchPage
-} from "../chunk-6EG5X4IY.js";
+} from "../chunk-F3PQI6C6.js";
 import {
   ClientSearchConversation
-} from "../chunk-3RFVPFP3.js";
+} from "../chunk-EQ7CN4YZ.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +49,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "../chunk-DBUU7NSA.js";
+} from "../chunk-FQZYN5Z2.js";
 import {
   JobSearchProgress
 } from "../chunk-TPB2PWPX.js";
@@ -64,7 +64,7 @@ import {
 } from "../chunk-5OU6GGD4.js";
 import {
   JobBriefCard
-} from "../chunk-FEMDFAQE.js";
+} from "../chunk-F353R6EY.js";
 import {
   formatJobBriefSalary,
   groupJobBriefChanges,
