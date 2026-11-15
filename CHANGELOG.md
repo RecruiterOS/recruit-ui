@@ -5,6 +5,26 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.29.0
+
+Controls in a row line up: the first batch of a polish audit. The minimum
+kit version moves to 1.36.0, where the kit's `CopyButton` takes the size it
+is given.
+
+### Breaking
+
+- The peer range for `@epicbagel/saas-kit` is `^1.36.0` (it was `^1.35.0`).
+  On an older kit a draft's Copy button ignores its size and stays 28px.
+
+### Fixed
+
+- `CandidateOutreachDraftList`: a draft's Copy button is the same icon
+  button as Approve, Dismiss and Mark sent beside it, and the row centres
+  them. Copy was a 28px button in a row of 44px ones, and the row
+  top-aligned them, so its icon sat 8px above theirs (7px on a phone). The
+  cause was in the kit, whose `CopyButton` set its own box whatever size it
+  was given; this release asks it for the row's size.
+
 ## 0.28.2
 
 A stock cover leaves no band on paper. The minimum kit version doesn't move.
