@@ -1,3 +1,4 @@
+import { coverBannerVariant } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { LazyMarkdown } from "@epicbagel/saas-kit/primitives/lazy-markdown";
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -363,6 +364,27 @@ describe("client search delivery", () => {
 
   const card = (name: string) =>
     screen.getByRole("heading", { level: 3, name }).closest<HTMLElement>("[data-slot='candidate-review-card']")!;
+
+  it("gives each person their cover, or the kit's stock banner dealt by their name or the host's seed", () => {
+    const banner = (name: string) => card(name).querySelector("[data-slot='candidate-cover-image'] [data-slot='cover-banner']");
+    const { rerender } = render(delivery());
+    expect(banner("Mei Example")).toHaveAttribute("data-variant", coverBannerVariant("Mei Example"));
+    expect(banner("Tomas Example")).toHaveAttribute("data-variant", coverBannerVariant("Tomas Example"));
+
+    rerender(
+      delivery({
+        people: [
+          { ...PEOPLE[0]!, coverSeed: "person-9" },
+          { ...PEOPLE[1]!, cover: <img alt="Fictional landscape" /> },
+          { id: "p3", name: "Imogen Example", cover: null },
+        ],
+      }),
+    );
+    expect(banner("Mei Example")).toHaveAttribute("data-variant", coverBannerVariant("person-9"));
+    expect(banner("Tomas Example")).toBeNull();
+    expect(card("Tomas Example")).toContainElement(screen.getByAltText("Fictional landscape"));
+    expect(card("Imogen Example").querySelector("[data-slot='candidate-cover-image']")).toBeNull();
+  });
 
   it("draws the delivery's name, a card for each person with what the host passed, and how the run searched", () => {
     const { container } = render(delivery({ id: "fictional-delivery" }));

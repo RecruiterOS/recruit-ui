@@ -1,6 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
-var _chunkKTFEHL5Xcjs = require('./chunk-KTFEHL5X.cjs');
+
+var _chunkHJ6CZSSYcjs = require('./chunk-HJ6CZSSY.cjs');
 
 // src/recruit/candidate-profile.tsx
 var _utils = require('@epicbagel/saas-kit/lib/utils');
@@ -77,6 +78,7 @@ function CandidateProfileHeader({
   name,
   avatar,
   cover,
+  coverSeed,
   eyebrow,
   status,
   meta,
@@ -101,9 +103,11 @@ function CandidateProfileHeader({
     }
   );
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-    _chunkKTFEHL5Xcjs.CandidateCoverHeader,
+    _chunkHJ6CZSSYcjs.CandidateCoverHeader,
     {
       cover,
+      coverFallback: padding === "none" ? "none" : "stock",
+      coverSeed: _chunkHJ6CZSSYcjs.candidateCoverSeed.call(void 0, coverSeed, name),
       padding,
       "data-slot": "candidate-profile-header",
       className,

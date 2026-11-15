@@ -5,6 +5,62 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.28.0
+
+Everyone has a cover. A card or a profile given no cover of the person's own
+draws the kit's stock banner in its place, so a list of cards is one height
+and nobody's looks bare. The minimum kit version moves to 1.35.0, which is
+where the banner is.
+
+### Breaking
+
+- `CandidateReviewCard`, `CandidatePipelineCard`, `CandidateRelationshipCard`
+  and `CandidateProfileHeader` draw a cover when `cover` is left out: the
+  kit's `CoverBanner`, in the 4:1 frame a cover of the person's own would
+  have. They drew no frame before, so most cards are a quarter of their
+  width taller. So do the things built on them: each person in a
+  `ClientSearchDelivery`, the header of a `CandidateSharedProfile`, and the
+  card a `CandidatePipelineBoard` draws when the host gives it none. Pass
+  `cover={null}` wherever no cover is right, which draws none as before. A
+  flush profile header (`padding="none"`) is unchanged, because it sits
+  inside a container the host pads, where a banner couldn't reach the edges,
+  and so is `CandidateInlineCard`, whose cover is extra: both draw a cover
+  only when given one.
+- The peer range for `@epicbagel/saas-kit` is `^1.35.0` (it was `^1.16.0`):
+  `CoverBanner` and its styles arrived in 1.35.0. A host on an older kit
+  moves to 1.35.0 or later; its styles are in the kit's
+  `styles/utilities.css`, which a host already imports.
+- An anonymised shared profile has a banner too. The person's own cover is
+  still never drawn. The stock one stands over the header in its first
+  design whatever `person.coverSeed` is, so nothing of theirs deals it and
+  no two anonymised people differ by it. `cover: null` still draws none.
+
+### Added
+
+- `coverSeed` on `CandidateReviewCard`, `CandidatePipelineCard`,
+  `CandidateRelationshipCard`, `CandidateProfileHeader`,
+  `CandidateSharedProfilePerson` and `ClientSearchPerson`: what deals the
+  stock banner its design, the same one every time for the same seed. Pass
+  the person's id and they keep one banner wherever they appear. Left out,
+  the name is the seed where it is plain text; a name that is an element is
+  never read, and deals the first design. `null` deals the first design
+  outright.
+- `CandidateCoverHeader` takes `coverFallback` (`"stock"` or `"none"`, the
+  default) and `coverSeed`, for a host that builds its own card on the
+  shared header: with `"stock"` it draws the banner where `cover` is left
+  out, and `cover={null}` still draws none.
+- `candidateCoverSeed(seed, name)`, the rule the cards share for choosing a
+  seed, and the types `CandidateCoverSeed` and `CandidateCoverFallback`.
+
+### Changed
+
+- A stock cover isn't printed. It is drawn as a background, which a browser
+  leaves out of print, so its frame is hidden on paper rather than printed
+  as an empty band. A cover of the person's own prints as it did.
+- `cover` is typed `ReactNode | null` where the stock banner can stand in,
+  to say that `null` is a choice. Nothing a host passes today stops
+  compiling.
+
 ## 0.27.0
 
 A shared profile keeps the whole of an assessment together, and a host can

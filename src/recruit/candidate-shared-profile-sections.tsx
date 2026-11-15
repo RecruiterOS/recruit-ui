@@ -18,6 +18,7 @@ import {
   type CandidateClientDecisionLabels,
   type CandidateClientDecisionProps,
 } from "./candidate-client-decision";
+import type { CandidateCoverSeed } from "./candidate-cover-header";
 import type { CandidateDecisionChoice } from "./candidate-decision-buttons";
 import type { CandidateEmptyCopy } from "./candidate-empty-copy";
 import { CandidateGradeBadge, type CandidateGradeBadgeProps } from "./candidate-grade";
@@ -345,8 +346,16 @@ export interface CandidateSharedProfilePerson {
   name?: string | null;
   /** Their face, usually the kit's PersonAvatar at 64px. */
   avatar?: ReactNode;
-  /** A banner over the header, as `CandidateProfileHeader` takes it. */
-  cover?: ReactNode;
+  /**
+   * A banner over the header, as `CandidateProfileHeader` takes it: left
+   * out, the kit's stock banner stands in, and `null` draws none.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, as `CandidateProfileHeader` takes
+   * it. Left out, the name is the seed.
+   */
+  coverSeed?: CandidateCoverSeed;
   /** Their current title. */
   title?: ReactNode;
   /** Their current company. */
@@ -365,8 +374,9 @@ export interface CandidateSharedProfileHeaderProps
   person: CandidateSharedProfilePerson;
   /**
    * Shows nobody: the heading is `labels.anonymous`, a glyph stands in for
-   * the face, and there is no cover and no profile link, whatever `person`
-   * holds.
+   * the face, and their cover and profile link are never drawn, whatever
+   * `person` holds. The stock banner still is, dealt by no seed, so it is
+   * the same for everyone and says nothing of who they are.
    */
   anonymised?: boolean;
   /** The name's heading level, as `CandidateProfileHeader` takes it. 1 by default. */
@@ -393,7 +403,10 @@ function WithheldAvatar() {
  * `anonymised` is enforced here, not left to the host: the name, the avatar,
  * the cover and the profile link are never drawn on an anonymised header,
  * even when `person` carries them, and a glyph stands where the face would
- * be. What the host passes as a title or a company is the host's to redact.
+ * be. The banner over it is then the kit's stock one in its first design,
+ * whatever `person.coverSeed` is, so no two anonymised people differ by it;
+ * a host that passes `cover: null` still gets none. What the host passes as
+ * a title or a company is the host's to redact.
  *
  * The root is the profile header's, marked
  * `data-slot="candidate-profile-header"`. The profile link isn't printed.
@@ -424,7 +437,10 @@ export function CandidateSharedProfileHeader({
       status={status}
       titleLevel={titleLevel}
       name={name ?? text.anonymous}
-      cover={anonymised ? undefined : person.cover}
+      // Anonymised, the person's own cover is never drawn and nothing of
+      // theirs deals the stock one: only their wish for no cover is kept.
+      cover={anonymised ? (person.cover === null ? null : undefined) : person.cover}
+      coverSeed={anonymised ? null : person.coverSeed}
       avatar={anonymised ? <WithheldAvatar /> : person.avatar}
       meta={
         hasRole || hasFacts ? (

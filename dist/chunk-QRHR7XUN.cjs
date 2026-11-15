@@ -4,7 +4,8 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunkKTFEHL5Xcjs = require('./chunk-KTFEHL5X.cjs');
+
+var _chunkHJ6CZSSYcjs = require('./chunk-HJ6CZSSY.cjs');
 
 // src/recruit/candidate-relationship-card.tsx
 var _badge = require('@epicbagel/saas-kit/primitives/badge');
@@ -33,6 +34,7 @@ function CandidateRelationshipCard({
   name,
   avatar,
   cover,
+  coverSeed,
   verified = false,
   headline,
   company,
@@ -60,24 +62,34 @@ function CandidateRelationshipCard({
       ...props,
       ..._chunkK3VUGGWHcjs.candidateCardSelectProps.call(void 0, onSelect, { onKeyDown }),
       children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkKTFEHL5Xcjs.CandidateCoverHeader, { cover, padding: "lg", softenCoverUntilHover: true, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [
-          avatar,
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
-            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "center", children: [
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { level: 3, truncate: true, children: name }),
-              verified && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icon.Icon, { icon: _lucidereact.CheckCircle, size: "sm", tone: "success" })
-            ] }),
-            shown(headline) && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "muted", truncate: true, children: headline }),
-            (shown(company) || shown(location)) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "center", minWidth: "zero", children: [
-              company,
-              shown(location) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { variant: "inherit", as: "span", size: "sm", tone: "muted", truncate: true, children: [
-                shown(company) && "\xB7 ",
-                location
-              ] })
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _chunkHJ6CZSSYcjs.CandidateCoverHeader,
+          {
+            cover,
+            coverFallback: "stock",
+            coverSeed: _chunkHJ6CZSSYcjs.candidateCoverSeed.call(void 0, coverSeed, name),
+            padding: "lg",
+            softenCoverUntilHover: true,
+            children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [
+              avatar,
+              /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
+                /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "center", children: [
+                  /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { level: 3, truncate: true, children: name }),
+                  verified && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icon.Icon, { icon: _lucidereact.CheckCircle, size: "sm", tone: "success" })
+                ] }),
+                shown(headline) && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "muted", truncate: true, children: headline }),
+                (shown(company) || shown(location)) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "center", minWidth: "zero", children: [
+                  company,
+                  shown(location) && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { variant: "inherit", as: "span", size: "sm", tone: "muted", truncate: true, children: [
+                    shown(company) && "\xB7 ",
+                    location
+                  ] })
+                ] })
+              ] }),
+              actions
             ] })
-          ] }),
-          actions
-        ] }) }),
+          }
+        ),
         signal && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { border: "top", gap: "xs", paddingX: "lg", paddingY: "md", surface: "muted", children: [
           /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "between", children: [
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "xs", tone: "muted", weight: "medium", transform: "uppercase", children: signal.label }),

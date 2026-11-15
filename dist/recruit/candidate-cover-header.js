@@ -1,8 +1,10 @@
 import {
   CandidateCoverHeader,
-  CandidateCoverImage
-} from "../chunk-KL7C75ZR.js";
+  CandidateCoverImage,
+  candidateCoverSeed
+} from "../chunk-7KWIX4SI.js";
 export {
   CandidateCoverHeader,
-  CandidateCoverImage
+  CandidateCoverImage,
+  candidateCoverSeed
 };

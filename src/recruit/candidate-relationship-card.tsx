@@ -14,7 +14,7 @@ import { CheckCircle } from "lucide-react";
 import type { HTMLAttributes, Key, ReactNode } from "react";
 
 import { CandidateCardRoot, candidateCardSelectProps } from "./candidate-card-activation";
-import { CandidateCoverHeader } from "./candidate-cover-header";
+import { CandidateCoverHeader, candidateCoverSeed, type CandidateCoverSeed } from "./candidate-cover-header";
 
 /** One labelled fact in the card's three-column row. */
 export interface CandidateRelationshipFact {
@@ -70,8 +70,18 @@ export interface CandidateRelationshipCardProps
   name: ReactNode;
   /** Avatar at the start of the header. */
   avatar?: ReactNode;
-  /** Media for the 4:1 cover frame, softened until the card is hovered. Omit it and no frame is drawn. */
-  cover?: ReactNode;
+  /**
+   * The person's own cover, as media the host owns, softened until the card
+   * is hovered. Left out, the kit's stock banner (`CoverBanner`) is drawn in
+   * its place, in the theme's colours, so everyone's card is the same
+   * height; `null` draws no cover.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, the same one every time: the
+   * person's id, say. Left out, the name is the seed where it is plain text.
+   */
+  coverSeed?: CandidateCoverSeed;
   /** Marks a verified contact with a check after the name. */
   verified?: boolean;
   /** The line under the name, usually the current title. */
@@ -123,6 +133,7 @@ export function CandidateRelationshipCard({
   name,
   avatar,
   cover,
+  coverSeed,
   verified = false,
   headline,
   company,
@@ -152,7 +163,13 @@ export function CandidateRelationshipCard({
       {...props}
       {...candidateCardSelectProps(onSelect, { onKeyDown })}
     >
-      <CandidateCoverHeader cover={cover} padding="lg" softenCoverUntilHover>
+      <CandidateCoverHeader
+        cover={cover}
+        coverFallback="stock"
+        coverSeed={candidateCoverSeed(coverSeed, name)}
+        padding="lg"
+        softenCoverUntilHover
+      >
         <Stack direction="horizontal" gap="md" align="start">
           {avatar}
           <FlexItem grow minWidth="zero">

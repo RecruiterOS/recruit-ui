@@ -1,6 +1,6 @@
 import {
   CandidatePipelineCard
-} from "./chunk-MMB4GPLS.js";
+} from "./chunk-IL67BKGI.js";
 import {
   COARSE_POINTER_TOUCH_TARGET
 } from "./chunk-YKEE5RQG.js";

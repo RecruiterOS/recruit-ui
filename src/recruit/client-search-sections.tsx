@@ -20,6 +20,7 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, useState, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { CandidateClientDecision, type CandidateClientDecisionLabels } from "./candidate-client-decision";
+import type { CandidateCoverSeed } from "./candidate-cover-header";
 import type { CandidateDecisionChoice } from "./candidate-decision-buttons";
 import type { CandidateEmptyCopy } from "./candidate-empty-copy";
 import { CandidateReviewCard, type CandidateReviewFact } from "./candidate-review-card";
@@ -514,8 +515,16 @@ export interface ClientSearchPerson {
   name: string;
   /** Their face, usually the kit's PersonAvatar. 44px reads best. */
   avatar?: ReactNode;
-  /** A banner over the card, as `CandidateReviewCard` takes it. */
-  cover?: ReactNode;
+  /**
+   * A banner over the card, as `CandidateReviewCard` takes it: left out, the
+   * kit's stock banner stands in, and `null` draws none.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, as `CandidateReviewCard` takes it.
+   * Left out, the name is the seed.
+   */
+  coverSeed?: CandidateCoverSeed;
   /** The line under the name, such as their title and company. */
   headline?: ReactNode;
   /** At the header's end, such as a link to their public profile. */
@@ -614,6 +623,7 @@ export function ClientSearchDelivery({
             name={person.name}
             avatar={person.avatar}
             cover={person.cover}
+            coverSeed={person.coverSeed}
             headline={person.headline}
             headerActions={person.headerActions}
             facts={person.facts}

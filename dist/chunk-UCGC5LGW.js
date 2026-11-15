@@ -2,8 +2,9 @@ import {
   shouldActivateCandidateCard
 } from "./chunk-NBZS6VTO.js";
 import {
-  CandidateCoverHeader
-} from "./chunk-KL7C75ZR.js";
+  CandidateCoverHeader,
+  candidateCoverSeed
+} from "./chunk-7KWIX4SI.js";
 
 // src/recruit/candidate-review-card.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
@@ -23,6 +24,7 @@ function CandidateReviewCard({
   name,
   avatar,
   cover,
+  coverSeed,
   headline,
   headerActions,
   beforeFacts,
@@ -78,31 +80,40 @@ function CandidateReviewCard({
             } : void 0,
             children: /* @__PURE__ */ jsxs(Stack, { gap: "none", height: "full", children: [
               /* @__PURE__ */ jsxs(FlexItem, { grow: true, minHeight: "zero", children: [
-                /* @__PURE__ */ jsx(CandidateCoverHeader, { cover, padding: "lg", children: /* @__PURE__ */ jsxs(
-                  Grid,
+                /* @__PURE__ */ jsx(
+                  CandidateCoverHeader,
                   {
-                    columns: null,
-                    gap: "md",
-                    className: "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start",
-                    children: [
-                      /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "start", minWidth: "zero", children: [
-                        avatar,
-                        /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
-                          /* @__PURE__ */ jsx(Heading, { id: nameId, level: 3, children: name }),
-                          headline != null ? /* @__PURE__ */ jsx(Text, { variant: "caption", size: "sm", marginTop: "xs", children: headline }) : null
-                        ] })
-                      ] }),
-                      headerActions != null ? /* @__PURE__ */ jsx(
-                        "div",
-                        {
-                          "data-slot": "candidate-review-card-header-actions",
-                          className: "justify-self-start sm:justify-self-auto",
-                          children: headerActions
-                        }
-                      ) : null
-                    ]
+                    cover,
+                    coverFallback: "stock",
+                    coverSeed: candidateCoverSeed(coverSeed, name),
+                    padding: "lg",
+                    children: /* @__PURE__ */ jsxs(
+                      Grid,
+                      {
+                        columns: null,
+                        gap: "md",
+                        className: "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start",
+                        children: [
+                          /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "start", minWidth: "zero", children: [
+                            avatar,
+                            /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
+                              /* @__PURE__ */ jsx(Heading, { id: nameId, level: 3, children: name }),
+                              headline != null ? /* @__PURE__ */ jsx(Text, { variant: "caption", size: "sm", marginTop: "xs", children: headline }) : null
+                            ] })
+                          ] }),
+                          headerActions != null ? /* @__PURE__ */ jsx(
+                            "div",
+                            {
+                              "data-slot": "candidate-review-card-header-actions",
+                              className: "justify-self-start sm:justify-self-auto",
+                              children: headerActions
+                            }
+                          ) : null
+                        ]
+                      }
+                    )
                   }
-                ) }),
+                ),
                 beforeFacts,
                 facts.length > 0 ? (
                   // Inset like the header and the action row, so the labels line

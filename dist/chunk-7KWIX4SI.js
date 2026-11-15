@@ -1,6 +1,7 @@
 // src/recruit/candidate-cover-header.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { AspectRatio } from "@epicbagel/saas-kit/primitives/aspect-ratio";
+import { CoverBanner } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
 import { jsx, jsxs } from "react/jsx-runtime";
 function CandidateCoverImage({
@@ -23,9 +24,15 @@ function CandidateCoverImage({
   };
   return size === "compact" ? /* @__PURE__ */ jsx("div", { ...frameProps, children }) : /* @__PURE__ */ jsx(AspectRatio, { ratio: 4, ...frameProps, children });
 }
+function candidateCoverSeed(seed, name) {
+  if (seed !== void 0) return seed;
+  return typeof name === "string" || typeof name === "number" ? name : null;
+}
 var DIALOG_PADDING = "p-4";
 function CandidateCoverHeader({
   cover,
+  coverFallback = "none",
+  coverSeed,
   coverSize = "default",
   children,
   padding = "card-header",
@@ -33,7 +40,9 @@ function CandidateCoverHeader({
   className,
   ...props
 }) {
-  const clip = cover != null || padding !== "none";
+  const stock = cover === void 0 && coverFallback === "stock";
+  const media = stock ? /* @__PURE__ */ jsx(CoverBanner, { seed: coverSeed }) : cover;
+  const clip = media != null || padding !== "none";
   return /* @__PURE__ */ jsxs(
     "div",
     {
@@ -41,7 +50,15 @@ function CandidateCoverHeader({
       className: cn(clip && "overflow-hidden", className),
       ...props,
       children: [
-        /* @__PURE__ */ jsx(CandidateCoverImage, { size: coverSize, softenUntilHover: softenCoverUntilHover, children: cover }),
+        /* @__PURE__ */ jsx(
+          CandidateCoverImage,
+          {
+            size: coverSize,
+            softenUntilHover: softenCoverUntilHover,
+            className: stock ? "print:hidden" : void 0,
+            children: media
+          }
+        ),
         /* @__PURE__ */ jsx(
           PanelSection,
           {
@@ -58,5 +75,6 @@ function CandidateCoverHeader({
 
 export {
   CandidateCoverImage,
+  candidateCoverSeed,
   CandidateCoverHeader
 };

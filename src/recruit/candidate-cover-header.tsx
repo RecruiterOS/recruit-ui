@@ -1,5 +1,6 @@
 import { cn } from "@epicbagel/saas-kit/lib/utils";
 import { AspectRatio } from "@epicbagel/saas-kit/primitives/aspect-ratio";
+import { CoverBanner } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { PanelSection } from "@epicbagel/saas-kit/primitives/panel-section";
 import type { HTMLAttributes, ReactNode } from "react";
 
@@ -45,9 +46,46 @@ export function CandidateCoverImage({
   );
 }
 
+/**
+ * What deals a stock cover its design, the same one every time: something
+ * that stays put for the person, an id before a name. `null` deals the first
+ * design, which is right for someone who mustn't be told from anyone else.
+ */
+export type CandidateCoverSeed = string | number | null;
+
+/** What stands in for a cover the host left out. */
+export type CandidateCoverFallback = "stock" | "none";
+
+/**
+ * The seed a card or a profile deals its stock cover by: the host's
+ * `coverSeed`, or without one the person's name where it is plain text. A
+ * name that is an element is read as no seed, never guessed at.
+ */
+export function candidateCoverSeed(
+  seed: CandidateCoverSeed | undefined,
+  name: ReactNode,
+): CandidateCoverSeed {
+  if (seed !== undefined) return seed;
+  return typeof name === "string" || typeof name === "number" ? name : null;
+}
+
 export interface CandidateCoverHeaderProps
   extends HTMLAttributes<HTMLDivElement> {
+  /**
+   * Host-owned media for the 4:1 frame. `null` draws no cover, whatever
+   * `coverFallback` says.
+   */
   cover?: ReactNode;
+  /**
+   * What stands in when `cover` is left out. `stock` draws the kit's
+   * `CoverBanner` in the frame: a banner in the theme's own colours, so
+   * someone with no cover is the same height as their neighbours. `none`,
+   * the default here, draws no frame; the cards and profiles that always
+   * show a cover pass `stock`. A stock cover isn't printed.
+   */
+  coverFallback?: CandidateCoverFallback;
+  /** Deals the stock cover its design. Left out, everyone gets the first. */
+  coverSeed?: CandidateCoverSeed;
   /** The cover's size; the default keeps its full 4:1 ratio. */
   coverSize?: CandidateCoverImageSize;
   children: ReactNode;
@@ -73,6 +111,8 @@ const DIALOG_PADDING = "p-4";
 /** One cover-and-identity hierarchy shared by candidate cards and profiles. */
 export function CandidateCoverHeader({
   cover,
+  coverFallback = "none",
+  coverSeed,
   coverSize = "default",
   children,
   padding = "card-header",
@@ -82,7 +122,9 @@ export function CandidateCoverHeader({
 }: CandidateCoverHeaderProps) {
   // The clip keeps a cover inside the rounded frame; a flush header with no
   // cover has nothing to clip, and clipping would cut its focus rings.
-  const clip = cover != null || padding !== "none";
+  const stock = cover === undefined && coverFallback === "stock";
+  const media = stock ? <CoverBanner seed={coverSeed} /> : cover;
+  const clip = media != null || padding !== "none";
 
   return (
     <div
@@ -90,8 +132,14 @@ export function CandidateCoverHeader({
       className={cn(clip && "overflow-hidden", className)}
       {...props}
     >
-      <CandidateCoverImage size={coverSize} softenUntilHover={softenCoverUntilHover}>
-        {cover}
+      <CandidateCoverImage
+        size={coverSize}
+        softenUntilHover={softenCoverUntilHover}
+        // A stock cover is decoration drawn as a background, which a browser
+        // leaves out of print: its frame would print as an empty band.
+        className={stock ? "print:hidden" : undefined}
+      >
+        {media}
       </CandidateCoverImage>
       <PanelSection
         as="div"

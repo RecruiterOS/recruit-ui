@@ -1,7 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunkMNS2OOMPcjs = require('./chunk-MNS2OOMP.cjs');
+var _chunkZDJ5QJT3cjs = require('./chunk-ZDJ5QJT3.cjs');
 
 
 var _chunk7IVBABRPcjs = require('./chunk-7IVBABRP.cjs');
@@ -40,7 +40,7 @@ function ClientSearchConversation({
   traceLabels,
   ...props
 }) {
-  const text = { ..._chunkMNS2OOMPcjs.clientSearchLabels, ...labels };
+  const text = { ..._chunkZDJ5QJT3cjs.clientSearchLabels, ...labels };
   const [staged, setStaged] = _react.useState.call(void 0, []);
   const [sending, setSending] = _react.useState.call(void 0, false);
   const [failure, setFailure] = _react.useState.call(void 0, null);
@@ -87,7 +87,7 @@ function ClientSearchConversation({
       createdAt: delivery.deliveredAt,
       actions: false,
       content: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-        _chunkMNS2OOMPcjs.ClientSearchDelivery,
+        _chunkZDJ5QJT3cjs.ClientSearchDelivery,
         {
           title: delivery.title,
           description: delivery.description,

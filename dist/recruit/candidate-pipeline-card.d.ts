@@ -1,5 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
+import { CandidateCoverSeed } from './candidate-cover-header.js';
 
 interface CandidatePipelineCardProps extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "onSelect" | "title" | "children"> {
     /** The candidate's name, on one truncated line. */
@@ -8,8 +9,17 @@ interface CandidatePipelineCardProps extends Omit<HTMLAttributes<HTMLElement>, "
     headline?: ReactNode;
     /** The current-company line, rendered as given (it brings its own text). */
     company?: ReactNode;
-    /** Media for the 4:1 cover frame. Omit it and no frame is drawn. */
-    cover?: ReactNode;
+    /**
+     * The person's own cover, as media the host owns. Left out, the kit's
+     * stock banner (`CoverBanner`) is drawn in its place, in the theme's
+     * colours, so everyone's card is the same height; `null` draws no cover.
+     */
+    cover?: ReactNode | null;
+    /**
+     * Deals the stock banner its design, the same one every time: the
+     * person's id, say. Left out, the name is the seed where it is plain text.
+     */
+    coverSeed?: CandidateCoverSeed;
     /** Small badges in a row under the identity, such as a grade or a decision. */
     badges?: ReactNode;
     /** Controls at the top right, such as a preview link. */
@@ -25,6 +35,6 @@ interface CandidatePipelineCardProps extends Omit<HTMLAttributes<HTMLElement>, "
  * wrapper around itself, so a board can make it draggable directly. The root
  * is the kit InteractiveCard, marked `data-slot="candidate-pipeline-card"`.
  */
-declare function CandidatePipelineCard({ name, headline, company, cover, badges, actions, onSelect, ...props }: CandidatePipelineCardProps): react.JSX.Element;
+declare function CandidatePipelineCard({ name, headline, company, cover, coverSeed, badges, actions, onSelect, ...props }: CandidatePipelineCardProps): react.JSX.Element;
 
 export { CandidatePipelineCard, type CandidatePipelineCardProps };

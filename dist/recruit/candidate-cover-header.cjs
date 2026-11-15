@@ -1,8 +1,10 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});
 
 
-var _chunkKTFEHL5Xcjs = require('../chunk-KTFEHL5X.cjs');
+
+var _chunkHJ6CZSSYcjs = require('../chunk-HJ6CZSSY.cjs');
 
 
 
-exports.CandidateCoverHeader = _chunkKTFEHL5Xcjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkKTFEHL5Xcjs.CandidateCoverImage;
+
+exports.CandidateCoverHeader = _chunkHJ6CZSSYcjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkHJ6CZSSYcjs.CandidateCoverImage; exports.candidateCoverSeed = _chunkHJ6CZSSYcjs.candidateCoverSeed;

@@ -1,6 +1,7 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Sparkles } from "lucide-react";
+import { coverBannerVariant } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { describe, expect, it, vi } from "vitest";
 
 import { CandidateCareerHistoryPanel } from "./candidate-career-history-panel";
@@ -46,7 +47,28 @@ describe("candidate relationship card", () => {
     expect(screen.getByText("Warm route through a former colleague.")).toBeInTheDocument();
     expect(screen.getByText("High confidence")).toBeInTheDocument();
     expect(screen.getByText("Rating").className).toContain("uppercase");
-    // No cover media, no empty 4:1 frame.
+    // No cover of their own: the kit's stock banner, dealt by the name, never an empty frame.
+    const banner = () => container.querySelector('[data-slot="candidate-cover-image"] [data-slot="cover-banner"]');
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("Imogen Example"));
+    expect(container.querySelectorAll("[data-radix-aspect-ratio-wrapper]")).toHaveLength(1);
+
+    rerender(
+      <CandidateRelationshipCard name="Imogen Example" coverSeed={41} facts={facts} onSelect={() => undefined} />,
+    );
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant(41));
+
+    rerender(
+      <CandidateRelationshipCard
+        name="Imogen Example"
+        cover={<img alt="Fictional landscape" />}
+        facts={facts}
+        onSelect={() => undefined}
+      />,
+    );
+    expect(banner()).toBeNull();
+    expect(screen.getByAltText("Fictional landscape")).toBeInTheDocument();
+
+    rerender(<CandidateRelationshipCard name="Imogen Example" cover={null} facts={facts} onSelect={() => undefined} />);
     expect(container.querySelector("[data-radix-aspect-ratio-wrapper]")).toBeNull();
 
     rerender(<CandidateRelationshipCard name="Mei Example" facts={facts} onSelect={() => undefined} />);

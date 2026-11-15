@@ -3,7 +3,8 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunkKTFEHL5Xcjs = require('./chunk-KTFEHL5X.cjs');
+
+var _chunkHJ6CZSSYcjs = require('./chunk-HJ6CZSSY.cjs');
 
 // src/recruit/candidate-review-card.tsx
 var _utils = require('@epicbagel/saas-kit/lib/utils');
@@ -23,6 +24,7 @@ function CandidateReviewCard({
   name,
   avatar,
   cover,
+  coverSeed,
   headline,
   headerActions,
   beforeFacts,
@@ -78,31 +80,40 @@ function CandidateReviewCard({
             } : void 0,
             children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "none", height: "full", children: [
               /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minHeight: "zero", children: [
-                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkKTFEHL5Xcjs.CandidateCoverHeader, { cover, padding: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
-                  _grid.Grid,
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkHJ6CZSSYcjs.CandidateCoverHeader,
                   {
-                    columns: null,
-                    gap: "md",
-                    className: "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start",
-                    children: [
-                      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", minWidth: "zero", children: [
-                        avatar,
-                        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
-                          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: nameId, level: 3, children: name }),
-                          headline != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "caption", size: "sm", marginTop: "xs", children: headline }) : null
-                        ] })
-                      ] }),
-                      headerActions != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                        "div",
-                        {
-                          "data-slot": "candidate-review-card-header-actions",
-                          className: "justify-self-start sm:justify-self-auto",
-                          children: headerActions
-                        }
-                      ) : null
-                    ]
+                    cover,
+                    coverFallback: "stock",
+                    coverSeed: _chunkHJ6CZSSYcjs.candidateCoverSeed.call(void 0, coverSeed, name),
+                    padding: "lg",
+                    children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+                      _grid.Grid,
+                      {
+                        columns: null,
+                        gap: "md",
+                        className: "grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start",
+                        children: [
+                          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", minWidth: "zero", children: [
+                            avatar,
+                            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: [
+                              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: nameId, level: 3, children: name }),
+                              headline != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "caption", size: "sm", marginTop: "xs", children: headline }) : null
+                            ] })
+                          ] }),
+                          headerActions != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                            "div",
+                            {
+                              "data-slot": "candidate-review-card-header-actions",
+                              className: "justify-self-start sm:justify-self-auto",
+                              children: headerActions
+                            }
+                          ) : null
+                        ]
+                      }
+                    )
                   }
-                ) }),
+                ),
                 beforeFacts,
                 facts.length > 0 ? (
                   // Inset like the header and the action row, so the labels line

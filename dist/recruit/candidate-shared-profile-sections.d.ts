@@ -1,6 +1,7 @@
 import * as react from 'react';
 import { CSSProperties, ReactNode, ElementType } from 'react';
 import { CandidateClientDecisionProps, CandidateClientDecisionLabels } from './candidate-client-decision.js';
+import { CandidateCoverSeed } from './candidate-cover-header.js';
 import { CandidateDecisionChoice } from './candidate-decision-buttons.js';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.js';
 import { CandidateGradeBadgeProps } from './candidate-grade.js';
@@ -12,7 +13,6 @@ import '@epicbagel/saas-kit/primitives/badge';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import './candidate-stage-select.js';
 import '@epicbagel/saas-kit/primitives/select';
-import './candidate-cover-header.js';
 
 /**
  * The fixed words of a candidate's shared profile, and of each section of
@@ -184,8 +184,16 @@ interface CandidateSharedProfilePerson {
     name?: string | null;
     /** Their face, usually the kit's PersonAvatar at 64px. */
     avatar?: ReactNode;
-    /** A banner over the header, as `CandidateProfileHeader` takes it. */
-    cover?: ReactNode;
+    /**
+     * A banner over the header, as `CandidateProfileHeader` takes it: left
+     * out, the kit's stock banner stands in, and `null` draws none.
+     */
+    cover?: ReactNode | null;
+    /**
+     * Deals the stock banner its design, as `CandidateProfileHeader` takes
+     * it. Left out, the name is the seed.
+     */
+    coverSeed?: CandidateCoverSeed;
     /** Their current title. */
     title?: ReactNode;
     /** Their current company. */
@@ -201,8 +209,9 @@ interface CandidateSharedProfileHeaderProps extends CandidateSharedProfileRootPr
     person: CandidateSharedProfilePerson;
     /**
      * Shows nobody: the heading is `labels.anonymous`, a glyph stands in for
-     * the face, and there is no cover and no profile link, whatever `person`
-     * holds.
+     * the face, and their cover and profile link are never drawn, whatever
+     * `person` holds. The stock banner still is, dealt by no seed, so it is
+     * the same for everyone and says nothing of who they are.
      */
     anonymised?: boolean;
     /** The name's heading level, as `CandidateProfileHeader` takes it. 1 by default. */
@@ -217,7 +226,10 @@ interface CandidateSharedProfileHeaderProps extends CandidateSharedProfileRootPr
  * `anonymised` is enforced here, not left to the host: the name, the avatar,
  * the cover and the profile link are never drawn on an anonymised header,
  * even when `person` carries them, and a glyph stands where the face would
- * be. What the host passes as a title or a company is the host's to redact.
+ * be. The banner over it is then the kit's stock one in its first design,
+ * whatever `person.coverSeed` is, so no two anonymised people differ by it;
+ * a host that passes `cover: null` still gets none. What the host passes as
+ * a title or a company is the host's to redact.
  *
  * The root is the profile header's, marked
  * `data-slot="candidate-profile-header"`. The profile link isn't printed.
