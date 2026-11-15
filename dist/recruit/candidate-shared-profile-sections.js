@@ -9,11 +9,11 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "../chunk-XLNTUHTQ.js";
+} from "../chunk-QFHYMDUY.js";
 import "../chunk-XTAH2XJR.js";
 import "../chunk-S6VNT7YQ.js";
 import "../chunk-MQMPVZLZ.js";
-import "../chunk-P3WHSIFP.js";
+import "../chunk-QJFHRKRB.js";
 import "../chunk-LY3LKI5F.js";
 import "../chunk-WMD6M2IP.js";
 import "../chunk-P5VLMURO.js";

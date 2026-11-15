@@ -35,6 +35,7 @@ function CandidateRelationshipCard({
   avatar,
   cover,
   coverSeed,
+  coverSize,
   verified = false,
   headline,
   company,
@@ -68,6 +69,7 @@ function CandidateRelationshipCard({
             cover,
             coverFallback: "stock",
             coverSeed: _chunkHJ6CZSSYcjs.candidateCoverSeed.call(void 0, coverSeed, name),
+            coverSize,
             padding: "lg",
             softenCoverUntilHover: true,
             children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "start", children: [

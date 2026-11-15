@@ -127,6 +127,11 @@ describe("candidate presentation", () => {
     rerender(<CandidateProfileHeader name="Mei Example" cover={null} />);
     expect(banner()).toBeNull();
     expect(document.querySelector('[data-slot="candidate-cover-image"]')).toBeNull();
+
+    // A header on a wide page caps its cover on request.
+    rerender(<CandidateProfileHeader name="Mei Example" coverSize="compact" />);
+    expect(document.querySelector('[data-slot="candidate-cover-image"]')).toHaveClass("aspect-[4/1]", "max-h-[96px]");
+    expect(banner()).not.toBeNull();
   });
 
   it("puts actions on the name line, or beside the whole identity on request", () => {

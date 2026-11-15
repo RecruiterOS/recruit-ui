@@ -9,7 +9,7 @@ var _chunkT2YQNA2Bcjs = require('./chunk-T2YQNA2B.cjs');
 var _chunkSUDJGWV2cjs = require('./chunk-SUDJGWV2.cjs');
 
 
-var _chunkTEJ72TT5cjs = require('./chunk-TEJ72TT5.cjs');
+var _chunkAWB4WJIQcjs = require('./chunk-AWB4WJIQ.cjs');
 
 
 
@@ -199,7 +199,7 @@ function CandidateSharedProfileHeader({
   const hasRole = present(person.title) || present(person.company);
   const hasFacts = present(person.location) || person.yearsExperience != null;
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-    _chunkTEJ72TT5cjs.CandidateProfileHeader,
+    _chunkAWB4WJIQcjs.CandidateProfileHeader,
     {
       ...sharedProfileRootAttributes(props),
       className: _utils.cn.call(void 0, SHARED_PROFILE_WRAP, className),

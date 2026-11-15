@@ -1,6 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
-import { CandidateCoverSeed, CandidateCoverHeaderPadding } from './candidate-cover-header.js';
+import { CandidateCoverSeed, CandidateCoverImageSize, CandidateCoverHeaderPadding } from './candidate-cover-header.js';
 
 interface CandidateProfileProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
     header?: ReactNode;
@@ -33,6 +33,12 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
      * person's id, say. Left out, the name is the seed where it is plain text.
      */
     coverSeed?: CandidateCoverSeed;
+    /**
+     * The cover's size, the person's own or the stock one. `compact` caps it
+     * at 96px, for a card wide enough that a full 4:1 banner would dwarf it;
+     * narrower than 384px it is 4:1 either way.
+     */
+    coverSize?: CandidateCoverImageSize;
     eyebrow?: ReactNode;
     status?: ReactNode;
     meta?: ReactNode;
@@ -65,7 +71,7 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
 type CandidateProfileHeaderActionsPlacement = "name" | "aside";
 /** The heading level of a CandidateProfileHeader's name. */
 type CandidateProfileHeaderTitleLevel = 1 | 2 | 3 | 4;
-declare function CandidateProfileHeader({ name, avatar, cover, coverSeed, eyebrow, status, meta, summary, actions, actionsPlacement, padding, titleLevel, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
+declare function CandidateProfileHeader({ name, avatar, cover, coverSeed, coverSize, eyebrow, status, meta, summary, actions, actionsPlacement, padding, titleLevel, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
     divided?: boolean;

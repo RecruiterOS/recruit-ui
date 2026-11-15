@@ -71,6 +71,11 @@ describe("candidate relationship card", () => {
     rerender(<CandidateRelationshipCard name="Imogen Example" cover={null} facts={facts} onSelect={() => undefined} />);
     expect(container.querySelector("[data-radix-aspect-ratio-wrapper]")).toBeNull();
 
+    // A wide card caps its cover on request.
+    rerender(<CandidateRelationshipCard name="Imogen Example" coverSize="compact" facts={facts} onSelect={() => undefined} />);
+    expect(container.querySelector('[data-slot="candidate-cover-image"]')).toHaveClass("aspect-[4/1]", "max-h-[96px]");
+    expect(banner()).not.toBeNull();
+
     rerender(<CandidateRelationshipCard name="Mei Example" facts={facts} onSelect={() => undefined} />);
     expect(screen.queryByText("Signal")).toBeNull();
     expect(screen.queryByText("Recruiter note")).toBeNull();

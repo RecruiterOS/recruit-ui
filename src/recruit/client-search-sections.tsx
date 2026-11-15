@@ -517,7 +517,8 @@ export interface ClientSearchPerson {
   avatar?: ReactNode;
   /**
    * A banner over the card, as `CandidateReviewCard` takes it: left out, the
-   * kit's stock banner stands in, and `null` draws none.
+   * kit's stock banner stands in, and `null` draws none. Either is capped at
+   * 96px, since a delivery's cards run the width of the page.
    */
   cover?: ReactNode | null;
   /**
@@ -624,6 +625,9 @@ export function ClientSearchDelivery({
             avatar={person.avatar}
             cover={person.cover}
             coverSeed={person.coverSeed}
+            // A delivery's cards run the width of the page, where a full
+            // 4:1 banner would be taller than the person under it.
+            coverSize="compact"
             headline={person.headline}
             headerActions={person.headerActions}
             facts={person.facts}

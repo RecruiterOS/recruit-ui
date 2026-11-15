@@ -207,7 +207,8 @@ interface ClientSearchPerson {
     avatar?: ReactNode;
     /**
      * A banner over the card, as `CandidateReviewCard` takes it: left out, the
-     * kit's stock banner stands in, and `null` draws none.
+     * kit's stock banner stands in, and `null` draws none. Either is capped at
+     * 96px, since a delivery's cards run the width of the page.
      */
     cover?: ReactNode | null;
     /**

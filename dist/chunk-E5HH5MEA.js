@@ -15,7 +15,7 @@ import {
 } from "./chunk-J6AD2LEO.js";
 import {
   CandidateReviewCard
-} from "./chunk-UCGC5LGW.js";
+} from "./chunk-TLWK56MO.js";
 import {
   COARSE_POINTER_TOUCH_TARGET
 } from "./chunk-YKEE5RQG.js";
@@ -295,6 +295,7 @@ function ClientSearchDelivery({
             avatar: person.avatar,
             cover: person.cover,
             coverSeed: person.coverSeed,
+            coverSize: "compact",
             headline: person.headline,
             headerActions: person.headerActions,
             facts: person.facts,
