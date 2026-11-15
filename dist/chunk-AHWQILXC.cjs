@@ -1,35 +1,35 @@
-import {
-  ClientSearchConversation
-} from "./chunk-OJX2YRTV.js";
-import {
-  ClientSearchBriefPanel,
-  ClientSearchCallButton,
-  ClientSearchCallPrompt,
-  ClientSearchDelivery,
-  ClientSearchLive,
-  ClientSearchNextActions,
-  ClientSearchProgressPanel,
-  ClientSearchQuestion,
-  clientSearchLabels
-} from "./chunk-E5HH5MEA.js";
-import {
-  SourcingTrace
-} from "./chunk-JVTDFZNJ.js";
-import {
-  JobBriefCard
-} from "./chunk-FEMDFAQE.js";
-import {
-  jobBriefView
-} from "./chunk-5F2DPU3C.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+var _chunkC73ERKCGcjs = require('./chunk-C73ERKCG.cjs');
+
+
+
+
+
+
+
+
+
+
+var _chunkRDVNCCDKcjs = require('./chunk-RDVNCCDK.cjs');
+
+
+var _chunkTAFMPPOTcjs = require('./chunk-TAFMPPOT.cjs');
+
+
+var _chunk7IVBABRPcjs = require('./chunk-7IVBABRP.cjs');
+
+
+var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
 
 // src/recruit/client-search-page.tsx
-import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
-import { PageHeader } from "@epicbagel/saas-kit/primitives/page-header";
-import { PageShell } from "@epicbagel/saas-kit/primitives/page-shell";
-import { Stack } from "@epicbagel/saas-kit/primitives/stack";
-import { Text } from "@epicbagel/saas-kit/primitives/text";
-import { useState } from "react";
-import { Fragment, jsx, jsxs } from "react/jsx-runtime";
+var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
+var _pageheader = require('@epicbagel/saas-kit/primitives/page-header');
+var _pageshell = require('@epicbagel/saas-kit/primitives/page-shell');
+var _stack = require('@epicbagel/saas-kit/primitives/stack');
+var _text = require('@epicbagel/saas-kit/primitives/text');
+var _react = require('react');
+var _jsxruntime = require('react/jsx-runtime');
 var NO_STEPS = [];
 var NO_THREAD = [];
 var NO_ACTIONS = [];
@@ -43,7 +43,7 @@ function isPromiseLike(value) {
   return value != null && typeof value.then === "function";
 }
 function useInFlight() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = _react.useState.call(void 0, 0);
   const track = (result) => {
     if (isPromiseLike(result)) {
       setCount((now) => now + 1);
@@ -92,18 +92,18 @@ function ClientSearchPage({
   progressLabels,
   ...props
 }) {
-  const text = { ...clientSearchLabels, ...labels };
+  const text = { ..._chunkRDVNCCDKcjs.clientSearchLabels, ...labels };
   const [busy, track] = useInFlight();
-  const [promptState, setPromptState] = useState(false);
-  const promptOpen = callPromptOpen ?? promptState;
+  const [promptState, setPromptState] = _react.useState.call(void 0, false);
+  const promptOpen = _nullishCoalesce(callPromptOpen, () => ( promptState));
   const setPromptOpen = (open) => {
     if (callPromptOpen === void 0) setPromptState(open);
-    onCallPromptOpenChange?.(open);
+    _optionalChain([onCallPromptOpenChange, 'optionalCall', _ => _(open)]);
   };
   const bookable = !readOnly && call != null && (call.href != null || call.onSelect != null) ? call : null;
   const current = steps.find((step) => step.state === "current");
   const now = current ? text.now(current.title) : null;
-  const description = present(subtitle) && present(now) ? /* @__PURE__ */ jsxs(Fragment, { children: [
+  const description = present(subtitle) && present(now) ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
     subtitle,
     " \xB7 ",
     now
@@ -116,23 +116,23 @@ function ClientSearchPage({
     if (draft && bookable && step.state === "current" && step.action == null && present(text.callInstead)) {
       return {
         ...step,
-        action: /* @__PURE__ */ jsx(ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.callInstead })
+        action: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRDVNCCDKcjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.callInstead })
       };
     }
     return step;
   });
-  const answer = onAnswer ?? (onReply ? (words) => onReply(words, []) : void 0);
+  const answer = _nullishCoalesce(onAnswer, () => ( (onReply ? (words) => onReply(words, []) : void 0)));
   const ask = onAction || actionsNeedCall ? (action) => {
     if (actionsNeedCall) {
       setPromptOpen(true);
       return void 0;
     }
-    return track(onAction?.(action));
+    return track(_optionalChain([onAction, 'optionalCall', _2 => _2(action)]));
   } : void 0;
   const showsCall = bookable !== null && !draft;
   const hasHeaderActions = Boolean(brief) || showsCall || steps.length > 0;
-  return /* @__PURE__ */ jsxs(
-    Stack,
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+    _stack.Stack,
     {
       "data-slot": "client-search-page",
       "data-view": draft ? "conversation" : "open",
@@ -143,23 +143,23 @@ function ClientSearchPage({
       minHeight: "zero",
       ...props,
       children: [
-        /* @__PURE__ */ jsx(PageShell, { as: "div", width: "narrow", spacing: "compact", className: HEADER_SHELL, children: /* @__PURE__ */ jsx(
-          PageHeader,
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _pageshell.PageShell, { as: "div", width: "narrow", spacing: "compact", className: HEADER_SHELL, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _pageheader.PageHeader,
           {
             spacing: "compact",
             actionsLayout: "responsive",
             eyebrow,
             title,
             description,
-            children: hasHeaderActions ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              brief ? /* @__PURE__ */ jsx(ClientSearchBriefPanel, { brief, briefOptions, labels }) : null,
-              showsCall && bookable ? /* @__PURE__ */ jsx(ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.call }) : null,
-              steps.length > 0 ? /* @__PURE__ */ jsx(ClientSearchProgressPanel, { steps: progressSteps, labels, progressLabels }) : null
+            children: hasHeaderActions ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
+              brief ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRDVNCCDKcjs.ClientSearchBriefPanel, { brief, briefOptions, labels }) : null,
+              showsCall && bookable ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRDVNCCDKcjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.call }) : null,
+              steps.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkRDVNCCDKcjs.ClientSearchProgressPanel, { steps: progressSteps, labels, progressLabels }) : null
             ] }) : null
           }
         ) }),
-        draft ? /* @__PURE__ */ jsx(
-          ClientSearchConversation,
+        draft ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _chunkC73ERKCGcjs.ClientSearchConversation,
           {
             thread,
             agentName,
@@ -181,8 +181,8 @@ function ClientSearchPage({
         ) : (
           // The one part of an open search that scrolls, so the keyboard can
           // reach it to scroll, as it can the kit's own thread.
-          /* @__PURE__ */ jsx(
-            FlexItem,
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+            _flexitem.FlexItem,
             {
               grow: true,
               minHeight: "zero",
@@ -190,9 +190,9 @@ function ClientSearchPage({
               role: "region",
               "aria-label": text.sections,
               tabIndex: 0,
-              children: /* @__PURE__ */ jsxs(PageShell, { as: "div", width: "narrow", children: [
-                question ? /* @__PURE__ */ jsx(
-                  ClientSearchQuestion,
+              children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _pageshell.PageShell, { as: "div", width: "narrow", children: [
+                question ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkRDVNCCDKcjs.ClientSearchQuestion,
                   {
                     question,
                     agentName,
@@ -203,9 +203,9 @@ function ClientSearchPage({
                     markdownComponents,
                     labels
                   }
-                ) : awaitingReply ? /* @__PURE__ */ jsx(Text, { tone: "muted", role: "status", children: text.reading }) : null,
-                searching || liveSteps && liveSteps.length > 0 ? /* @__PURE__ */ jsx(
-                  ClientSearchLive,
+                ) : awaitingReply ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { tone: "muted", role: "status", children: text.reading }) : null,
+                searching || liveSteps && liveSteps.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkRDVNCCDKcjs.ClientSearchLive,
                   {
                     agentName,
                     steps: liveSteps,
@@ -215,8 +215,8 @@ function ClientSearchPage({
                     traceLabels
                   }
                 ) : null,
-                /* @__PURE__ */ jsx(
-                  ClientSearchNextActions,
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkRDVNCCDKcjs.ClientSearchNextActions,
                   {
                     actions,
                     onAction: ask,
@@ -225,8 +225,8 @@ function ClientSearchPage({
                     labels
                   }
                 ),
-                [...deliveries].reverse().map((delivery) => /* @__PURE__ */ jsx(
-                  ClientSearchDelivery,
+                [...deliveries].reverse().map((delivery) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkRDVNCCDKcjs.ClientSearchDelivery,
                   {
                     title: delivery.title,
                     description: delivery.description,
@@ -244,8 +244,8 @@ function ClientSearchPage({
                   },
                   delivery.id
                 )),
-                otherRuns.map((run) => /* @__PURE__ */ jsx(
-                  SourcingTrace,
+                otherRuns.map((run) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                  _chunkTAFMPPOTcjs.SourcingTrace,
                   {
                     steps: run.steps,
                     agentName,
@@ -254,17 +254,17 @@ function ClientSearchPage({
                   },
                   run.id
                 )),
-                brief ? /* @__PURE__ */ jsx(JobBriefCard, { ...jobBriefView(brief, briefOptions), presentation: "preview" }) : null
+                brief ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk7IVBABRPcjs.JobBriefCard, { ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, brief, briefOptions), presentation: "preview" }) : null
               ] })
             }
           )
         ),
-        draft || readOnly ? null : /* @__PURE__ */ jsx(
-          ClientSearchCallPrompt,
+        draft || readOnly ? null : /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _chunkRDVNCCDKcjs.ClientSearchCallPrompt,
           {
             open: promptOpen,
             onOpenChange: setPromptOpen,
-            call: bookable ?? void 0,
+            call: _nullishCoalesce(bookable, () => ( void 0)),
             labels
           }
         )
@@ -273,6 +273,6 @@ function ClientSearchPage({
   );
 }
 
-export {
-  ClientSearchPage
-};
+
+
+exports.ClientSearchPage = ClientSearchPage;

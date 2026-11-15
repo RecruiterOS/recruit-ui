@@ -37,7 +37,8 @@ interface CandidateCoverHeaderProps extends HTMLAttributes<HTMLDivElement> {
      * `CoverBanner` in the frame: a banner in the theme's own colours, so
      * someone with no cover is the same height as their neighbours. `none`,
      * the default here, draws no frame; the cards and profiles that always
-     * show a cover pass `stock`. A stock cover isn't printed.
+     * show a cover pass `stock`. A stock cover isn't printed: it sits in a
+     * `data-slot="candidate-cover-stock"` wrapper that paper leaves out.
      */
     coverFallback?: CandidateCoverFallback;
     /** Deals the stock cover its design. Left out, everyone gets the first. */

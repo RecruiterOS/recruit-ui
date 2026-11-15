@@ -1,7 +1,7 @@
 import {
   ClientSearchDelivery,
   clientSearchLabels
-} from "./chunk-E5HH5MEA.js";
+} from "./chunk-DBUU7NSA.js";
 import {
   JobBriefCard
 } from "./chunk-FEMDFAQE.js";

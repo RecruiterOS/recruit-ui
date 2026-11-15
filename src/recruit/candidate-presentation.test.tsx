@@ -84,9 +84,25 @@ describe("candidate presentation", () => {
     expect(frame()?.parentElement).toHaveStyle({ paddingBottom: "25%" });
     expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-7"));
     expect(banner()).toHaveAttribute("aria-hidden", "true");
-    // Drawn as a background, which paper leaves out: no empty band is printed.
-    expect(frame()).toHaveClass("print:hidden");
-    expect(document.querySelector('[data-slot="candidate-cover-header"]')).toHaveClass("overflow-hidden");
+    // Drawn as a background, which paper leaves out, so it isn't printed. What
+    // is hidden is what holds the height: the ratio wrapper round the frame,
+    // not the frame alone, which would leave an empty band.
+    const stock = () => document.querySelector('[data-slot="candidate-cover-stock"]');
+    const header = () => document.querySelector('[data-slot="candidate-cover-header"]');
+    expect(stock()).toHaveClass("print:hidden");
+    expect(stock()?.parentElement).toBe(header());
+    expect(stock()).toContainElement(document.querySelector("[data-radix-aspect-ratio-wrapper]") as HTMLElement);
+    expect(header()?.querySelectorAll(":scope > *")).toHaveLength(2);
+    expect(header()).toHaveClass("overflow-hidden");
+
+    // Capped, the frame holds its own height, and is hidden the same way.
+    rerender(
+      <CandidateCoverHeader coverFallback="stock" coverSeed="person-7" coverSize="compact">
+        Mei Example
+      </CandidateCoverHeader>,
+    );
+    expect(frame()?.parentElement).toBe(stock());
+    expect(stock()).toHaveClass("print:hidden");
 
     // Their own cover wins, and prints.
     rerender(
@@ -96,7 +112,8 @@ describe("candidate presentation", () => {
     );
     expect(banner()).toBeNull();
     expect(screen.getByAltText("Fictional landscape")).toBeInTheDocument();
-    expect(frame()).not.toHaveClass("print:hidden");
+    expect(stock()).toBeNull();
+    expect(frame()?.closest(".print\\:hidden")).toBeNull();
 
     // `null` is no cover at all.
     rerender(<CandidateCoverHeader coverFallback="stock" cover={null}>Mei Example</CandidateCoverHeader>);

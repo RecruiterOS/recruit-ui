@@ -1,9 +1,9 @@
 "use client";
 import {
   CandidatePipelineCard
-} from "../chunk-IL67BKGI.js";
+} from "../chunk-ORH7GKTA.js";
 import "../chunk-NBZS6VTO.js";
-import "../chunk-7KWIX4SI.js";
+import "../chunk-WJ22QD5G.js";
 export {
   CandidatePipelineCard
 };

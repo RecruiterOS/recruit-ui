@@ -2,9 +2,9 @@
 
 
 
-var _chunkHJ6CZSSYcjs = require('../chunk-HJ6CZSSY.cjs');
+var _chunkK4NZRRJKcjs = require('../chunk-K4NZRRJK.cjs');
 
 
 
 
-exports.CandidateCoverHeader = _chunkHJ6CZSSYcjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkHJ6CZSSYcjs.CandidateCoverImage; exports.candidateCoverSeed = _chunkHJ6CZSSYcjs.candidateCoverSeed;
+exports.CandidateCoverHeader = _chunkK4NZRRJKcjs.CandidateCoverHeader; exports.CandidateCoverImage = _chunkK4NZRRJKcjs.CandidateCoverImage; exports.candidateCoverSeed = _chunkK4NZRRJKcjs.candidateCoverSeed;

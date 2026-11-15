@@ -3,7 +3,7 @@
 var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
-var _chunkHJ6CZSSYcjs = require('./chunk-HJ6CZSSY.cjs');
+var _chunkK4NZRRJKcjs = require('./chunk-K4NZRRJK.cjs');
 
 
 var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
@@ -153,7 +153,7 @@ function CandidateInlineCard({
           }
         ) : null,
         hasCover ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkHJ6CZSSYcjs.CandidateCoverHeader,
+          _chunkK4NZRRJKcjs.CandidateCoverHeader,
           {
             cover,
             coverSize,

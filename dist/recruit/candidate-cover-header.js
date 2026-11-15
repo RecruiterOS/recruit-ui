@@ -2,7 +2,7 @@ import {
   CandidateCoverHeader,
   CandidateCoverImage,
   candidateCoverSeed
-} from "../chunk-7KWIX4SI.js";
+} from "../chunk-WJ22QD5G.js";
 export {
   CandidateCoverHeader,
   CandidateCoverImage,
