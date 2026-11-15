@@ -149,6 +149,7 @@ const sharedProfile: CandidateSharedProfileProps = {
     roleTitle: "Fictional role",
     grade: { grade: "A", label: "Fictional fit", tone: "success" },
     evidence: [{ text: "Fictional evidence", sentiment: "positive" }],
+    groups: [{ title: "Fictional heading", items: [{ text: "Fictional line", sentiment: "warning" }] }],
   },
   experience: [{ title: "Fictional role", company: "Fictional company", dateRange: "2020 – 2024" }],
   education: [{ title: "Fictional degree", institution: "Fictional university", date: "2012" }],
@@ -156,6 +157,8 @@ const sharedProfile: CandidateSharedProfileProps = {
   decision: "yes",
   onDecide: async (decision, reason) => void [decision, reason],
   reasonPrompt: "sheet",
+  reasonSheet: { labels: { failed: (cause: unknown) => String(cause) } },
+  decisionLabels: { failed: (cause: unknown) => String(cause) },
   clientNotes: [clientNote],
   onAddNote: async (text: string) => void text,
 };

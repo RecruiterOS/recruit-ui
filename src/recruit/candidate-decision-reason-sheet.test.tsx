@@ -295,6 +295,24 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(within(sheet()).getByText("Saving…")).toBeInTheDocument();
   });
 
+  it("says why a save failed, in the host's words for what it rejected with", async () => {
+    const user = userEvent.setup();
+    const onConfirm = vi
+      .fn<(reason?: string) => Promise<void>>()
+      .mockRejectedValueOnce(new Error("This link has stopped."))
+      .mockRejectedValueOnce("offline");
+    const failed = vi.fn((cause: unknown) => (cause instanceof Error ? cause.message : "Not saved."));
+    renderSheet({ onConfirm, labels: { failed } });
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    expect(await within(sheet()).findByRole("alert")).toHaveTextContent("This link has stopped.");
+    // Each failure is worded from what that save rejected with.
+    await user.click(within(sheet()).getByRole("button", { name: "Skip — just mark No" }));
+    expect(await within(sheet()).findByText("Not saved.")).toBeInTheDocument();
+    expect(within(sheet()).queryByText("This link has stopped.")).toBeNull();
+    expect(failed.mock.calls.map(([cause]) => cause)).toContain("offline");
+  });
+
   it("shows a failed skip too, and stays put until the host closes it", async () => {
     const user = userEvent.setup();
     let settle: () => void = () => undefined;

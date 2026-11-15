@@ -35,10 +35,10 @@ import {
 } from "../chunk-VYIPKB27.js";
 import {
   ClientSearchPage
-} from "../chunk-2SYDYZPV.js";
+} from "../chunk-OYGSLHGQ.js";
 import {
   ClientSearchConversation
-} from "../chunk-7X6JCNUX.js";
+} from "../chunk-SD22Q7I3.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +49,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "../chunk-36L74GBW.js";
+} from "../chunk-5PDGCKKW.js";
 import {
   JobSearchProgress
 } from "../chunk-TPB2PWPX.js";
@@ -93,7 +93,7 @@ import {
 } from "../chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "../chunk-RIHSA6PF.js";
+} from "../chunk-O6YQSA5D.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -104,7 +104,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "../chunk-FYPWM2QL.js";
+} from "../chunk-E2RLLSMH.js";
 import {
   CurrentCompanyLabel
 } from "../chunk-XTAH2XJR.js";
@@ -220,7 +220,7 @@ import {
 } from "../chunk-TMC65IQ7.js";
 import {
   CandidateDecisionReasonSheet
-} from "../chunk-COX5VP4U.js";
+} from "../chunk-EJIZ2IHY.js";
 import "../chunk-TR6R7XYB.js";
 import {
   CandidateDecisionSummary
@@ -251,7 +251,7 @@ import {
 import "../chunk-YKEE5RQG.js";
 import {
   CandidateClientDecision
-} from "../chunk-2RVLZ7C5.js";
+} from "../chunk-BSPHJDGR.js";
 import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";

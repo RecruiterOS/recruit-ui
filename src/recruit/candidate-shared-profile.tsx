@@ -306,7 +306,8 @@ export function CandidateSharedProfile({
   const hasFit = fit != null && (
     (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label))) ||
     present(fit.summary) ||
-    (fit.evidence?.length ?? 0) > 0
+    (fit.evidence?.length ?? 0) > 0 ||
+    (fit.groups ?? []).some((group) => group.items.length > 0)
   );
   const recording = voiceNote != null && voiceNote.src.trim() !== "" ? voiceNote : null;
   const writtenNote = note != null && note.text.trim() !== "" ? note : null;
@@ -424,6 +425,7 @@ export function CandidateSharedProfile({
                     grade={fit.grade}
                     summary={fit.summary}
                     evidence={fit.evidence}
+                    groups={fit.groups}
                     titleLevel={sectionLevel}
                     labels={labels}
                   />

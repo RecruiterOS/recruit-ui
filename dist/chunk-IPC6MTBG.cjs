@@ -10,7 +10,7 @@
 
 
 
-var _chunkFKV5ETP7cjs = require('./chunk-FKV5ETP7.cjs');
+var _chunkPR44TBQTcjs = require('./chunk-PR44TBQT.cjs');
 
 
 
@@ -77,7 +77,7 @@ function CandidateSharedProfile({
   className,
   ...props
 }) {
-  const text = { ..._chunkFKV5ETP7cjs.candidateSharedProfileLabels, ...labels };
+  const text = { ..._chunkPR44TBQTcjs.candidateSharedProfileLabels, ...labels };
   const switching = _chunkX6GX3U3Xcjs.useLatestCall.call(void 0, onPersonChange);
   const opening = _nullishCoalesce(_nullishCoalesce(openingPersonId, () => ( _optionalChain([switching, 'access', _ => _.pendingArgs, 'optionalAccess', _2 => _2[0]]))), () => ( null));
   const held = opening !== null;
@@ -93,7 +93,7 @@ function CandidateSharedProfile({
   const skillTags = (_nullishCoalesce(skills, () => ( []))).filter(present);
   const certificationLines = (_nullishCoalesce(certifications, () => ( []))).filter(present);
   const languageLines = (_nullishCoalesce(languages, () => ( []))).filter(present);
-  const hasFit = fit != null && (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label)) || present(fit.summary) || (_nullishCoalesce(_optionalChain([fit, 'access', _6 => _6.evidence, 'optionalAccess', _7 => _7.length]), () => ( 0))) > 0);
+  const hasFit = fit != null && (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label)) || present(fit.summary) || (_nullishCoalesce(_optionalChain([fit, 'access', _6 => _6.evidence, 'optionalAccess', _7 => _7.length]), () => ( 0))) > 0 || (_nullishCoalesce(fit.groups, () => ( []))).some((group) => group.items.length > 0));
   const recording = voiceNote != null && voiceNote.src.trim() !== "" ? voiceNote : null;
   const writtenNote = note != null && note.text.trim() !== "" ? note : null;
   const hasBody = recording !== null || writtenNote !== null || hasFit || present(summary) || careerItems.length > 0 || educationRows.length > 0 || skillTags.length > 0 || certificationLines.length > 0 || languageLines.length > 0 || // An empty list of the host's own sections is no section.
@@ -110,12 +110,12 @@ function CandidateSharedProfile({
       "data-archived": archived || void 0,
       gap: "md",
       width: "full",
-      className: _utils.cn.call(void 0, _chunkFKV5ETP7cjs.SHARED_PROFILE_WRAP, className),
-      ..._chunkFKV5ETP7cjs.sharedProfileRootAttributes.call(void 0, props),
+      className: _utils.cn.call(void 0, _chunkPR44TBQTcjs.SHARED_PROFILE_WRAP, className),
+      ..._chunkPR44TBQTcjs.sharedProfileRootAttributes.call(void 0, props),
       children: [
         present(eyebrow) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "eyebrow", children: eyebrow }) : null,
         people && personId != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkFKV5ETP7cjs.CandidateSharedProfileSwitcher,
+          _chunkPR44TBQTcjs.CandidateSharedProfileSwitcher,
           {
             people,
             value: personId,
@@ -143,7 +143,7 @@ function CandidateSharedProfile({
               {
                 printMode: "flat",
                 header: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                  _chunkFKV5ETP7cjs.CandidateSharedProfileHeader,
+                  _chunkPR44TBQTcjs.CandidateSharedProfileHeader,
                   {
                     person,
                     anonymised,
@@ -155,7 +155,7 @@ function CandidateSharedProfile({
                 children: [
                   hasBody ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkVHMINSDKcjs.CandidateProfileBody, { children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "lg", children: [
                     recording !== null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileVoiceNote,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileVoiceNote,
                       {
                         src: recording.src,
                         transcript: recording.transcript,
@@ -165,7 +165,7 @@ function CandidateSharedProfile({
                       }
                     ) : null,
                     writtenNote !== null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileNote,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileNote,
                       {
                         text: writtenNote.text,
                         author: writtenNote.author,
@@ -174,18 +174,19 @@ function CandidateSharedProfile({
                       }
                     ) : null,
                     fit != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileFit,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileFit,
                       {
                         roleTitle: fit.roleTitle,
                         grade: fit.grade,
                         summary: fit.summary,
                         evidence: fit.evidence,
+                        groups: fit.groups,
                         titleLevel: sectionLevel,
                         labels
                       }
                     ) : null,
                     present(summary) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                       {
                         "data-slot": "candidate-shared-profile-summary",
                         title: text.summary,
@@ -194,7 +195,7 @@ function CandidateSharedProfile({
                       }
                     ) : null,
                     careerItems.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                       {
                         "data-slot": "candidate-shared-profile-experience",
                         title: text.experience,
@@ -214,7 +215,7 @@ function CandidateSharedProfile({
                       }
                     ) : null,
                     educationRows.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                       {
                         "data-slot": "candidate-shared-profile-education",
                         title: text.education,
@@ -230,7 +231,7 @@ function CandidateSharedProfile({
                       }
                     ) : null,
                     skillTags.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                      _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                      _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                       {
                         "data-slot": "candidate-shared-profile-skills",
                         title: text.skills,
@@ -240,7 +241,7 @@ function CandidateSharedProfile({
                     ) : null,
                     certificationLines.length > 0 || languageLines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _grid.Grid, { columns: 2, gap: "lg", children: [
                       certificationLines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                        _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                        _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                         {
                           "data-slot": "candidate-shared-profile-certifications",
                           title: text.certifications,
@@ -249,7 +250,7 @@ function CandidateSharedProfile({
                         }
                       ) : null,
                       languageLines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                        _chunkFKV5ETP7cjs.CandidateSharedProfileSection,
+                        _chunkPR44TBQTcjs.CandidateSharedProfileSection,
                         {
                           "data-slot": "candidate-shared-profile-languages",
                           title: text.languages,
@@ -261,7 +262,7 @@ function CandidateSharedProfile({
                     children
                   ] }) }) : null,
                   showsAnswer ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                    _chunkFKV5ETP7cjs.CandidateSharedProfileAnswer,
+                    _chunkPR44TBQTcjs.CandidateSharedProfileAnswer,
                     {
                       candidateName: nameInWords,
                       decision,
@@ -280,7 +281,7 @@ function CandidateSharedProfile({
                     `answer:${_nullishCoalesce(personId, () => ( ""))}`
                   ) : null,
                   showsNotes ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                    _chunkFKV5ETP7cjs.CandidateSharedProfileNotes,
+                    _chunkPR44TBQTcjs.CandidateSharedProfileNotes,
                     {
                       notes,
                       candidateName: nameInWords,

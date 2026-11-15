@@ -64,8 +64,11 @@ export interface CandidateClientDecisionLabels {
   confirmNo: ReactNode;
   /** The dialog's reason label. Defaults to "Why?", or to "Why? (optional)" with `reasonOptional`. */
   reason: ReactNode;
-  /** Shown under the buttons when saving fails. */
-  failed: ReactNode;
+  /**
+   * Shown under the buttons when saving fails: a line, or a function given
+   * what `onDecide` rejected with, for a host whose rejection says why.
+   */
+  failed: ReactNode | ((cause: unknown) => ReactNode);
   /**
    * The recorded answer where it is only shown (`readOnly`), to someone other
    * than the client, such as "Said Yes". Optional in the type, like the two
@@ -218,7 +221,9 @@ export function CandidateClientDecision({
   const text = { ...DEFAULT_LABELS, ...labels };
   const [asking, setAsking] = useState<CandidateDecisionChoice | null>(null);
   const [changing, setChanging] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // What a save rejected with, for the line that says it failed.
+  const [failure, setFailure] = useState<{ cause: unknown } | null>(null);
+  const failed = failure !== null;
   const [sheetUnavailable, setSheetUnavailable] = useState(false);
   // A save on its way. What asks for the reason can be closed while it is,
   // so the buttons are held until it settles: two answers never cross.
@@ -236,15 +241,15 @@ export function CandidateClientDecision({
 
   const submit = async (why: string) => {
     if (!asking) return;
-    setFailed(false);
+    setFailure(null);
     setSaving(true);
     try {
       await onDecide(asking, why);
       setAsking(null);
       setChanging(false);
-    } catch {
+    } catch (cause) {
       setAsking(null);
-      setFailed(true);
+      setFailure({ cause });
     } finally {
       setSaving(false);
     }
@@ -252,7 +257,7 @@ export function CandidateClientDecision({
 
   const close = () => {
     setAsking(null);
-    setFailed(false);
+    setFailure(null);
   };
 
   // Wording that names the answer is asked for once there is one to name.
@@ -293,7 +298,7 @@ export function CandidateClientDecision({
               setChanging(false);
             } catch (cause) {
               // Closed meanwhile, the sheet can't say so: the row does.
-              if (askingNow.current === null) setFailed(true);
+              if (askingNow.current === null) setFailure({ cause });
               throw cause;
             } finally {
               setSaving(false);
@@ -357,15 +362,15 @@ export function CandidateClientDecision({
         disabled={held}
         labels={{ yes: text.yes, no: text.no }}
         onChoose={(choice) => {
-          setFailed(false);
+          setFailure(null);
           setAsking(choice);
         }}
       >
         {prompt}
       </CandidateDecisionButtons>
-      {failed ? (
+      {failure ? (
         <Text size="sm" tone="destructive" marginTop="xs" role="alert">
-          {text.failed}
+          {typeof text.failed === "function" ? text.failed(failure.cause) : text.failed}
         </Text>
       ) : null}
     </FlexItem>

@@ -21,7 +21,7 @@ var _chunkL53DUWAFcjs = require('./chunk-L53DUWAF.cjs');
 var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
 
 
-var _chunkV5HT5NRVcjs = require('./chunk-V5HT5NRV.cjs');
+var _chunkANK2TWM2cjs = require('./chunk-ANK2TWM2.cjs');
 
 // src/recruit/client-search-sections.tsx
 var _button = require('@epicbagel/saas-kit/primitives/button');
@@ -303,7 +303,7 @@ function ClientSearchDelivery({
               value: person.evidence.map((line, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "span", variant: "inherit", display: "block", children: line }, index))
             } : void 0,
             actions: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-              _chunkV5HT5NRVcjs.CandidateClientDecision,
+              _chunkANK2TWM2cjs.CandidateClientDecision,
               {
                 candidateName: person.name,
                 decision: person.decision,

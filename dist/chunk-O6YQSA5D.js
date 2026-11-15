@@ -10,7 +10,7 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-FYPWM2QL.js";
+} from "./chunk-E2RLLSMH.js";
 import {
   CandidateProfile,
   CandidateProfileBody,
@@ -93,7 +93,7 @@ function CandidateSharedProfile({
   const skillTags = (skills ?? []).filter(present);
   const certificationLines = (certifications ?? []).filter(present);
   const languageLines = (languages ?? []).filter(present);
-  const hasFit = fit != null && (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label)) || present(fit.summary) || (fit.evidence?.length ?? 0) > 0);
+  const hasFit = fit != null && (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label)) || present(fit.summary) || (fit.evidence?.length ?? 0) > 0 || (fit.groups ?? []).some((group) => group.items.length > 0));
   const recording = voiceNote != null && voiceNote.src.trim() !== "" ? voiceNote : null;
   const writtenNote = note != null && note.text.trim() !== "" ? note : null;
   const hasBody = recording !== null || writtenNote !== null || hasFit || present(summary) || careerItems.length > 0 || educationRows.length > 0 || skillTags.length > 0 || certificationLines.length > 0 || languageLines.length > 0 || // An empty list of the host's own sections is no section.
@@ -180,6 +180,7 @@ function CandidateSharedProfile({
                         grade: fit.grade,
                         summary: fit.summary,
                         evidence: fit.evidence,
+                        groups: fit.groups,
                         titleLevel: sectionLevel,
                         labels
                       }

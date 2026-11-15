@@ -21,7 +21,7 @@ import {
 } from "./chunk-YKEE5RQG.js";
 import {
   CandidateClientDecision
-} from "./chunk-2RVLZ7C5.js";
+} from "./chunk-BSPHJDGR.js";
 
 // src/recruit/client-search-sections.tsx
 import { Button } from "@epicbagel/saas-kit/primitives/button";
