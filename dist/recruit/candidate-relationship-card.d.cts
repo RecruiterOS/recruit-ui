@@ -1,6 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode, Key } from 'react';
-import { CandidateCoverSeed } from './candidate-cover-header.cjs';
+import { CandidateCoverSeed, CandidateCoverImageSize } from './candidate-cover-header.cjs';
 
 /** One labelled fact in the card's three-column row. */
 interface CandidateRelationshipFact {
@@ -66,6 +66,12 @@ interface CandidateRelationshipCardProps extends Omit<HTMLAttributes<HTMLElement
      * person's id, say. Left out, the name is the seed where it is plain text.
      */
     coverSeed?: CandidateCoverSeed;
+    /**
+     * The cover's size, the person's own or the stock one. `compact` caps it
+     * at 96px, for a card wide enough that a full 4:1 banner would dwarf it;
+     * narrower than 384px it is 4:1 either way.
+     */
+    coverSize?: CandidateCoverImageSize;
     /** Marks a verified contact with a check after the name. */
     verified?: boolean;
     /** The line under the name, usually the current title. */
@@ -98,6 +104,6 @@ interface CandidateRelationshipCardProps extends Omit<HTMLAttributes<HTMLElement
  * suggestion row opens its roles instead. The host owns every value, its wording and its dates. The
  * root is marked `data-slot="candidate-relationship-card"`.
  */
-declare function CandidateRelationshipCard({ name, avatar, cover, coverSeed, verified, headline, company, location, actions, signal, facts, suggestion, note, selected, onSelect, onKeyDown, ...props }: CandidateRelationshipCardProps): react.JSX.Element;
+declare function CandidateRelationshipCard({ name, avatar, cover, coverSeed, coverSize, verified, headline, company, location, actions, signal, facts, suggestion, note, selected, onSelect, onKeyDown, ...props }: CandidateRelationshipCardProps): react.JSX.Element;
 
 export { CandidateRelationshipCard, type CandidateRelationshipCardProps, type CandidateRelationshipFact, type CandidateRelationshipNote, type CandidateRelationshipSignal, type CandidateRelationshipSuggestion };

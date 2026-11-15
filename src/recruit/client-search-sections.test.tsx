@@ -370,6 +370,10 @@ describe("client search delivery", () => {
     const { rerender } = render(delivery());
     expect(banner("Mei Example")).toHaveAttribute("data-variant", coverBannerVariant("Mei Example"));
     expect(banner("Tomas Example")).toHaveAttribute("data-variant", coverBannerVariant("Tomas Example"));
+    // The cards run the width of the page, so each cover is capped rather than a full 4:1.
+    for (const name of ["Mei Example", "Tomas Example"]) {
+      expect(card(name).querySelector("[data-slot='candidate-cover-image']")).toHaveClass("aspect-[4/1]", "max-h-[96px]");
+    }
 
     rerender(
       delivery({

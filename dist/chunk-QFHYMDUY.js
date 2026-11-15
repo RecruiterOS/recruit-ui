@@ -9,7 +9,7 @@ import {
 } from "./chunk-MQMPVZLZ.js";
 import {
   CandidateProfileHeader
-} from "./chunk-P3WHSIFP.js";
+} from "./chunk-QJFHRKRB.js";
 import {
   CandidateNoteCard,
   CandidateNoteComposer

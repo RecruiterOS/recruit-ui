@@ -2,8 +2,8 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkTYPR3N4Ycjs = require('../chunk-TYPR3N4Y.cjs');
-require('../chunk-ZDJ5QJT3.cjs');
+var _chunkBRVFGVZMcjs = require('../chunk-BRVFGVZM.cjs');
+require('../chunk-3O6SYIKI.cjs');
 require('../chunk-WSPL3WKE.cjs');
 require('../chunk-TAFMPPOT.cjs');
 
@@ -12,7 +12,7 @@ var _chunkZ4QKZA7Acjs = require('../chunk-Z4QKZA7A.cjs');
 require('../chunk-7IVBABRP.cjs');
 require('../chunk-CP5HCQPW.cjs');
 require('../chunk-I53Z6SAJ.cjs');
-require('../chunk-IFZWDZVR.cjs');
+require('../chunk-TQVUOZAX.cjs');
 require('../chunk-X6GX3U3X.cjs');
 require('../chunk-K3VUGGWH.cjs');
 require('../chunk-HJ6CZSSY.cjs');
@@ -24,4 +24,4 @@ require('../chunk-USK6QY5Z.cjs');
 
 
 
-exports.ClientSearchConversation = _chunkTYPR3N4Ycjs.ClientSearchConversation; exports.clientSearchThread = _chunkZ4QKZA7Acjs.clientSearchThread;
+exports.ClientSearchConversation = _chunkBRVFGVZMcjs.ClientSearchConversation; exports.clientSearchThread = _chunkZ4QKZA7Acjs.clientSearchThread;

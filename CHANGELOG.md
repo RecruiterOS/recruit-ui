@@ -5,6 +5,26 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.28.1
+
+A wide card can cap its cover. A full 4:1 banner on a card that runs the
+width of a page is taller than the person under it. The minimum kit version
+doesn't move.
+
+### Added
+
+- `coverSize` on `CandidateReviewCard`, `CandidateRelationshipCard` and
+  `CandidateProfileHeader`, as `CandidateCoverHeader` and
+  `CandidateInlineCard` already take it: `compact` caps the cover at 96px,
+  the stock one and the person's own alike, and narrower than 384px it is
+  4:1 either way. The default is the full 4:1, as before.
+
+### Changed
+
+- `ClientSearchDelivery` caps each person's cover at 96px. Its cards run the
+  width of the page, where the stock banner 0.28.0 brought was 180px high
+  on a 720px column.
+
 ## 0.28.0
 
 Everyone has a cover. A card or a profile given no cover of the person's own

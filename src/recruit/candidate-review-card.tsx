@@ -13,7 +13,12 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
-import { CandidateCoverHeader, candidateCoverSeed, type CandidateCoverSeed } from "./candidate-cover-header";
+import {
+  CandidateCoverHeader,
+  candidateCoverSeed,
+  type CandidateCoverImageSize,
+  type CandidateCoverSeed,
+} from "./candidate-cover-header";
 
 // CandidateReviewActionRow marks its inline controls with this slot.
 const SUPPRESS_ACTION_ROW_KEYLINE =
@@ -39,6 +44,12 @@ export interface CandidateReviewCardProps
    * person's id, say. Left out, the name is the seed where it is plain text.
    */
   coverSeed?: CandidateCoverSeed;
+  /**
+   * The cover's size, the person's own or the stock one. `compact` caps it
+   * at 96px, for a card wide enough that a full 4:1 banner would dwarf it;
+   * narrower than 384px it is 4:1 either way.
+   */
+  coverSize?: CandidateCoverImageSize;
   headline?: ReactNode;
   headerActions?: ReactNode;
   beforeFacts?: ReactNode;
@@ -58,6 +69,7 @@ export function CandidateReviewCard({
   avatar,
   cover,
   coverSeed,
+  coverSize,
   headline,
   headerActions,
   beforeFacts,
@@ -124,6 +136,7 @@ export function CandidateReviewCard({
               cover={cover}
               coverFallback="stock"
               coverSeed={candidateCoverSeed(coverSeed, name)}
+              coverSize={coverSize}
               padding="lg"
             >
               <Grid

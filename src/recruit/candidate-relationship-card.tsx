@@ -14,7 +14,12 @@ import { CheckCircle } from "lucide-react";
 import type { HTMLAttributes, Key, ReactNode } from "react";
 
 import { CandidateCardRoot, candidateCardSelectProps } from "./candidate-card-activation";
-import { CandidateCoverHeader, candidateCoverSeed, type CandidateCoverSeed } from "./candidate-cover-header";
+import {
+  CandidateCoverHeader,
+  candidateCoverSeed,
+  type CandidateCoverImageSize,
+  type CandidateCoverSeed,
+} from "./candidate-cover-header";
 
 /** One labelled fact in the card's three-column row. */
 export interface CandidateRelationshipFact {
@@ -82,6 +87,12 @@ export interface CandidateRelationshipCardProps
    * person's id, say. Left out, the name is the seed where it is plain text.
    */
   coverSeed?: CandidateCoverSeed;
+  /**
+   * The cover's size, the person's own or the stock one. `compact` caps it
+   * at 96px, for a card wide enough that a full 4:1 banner would dwarf it;
+   * narrower than 384px it is 4:1 either way.
+   */
+  coverSize?: CandidateCoverImageSize;
   /** Marks a verified contact with a check after the name. */
   verified?: boolean;
   /** The line under the name, usually the current title. */
@@ -134,6 +145,7 @@ export function CandidateRelationshipCard({
   avatar,
   cover,
   coverSeed,
+  coverSize,
   verified = false,
   headline,
   company,
@@ -167,6 +179,7 @@ export function CandidateRelationshipCard({
         cover={cover}
         coverFallback="stock"
         coverSeed={candidateCoverSeed(coverSeed, name)}
+        coverSize={coverSize}
         padding="lg"
         softenCoverUntilHover
       >

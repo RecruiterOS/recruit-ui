@@ -25,6 +25,7 @@ function CandidateReviewCard({
   avatar,
   cover,
   coverSeed,
+  coverSize,
   headline,
   headerActions,
   beforeFacts,
@@ -86,6 +87,7 @@ function CandidateReviewCard({
                     cover,
                     coverFallback: "stock",
                     coverSeed: candidateCoverSeed(coverSeed, name),
+                    coverSize,
                     padding: "lg",
                     children: /* @__PURE__ */ jsxs(
                       Grid,

@@ -124,6 +124,20 @@ describe("candidate review card", () => {
     rerender(<CandidateReviewCard name="Mei Example" cover={null} />);
     expect(frame()).toBeNull();
   });
+
+  it("caps a cover at 96px on request, the stock one and the person's own alike", () => {
+    const { container, rerender } = render(<CandidateReviewCard name="Mei Example" coverSize="compact" />);
+    const frame = () => container.querySelector('[data-slot="candidate-cover-image"]');
+
+    expect(frame()).toHaveClass("aspect-[4/1]", "max-h-[96px]");
+    expect(frame()).toContainElement(container.querySelector('[data-slot="cover-banner"]'));
+    // The capped frame sets the height itself: no wrapper is left reserving the full 4:1.
+    expect(container.querySelector("[data-radix-aspect-ratio-wrapper]")).toBeNull();
+
+    rerender(<CandidateReviewCard name="Mei Example" coverSize="compact" cover={<img alt="Fictional landscape" />} />);
+    expect(frame()).toHaveClass("aspect-[4/1]", "max-h-[96px]");
+    expect(frame()).toContainElement(screen.getByAltText("Fictional landscape"));
+  });
 });
 
 describe("job client badge", () => {

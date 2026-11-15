@@ -35,10 +35,10 @@ import {
 } from "./chunk-VYIPKB27.js";
 import {
   ClientSearchPage
-} from "./chunk-SZP4GJUS.js";
+} from "./chunk-HRSQ3DL6.js";
 import {
   ClientSearchConversation
-} from "./chunk-ZLJE6MPK.js";
+} from "./chunk-OJX2YRTV.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +49,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "./chunk-NIU4USFY.js";
+} from "./chunk-E5HH5MEA.js";
 import {
   JobSearchProgress
 } from "./chunk-TPB2PWPX.js";
@@ -93,7 +93,7 @@ import {
 } from "./chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "./chunk-36O5G46S.js";
+} from "./chunk-3IS35Q6T.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -104,7 +104,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "./chunk-XLNTUHTQ.js";
+} from "./chunk-QFHYMDUY.js";
 import {
   CurrentCompanyLabel
 } from "./chunk-XTAH2XJR.js";
@@ -132,16 +132,16 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "./chunk-P3WHSIFP.js";
+} from "./chunk-QJFHRKRB.js";
 import {
   CandidateQuote
 } from "./chunk-2TU6TCNM.js";
 import {
   CandidateRelationshipCard
-} from "./chunk-WXCCXYYP.js";
+} from "./chunk-R4PZYWMM.js";
 import {
   CandidateReviewCard
-} from "./chunk-UCGC5LGW.js";
+} from "./chunk-TLWK56MO.js";
 import {
   CandidateJobEvidence
 } from "./chunk-43WWASGQ.js";

@@ -11,6 +11,7 @@ import {
   CandidateCoverHeader,
   candidateCoverSeed,
   type CandidateCoverHeaderPadding,
+  type CandidateCoverImageSize,
   type CandidateCoverSeed,
 } from "./candidate-cover-header";
 
@@ -74,6 +75,12 @@ export interface CandidateProfileHeaderProps
    * person's id, say. Left out, the name is the seed where it is plain text.
    */
   coverSeed?: CandidateCoverSeed;
+  /**
+   * The cover's size, the person's own or the stock one. `compact` caps it
+   * at 96px, for a card wide enough that a full 4:1 banner would dwarf it;
+   * narrower than 384px it is 4:1 either way.
+   */
+  coverSize?: CandidateCoverImageSize;
   eyebrow?: ReactNode;
   status?: ReactNode;
   meta?: ReactNode;
@@ -181,6 +188,7 @@ export function CandidateProfileHeader({
   avatar,
   cover,
   coverSeed,
+  coverSize,
   eyebrow,
   status,
   meta,
@@ -209,6 +217,7 @@ export function CandidateProfileHeader({
       cover={cover}
       coverFallback={padding === "none" ? "none" : "stock"}
       coverSeed={candidateCoverSeed(coverSeed, name)}
+      coverSize={coverSize}
       padding={padding}
       data-slot="candidate-profile-header"
       className={className}
