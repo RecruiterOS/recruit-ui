@@ -5,6 +5,27 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.31.0
+
+Tap targets on a touchscreen: the third batch of a polish audit. The minimum
+kit version moves to 1.38.0, where the kit's smallest controls take a larger
+tap area on a touchscreen without changing how they are drawn.
+
+### Breaking
+
+- The peer range for `@epicbagel/saas-kit` is `^1.38.0` (it was `^1.37.0`).
+  Nothing changes with a mouse. On a touchscreen:
+  - A `DocumentListItem`'s preview, download, re-analyse and delete buttons,
+    and a compact `CandidateSharedProfileButton`, are drawn as before (24.5px
+    and 21px on a phone) and can be tapped anywhere in an area the height of
+    a standard control, 38.5px on a phone, centred on the icon.
+  - A `CandidateSelectableAvatar`'s tap area reaches 2px past the avatar.
+
+### Added
+
+- Tests that hold a tap area on each small control the library doesn't grow
+  (`touch-targets.test.tsx`).
+
 ## 0.30.0
 
 Controls that share a row share a height, and filter chips keep their
