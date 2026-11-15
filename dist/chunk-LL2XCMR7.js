@@ -5,7 +5,7 @@ import {
 import {
   CandidateCoverHeader,
   candidateCoverSeed
-} from "./chunk-7KWIX4SI.js";
+} from "./chunk-WJ22QD5G.js";
 
 // src/recruit/candidate-relationship-card.tsx
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";

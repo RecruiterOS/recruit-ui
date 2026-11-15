@@ -4,7 +4,7 @@ import {
 import {
   CandidateCoverHeader,
   candidateCoverSeed
-} from "./chunk-7KWIX4SI.js";
+} from "./chunk-WJ22QD5G.js";
 
 // src/recruit/candidate-pipeline-card.tsx
 import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";

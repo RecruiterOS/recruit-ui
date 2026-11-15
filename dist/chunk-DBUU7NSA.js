@@ -15,7 +15,7 @@ import {
 } from "./chunk-J6AD2LEO.js";
 import {
   CandidateReviewCard
-} from "./chunk-TLWK56MO.js";
+} from "./chunk-JGTRPYES.js";
 import {
   COARSE_POINTER_TOUCH_TARGET
 } from "./chunk-YKEE5RQG.js";

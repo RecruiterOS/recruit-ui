@@ -4,7 +4,7 @@ import {
 import {
   CandidateCoverHeader,
   candidateCoverSeed
-} from "./chunk-7KWIX4SI.js";
+} from "./chunk-WJ22QD5G.js";
 
 // src/recruit/candidate-review-card.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";

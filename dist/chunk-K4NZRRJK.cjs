@@ -43,6 +43,7 @@ function CandidateCoverHeader({
   const stock = cover === void 0 && coverFallback === "stock";
   const media = stock ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _coverbanner.CoverBanner, { seed: coverSeed }) : cover;
   const clip = media != null || padding !== "none";
+  const frame = /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateCoverImage, { size: coverSize, softenUntilHover: softenCoverUntilHover, children: media });
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     "div",
     {
@@ -50,15 +51,7 @@ function CandidateCoverHeader({
       className: _utils.cn.call(void 0, clip && "overflow-hidden", className),
       ...props,
       children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          CandidateCoverImage,
-          {
-            size: coverSize,
-            softenUntilHover: softenCoverUntilHover,
-            className: stock ? "print:hidden" : void 0,
-            children: media
-          }
-        ),
+        stock ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { "data-slot": "candidate-cover-stock", className: "print:hidden", children: frame }) : frame,
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
           _panelsection.PanelSection,
           {

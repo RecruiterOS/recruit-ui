@@ -81,7 +81,8 @@ export interface CandidateCoverHeaderProps
    * `CoverBanner` in the frame: a banner in the theme's own colours, so
    * someone with no cover is the same height as their neighbours. `none`,
    * the default here, draws no frame; the cards and profiles that always
-   * show a cover pass `stock`. A stock cover isn't printed.
+   * show a cover pass `stock`. A stock cover isn't printed: it sits in a
+   * `data-slot="candidate-cover-stock"` wrapper that paper leaves out.
    */
   coverFallback?: CandidateCoverFallback;
   /** Deals the stock cover its design. Left out, everyone gets the first. */
@@ -125,6 +126,11 @@ export function CandidateCoverHeader({
   const stock = cover === undefined && coverFallback === "stock";
   const media = stock ? <CoverBanner seed={coverSeed} /> : cover;
   const clip = media != null || padding !== "none";
+  const frame = (
+    <CandidateCoverImage size={coverSize} softenUntilHover={softenCoverUntilHover}>
+      {media}
+    </CandidateCoverImage>
+  );
 
   return (
     <div
@@ -132,15 +138,18 @@ export function CandidateCoverHeader({
       className={cn(clip && "overflow-hidden", className)}
       {...props}
     >
-      <CandidateCoverImage
-        size={coverSize}
-        softenUntilHover={softenCoverUntilHover}
-        // A stock cover is decoration drawn as a background, which a browser
-        // leaves out of print: its frame would print as an empty band.
-        className={stock ? "print:hidden" : undefined}
-      >
-        {media}
-      </CandidateCoverImage>
+      {/* A stock cover is decoration drawn as a background, which a browser
+          leaves out of print, so it would print as an empty band. It is
+          hidden from outside the frame: at its full size the frame sits in a
+          ratio wrapper that holds the height, and hiding the frame alone
+          would leave that standing. */}
+      {stock ? (
+        <div data-slot="candidate-cover-stock" className="print:hidden">
+          {frame}
+        </div>
+      ) : (
+        frame
+      )}
       <PanelSection
         as="div"
         padding={padding === "none" || padding === "dialog" ? "none" : padding === "compact" ? "compact" : "default"}

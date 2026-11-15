@@ -4,7 +4,7 @@ var _chunkK3VUGGWHcjs = require('./chunk-K3VUGGWH.cjs');
 
 
 
-var _chunkHJ6CZSSYcjs = require('./chunk-HJ6CZSSY.cjs');
+var _chunkK4NZRRJKcjs = require('./chunk-K4NZRRJK.cjs');
 
 // src/recruit/candidate-pipeline-card.tsx
 var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
@@ -38,11 +38,11 @@ function CandidatePipelineCard({
       "data-slot": "candidate-pipeline-card",
       ...props,
       children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-        _chunkHJ6CZSSYcjs.CandidateCoverHeader,
+        _chunkK4NZRRJKcjs.CandidateCoverHeader,
         {
           cover,
           coverFallback: "stock",
-          coverSeed: _chunkHJ6CZSSYcjs.candidateCoverSeed.call(void 0, coverSeed, name),
+          coverSeed: _chunkK4NZRRJKcjs.candidateCoverSeed.call(void 0, coverSeed, name),
           padding: "compact",
           children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "xs", align: "start", children: [
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "none", children: [

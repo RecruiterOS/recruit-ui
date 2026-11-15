@@ -5,6 +5,21 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.28.2
+
+A stock cover leaves no band on paper. The minimum kit version doesn't move.
+
+### Fixed
+
+- A stock cover at its full size printed as an empty band a quarter of the
+  card's width high. 0.28.0 hid its frame in print, but at full size the
+  frame sits in a ratio wrapper that holds the height, and that was left
+  standing. The stock cover is now wrapped in an element marked
+  `data-slot="candidate-cover-stock"`, and that is what paper leaves out,
+  wrapper and all. A printed shared profile or profile header starts at the
+  person's name again. A capped cover (`coverSize="compact"`) holds its own
+  height and was unaffected; a cover of the person's own prints as it did.
+
 ## 0.28.1
 
 A wide card can cap its cover. A full 4:1 banner on a card that runs the

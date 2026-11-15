@@ -3,7 +3,7 @@ import {
 } from "./chunk-NBZS6VTO.js";
 import {
   CandidateCoverHeader
-} from "./chunk-7KWIX4SI.js";
+} from "./chunk-WJ22QD5G.js";
 import {
   COARSE_POINTER_TOUCH_TARGETS_WITHIN
 } from "./chunk-YKEE5RQG.js";
