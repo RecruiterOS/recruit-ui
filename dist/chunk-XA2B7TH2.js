@@ -10,7 +10,7 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Toggle } from "@epicbagel/saas-kit/primitives/toggle";
 import { jsx, jsxs } from "react/jsx-runtime";
-var CHIP_CLASSES = `${PRESSED_CHIP_STATES} ${COARSE_POINTER_TOUCH_TARGET}`;
+var CHIP_CLASSES = `shrink-0 ${PRESSED_CHIP_STATES} ${COARSE_POINTER_TOUCH_TARGET}`;
 function CandidateFilterChips({
   value,
   onChange,

@@ -5,6 +5,31 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.30.0
+
+Controls that share a row share a height, and filter chips keep their
+labels on a phone: the second batch of a polish audit. The minimum kit
+version moves to 1.37.0, where a select, a native select and a toggle are
+the kit's standard 44px.
+
+### Breaking
+
+- The peer range for `@epicbagel/saas-kit` is `^1.37.0` (it was `^1.36.0`).
+  With it a `CandidateStageSelect` at its default size, the selects and the
+  toggle group in `CandidateAddToJobPopover`, and any other default-size
+  select or toggle are 44px high, where they were 40px: the height of the
+  inputs and icon buttons beside them. A `controlSize` a host passes is
+  unchanged.
+
+### Fixed
+
+- `CandidateFilterChips`: on a touchscreen a crowded row squeezed every
+  chip to a 44px circle, with its label spilling over its neighbours. The
+  row scrolls, and relied on a flex item's automatic minimum to stop its
+  chips shrinking; the touch target's own minimum width replaced that
+  minimum. Each chip now says it doesn't shrink, so it keeps its label's
+  width on any pointer and the row scrolls as it was meant to.
+
 ## 0.29.0
 
 Controls in a row line up: the first batch of a polish audit. The minimum

@@ -245,6 +245,16 @@ describe("candidate filter chips", () => {
     expect(screen.getByRole("button", { name: "Has changes" }).querySelector("svg")).not.toBeNull();
     expect(screen.getByRole("button", { name: "Job moves" }).querySelector("svg")).toBeNull();
     expect(screen.getByText("From an update")).toBeInTheDocument();
+    // The row scrolls and a chip keeps its label's width. The touch target's
+    // minimum width replaces a flex item's automatic one, so without
+    // `shrink-0` a crowded row on a touchscreen squeezed each chip to 44px.
+    const row = screen.getByRole("button", { name: "Everyone" }).parentElement!;
+    expect(row).toHaveClass("overflow-x-auto");
+    for (const chip of ["Everyone", "Has changes", "Job moves"]) {
+      const button = screen.getByRole("button", { name: chip });
+      expect(button).toHaveClass("shrink-0");
+      expect(button.className).toContain("pointer-coarse:min-w-[max(44px,2.75rem)]");
+    }
 
     await user.click(screen.getByRole("button", { name: "Job moves" }));
     expect(onChange).toHaveBeenLastCalledWith("moves");
