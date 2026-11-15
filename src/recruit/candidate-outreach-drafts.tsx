@@ -157,8 +157,9 @@ function CandidateOutreachDraftCard<TDraft extends CandidateOutreachDraftItem = 
             {copy.status[draft.status]}
           </Badge>
         </Stack>
-        <Stack direction="horizontal" gap="xs" shrink={false}>
-          <CopyButton text={copyText(draft)} aria-label={copy.actionName("copy", channel)} />
+        {/* One row of icon buttons: each the kit's icon size, on one centre line. */}
+        <Stack direction="horizontal" gap="xs" align="center" shrink={false}>
+          <CopyButton text={copyText(draft)} size="icon" aria-label={copy.actionName("copy", channel)} />
           {offered.includes("approve") && onApprove ? (
             <Button
               type="button"

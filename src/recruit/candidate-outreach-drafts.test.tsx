@@ -72,6 +72,12 @@ describe("candidate outreach draft list", () => {
       "Dismiss Email draft",
     ]);
     expect(first.getByRole("button", { name: "Approve Email draft" })).toHaveAttribute("title", "Approve");
+    // One row, one size, one centre line: Copy is the same icon button as the actions beside it.
+    const actions = first.getAllByRole("button");
+    expect(new Set(actions.map((button) => button.getAttribute("data-size")))).toEqual(new Set(["icon"]));
+    const box = (button: HTMLElement) => [...button.classList].filter((name) => /^(h|w|min-h|min-w|size)-/.test(name)).sort();
+    for (const button of actions) expect(box(button)).toEqual(box(actions[1]!));
+    expect(actions[0]!.parentElement).toHaveClass("items-center");
 
     // An approved draft can only be copied or marked sent.
     const second = within(rows[1] as HTMLElement);

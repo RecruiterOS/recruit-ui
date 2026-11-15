@@ -76,8 +76,8 @@ function CandidateOutreachDraftCard({
             /* @__PURE__ */ jsx(Text, { variant: "inherit", as: "span", size: "sm", weight: "medium", children: channel }),
             /* @__PURE__ */ jsx(Badge, { variant: draft.status === "draft" ? "secondary" : "outline", size: "micro", children: copy.status[draft.status] })
           ] }),
-          /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", shrink: false, children: [
-            /* @__PURE__ */ jsx(CopyButton, { text: copyText(draft), "aria-label": copy.actionName("copy", channel) }),
+          /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", shrink: false, children: [
+            /* @__PURE__ */ jsx(CopyButton, { text: copyText(draft), size: "icon", "aria-label": copy.actionName("copy", channel) }),
             offered.includes("approve") && onApprove ? /* @__PURE__ */ jsx(
               Button,
               {
