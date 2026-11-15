@@ -4,6 +4,12 @@
 // 768px the kit scales its root type to 87.5%, which makes h-11 38.5px on a
 // phone, and the larger of the two where a host's root is bigger. min-height
 // and min-width rather than a size, so a control already larger keeps its own.
+//
+// Growing a control changes its row, so it suits a control with room to grow.
+// A compact icon button the library keeps dense on every pointer (a document
+// row's actions, a card's shared-profile preview) is not grown here: the kit's
+// compact icon sizes carry their own taller tap area on a touchscreen, as a
+// pseudo-element that changes nothing about the layout (saas-kit 1.38.0).
 
 /** On a coarse pointer, this element is at least 44px square. */
 export const COARSE_POINTER_TOUCH_TARGET =
