@@ -9,7 +9,7 @@ import {
 } from "./chunk-MQMPVZLZ.js";
 import {
   CandidateProfileHeader
-} from "./chunk-YMFTDVCT.js";
+} from "./chunk-P3WHSIFP.js";
 import {
   CandidateNoteCard,
   CandidateNoteComposer
@@ -208,7 +208,8 @@ function CandidateSharedProfileHeader({
       status,
       titleLevel,
       name: name ?? text.anonymous,
-      cover: anonymised ? void 0 : person.cover,
+      cover: anonymised ? person.cover === null ? null : void 0 : person.cover,
+      coverSeed: anonymised ? null : person.coverSeed,
       avatar: anonymised ? /* @__PURE__ */ jsx(WithheldAvatar, {}) : person.avatar,
       meta: hasRole || hasFacts ? /* @__PURE__ */ jsxs(Stack, { gap: "sm", children: [
         hasRole ? /* @__PURE__ */ jsxs(Text, { variant: "small", tone: "soft", children: [

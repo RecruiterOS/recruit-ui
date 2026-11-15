@@ -7,7 +7,7 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, MouseEvent, ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
-import { CandidateCoverHeader } from "./candidate-cover-header";
+import { CandidateCoverHeader, candidateCoverSeed, type CandidateCoverSeed } from "./candidate-cover-header";
 
 export interface CandidatePipelineCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "onSelect" | "title" | "children"> {
@@ -17,8 +17,17 @@ export interface CandidatePipelineCardProps
   headline?: ReactNode;
   /** The current-company line, rendered as given (it brings its own text). */
   company?: ReactNode;
-  /** Media for the 4:1 cover frame. Omit it and no frame is drawn. */
-  cover?: ReactNode;
+  /**
+   * The person's own cover, as media the host owns. Left out, the kit's
+   * stock banner (`CoverBanner`) is drawn in its place, in the theme's
+   * colours, so everyone's card is the same height; `null` draws no cover.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, the same one every time: the
+   * person's id, say. Left out, the name is the seed where it is plain text.
+   */
+  coverSeed?: CandidateCoverSeed;
   /** Small badges in a row under the identity, such as a grade or a decision. */
   badges?: ReactNode;
   /** Controls at the top right, such as a preview link. */
@@ -44,6 +53,7 @@ export function CandidatePipelineCard({
   headline,
   company,
   cover,
+  coverSeed,
   badges,
   actions,
   onSelect,
@@ -60,7 +70,12 @@ export function CandidatePipelineCard({
       data-slot="candidate-pipeline-card"
       {...props}
     >
-      <CandidateCoverHeader cover={cover} padding="compact">
+      <CandidateCoverHeader
+        cover={cover}
+        coverFallback="stock"
+        coverSeed={candidateCoverSeed(coverSeed, name)}
+        padding="compact"
+      >
         <Stack direction="horizontal" gap="xs" align="start">
           <FlexItem grow minWidth="zero">
             <Stack gap="none">

@@ -13,7 +13,7 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId, type HTMLAttributes, type MouseEvent, type ReactNode } from "react";
 
 import { shouldActivateCandidateCard } from "./candidate-card-activation";
-import { CandidateCoverHeader } from "./candidate-cover-header";
+import { CandidateCoverHeader, candidateCoverSeed, type CandidateCoverSeed } from "./candidate-cover-header";
 
 // CandidateReviewActionRow marks its inline controls with this slot.
 const SUPPRESS_ACTION_ROW_KEYLINE =
@@ -28,7 +28,17 @@ export interface CandidateReviewCardProps
   extends Omit<HTMLAttributes<HTMLElement>, "onClick" | "title"> {
   name: ReactNode;
   avatar?: ReactNode;
-  cover?: ReactNode;
+  /**
+   * The person's own cover, as media the host owns. Left out, the kit's
+   * stock banner (`CoverBanner`) is drawn in its place, in the theme's
+   * colours, so everyone's card is the same height; `null` draws no cover.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, the same one every time: the
+   * person's id, say. Left out, the name is the seed where it is plain text.
+   */
+  coverSeed?: CandidateCoverSeed;
   headline?: ReactNode;
   headerActions?: ReactNode;
   beforeFacts?: ReactNode;
@@ -47,6 +57,7 @@ export function CandidateReviewCard({
   name,
   avatar,
   cover,
+  coverSeed,
   headline,
   headerActions,
   beforeFacts,
@@ -109,7 +120,12 @@ export function CandidateReviewCard({
       >
         <Stack gap="none" height="full">
           <FlexItem grow minHeight="zero">
-            <CandidateCoverHeader cover={cover} padding="lg">
+            <CandidateCoverHeader
+              cover={cover}
+              coverFallback="stock"
+              coverSeed={candidateCoverSeed(coverSeed, name)}
+              padding="lg"
+            >
               <Grid
                 columns={null}
                 gap="md"

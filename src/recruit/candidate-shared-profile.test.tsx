@@ -1,6 +1,7 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Globe } from "lucide-react";
+import { COVER_BANNER_VARIANTS } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { describe, expect, it, vi } from "vitest";
 
 import { CandidateSharedProfile, type CandidateSharedProfileProps } from "./candidate-shared-profile";
@@ -344,7 +345,11 @@ describe("candidate shared profile", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Confidential candidate" })).toBeInTheDocument();
     expect(container).not.toHaveTextContent(/Mei|Tanaka|Tomas/);
     expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector("[data-slot='candidate-cover-image']")).toBeNull();
+    // Their cover is gone; the stock banner in its place is the one everybody gets.
+    expect(container.querySelector("[data-slot='candidate-cover-image'] [data-slot='cover-banner']")).toHaveAttribute(
+      "data-variant",
+      COVER_BANNER_VARIANTS[0],
+    );
     expect(screen.queryByRole("link")).toBeNull();
     expect(within(screen.getByRole("group", { name: "2 people shared with you" })).getAllByRole("button").map((chip) => chip.textContent)).toEqual([
       "Candidate 1",

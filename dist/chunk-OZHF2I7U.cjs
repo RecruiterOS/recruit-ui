@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkLAOJ26MOcjs = require('./chunk-LAOJ26MO.cjs');
+var _chunk72LX562Hcjs = require('./chunk-72LX562H.cjs');
 
 
 var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
@@ -350,7 +350,7 @@ function CandidatePipelineBoard({
                     opacity: moving ? "soft" : "full",
                     className: CARD,
                     children: [
-                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: renderCard ? renderCard(item, stage) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkLAOJ26MOcjs.CandidatePipelineCard, { name: getName(item), onSelect: () => _optionalChain([onSelect, 'optionalCall', _25 => _25(item)]) }) }),
+                      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minWidth: "zero", children: renderCard ? renderCard(item, stage) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk72LX562Hcjs.CandidatePipelineCard, { name: getName(item), onSelect: () => _optionalChain([onSelect, 'optionalCall', _25 => _25(item)]) }) }),
                       onMove && others.length > 0 ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _dropdownmenu.DropdownMenu, { children: [
                         /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _dropdownmenu.DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
                           _button.Button,

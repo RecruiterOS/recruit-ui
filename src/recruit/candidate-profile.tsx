@@ -7,7 +7,12 @@ import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
 import type { HTMLAttributes, ReactNode } from "react";
 
-import { CandidateCoverHeader, type CandidateCoverHeaderPadding } from "./candidate-cover-header";
+import {
+  CandidateCoverHeader,
+  candidateCoverSeed,
+  type CandidateCoverHeaderPadding,
+  type CandidateCoverSeed,
+} from "./candidate-cover-header";
 
 export interface CandidateProfileProps
   extends Omit<HTMLAttributes<HTMLElement>, "title"> {
@@ -56,7 +61,19 @@ export interface CandidateProfileHeaderProps
   extends HTMLAttributes<HTMLDivElement> {
   name: ReactNode;
   avatar?: ReactNode;
-  cover?: ReactNode;
+  /**
+   * The person's own cover, as media the host owns. Left out, the kit's
+   * stock banner (`CoverBanner`) is drawn in its place, in the theme's
+   * colours; `null` draws no cover. A flush header (`padding="none"`) never
+   * draws the stock one: it sits inside a container the host pads, where a
+   * banner couldn't reach the edges.
+   */
+  cover?: ReactNode | null;
+  /**
+   * Deals the stock banner its design, the same one every time: the
+   * person's id, say. Left out, the name is the seed where it is plain text.
+   */
+  coverSeed?: CandidateCoverSeed;
   eyebrow?: ReactNode;
   status?: ReactNode;
   meta?: ReactNode;
@@ -163,6 +180,7 @@ export function CandidateProfileHeader({
   name,
   avatar,
   cover,
+  coverSeed,
   eyebrow,
   status,
   meta,
@@ -189,6 +207,8 @@ export function CandidateProfileHeader({
   return (
     <CandidateCoverHeader
       cover={cover}
+      coverFallback={padding === "none" ? "none" : "stock"}
+      coverSeed={candidateCoverSeed(coverSeed, name)}
       padding={padding}
       data-slot="candidate-profile-header"
       className={className}

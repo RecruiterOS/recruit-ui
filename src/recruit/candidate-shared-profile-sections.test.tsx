@@ -1,6 +1,7 @@
 import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Globe } from "lucide-react";
+import { COVER_BANNER_VARIANTS, coverBannerVariant } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -375,6 +376,13 @@ describe("candidate shared profile header", () => {
     expect(header()).toHaveTextContent(/^Mei Tanaka$/);
     expect(container.querySelector("svg, img")).toBeNull();
     expect(screen.queryByRole("link")).toBeNull();
+    // Over it, the kit's stock banner, dealt by the name or by the host's seed, unless the host wants none.
+    const banner = () => container.querySelector("[data-slot='candidate-cover-image'] [data-slot='cover-banner']");
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("Mei Tanaka"));
+    rerender(<CandidateSharedProfileHeader person={{ name: "Mei Tanaka", coverSeed: "person-9" }} />);
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-9"));
+    expect(coverBannerVariant("person-9")).not.toBe(coverBannerVariant("Mei Tanaka"));
+    rerender(<CandidateSharedProfileHeader person={{ name: "Mei Tanaka", cover: null }} />);
     expect(container.querySelector("[data-slot='candidate-cover-image']")).toBeNull();
 
     rerender(<CandidateSharedProfileHeader person={{ name: "Mei Tanaka", company: "Sample Analytics" }} />);
@@ -400,12 +408,21 @@ describe("candidate shared profile header", () => {
   });
 
   it("never shows the name, the face, the cover or the link of an anonymised person, whatever it is handed", () => {
-    const { container } = render(<CandidateSharedProfileHeader person={person} anonymised />);
+    const { container, rerender } = render(<CandidateSharedProfileHeader person={person} anonymised />);
 
     expect(screen.getByRole("heading", { level: 1, name: "Confidential candidate" })).toBeInTheDocument();
     expect(container).not.toHaveTextContent("Mei");
     expect(container.querySelector("img")).toBeNull();
+    // Their own cover is gone. The stock banner over the header is the first
+    // design, dealt by nothing of theirs, so it is the same for everyone.
+    const banner = () => container.querySelector("[data-slot='candidate-cover-image'] [data-slot='cover-banner']");
+    expect(banner()).toHaveAttribute("data-variant", COVER_BANNER_VARIANTS[0]);
+    expect(coverBannerVariant("person-9")).not.toBe(COVER_BANNER_VARIANTS[0]);
+    rerender(<CandidateSharedProfileHeader person={{ ...person, coverSeed: "person-9" }} anonymised />);
+    expect(banner()).toHaveAttribute("data-variant", COVER_BANNER_VARIANTS[0]);
+    rerender(<CandidateSharedProfileHeader person={{ ...person, cover: null }} anonymised />);
     expect(container.querySelector("[data-slot='candidate-cover-image']")).toBeNull();
+    rerender(<CandidateSharedProfileHeader person={person} anonymised />);
     expect(screen.queryByRole("link")).toBeNull();
     expect(container.querySelector("a")).toBeNull();
     // A glyph stands in: never initials, which would be somebody's.

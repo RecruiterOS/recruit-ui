@@ -1,5 +1,6 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { coverBannerVariant } from "@epicbagel/saas-kit/primitives/cover-banner";
 import { describe, expect, it, vi } from "vitest";
 
 import { CandidatePipelineCard } from "./candidate-pipeline-card";
@@ -101,6 +102,30 @@ describe("job summary card", () => {
   });
 });
 
+describe("candidate review card", () => {
+  it("draws their cover, and the kit's stock banner for someone who has none", () => {
+    const { container, rerender } = render(<CandidateReviewCard name="Mei Example" />);
+    const frame = () => container.querySelector('[data-slot="candidate-cover-image"]');
+    const banner = () => container.querySelector('[data-slot="candidate-cover-image"] [data-slot="cover-banner"]');
+
+    // The same 4:1 frame either way, so a list of cards is one height.
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("Mei Example"));
+    expect(frame()?.parentElement).toHaveStyle({ paddingBottom: "25%" });
+
+    // One person keeps one banner wherever the host names the same seed.
+    rerender(<CandidateReviewCard name={<a href="https://example.com/mei">Mei Example</a>} coverSeed="person-7" />);
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-7"));
+    expect(coverBannerVariant("person-7")).not.toBe(coverBannerVariant("Mei Example"));
+
+    rerender(<CandidateReviewCard name="Mei Example" cover={<img alt="Fictional landscape" />} />);
+    expect(banner()).toBeNull();
+    expect(frame()).toContainElement(screen.getByAltText("Fictional landscape"));
+
+    rerender(<CandidateReviewCard name="Mei Example" cover={null} />);
+    expect(frame()).toBeNull();
+  });
+});
+
 describe("job client badge", () => {
   it("keeps the kit badge slot, one line of text and the name in its tooltip", () => {
     render(<JobClientBadge name="Saltmarsh Example Robotics" data-testid="client" />);
@@ -163,15 +188,22 @@ describe("candidate pipeline card", () => {
     expect(onSelect).toHaveBeenCalledTimes(2);
   });
 
-  it("draws the cover frame only for media, and no empty headline or badge row", () => {
+  it("draws their cover, the kit's stock banner without one, and no empty headline or badge row", () => {
     const { container, rerender } = render(
       <CandidatePipelineCard name="Mei Example" headline="" onSelect={() => undefined} />,
     );
 
     const card = container.firstElementChild as HTMLElement;
-    expect(card.querySelector('[data-slot="candidate-cover-image"]')).toBeNull();
+    const banner = () => card.querySelector('[data-slot="candidate-cover-image"] [data-slot="cover-banner"]');
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("Mei Example"));
     // Only the name line.
     expect(card.querySelectorAll("p")).toHaveLength(1);
+
+    rerender(<CandidatePipelineCard name="Mei Example" coverSeed="person-7" onSelect={() => undefined} />);
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-7"));
+
+    rerender(<CandidatePipelineCard name="Mei Example" cover={null} onSelect={() => undefined} />);
+    expect(card.querySelector('[data-slot="candidate-cover-image"]')).toBeNull();
 
     rerender(
       <CandidatePipelineCard
@@ -182,5 +214,6 @@ describe("candidate pipeline card", () => {
     );
     expect(card.querySelector('[data-slot="candidate-cover-image"]')).not.toBeNull();
     expect(screen.getByTestId("cover")).toBeInTheDocument();
+    expect(banner()).toBeNull();
   });
 });

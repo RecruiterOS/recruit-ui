@@ -10,12 +10,12 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-E2RLLSMH.js";
+} from "./chunk-XLNTUHTQ.js";
 import {
   CandidateProfile,
   CandidateProfileBody,
   CandidateProfileFooter
-} from "./chunk-YMFTDVCT.js";
+} from "./chunk-P3WHSIFP.js";
 import {
   useLatestCall
 } from "./chunk-WMD6M2IP.js";

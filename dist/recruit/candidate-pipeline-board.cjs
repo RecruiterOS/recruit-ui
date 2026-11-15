@@ -2,11 +2,11 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkSTHYOEFScjs = require('../chunk-STHYOEFS.cjs');
-require('../chunk-LAOJ26MO.cjs');
+var _chunkOZHF2I7Ucjs = require('../chunk-OZHF2I7U.cjs');
+require('../chunk-72LX562H.cjs');
 require('../chunk-K3VUGGWH.cjs');
-require('../chunk-KTFEHL5X.cjs');
+require('../chunk-HJ6CZSSY.cjs');
 require('../chunk-D5BXTRVN.cjs');
 
 
-exports.CandidatePipelineBoard = _chunkSTHYOEFScjs.CandidatePipelineBoard;
+exports.CandidatePipelineBoard = _chunkOZHF2I7Ucjs.CandidatePipelineBoard;

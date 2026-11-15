@@ -3,8 +3,9 @@ import {
   candidateCardSelectProps
 } from "./chunk-NBZS6VTO.js";
 import {
-  CandidateCoverHeader
-} from "./chunk-KL7C75ZR.js";
+  CandidateCoverHeader,
+  candidateCoverSeed
+} from "./chunk-7KWIX4SI.js";
 
 // src/recruit/candidate-relationship-card.tsx
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";
@@ -33,6 +34,7 @@ function CandidateRelationshipCard({
   name,
   avatar,
   cover,
+  coverSeed,
   verified = false,
   headline,
   company,
@@ -60,24 +62,34 @@ function CandidateRelationshipCard({
       ...props,
       ...candidateCardSelectProps(onSelect, { onKeyDown }),
       children: [
-        /* @__PURE__ */ jsx(CandidateCoverHeader, { cover, padding: "lg", softenCoverUntilHover: true, children: /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "start", children: [
-          avatar,
-          /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
-            /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", children: [
-              /* @__PURE__ */ jsx(Heading, { level: 3, truncate: true, children: name }),
-              verified && /* @__PURE__ */ jsx(Icon, { icon: CheckCircle, size: "sm", tone: "success" })
-            ] }),
-            shown(headline) && /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", truncate: true, children: headline }),
-            (shown(company) || shown(location)) && /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", minWidth: "zero", children: [
-              company,
-              shown(location) && /* @__PURE__ */ jsxs(Text, { variant: "inherit", as: "span", size: "sm", tone: "muted", truncate: true, children: [
-                shown(company) && "\xB7 ",
-                location
-              ] })
+        /* @__PURE__ */ jsx(
+          CandidateCoverHeader,
+          {
+            cover,
+            coverFallback: "stock",
+            coverSeed: candidateCoverSeed(coverSeed, name),
+            padding: "lg",
+            softenCoverUntilHover: true,
+            children: /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "md", align: "start", children: [
+              avatar,
+              /* @__PURE__ */ jsxs(FlexItem, { grow: true, minWidth: "zero", children: [
+                /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", children: [
+                  /* @__PURE__ */ jsx(Heading, { level: 3, truncate: true, children: name }),
+                  verified && /* @__PURE__ */ jsx(Icon, { icon: CheckCircle, size: "sm", tone: "success" })
+                ] }),
+                shown(headline) && /* @__PURE__ */ jsx(Text, { size: "sm", tone: "muted", truncate: true, children: headline }),
+                (shown(company) || shown(location)) && /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "xs", align: "center", minWidth: "zero", children: [
+                  company,
+                  shown(location) && /* @__PURE__ */ jsxs(Text, { variant: "inherit", as: "span", size: "sm", tone: "muted", truncate: true, children: [
+                    shown(company) && "\xB7 ",
+                    location
+                  ] })
+                ] })
+              ] }),
+              actions
             ] })
-          ] }),
-          actions
-        ] }) }),
+          }
+        ),
         signal && /* @__PURE__ */ jsxs(Stack, { border: "top", gap: "xs", paddingX: "lg", paddingY: "md", surface: "muted", children: [
           /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "between", children: [
             /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", weight: "medium", transform: "uppercase", children: signal.label }),

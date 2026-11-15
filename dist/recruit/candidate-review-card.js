@@ -1,9 +1,9 @@
 "use client";
 import {
   CandidateReviewCard
-} from "../chunk-5CTC3QPI.js";
+} from "../chunk-UCGC5LGW.js";
 import "../chunk-NBZS6VTO.js";
-import "../chunk-KL7C75ZR.js";
+import "../chunk-7KWIX4SI.js";
 export {
   CandidateReviewCard
 };

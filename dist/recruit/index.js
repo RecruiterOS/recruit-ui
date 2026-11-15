@@ -35,10 +35,10 @@ import {
 } from "../chunk-VYIPKB27.js";
 import {
   ClientSearchPage
-} from "../chunk-OYGSLHGQ.js";
+} from "../chunk-SZP4GJUS.js";
 import {
   ClientSearchConversation
-} from "../chunk-SD22Q7I3.js";
+} from "../chunk-ZLJE6MPK.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +49,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "../chunk-5PDGCKKW.js";
+} from "../chunk-NIU4USFY.js";
 import {
   JobSearchProgress
 } from "../chunk-TPB2PWPX.js";
@@ -93,7 +93,7 @@ import {
 } from "../chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "../chunk-O6YQSA5D.js";
+} from "../chunk-36O5G46S.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -104,7 +104,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "../chunk-E2RLLSMH.js";
+} from "../chunk-XLNTUHTQ.js";
 import {
   CurrentCompanyLabel
 } from "../chunk-XTAH2XJR.js";
@@ -132,16 +132,16 @@ import {
   CandidateProfileBody,
   CandidateProfileFooter,
   CandidateProfileHeader
-} from "../chunk-YMFTDVCT.js";
+} from "../chunk-P3WHSIFP.js";
 import {
   CandidateQuote
 } from "../chunk-2TU6TCNM.js";
 import {
   CandidateRelationshipCard
-} from "../chunk-QROSHLXN.js";
+} from "../chunk-WXCCXYYP.js";
 import {
   CandidateReviewCard
-} from "../chunk-5CTC3QPI.js";
+} from "../chunk-UCGC5LGW.js";
 import {
   CandidateJobEvidence
 } from "../chunk-43WWASGQ.js";
@@ -164,10 +164,10 @@ import {
 } from "../chunk-3OWWB6XI.js";
 import {
   CandidatePipelineBoard
-} from "../chunk-ELPC5EHL.js";
+} from "../chunk-YFDT57NN.js";
 import {
   CandidatePipelineCard
-} from "../chunk-MMB4GPLS.js";
+} from "../chunk-IL67BKGI.js";
 import {
   CandidateDestinationStatus
 } from "../chunk-WM5SRBTX.js";
@@ -201,7 +201,7 @@ import {
 } from "../chunk-6DUL7U2Q.js";
 import {
   CandidateInlineCard
-} from "../chunk-F2DBAQLW.js";
+} from "../chunk-ANQVNGDH.js";
 import "../chunk-NBZS6VTO.js";
 import {
   CandidateContactChannelsMenu
@@ -213,8 +213,9 @@ import {
 } from "../chunk-ESIFTU4K.js";
 import {
   CandidateCoverHeader,
-  CandidateCoverImage
-} from "../chunk-KL7C75ZR.js";
+  CandidateCoverImage,
+  candidateCoverSeed
+} from "../chunk-7KWIX4SI.js";
 import {
   CandidateDecisionBar
 } from "../chunk-TMC65IQ7.js";
@@ -388,6 +389,7 @@ export {
   JobSummaryCard,
   MatchedCallCard,
   SourcingTrace,
+  candidateCoverSeed,
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,

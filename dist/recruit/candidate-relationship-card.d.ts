@@ -1,5 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode, Key } from 'react';
+import { CandidateCoverSeed } from './candidate-cover-header.js';
 
 /** One labelled fact in the card's three-column row. */
 interface CandidateRelationshipFact {
@@ -53,8 +54,18 @@ interface CandidateRelationshipCardProps extends Omit<HTMLAttributes<HTMLElement
     name: ReactNode;
     /** Avatar at the start of the header. */
     avatar?: ReactNode;
-    /** Media for the 4:1 cover frame, softened until the card is hovered. Omit it and no frame is drawn. */
-    cover?: ReactNode;
+    /**
+     * The person's own cover, as media the host owns, softened until the card
+     * is hovered. Left out, the kit's stock banner (`CoverBanner`) is drawn in
+     * its place, in the theme's colours, so everyone's card is the same
+     * height; `null` draws no cover.
+     */
+    cover?: ReactNode | null;
+    /**
+     * Deals the stock banner its design, the same one every time: the
+     * person's id, say. Left out, the name is the seed where it is plain text.
+     */
+    coverSeed?: CandidateCoverSeed;
     /** Marks a verified contact with a check after the name. */
     verified?: boolean;
     /** The line under the name, usually the current title. */
@@ -87,6 +98,6 @@ interface CandidateRelationshipCardProps extends Omit<HTMLAttributes<HTMLElement
  * suggestion row opens its roles instead. The host owns every value, its wording and its dates. The
  * root is marked `data-slot="candidate-relationship-card"`.
  */
-declare function CandidateRelationshipCard({ name, avatar, cover, verified, headline, company, location, actions, signal, facts, suggestion, note, selected, onSelect, onKeyDown, ...props }: CandidateRelationshipCardProps): react.JSX.Element;
+declare function CandidateRelationshipCard({ name, avatar, cover, coverSeed, verified, headline, company, location, actions, signal, facts, suggestion, note, selected, onSelect, onKeyDown, ...props }: CandidateRelationshipCardProps): react.JSX.Element;
 
 export { CandidateRelationshipCard, type CandidateRelationshipCardProps, type CandidateRelationshipFact, type CandidateRelationshipNote, type CandidateRelationshipSignal, type CandidateRelationshipSuggestion };

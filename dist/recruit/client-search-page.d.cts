@@ -11,6 +11,7 @@ import { SourcingTraceStep, SourcingTraceLabels } from './sourcing-trace.cjs';
 import './candidate-decision-reason-sheet.cjs';
 import '@epicbagel/saas-kit/primitives/chat';
 import './client-search-thread.cjs';
+import './candidate-cover-header.cjs';
 import '../candidate-empty-copy-CZmg2ZoX.cjs';
 import './candidate-review-card.cjs';
 

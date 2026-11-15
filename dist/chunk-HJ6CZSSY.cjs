@@ -1,6 +1,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});// src/recruit/candidate-cover-header.tsx
 var _utils = require('@epicbagel/saas-kit/lib/utils');
 var _aspectratio = require('@epicbagel/saas-kit/primitives/aspect-ratio');
+var _coverbanner = require('@epicbagel/saas-kit/primitives/cover-banner');
 var _panelsection = require('@epicbagel/saas-kit/primitives/panel-section');
 var _jsxruntime = require('react/jsx-runtime');
 function CandidateCoverImage({
@@ -23,9 +24,15 @@ function CandidateCoverImage({
   };
   return size === "compact" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "div", { ...frameProps, children }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _aspectratio.AspectRatio, { ratio: 4, ...frameProps, children });
 }
+function candidateCoverSeed(seed, name) {
+  if (seed !== void 0) return seed;
+  return typeof name === "string" || typeof name === "number" ? name : null;
+}
 var DIALOG_PADDING = "p-4";
 function CandidateCoverHeader({
   cover,
+  coverFallback = "none",
+  coverSeed,
   coverSize = "default",
   children,
   padding = "card-header",
@@ -33,7 +40,9 @@ function CandidateCoverHeader({
   className,
   ...props
 }) {
-  const clip = cover != null || padding !== "none";
+  const stock = cover === void 0 && coverFallback === "stock";
+  const media = stock ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _coverbanner.CoverBanner, { seed: coverSeed }) : cover;
+  const clip = media != null || padding !== "none";
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
     "div",
     {
@@ -41,7 +50,15 @@ function CandidateCoverHeader({
       className: _utils.cn.call(void 0, clip && "overflow-hidden", className),
       ...props,
       children: [
-        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CandidateCoverImage, { size: coverSize, softenUntilHover: softenCoverUntilHover, children: cover }),
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          CandidateCoverImage,
+          {
+            size: coverSize,
+            softenUntilHover: softenCoverUntilHover,
+            className: stock ? "print:hidden" : void 0,
+            children: media
+          }
+        ),
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
           _panelsection.PanelSection,
           {
@@ -59,4 +76,5 @@ function CandidateCoverHeader({
 
 
 
-exports.CandidateCoverImage = CandidateCoverImage; exports.CandidateCoverHeader = CandidateCoverHeader;
+
+exports.CandidateCoverImage = CandidateCoverImage; exports.candidateCoverSeed = candidateCoverSeed; exports.CandidateCoverHeader = CandidateCoverHeader;

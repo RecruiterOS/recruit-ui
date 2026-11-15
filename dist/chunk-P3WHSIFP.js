@@ -1,6 +1,7 @@
 import {
-  CandidateCoverHeader
-} from "./chunk-KL7C75ZR.js";
+  CandidateCoverHeader,
+  candidateCoverSeed
+} from "./chunk-7KWIX4SI.js";
 
 // src/recruit/candidate-profile.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";
@@ -77,6 +78,7 @@ function CandidateProfileHeader({
   name,
   avatar,
   cover,
+  coverSeed,
   eyebrow,
   status,
   meta,
@@ -104,6 +106,8 @@ function CandidateProfileHeader({
     CandidateCoverHeader,
     {
       cover,
+      coverFallback: padding === "none" ? "none" : "stock",
+      coverSeed: candidateCoverSeed(coverSeed, name),
       padding,
       "data-slot": "candidate-profile-header",
       className,

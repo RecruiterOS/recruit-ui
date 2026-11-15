@@ -1,6 +1,6 @@
 import * as react from 'react';
 import { HTMLAttributes, ReactNode } from 'react';
-import { CandidateCoverHeaderPadding } from './candidate-cover-header.js';
+import { CandidateCoverSeed, CandidateCoverHeaderPadding } from './candidate-cover-header.js';
 
 interface CandidateProfileProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
     header?: ReactNode;
@@ -20,7 +20,19 @@ declare function CandidateProfile({ header, children, footer, printMode, classNa
 interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
     name: ReactNode;
     avatar?: ReactNode;
-    cover?: ReactNode;
+    /**
+     * The person's own cover, as media the host owns. Left out, the kit's
+     * stock banner (`CoverBanner`) is drawn in its place, in the theme's
+     * colours; `null` draws no cover. A flush header (`padding="none"`) never
+     * draws the stock one: it sits inside a container the host pads, where a
+     * banner couldn't reach the edges.
+     */
+    cover?: ReactNode | null;
+    /**
+     * Deals the stock banner its design, the same one every time: the
+     * person's id, say. Left out, the name is the seed where it is plain text.
+     */
+    coverSeed?: CandidateCoverSeed;
     eyebrow?: ReactNode;
     status?: ReactNode;
     meta?: ReactNode;
@@ -53,7 +65,7 @@ interface CandidateProfileHeaderProps extends HTMLAttributes<HTMLDivElement> {
 type CandidateProfileHeaderActionsPlacement = "name" | "aside";
 /** The heading level of a CandidateProfileHeader's name. */
 type CandidateProfileHeaderTitleLevel = 1 | 2 | 3 | 4;
-declare function CandidateProfileHeader({ name, avatar, cover, eyebrow, status, meta, summary, actions, actionsPlacement, padding, titleLevel, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
+declare function CandidateProfileHeader({ name, avatar, cover, coverSeed, eyebrow, status, meta, summary, actions, actionsPlacement, padding, titleLevel, className, ...props }: CandidateProfileHeaderProps): react.JSX.Element;
 interface CandidateProfileBodyProps extends HTMLAttributes<HTMLDivElement> {
     children: ReactNode;
     divided?: boolean;

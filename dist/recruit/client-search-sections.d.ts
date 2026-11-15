@@ -2,6 +2,7 @@ import * as react from 'react';
 import { ReactNode, MouseEvent, HTMLAttributes } from 'react';
 import { MarkdownComponents } from '@epicbagel/saas-kit/primitives/markdown';
 import { CandidateClientDecisionLabels } from './candidate-client-decision.js';
+import { CandidateCoverSeed } from './candidate-cover-header.js';
 import { CandidateDecisionChoice } from './candidate-decision-buttons.js';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.js';
 import { CandidateReviewFact } from './candidate-review-card.js';
@@ -204,8 +205,16 @@ interface ClientSearchPerson {
     name: string;
     /** Their face, usually the kit's PersonAvatar. 44px reads best. */
     avatar?: ReactNode;
-    /** A banner over the card, as `CandidateReviewCard` takes it. */
-    cover?: ReactNode;
+    /**
+     * A banner over the card, as `CandidateReviewCard` takes it: left out, the
+     * kit's stock banner stands in, and `null` draws none.
+     */
+    cover?: ReactNode | null;
+    /**
+     * Deals the stock banner its design, as `CandidateReviewCard` takes it.
+     * Left out, the name is the seed.
+     */
+    coverSeed?: CandidateCoverSeed;
     /** The line under the name, such as their title and company. */
     headline?: ReactNode;
     /** At the header's end, such as a link to their public profile. */

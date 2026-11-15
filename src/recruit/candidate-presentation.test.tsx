@@ -1,11 +1,12 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { COVER_BANNER_VARIANTS, coverBannerVariant } from "@epicbagel/saas-kit/primitives/cover-banner";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 
 import { CandidateAssessment } from "./candidate-assessment";
 import { CandidateCareerHistoryTimeline } from "./candidate-career-history-timeline";
-import { CandidateCoverHeader, CandidateCoverImage } from "./candidate-cover-header";
+import { CandidateCoverHeader, CandidateCoverImage, candidateCoverSeed } from "./candidate-cover-header";
 import {
   CandidateProfile,
   CandidateProfileBody,
@@ -58,7 +59,8 @@ describe("candidate presentation", () => {
 
     rerender(<CandidateProfileHeader name="Mei Example" />);
     expect(header()).toHaveClass("overflow-hidden");
-    expect(header()?.firstElementChild?.className).toMatch(padded);
+    // Under its cover, which a padded header always has.
+    expect(header()?.lastElementChild?.className).toMatch(padded);
 
     rerender(
       <CandidateCoverHeader padding="none" cover={<img alt="Fictional landscape" />}>
@@ -66,6 +68,65 @@ describe("candidate presentation", () => {
       </CandidateCoverHeader>,
     );
     expect(document.querySelector('[data-slot="candidate-cover-header"]')).toHaveClass("overflow-hidden");
+  });
+
+  it("draws the kit's stock banner for a cover the host left out, only where it is asked to", () => {
+    const frame = () => document.querySelector('[data-slot="candidate-cover-image"]');
+    const banner = () => document.querySelector('[data-slot="cover-banner"]');
+
+    // A bare header keeps to what it is given.
+    const { rerender } = render(<CandidateCoverHeader>Mei Example</CandidateCoverHeader>);
+    expect(frame()).toBeNull();
+
+    rerender(<CandidateCoverHeader coverFallback="stock" coverSeed="person-7">Mei Example</CandidateCoverHeader>);
+    // In the same 4:1 frame a cover of their own would have.
+    expect(frame()).toContainElement(banner() as HTMLElement);
+    expect(frame()?.parentElement).toHaveStyle({ paddingBottom: "25%" });
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-7"));
+    expect(banner()).toHaveAttribute("aria-hidden", "true");
+    // Drawn as a background, which paper leaves out: no empty band is printed.
+    expect(frame()).toHaveClass("print:hidden");
+    expect(document.querySelector('[data-slot="candidate-cover-header"]')).toHaveClass("overflow-hidden");
+
+    // Their own cover wins, and prints.
+    rerender(
+      <CandidateCoverHeader coverFallback="stock" cover={<img alt="Fictional landscape" />}>
+        Mei Example
+      </CandidateCoverHeader>,
+    );
+    expect(banner()).toBeNull();
+    expect(screen.getByAltText("Fictional landscape")).toBeInTheDocument();
+    expect(frame()).not.toHaveClass("print:hidden");
+
+    // `null` is no cover at all.
+    rerender(<CandidateCoverHeader coverFallback="stock" cover={null}>Mei Example</CandidateCoverHeader>);
+    expect(frame()).toBeNull();
+  });
+
+  it("deals a stock cover by the host's seed, or else by a name that is plain text", () => {
+    expect(candidateCoverSeed("person-7", "Mei Example")).toBe("person-7");
+    expect(candidateCoverSeed(undefined, "Mei Example")).toBe("Mei Example");
+    expect(candidateCoverSeed(undefined, 7)).toBe(7);
+    // A seed of `null` is the host's own choice of no seed; an element is never read.
+    expect(candidateCoverSeed(null, "Mei Example")).toBeNull();
+    expect(candidateCoverSeed(undefined, <span>Mei Example</span>)).toBeNull();
+
+    const banner = () => document.querySelector('[data-slot="cover-banner"]');
+    const { rerender } = render(<CandidateProfileHeader name="Mei Example" />);
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("Mei Example"));
+
+    rerender(<CandidateProfileHeader name="Mei Example" coverSeed="person-7" />);
+    expect(banner()).toHaveAttribute("data-variant", coverBannerVariant("person-7"));
+
+    rerender(<CandidateProfileHeader name={<span>Mei Example</span>} />);
+    expect(banner()).toHaveAttribute("data-variant", COVER_BANNER_VARIANTS[0]);
+
+    // A flush header sits inside padding a banner couldn't cross, so it has none.
+    rerender(<CandidateProfileHeader name="Mei Example" padding="none" />);
+    expect(banner()).toBeNull();
+    rerender(<CandidateProfileHeader name="Mei Example" cover={null} />);
+    expect(banner()).toBeNull();
+    expect(document.querySelector('[data-slot="candidate-cover-image"]')).toBeNull();
   });
 
   it("puts actions on the name line, or beside the whole identity on request", () => {

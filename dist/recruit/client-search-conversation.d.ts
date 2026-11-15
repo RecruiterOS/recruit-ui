@@ -10,6 +10,7 @@ export { ClientSearchThreadBriefVersion, ClientSearchThreadDelivery, ClientSearc
 import { JobBriefContent, JobBriefViewOptions } from './job-brief-view.js';
 import { SourcingTraceLabels } from './sourcing-trace.js';
 import './candidate-decision-reason-sheet.js';
+import './candidate-cover-header.js';
 import '../candidate-empty-copy-CZmg2ZoX.js';
 import './candidate-review-card.js';
 import './job-search-progress.js';
