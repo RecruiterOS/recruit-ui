@@ -233,8 +233,10 @@ const ITEM_NAME: Record<JobBriefRuleKind, "mustHaveItem" | "niceToHaveItem" | "r
 // whole row, with the chevron 16px after the status. It drops the kit
 // trigger's small type, whose line height the status would otherwise take,
 // so a badge there is as tall as in the preview.
-const COLLAPSIBLE_TRIGGER = "gap-4 p-[26px] text-[length:inherit] data-[state=open]:pb-4";
-const COLLAPSIBLE_BODY = "px-[26px] pb-[26px]";
+// In rem, as the kit's padding is, so on a phone the inset scales with the
+// type and controls inside it.
+const COLLAPSIBLE_TRIGGER = "gap-4 p-6.5 text-[length:inherit] data-[state=open]:pb-4";
+const COLLAPSIBLE_BODY = "px-6.5 pb-6.5";
 
 // The kit EditableList's own label, so a section reads as one more list.
 const SECTION_LABEL = "text-xs font-medium uppercase tracking-wider";

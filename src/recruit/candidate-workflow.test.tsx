@@ -144,7 +144,7 @@ describe("candidate workflow compositions", () => {
     // The default stays a card's padding.
     render(<CandidateProfileHeader name="Fictional Card Person" />);
     expect(screen.getByText("Fictional Card Person").closest('[data-slot="candidate-profile-header"]')?.lastElementChild)
-      .toHaveClass("px-[26px]", "py-[26px]");
+      .toHaveClass("px-6.5", "py-6.5");
   });
 
   it("fixes the desktop dialog's height unless asked to fit its content", () => {
