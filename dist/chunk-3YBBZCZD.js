@@ -1,6 +1,6 @@
 import {
   CandidateSummaryBullets
-} from "./chunk-RZD4G4NP.js";
+} from "./chunk-TFPDLQYX.js";
 
 // src/recruit/candidate-assessment.tsx
 import { DefinitionItem, DefinitionList } from "@epicbagel/saas-kit/primitives/definition-list";

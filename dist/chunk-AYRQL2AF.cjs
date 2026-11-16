@@ -35,7 +35,7 @@ var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
 var _chunkANK2TWM2cjs = require('./chunk-ANK2TWM2.cjs');
 
 
-var _chunkTWVXTT47cjs = require('./chunk-TWVXTT47.cjs');
+var _chunkGTQAORPNcjs = require('./chunk-GTQAORPN.cjs');
 
 // src/recruit/candidate-shared-profile-sections.tsx
 var _utils = require('@epicbagel/saas-kit/lib/utils');
@@ -341,7 +341,7 @@ function CandidateSharedProfileFit({
           }
         ) }) : null,
         present(summary) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", whitespace: "pre-line", children: summary }) : null,
-        lines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
+        lines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
         lists.map((group, index) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
           _stack.Stack,
           {
@@ -351,7 +351,7 @@ function CandidateSharedProfileFit({
             gap: "sm",
             children: [
               /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { id: `${groupId}-${index}`, level: 5, as: `h${titleLevel + 1}`, children: group.title }),
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: group.items, presentation: "body" })
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidateSummaryBullets, { bullets: group.items, presentation: "body" })
             ]
           },
           index

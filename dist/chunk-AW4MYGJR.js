@@ -10,7 +10,7 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-622UN2P6.js";
+} from "./chunk-MMLSC5OT.js";
 import {
   CandidateProfile,
   CandidateProfileBody,

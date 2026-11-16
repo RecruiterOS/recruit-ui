@@ -273,7 +273,6 @@ export function CandidateSummaryBullets({
           variant="link-muted"
           size="bare"
           marginTop="xs"
-          gap="xs"
           onClick={() => onGenerate()}
           disabled={generating}
         >
