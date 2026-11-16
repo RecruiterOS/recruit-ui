@@ -71,6 +71,7 @@ function CandidateRoleMatchList({
             {
               size: "sm",
               weight: "medium",
+              display: "inline-flex",
               href: match.href,
               onClick: (event) => {
                 event.stopPropagation();

@@ -162,6 +162,8 @@ export function CandidateRoleMatchList<TItem extends CandidateRoleMatchListItem>
                 <Anchor
                   size="sm"
                   weight="medium"
+                  // A link that stands alone, so on a touchscreen it takes the kit's tap area.
+                  display="inline-flex"
                   href={match.href}
                   onClick={(event) => {
                     event.stopPropagation();

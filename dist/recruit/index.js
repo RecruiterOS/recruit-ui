@@ -79,7 +79,7 @@ import {
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
-} from "../chunk-TRPMV2DM.js";
+} from "../chunk-UXGINXYW.js";
 import {
   CandidateSelectableAvatar
 } from "../chunk-55QNF7Q2.js";
