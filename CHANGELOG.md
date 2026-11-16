@@ -5,6 +5,23 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.33.1
+
+Gaps: the sixth batch of a polish audit. No API change.
+
+### Fixed
+
+- `CandidateSummaryBullets`' Generate summary button has the kit button's
+  own gap between its icon and its label, 8px. It asked for 4px, a gap
+  meant for a 12px icon, but the kit draws a button's icon at 16px, so the
+  icon sat closer to its label than on every other button.
+
+With `@epicbagel/saas-kit` 1.42.2, which the peer range already allows, the
+marks in `CandidateContactDetails` sit one distance from their words (a
+link's was 4px, plain text's 6px), and the Add button of `JobBriefCard`'s
+editable lists has the standard 8px between its icon and label (it was
+12px).
+
 ## 0.33.0
 
 Text alignment: the fifth batch of a polish audit. The minimum kit version

@@ -9,7 +9,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "../chunk-622UN2P6.js";
+} from "../chunk-MMLSC5OT.js";
 import "../chunk-XTAH2XJR.js";
 import "../chunk-S6VNT7YQ.js";
 import "../chunk-MQMPVZLZ.js";
@@ -26,7 +26,7 @@ import "../chunk-BSPHJDGR.js";
 import "../chunk-Z63PQB6T.js";
 import "../chunk-2LWKIODP.js";
 import "../chunk-JNUWDHFV.js";
-import "../chunk-RZD4G4NP.js";
+import "../chunk-TFPDLQYX.js";
 import "../chunk-VOKP2HLR.js";
 export {
   CandidateSharedProfileAnswer,
