@@ -266,7 +266,7 @@ export function CallReconcileCard<TPerson extends CallPerson>({
         transcriptLabel={text.showTranscript}
         onLoadTranscript={call.onLoadTranscript}
         actions={(
-          <Stack gap="md" width="full" textAlign="start" padding="sm">
+          <Stack gap="md" width="full" textAlign="start">
             <Stack gap="xs">
               <Stack direction="horizontal" gap="md" align="center" justify="between">
                 <Text size="sm" weight="medium">{text.heading}</Text>

@@ -44,7 +44,7 @@ function JobSummaryCard({
             ] }) }),
             shown(badge) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { as: "span", minWidth: "zero", children: badge }) : null
           ] }) }),
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { variant: "divided", inset: "lg", children: facts.map((fact) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, fact.id)) }),
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { variant: "divided", inset: "md", children: facts.map((fact) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, fact.id)) }),
           hasFooter ? null : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _spacer.Spacer, { size: "lg" })
         ]
       }

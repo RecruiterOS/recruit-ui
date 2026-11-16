@@ -89,6 +89,7 @@ function MatchedCallCard({
       {
         variant: "ghost",
         size: "compact",
+        marginStart: index === 0 ? "negative-sm" : "none",
         onClick: () => onOpenPerson(person),
         "aria-label": text.openPerson(person.name),
         children: person.name

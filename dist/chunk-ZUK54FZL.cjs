@@ -104,7 +104,7 @@ function CallReconcileCard({
         segments: call.segments,
         transcriptLabel: text.showTranscript,
         onLoadTranscript: call.onLoadTranscript,
-        actions: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", width: "full", textAlign: "start", padding: "sm", children: [
+        actions: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", width: "full", textAlign: "start", children: [
           /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
             /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "md", align: "center", justify: "between", children: [
               /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", weight: "medium", children: text.heading }),
