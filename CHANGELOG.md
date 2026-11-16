@@ -5,6 +5,21 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.33.2
+
+The rest of the kit, first part: the seventh batch of a polish audit. No
+API change.
+
+### Fixed
+
+- A role's title in `CandidateRoleMatchList` is a link that stands alone,
+  and says so (`display="inline-flex"`), so with `@epicbagel/saas-kit`
+  1.43.0, which the peer range already allows, it takes a tap area on a
+  touchscreen. It was 17.5px tall there. Nothing is drawn differently.
+
+With saas-kit 1.43.0 the library's checkboxes, switches and contact links
+take a tap area on a touchscreen too, with no change here.
+
 ## 0.33.1
 
 Gaps: the sixth batch of a polish audit. No API change.

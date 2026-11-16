@@ -2,7 +2,7 @@
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
-} from "../chunk-TRPMV2DM.js";
+} from "../chunk-UXGINXYW.js";
 export {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary

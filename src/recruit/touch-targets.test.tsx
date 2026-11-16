@@ -58,3 +58,18 @@ describe("small controls the library keeps dense", () => {
     );
   });
 });
+
+describe("a role match's title on a touchscreen", () => {
+  it("is a link that stands alone, so it takes the kit's tap area", async () => {
+    const { CandidateRoleMatchList } = await import("./candidate-role-matches");
+    render(
+      <CandidateRoleMatchList
+        heading="Suggested roles"
+        matches={[{ id: 1, title: "Fictional Platform Engineer", href: "https://example.com/roles/1", reason: "A fictional reason." }]}
+        confirm={{ title: () => "Add to this fictional role?" }}
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Fictional Platform Engineer" })).toHaveClass("inline-flex");
+  });
+});
