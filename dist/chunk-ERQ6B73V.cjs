@@ -59,7 +59,7 @@ function CandidateAssessment({
   const caveatContent = sectionContent(caveats, caveatItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, CaveatList, { items }));
   const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkTWVXTT47cjs.CandidateSummaryBullets, { bullets: items, presentation: "body" }));
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { "data-slot": "candidate-assessment", padding, ...props, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "lg", children: [
-    grade,
+    grade != null && grade !== false && grade !== "" ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", "data-slot": "candidate-assessment-grade", children: grade }) : null,
     facts.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,
     summary != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, AssessmentSection, { label: resolvedLabels.summary, children: summary }) : null,
     evidenceContent != null ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, AssessmentSection, { label: resolvedLabels.evidence, children: evidenceContent }) : null,

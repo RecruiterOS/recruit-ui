@@ -35,10 +35,9 @@ function CandidateDecisionSummary({
       _stack.Stack,
       {
         direction: "horizontal",
-        gap: "compact",
+        gap: "sm",
         align: "start",
-        paddingX: "md",
-        paddingY: "section",
+        padding: "compact",
         border: decision ? "top" : "none",
         children: [
           /* @__PURE__ */ _jsxruntime.jsx.call(void 0,

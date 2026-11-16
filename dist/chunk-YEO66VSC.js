@@ -59,7 +59,7 @@ function CandidateAssessment({
   const caveatContent = sectionContent(caveats, caveatItems, (items) => /* @__PURE__ */ jsx(CaveatList, { items }));
   const signalContent = sectionContent(signals, signalItems, (items) => /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: items, presentation: "body" }));
   return /* @__PURE__ */ jsx(PanelSection, { "data-slot": "candidate-assessment", padding, ...props, children: /* @__PURE__ */ jsxs(Stack, { gap: "lg", children: [
-    grade,
+    grade != null && grade !== false && grade !== "" ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", "data-slot": "candidate-assessment-grade", children: grade }) : null,
     facts.length > 0 ? /* @__PURE__ */ jsx(DefinitionList, { children: facts.map((fact, index) => /* @__PURE__ */ jsx(DefinitionItem, { label: fact.label, children: fact.value }, index)) }) : null,
     summary != null ? /* @__PURE__ */ jsx(AssessmentSection, { label: resolvedLabels.summary, children: summary }) : null,
     evidenceContent != null ? /* @__PURE__ */ jsx(AssessmentSection, { label: resolvedLabels.evidence, children: evidenceContent }) : null,

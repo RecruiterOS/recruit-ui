@@ -2,7 +2,7 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true});"use client";
 
 
-var _chunkQWPY2ZNTcjs = require('../chunk-QWPY2ZNT.cjs');
+var _chunkRMLWTXOEcjs = require('../chunk-RMLWTXOE.cjs');
 
 
-exports.JobSummaryCard = _chunkQWPY2ZNTcjs.JobSummaryCard;
+exports.JobSummaryCard = _chunkRMLWTXOEcjs.JobSummaryCard;

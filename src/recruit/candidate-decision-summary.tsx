@@ -86,10 +86,9 @@ export function CandidateDecisionSummary({
         {assessment && (
           <Stack
             direction="horizontal"
-            gap="compact"
+            gap="sm"
             align="start"
-            paddingX="md"
-            paddingY="section"
+            padding="compact"
             border={decision ? "top" : "none"}
           >
             <Badge

@@ -5,6 +5,41 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.33.0
+
+Text alignment: the fifth batch of a polish audit. The minimum kit version
+moves to 1.41.0.
+
+### Breaking
+
+- The peer range for `@epicbagel/saas-kit` is `^1.41.0` (it was `^1.39.0`).
+  With it, on a touchscreen, every text button the library draws takes a
+  tap area at least 1.75rem tall and 2.75rem wide, without changing how it
+  looks. They were as tall as their line of text, 14 to 18px. That is Show
+  more and Show less on `CandidateCareerHistoryTimeline` and
+  `CandidateQuote`, the toggle on an activity's body in
+  `CandidateActivityTimeline`, the company link on `CurrentCompanyLabel`,
+  Generate summary on `CandidatePipelineList`, and the reset link on
+  `CandidateOutreachComposer`.
+
+### Fixed
+
+- `JobSummaryCard`'s facts start and end where its title does. The list
+  was inset 20px and the header 22px.
+- `CandidateDecisionSummary`'s two rows share a left edge. The decision
+  was padded 12px with 8px after its tile, the assessment 22px with 12px,
+  so the second tile and its text sat 10px and 14px to the right of the
+  first. Both are now the decision's.
+- `CandidateAssessment`'s `grade` keeps its own width. The slot was a
+  direct child of the column, which stretched a badge across the panel.
+  It is in a row marked `data-slot="candidate-assessment-grade"`.
+- `MatchedCallCard`'s title starts on the title's edge when it names
+  people who can be opened. Each name is a padded button, so the first
+  sat 8px to the right of the date under it.
+- `CallReconcileCard`'s attach section lines up with the rest of the card.
+  It added its own 14px padding inside the card's padded action bar, so
+  its heading sat 14px inside the summary above it.
+
 ## 0.32.0
 
 Padding and insets: the fourth batch of a polish audit. The minimum kit

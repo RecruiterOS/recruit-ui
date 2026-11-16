@@ -172,6 +172,8 @@ export function MatchedCallCard<TPerson extends CallPerson>({
             <Button
               variant="ghost"
               size="compact"
+              // The first name starts on the title's edge, over the line under it.
+              marginStart={index === 0 ? "negative-sm" : "none"}
               onClick={() => onOpenPerson(person)}
               aria-label={text.openPerson(person.name)}
             >

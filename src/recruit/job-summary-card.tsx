@@ -88,7 +88,7 @@ export function JobSummaryCard({
             {shown(badge) ? <Stack as="span" minWidth="zero">{badge}</Stack> : null}
           </Stack>
         </PanelSection>
-        <DefinitionList variant="divided" inset="lg">
+        <DefinitionList variant="divided" inset="md">
           {facts.map((fact) => (
             <DefinitionItem key={fact.id} label={fact.label}>{fact.value}</DefinitionItem>
           ))}

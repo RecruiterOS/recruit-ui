@@ -147,7 +147,10 @@ export function CandidateAssessment({
   return (
     <PanelSection data-slot="candidate-assessment" padding={padding} {...props}>
       <Stack gap="lg">
-        {grade}
+        {/* In a row of its own, so a badge keeps its own width instead of stretching across the panel. */}
+        {grade != null && grade !== false && grade !== "" ? (
+          <Stack direction="horizontal" data-slot="candidate-assessment-grade">{grade}</Stack>
+        ) : null}
         {facts.length > 0 ? (
           <DefinitionList>
             {facts.map((fact, index) => (
