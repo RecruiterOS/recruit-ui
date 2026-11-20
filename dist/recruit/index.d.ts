@@ -24,7 +24,7 @@ export { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.js';
 export { CandidateFact, CandidateFactList, CandidateFactListProps, formatFactValue } from './candidate-fact-list.js';
 export { CandidateFavouriteButton, CandidateFavouriteButtonLabels, CandidateFavouriteButtonProps } from './candidate-favourite-button.js';
 export { CandidateFilterChipOption, CandidateFilterChips, CandidateFilterChipsProps } from './candidate-filter-chips.js';
-export { CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './candidate-grade.js';
+export { CandidateAssessmentPills, CandidateGrade, CandidateGradeBadge, CandidateGradeBadgeProps, CandidateGradeLabels, CandidateGradeSentiment, CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade } from './candidate-grade.js';
 export { CandidateHeaderActions, CandidateHeaderActionsProps, CandidateIconAction, CandidateIconActionProps } from './candidate-header-actions.js';
 export { CandidateInlineCard, CandidateInlineCardActionsAlign, CandidateInlineCardDensity, CandidateInlineCardNameSize, CandidateInlineCardProps } from './candidate-inline-card.js';
 export { CandidateJobEvidence, CandidateJobEvidenceEntry, CandidateJobEvidenceFeedback, CandidateJobEvidenceProps } from './candidate-job-evidence.js';

@@ -1,4 +1,5 @@
 import { Badge, type BadgeProps } from "@epicbagel/saas-kit/primitives/badge";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { SentimentBadge, type Sentiment } from "@epicbagel/saas-kit/primitives/sentiment-dot";
 import type { HTMLAttributes, ReactNode } from "react";
 
@@ -52,6 +53,24 @@ export function candidateGradeDisplay(
   if (!normalized) return "—";
   const label = labels[normalized];
   return label ? `${normalized} — ${label}` : normalized;
+}
+
+/** Host-supplied labels for this assessment, in display order beside its optional grade. */
+export function CandidateAssessmentPills({ tags, children }: {
+  tags?: readonly string[];
+  children?: ReactNode;
+}) {
+  if (!children && !tags?.length) return null;
+  return (
+    <Stack as="span" direction="horizontal" gap="sm" align="center" wrap>
+      {children}
+      {tags?.map((label, index) => (
+        <Badge key={index} as="span" variant="neutral" size="compact" shape="pill">
+          {label}
+        </Badge>
+      ))}
+    </Stack>
+  );
 }
 
 export interface CandidateGradeBadgeProps

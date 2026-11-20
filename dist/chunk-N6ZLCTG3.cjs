@@ -22,7 +22,8 @@ var _chunkX6GX3U3Xcjs = require('./chunk-X6GX3U3X.cjs');
 var _chunkL2JVZDKScjs = require('./chunk-L2JVZDKS.cjs');
 
 
-var _chunkGFCMQDAUcjs = require('./chunk-GFCMQDAU.cjs');
+
+var _chunkYBUOBNBZcjs = require('./chunk-YBUOBNBZ.cjs');
 
 
 var _chunkLIC3YNUNcjs = require('./chunk-LIC3YNUN.cjs');
@@ -300,6 +301,7 @@ var PRINT_COLOURS = "[-webkit-print-color-adjust:exact] [print-color-adjust:exac
 function CandidateSharedProfileFit({
   roleTitle,
   grade,
+  assessmentTags,
   summary,
   evidence,
   groups,
@@ -313,7 +315,7 @@ function CandidateSharedProfileFit({
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = _nullishCoalesce(evidence, () => ( []));
   const lists = (_nullishCoalesce(groups, () => ( []))).filter((group) => group.items.length > 0);
-  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
+  if (!graded && !_optionalChain([assessmentTags, 'optionalAccess', _10 => _10.length]) && !present(summary) && lines.length === 0 && lists.length === 0) return null;
   return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
     CandidateSharedProfileSection,
     {
@@ -323,8 +325,8 @@ function CandidateSharedProfileFit({
       className: _utils.cn.call(void 0, PRINT_COLOURS, className),
       ...sharedProfileRootAttributes(props),
       children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", children: [
-        graded ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkGFCMQDAUcjs.CandidateGradeBadge,
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkYBUOBNBZcjs.CandidateAssessmentPills, { tags: assessmentTags, children: graded ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _chunkYBUOBNBZcjs.CandidateGradeBadge,
           {
             as: "span",
             shrink: true,
@@ -339,7 +341,7 @@ function CandidateSharedProfileFit({
             sentiment: grade.sentiment,
             title: grade.title
           }
-        ) }) : null,
+        ) : null }),
         present(summary) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { variant: "small", whitespace: "pre-line", children: summary }) : null,
         lines.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
         lists.map((group, index) => /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
@@ -413,7 +415,7 @@ function CandidateSharedProfileAnswer({
             suggestions: reasonSuggestions,
             labels: decisionLabels,
             onDecide: async (choice, why) => {
-              await _optionalChain([onDecide, 'optionalCall', _10 => _10(choice, why)]);
+              await _optionalChain([onDecide, 'optionalCall', _11 => _11(choice, why)]);
             }
           }
         )
@@ -444,7 +446,7 @@ function CandidateSharedProfileNotes({
   const spokenInFlight = _react.useRef.call(void 0, false);
   const save = async (words) => {
     try {
-      await _optionalChain([onAdd, 'optionalCall', _11 => _11(words)]);
+      await _optionalChain([onAdd, 'optionalCall', _12 => _12(words)]);
       setDraft("");
       setRecovering(false);
       setProblem(null);

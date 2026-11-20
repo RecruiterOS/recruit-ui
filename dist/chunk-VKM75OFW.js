@@ -1,5 +1,6 @@
 // src/recruit/candidate-grade.tsx
 import { Badge } from "@epicbagel/saas-kit/primitives/badge";
+import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { SentimentBadge } from "@epicbagel/saas-kit/primitives/sentiment-dot";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 function normalizeCandidateGrade(grade) {
@@ -18,6 +19,13 @@ function candidateGradeDisplay(grade, labels) {
   if (!normalized) return "\u2014";
   const label = labels[normalized];
   return label ? `${normalized} \u2014 ${label}` : normalized;
+}
+function CandidateAssessmentPills({ tags, children }) {
+  if (!children && !tags?.length) return null;
+  return /* @__PURE__ */ jsxs(Stack, { as: "span", direction: "horizontal", gap: "sm", align: "center", wrap: true, children: [
+    children,
+    tags?.map((label, index) => /* @__PURE__ */ jsx(Badge, { as: "span", variant: "neutral", size: "compact", shape: "pill", children: label }, index))
+  ] });
 }
 function inlineGradeText(grade, label) {
   const hasLabel = !(label == null || label === false || label === "");
@@ -74,5 +82,6 @@ export {
   candidateGradeLetter,
   candidateGradeLabel,
   candidateGradeDisplay,
+  CandidateAssessmentPills,
   CandidateGradeBadge
 };

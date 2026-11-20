@@ -93,7 +93,7 @@ import {
 } from "./chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "./chunk-AW4MYGJR.js";
+} from "./chunk-MUJVP7NV.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -104,7 +104,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "./chunk-MMLSC5OT.js";
+} from "./chunk-GDADL7DF.js";
 import {
   CurrentCompanyLabel
 } from "./chunk-XTAH2XJR.js";
@@ -189,12 +189,13 @@ import {
 } from "./chunk-XA2B7TH2.js";
 import "./chunk-P5VLMURO.js";
 import {
+  CandidateAssessmentPills,
   CandidateGradeBadge,
   candidateGradeDisplay,
   candidateGradeLabel,
   candidateGradeLetter,
   normalizeCandidateGrade
-} from "./chunk-U6D53LXH.js";
+} from "./chunk-VKM75OFW.js";
 import {
   CandidateHeaderActions,
   CandidateIconAction
@@ -297,6 +298,7 @@ export {
   CandidateActivityTimeline,
   CandidateAddToJobPopover,
   CandidateAssessment,
+  CandidateAssessmentPills,
   CandidateCallCard,
   CandidateCallList,
   CandidateCardColumnsToggle,

@@ -21,8 +21,9 @@ import {
   ChoiceChips
 } from "./chunk-P5VLMURO.js";
 import {
+  CandidateAssessmentPills,
   CandidateGradeBadge
-} from "./chunk-U6D53LXH.js";
+} from "./chunk-VKM75OFW.js";
 import {
   useDictationSupport
 } from "./chunk-TR6R7XYB.js";
@@ -300,6 +301,7 @@ var PRINT_COLOURS = "[-webkit-print-color-adjust:exact] [print-color-adjust:exac
 function CandidateSharedProfileFit({
   roleTitle,
   grade,
+  assessmentTags,
   summary,
   evidence,
   groups,
@@ -313,7 +315,7 @@ function CandidateSharedProfileFit({
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = evidence ?? [];
   const lists = (groups ?? []).filter((group) => group.items.length > 0);
-  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
+  if (!graded && !assessmentTags?.length && !present(summary) && lines.length === 0 && lists.length === 0) return null;
   return /* @__PURE__ */ jsx(
     CandidateSharedProfileSection,
     {
@@ -323,7 +325,7 @@ function CandidateSharedProfileFit({
       className: cn(PRINT_COLOURS, className),
       ...sharedProfileRootAttributes(props),
       children: /* @__PURE__ */ jsxs(Stack, { gap: "md", children: [
-        graded ? /* @__PURE__ */ jsx(Stack, { direction: "horizontal", gap: "sm", align: "center", children: /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx(CandidateAssessmentPills, { tags: assessmentTags, children: graded ? /* @__PURE__ */ jsx(
           CandidateGradeBadge,
           {
             as: "span",
@@ -339,7 +341,7 @@ function CandidateSharedProfileFit({
             sentiment: grade.sentiment,
             title: grade.title
           }
-        ) }) : null,
+        ) : null }),
         present(summary) ? /* @__PURE__ */ jsx(Text, { variant: "small", whitespace: "pre-line", children: summary }) : null,
         lines.length > 0 ? /* @__PURE__ */ jsx(CandidateSummaryBullets, { bullets: lines, presentation: "body" }) : null,
         lists.map((group, index) => /* @__PURE__ */ jsxs(

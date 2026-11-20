@@ -4,11 +4,13 @@
 
 
 
-var _chunkGFCMQDAUcjs = require('../chunk-GFCMQDAU.cjs');
+
+var _chunkYBUOBNBZcjs = require('../chunk-YBUOBNBZ.cjs');
 
 
 
 
 
 
-exports.CandidateGradeBadge = _chunkGFCMQDAUcjs.CandidateGradeBadge; exports.candidateGradeDisplay = _chunkGFCMQDAUcjs.candidateGradeDisplay; exports.candidateGradeLabel = _chunkGFCMQDAUcjs.candidateGradeLabel; exports.candidateGradeLetter = _chunkGFCMQDAUcjs.candidateGradeLetter; exports.normalizeCandidateGrade = _chunkGFCMQDAUcjs.normalizeCandidateGrade;
+
+exports.CandidateAssessmentPills = _chunkYBUOBNBZcjs.CandidateAssessmentPills; exports.CandidateGradeBadge = _chunkYBUOBNBZcjs.CandidateGradeBadge; exports.candidateGradeDisplay = _chunkYBUOBNBZcjs.candidateGradeDisplay; exports.candidateGradeLabel = _chunkYBUOBNBZcjs.candidateGradeLabel; exports.candidateGradeLetter = _chunkYBUOBNBZcjs.candidateGradeLetter; exports.normalizeCandidateGrade = _chunkYBUOBNBZcjs.normalizeCandidateGrade;
