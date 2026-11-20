@@ -22,6 +22,7 @@ describe("the interview block", () => {
     }
     render(<Host />);
     expect(screen.getByLabelText("Time (UTC)")).toHaveValue("14:30");
+    expect(screen.getByText(/America\/New York.*09:30/)).toBeVisible();
     press("Schedule interview");
     expect(await screen.findByText(/09:30/)).toBeVisible();
     press("Edit interview");

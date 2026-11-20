@@ -31,13 +31,15 @@ interface InterviewSchedulerProps {
     defaults?: Partial<InterviewDetails>;
     /** Optional second clock for the candidate or interviewer, e.g. America/New_York. */
     timeZone?: string;
+    /** Whose local time this is, for example “Sam in New York”. */
+    timeZoneLabel?: string;
     locale?: string;
     onSchedule: (details: InterviewDetails) => void | Promise<void>;
     /** Receives the record as it stood when the edit began, including its version. */
     onUpdate?: (original: ScheduledInterview, edit: InterviewEdit) => void | Promise<void>;
 }
 /** One appointment on a candidate's application. The host owns persistence and invitations. */
-declare function InterviewScheduler({ candidate, role, appointment, defaults, timeZone, locale, onSchedule, onUpdate }: InterviewSchedulerProps): react.JSX.Element;
+declare function InterviewScheduler({ candidate, role, appointment, defaults, timeZone, timeZoneLabel, locale, onSchedule, onUpdate }: InterviewSchedulerProps): react.JSX.Element;
 
 interface JobStatusBlockProps {
     title: string;

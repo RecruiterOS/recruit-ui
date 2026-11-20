@@ -40,8 +40,41 @@ function formatTime(date, locale, timeZone) {
     timeZoneName: "short"
   }).format(date);
 }
+function InterviewTimeFields({ id, stamp, locale, timeZone, timeZoneLabel }) {
+  const [day, setDay] = _react.useState.call(void 0, stamp.slice(0, 10));
+  const [time, setTime] = _react.useState.call(void 0, stamp.slice(11, stamp.endsWith(":00.000Z") ? 16 : -1));
+  const local = instant(day + "T" + time + "Z");
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "sm", children: [
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.FieldGrid, { columns: 2, children: [
+      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.Field, { children: [
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-date", children: "Date (UTC)" }),
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { id: id + "-date", name: "date", type: "date", required: true, value: day, onChange: (event) => setDay(event.target.value) })
+      ] }),
+      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.Field, { children: [
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-time", children: "Time (UTC)" }),
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _input.Input,
+          {
+            id: id + "-time",
+            name: "time",
+            type: "time",
+            step: time.length > 5 ? "any" : 60,
+            required: true,
+            value: time,
+            onChange: (event) => setTime(event.target.value)
+          }
+        )
+      ] })
+    ] }),
+    local && timeZone !== "UTC" && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { size: "sm", tone: "muted", "aria-live": "polite", children: [
+      timeZoneLabel,
+      " \xB7 ",
+      formatTime(local, locale, timeZone)
+    ] })
+  ] });
+}
 var statusLabels = { SCHEDULED: "Scheduled", COMPLETED: "Completed", CANCELLED: "Cancelled" };
-function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", locale = "en-GB", onSchedule, onUpdate }) {
+function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }) {
   const id = _react.useId.call(void 0, );
   const heading = _react.useRef.call(void 0, null);
   const [edit, setEdit] = _react.useState.call(void 0, null);
@@ -116,6 +149,7 @@ function InterviewScheduler({ candidate, role, appointment, defaults, timeZone =
     viewing ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { border: "top", paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", children: [
         date && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
+          timeZone !== "UTC" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "muted", children: timeZoneLabel }),
           /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { weight: "semibold", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "time", { dateTime: appointment.scheduledAt, children: formatTime(date, locale, timeZone) }) }),
           timeZone !== "UTC" && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "muted", children: formatTime(date, locale, "UTC") })
         ] }),
@@ -137,16 +171,7 @@ function InterviewScheduler({ candidate, role, appointment, defaults, timeZone =
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-label", children: "Interview name" }),
             /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { id: id + "-label", name: "label", required: true, defaultValue: _optionalChain([details, 'optionalAccess', _14 => _14.label]), autoFocus: !!edit })
           ] }),
-          /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.FieldGrid, { columns: 2, children: [
-            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.Field, { children: [
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-date", children: "Date (UTC)" }),
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { id: id + "-date", name: "date", type: "date", required: true, defaultValue: stamp.slice(0, 10) })
-            ] }),
-            /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.Field, { children: [
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-time", children: "Time (UTC)" }),
-              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _input.Input, { id: id + "-time", name: "time", type: "time", step: "any", required: true, defaultValue: stamp.slice(11, stamp.endsWith(":00.000Z") ? 16 : -1) })
-            ] })
-          ] }),
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, InterviewTimeFields, { id, stamp, locale, timeZone, timeZoneLabel }),
           /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.FieldGrid, { columns: 2, children: [
             /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _field.Field, { children: [
               /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _field.FieldLabel, { htmlFor: id + "-who", children: "Interviewer" }),
@@ -170,10 +195,10 @@ function InterviewScheduler({ candidate, role, appointment, defaults, timeZone =
         ] }),
         error && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _alert.Alert, { variant: "destructive", marginTop: "md", children: error })
       ] }),
-      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCardFooter, { wrap: true, children: [
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { border: "top", paddingX: "lg", paddingTop: "md", paddingBottom: "md", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", justify: "end", wrap: true, gap: "sm", children: [
         edit && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { type: "button", size: "sm", variant: "secondary", autoFocus: edit.mode === "cancel", onClick: finish, children: "Go back" }),
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { type: "submit", size: "sm", disabled: !!pendingArgs, children: pendingArgs ? "Saving\u2026" : !edit ? "Schedule interview" : edit.mode === "feedback" ? "Complete interview" : edit.mode === "cancel" ? "Confirm cancellation" : "Save changes" })
-      ] })
+      ] }) })
     ] }) }, _nullishCoalesce(_optionalChain([edit, 'optionalAccess', _20 => _20.mode]), () => ( "create")))
   ] });
 }

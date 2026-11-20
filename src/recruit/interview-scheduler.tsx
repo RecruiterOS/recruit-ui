@@ -39,6 +39,8 @@ export interface InterviewSchedulerProps {
   defaults?: Partial<InterviewDetails>;
   /** Optional second clock for the candidate or interviewer, e.g. America/New_York. */
   timeZone?: string;
+  /** Whose local time this is, for example “Sam in New York”. */
+  timeZoneLabel?: string;
   locale?: string;
   onSchedule: (details: InterviewDetails) => void | Promise<void>;
   /** Receives the record as it stood when the edit began, including its version. */
@@ -60,10 +62,36 @@ function formatTime(date: Date, locale: string, timeZone: string) {
   }).format(date);
 }
 
+function InterviewTimeFields({ id, stamp, locale, timeZone, timeZoneLabel }: {
+  id: string; stamp: string; locale: string; timeZone: string; timeZoneLabel: string;
+}) {
+  const [day, setDay] = useState(stamp.slice(0, 10));
+  const [time, setTime] = useState(stamp.slice(11, stamp.endsWith(":00.000Z") ? 16 : -1));
+  const local = instant(day + "T" + time + "Z");
+  return (
+    <Stack gap="sm">
+      <FieldGrid columns={2}>
+        <Field>
+          <FieldLabel htmlFor={id + "-date"}>Date (UTC)</FieldLabel>
+          <Input id={id + "-date"} name="date" type="date" required value={day} onChange={event => setDay(event.target.value)} />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor={id + "-time"}>Time (UTC)</FieldLabel>
+          <Input id={id + "-time"} name="time" type="time" step={time.length > 5 ? "any" : 60}
+            required value={time} onChange={event => setTime(event.target.value)} />
+        </Field>
+      </FieldGrid>
+      {local && timeZone !== "UTC" && <Text size="sm" tone="muted" aria-live="polite">
+        {timeZoneLabel} · {formatTime(local, locale, timeZone)}
+      </Text>}
+    </Stack>
+  );
+}
+
 const statusLabels = { SCHEDULED: "Scheduled", COMPLETED: "Completed", CANCELLED: "Cancelled" };
 
 /** One appointment on a candidate's application. The host owns persistence and invitations. */
-export function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", locale = "en-GB", onSchedule, onUpdate }: InterviewSchedulerProps) {
+export function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }: InterviewSchedulerProps) {
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const [edit, setEdit] = useState<Editing | null>(null);
@@ -142,6 +170,7 @@ export function InterviewScheduler({ candidate, role, appointment, defaults, tim
         <PanelSection border="top" paddingX="lg" paddingTop="lg" paddingBottom="lg">
           <Stack gap="md">
             {date && <Stack gap="xs">
+              {timeZone !== "UTC" && <Text size="sm" tone="muted">{timeZoneLabel}</Text>}
               <Text weight="semibold"><time dateTime={appointment.scheduledAt}>{formatTime(date, locale, timeZone)}</time></Text>
               {timeZone !== "UTC" && <Text size="sm" tone="muted">{formatTime(date, locale, "UTC")}</Text>}
             </Stack>}
@@ -165,12 +194,7 @@ export function InterviewScheduler({ candidate, role, appointment, defaults, tim
                 <FieldLabel htmlFor={id + "-label"}>Interview name</FieldLabel>
                 <Input id={id + "-label"} name="label" required defaultValue={details?.label} autoFocus={!!edit} />
               </Field>
-              <FieldGrid columns={2}>
-                <Field><FieldLabel htmlFor={id + "-date"}>Date (UTC)</FieldLabel>
-                  <Input id={id + "-date"} name="date" type="date" required defaultValue={stamp.slice(0, 10)} /></Field>
-                <Field><FieldLabel htmlFor={id + "-time"}>Time (UTC)</FieldLabel>
-                  <Input id={id + "-time"} name="time" type="time" step="any" required defaultValue={stamp.slice(11, stamp.endsWith(":00.000Z") ? 16 : -1)} /></Field>
-              </FieldGrid>
+              <InterviewTimeFields id={id} stamp={stamp} locale={locale} timeZone={timeZone} timeZoneLabel={timeZoneLabel} />
               <FieldGrid columns={2}>
                 <Field><FieldLabel htmlFor={id + "-who"}>Interviewer</FieldLabel>
                   <Input id={id + "-who"} name="interviewer" defaultValue={details?.interviewer ?? ""} /></Field>
@@ -183,13 +207,15 @@ export function InterviewScheduler({ candidate, role, appointment, defaults, tim
             </Field> : <Text>Mark this appointment as cancelled on {candidate}’s application.</Text>}
             {error && <Alert variant="destructive" marginTop="md">{error}</Alert>}
           </PanelSection>
-          <ResourceCardFooter wrap>
-            {edit && <Button type="button" size="sm" variant="secondary" autoFocus={edit.mode === "cancel"} onClick={finish}>Go back</Button>}
-            <Button type="submit" size="sm" disabled={!!pendingArgs}>
-              {pendingArgs ? "Saving…" : !edit ? "Schedule interview" : edit.mode === "feedback" ? "Complete interview"
-                : edit.mode === "cancel" ? "Confirm cancellation" : "Save changes"}
-            </Button>
-          </ResourceCardFooter>
+          <PanelSection border="top" paddingX="lg" paddingTop="md" paddingBottom="md">
+            <Stack direction="horizontal" justify="end" wrap gap="sm">
+              {edit && <Button type="button" size="sm" variant="secondary" autoFocus={edit.mode === "cancel"} onClick={finish}>Go back</Button>}
+              <Button type="submit" size="sm" disabled={!!pendingArgs}>
+                {pendingArgs ? "Saving…" : !edit ? "Schedule interview" : edit.mode === "feedback" ? "Complete interview"
+                  : edit.mode === "cancel" ? "Confirm cancellation" : "Save changes"}
+              </Button>
+            </Stack>
+          </PanelSection>
         </fieldset>
       </form>}
     </ResourceCard>
