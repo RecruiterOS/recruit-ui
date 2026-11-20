@@ -10,18 +10,18 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-GDADL7DF.js";
+} from "./chunk-ZESIMTNH.js";
 import {
   CandidateProfile,
   CandidateProfileBody,
   CandidateProfileFooter
 } from "./chunk-BQ4XXGLP.js";
 import {
-  useLatestCall
-} from "./chunk-WMD6M2IP.js";
-import {
   CandidateCareerHistoryTimeline
 } from "./chunk-6AK4I7KG.js";
+import {
+  useLatestCall
+} from "./chunk-WMD6M2IP.js";
 
 // src/recruit/candidate-shared-profile.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";

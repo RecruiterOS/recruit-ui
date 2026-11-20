@@ -160,3 +160,13 @@ Each release, and every change to the public API it makes, is in `CHANGELOG.md`.
 and a `topOffset` when the host has a sticky header. The navigator uses the
 filtered list and its existing cards-per-row preference. It collapses to a
 horizontal index on narrow screens and disappears outside the list.
+
+### Workflow blocks
+
+Import `InterviewScheduler`, `ApplicationPipelineBlock`, `JobStatusBlock` or
+`PlacementTermsBlock` from `@recruiteros/recruit-ui/blocks`. The interview
+form takes UTC dates and times. Pass an IANA `timeZone` to show a second clock
+on the booked appointment. Supply the saved appointment after `onSchedule`
+or `onUpdate` succeeds. Updates receive the original version for concurrency
+checks. Reject the callback with a user-facing error to keep the draft open.
+Key the scheduler by application and appointment when switching records.

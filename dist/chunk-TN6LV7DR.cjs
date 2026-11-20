@@ -6,7 +6,7 @@ var _chunkWSPL3WKEcjs = require('./chunk-WSPL3WKE.cjs');
 var _chunkTAFMPPOTcjs = require('./chunk-TAFMPPOT.cjs');
 
 
-var _chunk6GJXBVDHcjs = require('./chunk-6GJXBVDH.cjs');
+var _chunk5DEY2CD6cjs = require('./chunk-5DEY2CD6.cjs');
 
 
 var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
@@ -18,10 +18,10 @@ var _chunkI53Z6SAJcjs = require('./chunk-I53Z6SAJ.cjs');
 var _chunk5C5H3GLMcjs = require('./chunk-5C5H3GLM.cjs');
 
 
-var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
-
-
 var _chunkANK2TWM2cjs = require('./chunk-ANK2TWM2.cjs');
+
+
+var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
 
 // src/recruit/client-search-sections.tsx
 var _button = require('@epicbagel/saas-kit/primitives/button');
@@ -373,7 +373,7 @@ function ClientSearchBriefPanel({ brief, briefOptions, labels }) {
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTrigger, { asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { type: "button", variant: "outline", size: "sm", children: text.brief }) }),
     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _responsivedialog.ResponsiveDialogContent, { "aria-describedby": void 0, children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogHeader, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogTitle, { children: text.briefTitle }) }),
-      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { "data-slot": "client-search-brief-panel", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk6GJXBVDHcjs.JobBriefCard, { ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, brief, briefOptions), presentation: "preview", titleLevel: 3, defaultOpen: true }) })
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _responsivedialog.ResponsiveDialogBody, { "data-slot": "client-search-brief-panel", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunk5DEY2CD6cjs.JobBriefCard, { ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, brief, briefOptions), presentation: "preview", titleLevel: 3, defaultOpen: true }) })
     ] })
   ] });
 }

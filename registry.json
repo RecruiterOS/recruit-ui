@@ -467,6 +467,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/interview-scheduler.tsx",
+          "target": "components/recruit-ui/recruit/interview-scheduler.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/job-brief-card.tsx",
           "target": "components/recruit-ui/recruit/job-brief-card.tsx",
           "type": "registry:ui"
@@ -504,6 +509,11 @@
         {
           "path": "src/recruit/pending-action.ts",
           "target": "components/recruit-ui/recruit/pending-action.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/placement-summary-blocks.tsx",
+          "target": "components/recruit-ui/recruit/placement-summary-blocks.tsx",
           "type": "registry:ui"
         },
         {

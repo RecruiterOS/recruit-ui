@@ -3,6 +3,7 @@ import { defineConfig } from "tsup";
 export default defineConfig({
   entry: [
     "src/index.ts",
+    "src/blocks.ts",
     "src/core/index.ts",
     "src/core/calendar-date.ts",
     "src/recruit/index.ts",

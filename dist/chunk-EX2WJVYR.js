@@ -6,7 +6,7 @@ import {
 } from "./chunk-JVTDFZNJ.js";
 import {
   JobBriefCard
-} from "./chunk-F353R6EY.js";
+} from "./chunk-UEPDO3XM.js";
 import {
   jobBriefView
 } from "./chunk-5F2DPU3C.js";
@@ -17,11 +17,11 @@ import {
   CandidateReviewCard
 } from "./chunk-JGTRPYES.js";
 import {
-  COARSE_POINTER_TOUCH_TARGET
-} from "./chunk-YKEE5RQG.js";
-import {
   CandidateClientDecision
 } from "./chunk-BSPHJDGR.js";
+import {
+  COARSE_POINTER_TOUCH_TARGET
+} from "./chunk-YKEE5RQG.js";
 
 // src/recruit/client-search-sections.tsx
 import { Button } from "@epicbagel/saas-kit/primitives/button";
