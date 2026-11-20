@@ -294,6 +294,8 @@ interface CandidateSharedProfileAssessment {
      * otherwise.
      */
     grade?: CandidateSharedProfileGrade | null;
+    /** Labels chosen by the host for this assessment. */
+    assessmentTags?: readonly string[];
     /** A line or two on why, over the evidence. */
     summary?: ReactNode;
     /** The evidence, a line each, each with the host's sentiment. */
@@ -326,7 +328,7 @@ interface CandidateSharedProfileFitProps extends CandidateSharedProfileRootProps
  * named by its own heading and marked
  * `data-slot="candidate-shared-profile-fit-group"`.
  */
-declare function CandidateSharedProfileFit({ roleTitle, grade, summary, evidence, groups, titleLevel, labels, className, ...props }: CandidateSharedProfileFitProps): react.JSX.Element | null;
+declare function CandidateSharedProfileFit({ roleTitle, grade, assessmentTags, summary, evidence, groups, titleLevel, labels, className, ...props }: CandidateSharedProfileFitProps): react.JSX.Element | null;
 interface CandidateSharedProfileAnswerProps extends CandidateSharedProfileRootProps, Pick<CandidateClientDecisionProps, "reasonOptional" | "reasonPrompt" | "reasonSheet"> {
     /** The person's name as the question should say it. */
     candidateName: string;

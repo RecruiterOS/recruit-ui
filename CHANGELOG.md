@@ -5,6 +5,11 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.34.0
+
+Candidate assessments can display host-supplied labels beside a grade. Use
+`CandidateAssessmentPills` on cards or supply `fit.assessmentTags` on a shared profile.
+
 ## 0.33.2
 
 The rest of the kit, first part: the seventh batch of a polish audit. No

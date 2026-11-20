@@ -1,5 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }// src/recruit/candidate-grade.tsx
 var _badge = require('@epicbagel/saas-kit/primitives/badge');
+var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _sentimentdot = require('@epicbagel/saas-kit/primitives/sentiment-dot');
 var _jsxruntime = require('react/jsx-runtime');
 function normalizeCandidateGrade(grade) {
@@ -18,6 +19,13 @@ function candidateGradeDisplay(grade, labels) {
   if (!normalized) return "\u2014";
   const label = labels[normalized];
   return label ? `${normalized} \u2014 ${label}` : normalized;
+}
+function CandidateAssessmentPills({ tags, children }) {
+  if (!children && !_optionalChain([tags, 'optionalAccess', _5 => _5.length])) return null;
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { as: "span", direction: "horizontal", gap: "sm", align: "center", wrap: true, children: [
+    children,
+    _optionalChain([tags, 'optionalAccess', _6 => _6.map, 'call', _7 => _7((label, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _badge.Badge, { as: "span", variant: "neutral", size: "compact", shape: "pill", children: label }, index))])
+  ] });
 }
 function inlineGradeText(grade, label) {
   const hasLabel = !(label == null || label === false || label === "");
@@ -75,4 +83,5 @@ function CandidateGradeBadge({
 
 
 
-exports.normalizeCandidateGrade = normalizeCandidateGrade; exports.candidateGradeLetter = candidateGradeLetter; exports.candidateGradeLabel = candidateGradeLabel; exports.candidateGradeDisplay = candidateGradeDisplay; exports.CandidateGradeBadge = CandidateGradeBadge;
+
+exports.normalizeCandidateGrade = normalizeCandidateGrade; exports.candidateGradeLetter = candidateGradeLetter; exports.candidateGradeLabel = candidateGradeLabel; exports.candidateGradeDisplay = candidateGradeDisplay; exports.CandidateAssessmentPills = CandidateAssessmentPills; exports.CandidateGradeBadge = CandidateGradeBadge;

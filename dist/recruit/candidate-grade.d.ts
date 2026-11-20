@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { HTMLAttributes, ReactNode } from 'react';
+import { ReactNode, HTMLAttributes } from 'react';
 import { BadgeProps } from '@epicbagel/saas-kit/primitives/badge';
 import { Sentiment } from '@epicbagel/saas-kit/primitives/sentiment-dot';
 
@@ -13,6 +13,11 @@ declare function normalizeCandidateGrade(grade: string | null | undefined): Cand
 declare function candidateGradeLetter(grade: string | null | undefined): string;
 declare function candidateGradeLabel(grade: string | null | undefined, labels: CandidateGradeLabels): string | null;
 declare function candidateGradeDisplay(grade: string | null | undefined, labels: CandidateGradeLabels): string;
+/** Host-supplied labels for this assessment, in display order beside its optional grade. */
+declare function CandidateAssessmentPills({ tags, children }: {
+    tags?: readonly string[];
+    children?: ReactNode;
+}): react.JSX.Element | null;
 interface CandidateGradeBadgeProps extends HTMLAttributes<HTMLDivElement> {
     grade: string | null | undefined;
     /**
@@ -57,4 +62,4 @@ type CandidateGradeSentiment = Sentiment;
  */
 declare function CandidateGradeBadge({ grade, label, labels, tone, showLabel, size, as, shrink, format, appearance, sentiment, className, ...props }: CandidateGradeBadgeProps): react.JSX.Element;
 
-export { type CandidateGrade, CandidateGradeBadge, type CandidateGradeBadgeProps, type CandidateGradeLabels, type CandidateGradeSentiment, type CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade };
+export { CandidateAssessmentPills, type CandidateGrade, CandidateGradeBadge, type CandidateGradeBadgeProps, type CandidateGradeLabels, type CandidateGradeSentiment, type CandidateGradeTone, candidateGradeDisplay, candidateGradeLabel, candidateGradeLetter, normalizeCandidateGrade };

@@ -21,7 +21,7 @@ import {
 import type { CandidateCoverSeed } from "./candidate-cover-header";
 import type { CandidateDecisionChoice } from "./candidate-decision-buttons";
 import type { CandidateEmptyCopy } from "./candidate-empty-copy";
-import { CandidateGradeBadge, type CandidateGradeBadgeProps } from "./candidate-grade";
+import { CandidateAssessmentPills, CandidateGradeBadge, type CandidateGradeBadgeProps } from "./candidate-grade";
 import { CandidateNoteCard, CandidateNoteComposer } from "./candidate-notes";
 import { CandidateSummaryBullets, type CandidateSummaryBullet } from "./candidate-pipeline-list";
 import type { CandidatePresentationRecorderAudio } from "./candidate-presentation-recorder";
@@ -632,6 +632,8 @@ export interface CandidateSharedProfileAssessment {
    * otherwise.
    */
   grade?: CandidateSharedProfileGrade | null;
+  /** Labels chosen by the host for this assessment. */
+  assessmentTags?: readonly string[];
   /** A line or two on why, over the evidence. */
   summary?: ReactNode;
   /** The evidence, a line each, each with the host's sentiment. */
@@ -671,6 +673,7 @@ export interface CandidateSharedProfileFitProps
 export function CandidateSharedProfileFit({
   roleTitle,
   grade,
+  assessmentTags,
   summary,
   evidence,
   groups,
@@ -685,7 +688,7 @@ export function CandidateSharedProfileFit({
   const graded = grade != null && (present(grade.grade) || present(grade.label));
   const lines = evidence ?? [];
   const lists = (groups ?? []).filter((group) => group.items.length > 0);
-  if (!graded && !present(summary) && lines.length === 0 && lists.length === 0) return null;
+  if (!graded && !assessmentTags?.length && !present(summary) && lines.length === 0 && lists.length === 0) return null;
 
   return (
     <CandidateSharedProfileSection
@@ -696,9 +699,9 @@ export function CandidateSharedProfileFit({
       {...sharedProfileRootAttributes(props)}
     >
       <Stack gap="md">
-        {graded ? (
-          <Stack direction="horizontal" gap="sm" align="center">
-            {/* Field by field: whatever else the host's grade carries stays off the page. */}
+        <CandidateAssessmentPills tags={assessmentTags}>
+          {/* Only display fields from the grade reach the page. */}
+          {graded ? (
             <CandidateGradeBadge
               as="span"
               shrink
@@ -713,8 +716,8 @@ export function CandidateSharedProfileFit({
               sentiment={grade.sentiment}
               title={grade.title}
             />
-          </Stack>
-        ) : null}
+          ) : null}
+        </CandidateAssessmentPills>
         {present(summary) ? (
           <Text variant="small" whitespace="pre-line">
             {summary}

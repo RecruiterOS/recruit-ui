@@ -305,6 +305,7 @@ export function CandidateSharedProfile({
   const languageLines = (languages ?? []).filter(present);
   const hasFit = fit != null && (
     (fit.grade != null && (present(fit.grade.grade) || present(fit.grade.label))) ||
+    (fit.assessmentTags?.length ?? 0) > 0 ||
     present(fit.summary) ||
     (fit.evidence?.length ?? 0) > 0 ||
     (fit.groups ?? []).some((group) => group.items.length > 0)
@@ -423,6 +424,7 @@ export function CandidateSharedProfile({
                   <CandidateSharedProfileFit
                     roleTitle={fit.roleTitle}
                     grade={fit.grade}
+                    assessmentTags={fit.assessmentTags}
                     summary={fit.summary}
                     evidence={fit.evidence}
                     groups={fit.groups}

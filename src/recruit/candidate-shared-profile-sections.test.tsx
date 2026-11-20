@@ -640,6 +640,17 @@ describe("candidate shared profile fit", () => {
     expect(ungraded).toHaveTextContent(/^Being reviewed$/);
   });
 
+  it("shows the host's assessment labels beside the grade and on their own", () => {
+    const { rerender } = render(<CandidateSharedProfileFit grade={{ grade: "A", label: "Strong fit" }} assessmentTags={["Field research", "Bilingual"]} />);
+    const fit = screen.getByRole("region", { name: "Fit" });
+    expect(fit).toHaveTextContent(/Strong fit.*Field research.*Bilingual/);
+    rerender(<CandidateSharedProfileFit assessmentTags={["Bilingual"]} />);
+    expect(fit).toHaveTextContent("Bilingual");
+    expect(fit.querySelector("[data-grade]")).toBeNull();
+    rerender(<CandidateSharedProfileFit assessmentTags={[]} />);
+    expect(screen.queryByRole("region", { name: "Fit" })).toBeNull();
+  });
+
   it("draws the grade from the fields that say what it reads and how it looks, and no others", () => {
     const grade = { grade: "A", label: "Strong fit", title: "Graded on the fictional brief", score: 9731, onClick: vi.fn() };
     const { container } = render(<CandidateSharedProfileFit grade={grade} />);
