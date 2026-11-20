@@ -10,7 +10,7 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-BRIYME7W.js";
+} from "./chunk-VF222ICD.js";
 import {
   CandidateCareerHistoryTimeline
 } from "./chunk-6AK4I7KG.js";

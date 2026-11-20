@@ -9,7 +9,7 @@ var _chunkX6GX3U3Xcjs = require('./chunk-X6GX3U3X.cjs');
 require('./chunk-K4NZRRJK.cjs');
 
 
-var _chunkGTQAORPNcjs = require('./chunk-GTQAORPN.cjs');
+var _chunkJ4LAJRRHcjs = require('./chunk-J4LAJRRH.cjs');
 require('./chunk-HUCMR5O6.cjs');
 
 // src/recruit/interview-scheduler.tsx
@@ -289,10 +289,10 @@ function ApplicationPipelineBlock({
   profile,
   ...list
 }) {
-  if (!profile) return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidatePipelineList, { ...list });
-  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { children: [
+  if (!profile) return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkJ4LAJRRHcjs.CandidatePipelineList, { ...list });
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { className: "@container/application", children: [
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, WorkflowCandidateHeader, { name: profile.name, media: profile }),
-    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidatePipelineList, { ...list })
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkJ4LAJRRHcjs.CandidatePipelineList, { ...list })
   ] });
 }
 

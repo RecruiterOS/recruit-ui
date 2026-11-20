@@ -36,7 +36,7 @@ import {
 } from "./chunk-WMD6M2IP.js";
 import {
   CandidateSummaryBullets
-} from "./chunk-TFPDLQYX.js";
+} from "./chunk-ERWPC67G.js";
 
 // src/recruit/candidate-shared-profile-sections.tsx
 import { cn } from "@epicbagel/saas-kit/lib/utils";

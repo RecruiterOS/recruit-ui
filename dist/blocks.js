@@ -8,7 +8,7 @@ import {
 import "./chunk-WJ22QD5G.js";
 import {
   CandidatePipelineList
-} from "./chunk-TFPDLQYX.js";
+} from "./chunk-ERWPC67G.js";
 import "./chunk-VOKP2HLR.js";
 
 // src/recruit/interview-scheduler.tsx
@@ -289,7 +289,7 @@ function ApplicationPipelineBlock({
   ...list
 }) {
   if (!profile) return /* @__PURE__ */ jsx4(CandidatePipelineList, { ...list });
-  return /* @__PURE__ */ jsxs3(ResourceCard3, { children: [
+  return /* @__PURE__ */ jsxs3(ResourceCard3, { className: "@container/application", children: [
     /* @__PURE__ */ jsx4(WorkflowCandidateHeader, { name: profile.name, media: profile }),
     /* @__PURE__ */ jsx4(CandidatePipelineList, { ...list })
   ] });

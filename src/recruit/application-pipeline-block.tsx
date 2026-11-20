@@ -8,7 +8,7 @@ export function ApplicationPipelineBlock<TStage extends string = string>({
   profile, ...list
 }: CandidatePipelineListProps<TStage> & { profile?: WorkflowCandidateMedia & { name: string } }) {
   if (!profile) return <CandidatePipelineList {...list} />;
-  return <ResourceCard>
+  return <ResourceCard className="@container/application">
     <WorkflowCandidateHeader name={profile.name} media={profile} />
     <CandidatePipelineList {...list} />
   </ResourceCard>;
