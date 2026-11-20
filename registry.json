@@ -102,6 +102,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/application-pipeline-block.tsx",
+          "target": "components/recruit-ui/recruit/application-pipeline-block.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/call-data.ts",
           "target": "components/recruit-ui/recruit/call-data.ts",
           "type": "registry:ui"
@@ -529,6 +534,11 @@
         {
           "path": "src/recruit/touch-targets.ts",
           "target": "components/recruit-ui/recruit/touch-targets.ts",
+          "type": "registry:ui"
+        },
+        {
+          "path": "src/recruit/workflow-candidate-header.tsx",
+          "target": "components/recruit-ui/recruit/workflow-candidate-header.tsx",
           "type": "registry:ui"
         },
         {

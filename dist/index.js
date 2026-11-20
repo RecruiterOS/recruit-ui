@@ -99,7 +99,7 @@ import {
 } from "./chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "./chunk-Y3MV42LO.js";
+} from "./chunk-N62IBYAE.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -110,7 +110,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "./chunk-ZESIMTNH.js";
+} from "./chunk-BRIYME7W.js";
 import {
   CurrentCompanyLabel
 } from "./chunk-XTAH2XJR.js";
@@ -131,12 +131,6 @@ import {
   CandidateProfileLinkButton
 } from "./chunk-MQMPVZLZ.js";
 import {
-  CandidateProfile,
-  CandidateProfileBody,
-  CandidateProfileFooter,
-  CandidateProfileHeader
-} from "./chunk-BQ4XXGLP.js";
-import {
   CandidateQuote
 } from "./chunk-2TU6TCNM.js";
 import {
@@ -144,7 +138,7 @@ import {
 } from "./chunk-LL2XCMR7.js";
 import {
   CandidateInlineCard
-} from "./chunk-I5YVTDWF.js";
+} from "./chunk-4DUAZ46V.js";
 import {
   CandidateJobEvidence
 } from "./chunk-43WWASGQ.js";
@@ -221,11 +215,6 @@ import {
   CandidateDefinitionSection
 } from "./chunk-ESIFTU4K.js";
 import {
-  CandidateCoverHeader,
-  CandidateCoverImage,
-  candidateCoverSeed
-} from "./chunk-WJ22QD5G.js";
-import {
   CandidateDecisionBar
 } from "./chunk-TMC65IQ7.js";
 import {
@@ -265,7 +254,18 @@ import {
   CandidateChannelActions
 } from "./chunk-AXIHZVR6.js";
 import "./chunk-YKEE5RQG.js";
+import {
+  CandidateProfile,
+  CandidateProfileBody,
+  CandidateProfileFooter,
+  CandidateProfileHeader
+} from "./chunk-BQ4XXGLP.js";
 import "./chunk-WMD6M2IP.js";
+import {
+  CandidateCoverHeader,
+  CandidateCoverImage,
+  candidateCoverSeed
+} from "./chunk-WJ22QD5G.js";
 import {
   CandidatePipelineList,
   CandidateSummaryBullets

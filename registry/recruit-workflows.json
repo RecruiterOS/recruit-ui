@@ -12,6 +12,7 @@
   "licenseFiles": ["LICENSE", "NOTICE", "THIRD_PARTY_NOTICES.md"],
   "files": [
     "src/core/calendar-date.ts",
+    "src/recruit/application-pipeline-block.tsx",
     "src/recruit/call-data.ts",
     "src/recruit/call-hooks.ts",
     "src/recruit/call-reconcile-card.tsx",
@@ -97,6 +98,7 @@
     "src/recruit/placement-summary-blocks.tsx",
     "src/recruit/shared-profile-attributes.ts",
     "src/recruit/sourcing-trace.tsx",
-    "src/recruit/touch-targets.ts"
+    "src/recruit/touch-targets.ts",
+    "src/recruit/workflow-candidate-header.tsx"
   ]
 }

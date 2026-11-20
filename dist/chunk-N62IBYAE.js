@@ -10,15 +10,15 @@ import {
   SHARED_PROFILE_WRAP,
   candidateSharedProfileLabels,
   sharedProfileRootAttributes
-} from "./chunk-ZESIMTNH.js";
+} from "./chunk-BRIYME7W.js";
+import {
+  CandidateCareerHistoryTimeline
+} from "./chunk-6AK4I7KG.js";
 import {
   CandidateProfile,
   CandidateProfileBody,
   CandidateProfileFooter
 } from "./chunk-BQ4XXGLP.js";
-import {
-  CandidateCareerHistoryTimeline
-} from "./chunk-6AK4I7KG.js";
 import {
   useLatestCall
 } from "./chunk-WMD6M2IP.js";

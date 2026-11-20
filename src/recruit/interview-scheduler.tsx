@@ -15,6 +15,8 @@ import { Textarea } from "@epicbagel/saas-kit/primitives/textarea";
 import { useId, useRef, useState, type FormEvent } from "react";
 import { useLatestCall } from "./pending-action";
 
+import { WorkflowCandidateHeader, type WorkflowCandidateMedia } from "./workflow-candidate-header";
+
 export interface InterviewDetails {
   label: string;
   /** ISO instant, including an offset. */
@@ -34,6 +36,7 @@ type InterviewEdit = InterviewDetails | { status: "COMPLETED"; feedback: string 
 
 export interface InterviewSchedulerProps {
   candidate: string;
+  candidateMedia?: WorkflowCandidateMedia;
   role: string;
   appointment: ScheduledInterview | null;
   defaults?: Partial<InterviewDetails>;
@@ -91,7 +94,7 @@ function InterviewTimeFields({ id, stamp, locale, timeZone, timeZoneLabel }: {
 const statusLabels = { SCHEDULED: "Scheduled", COMPLETED: "Completed", CANCELLED: "Cancelled" };
 
 /** One appointment on a candidate's application. The host owns persistence and invitations. */
-export function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }: InterviewSchedulerProps) {
+export function InterviewScheduler({ candidate, candidateMedia, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }: InterviewSchedulerProps) {
   const id = useId();
   const heading = useRef<HTMLHeadingElement>(null);
   const [edit, setEdit] = useState<Editing | null>(null);
@@ -157,11 +160,12 @@ export function InterviewScheduler({ candidate, role, appointment, defaults, tim
 
   return (
     <ResourceCard data-slot="interview-scheduler">
-      <PanelSection paddingX="lg" paddingTop="lg" paddingBottom="lg">
+      {candidateMedia && <WorkflowCandidateHeader name={candidate} role={role} media={candidateMedia} />}
+      <PanelSection border={candidateMedia ? "top" : "none"} paddingX="lg" paddingTop="lg" paddingBottom="lg">
         <Stack direction="horizontal" justify="between" align="start" wrap gap="sm">
           <Stack gap="xs">
             <Heading level={3} ref={heading} tabIndex={-1}>{title}</Heading>
-            <Text size="sm" tone="muted">{candidate} · {role}</Text>
+            {!candidateMedia && <Text size="sm" tone="muted">{candidate} · {role}</Text>}
           </Stack>
           {appointment && <Badge variant="outline">{statusLabels[appointment.status]}</Badge>}
         </Stack>

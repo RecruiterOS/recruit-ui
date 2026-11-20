@@ -8,9 +8,6 @@ import {
   CandidateProfileLinkButton
 } from "./chunk-MQMPVZLZ.js";
 import {
-  CandidateProfileHeader
-} from "./chunk-BQ4XXGLP.js";
-import {
   CandidateNoteCard,
   CandidateNoteComposer
 } from "./chunk-LY3LKI5F.js";
@@ -31,6 +28,9 @@ import {
   COARSE_POINTER_TOUCH_TARGET,
   COARSE_POINTER_TOUCH_TARGETS_WITHIN
 } from "./chunk-YKEE5RQG.js";
+import {
+  CandidateProfileHeader
+} from "./chunk-BQ4XXGLP.js";
 import {
   useLatestCall
 } from "./chunk-WMD6M2IP.js";

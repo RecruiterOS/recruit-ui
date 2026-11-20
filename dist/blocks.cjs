@@ -2,7 +2,11 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }"use client";
 
 
+var _chunk24HXMKK7cjs = require('./chunk-24HXMKK7.cjs');
+
+
 var _chunkX6GX3U3Xcjs = require('./chunk-X6GX3U3X.cjs');
+require('./chunk-K4NZRRJK.cjs');
 
 
 var _chunkGTQAORPNcjs = require('./chunk-GTQAORPN.cjs');
@@ -22,7 +26,33 @@ var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _text = require('@epicbagel/saas-kit/primitives/text');
 var _textarea = require('@epicbagel/saas-kit/primitives/textarea');
 var _react = require('react');
+
+// src/recruit/workflow-candidate-header.tsx
+var _image = require('@epicbagel/saas-kit/primitives/image');
+var _personavatar = require('@epicbagel/saas-kit/primitives/person-avatar');
+
+
 var _jsxruntime = require('react/jsx-runtime');
+function WorkflowCandidateHeader({ name, media, role, eyebrow }) {
+  const [failedBanner, setFailedBanner] = _react.useState.call(void 0, );
+  const banner = media.bannerUrl;
+  const cover = banner && banner !== failedBanner ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _image.Image, { src: banner, alt: "", fit: "cover", onError: () => setFailedBanner(banner) }) : void 0;
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+    _chunk24HXMKK7cjs.CandidateProfileHeader,
+    {
+      name,
+      avatar: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _personavatar.PersonAvatar, { name, photoUrl: media.photoUrl, size: 48, decorative: true }),
+      cover,
+      coverSize: "compact",
+      titleLevel: 3,
+      eyebrow,
+      meta: role && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { size: "sm", tone: "muted", children: role })
+    }
+  );
+}
+
+// src/recruit/interview-scheduler.tsx
+
 function instant(value) {
   if (!value) return void 0;
   const date = new Date(value);
@@ -74,7 +104,7 @@ function InterviewTimeFields({ id, stamp, locale, timeZone, timeZoneLabel }) {
   ] });
 }
 var statusLabels = { SCHEDULED: "Scheduled", COMPLETED: "Completed", CANCELLED: "Cancelled" };
-function InterviewScheduler({ candidate, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }) {
+function InterviewScheduler({ candidate, candidateMedia, role, appointment, defaults, timeZone = "UTC", timeZoneLabel = timeZone.replaceAll("_", " "), locale = "en-GB", onSchedule, onUpdate }) {
   const id = _react.useId.call(void 0, );
   const heading = _react.useRef.call(void 0, null);
   const [edit, setEdit] = _react.useState.call(void 0, null);
@@ -135,10 +165,11 @@ function InterviewScheduler({ candidate, role, appointment, defaults, timeZone =
   const date = instant(_optionalChain([appointment, 'optionalAccess', _11 => _11.scheduledAt]));
   const title = viewing ? appointment.label : _optionalChain([edit, 'optionalAccess', _12 => _12.mode]) === "feedback" ? "Interview feedback" : _optionalChain([edit, 'optionalAccess', _13 => _13.mode]) === "cancel" ? "Cancel this interview?" : edit ? "Edit interview" : "Schedule an interview";
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { "data-slot": "interview-scheduler", children: [
-    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", justify: "between", align: "start", wrap: true, gap: "sm", children: [
+    candidateMedia && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, WorkflowCandidateHeader, { name: candidate, role, media: candidateMedia }),
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { border: candidateMedia ? "top" : "none", paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", justify: "between", align: "start", wrap: true, gap: "sm", children: [
       /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { level: 3, ref: heading, tabIndex: -1, children: title }),
-        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { size: "sm", tone: "muted", children: [
+        !candidateMedia && /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { size: "sm", tone: "muted", children: [
           candidate,
           " \xB7 ",
           role
@@ -214,7 +245,8 @@ function InterviewScheduler({ candidate, role, appointment, defaults, timeZone =
 
 
 
-function JobStatusBlock({ title, client, statusLabel, contact, onClose }) {
+
+function JobStatusBlock({ title, client, statusLabel, contact, contactPhotoUrl, onClose }) {
   const { run, pendingArgs, failure } = _chunkX6GX3U3Xcjs.useLatestCall.call(void 0, onClose);
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { children: [
     /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", align: "start", justify: "between", wrap: true, gap: "sm", children: [
@@ -224,14 +256,17 @@ function JobStatusBlock({ title, client, statusLabel, contact, onClose }) {
       ] }),
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _badge.Badge, { variant: "outline", children: statusLabel })
     ] }) }),
-    contact && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { border: "top", paddingX: "lg", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: "Hiring contact", children: contact }) }) }),
+    contact && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { border: "top", paddingX: "lg", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionList, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _definitionlist.DefinitionItem, { label: "Hiring contact", children: contactPhotoUrl ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", align: "center", gap: "sm", children: [
+      /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _personavatar.PersonAvatar, { name: contact, photoUrl: contactPhotoUrl, size: 28, decorative: true }),
+      contact
+    ] }) : contact }) }) }),
     failure && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _alert.Alert, { variant: "destructive", children: "Couldn\u2019t close the job. Try again." }),
     onClose && /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _resourcecard.ResourceCardFooter, { children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { size: "sm", disabled: !!pendingArgs, onClick: () => run(), children: pendingArgs ? "Closing\u2026" : "Close job" }) })
   ] });
 }
-function PlacementTermsBlock({ candidate, role, salary, fee, startDate }) {
+function PlacementTermsBlock({ candidate, candidateMedia, role, salary, fee, startDate }) {
   return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { children: [
-    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
+    candidateMedia ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, WorkflowCandidateHeader, { name: candidate, role, media: candidateMedia, eyebrow: "Offer terms" }) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _panelsection.PanelSection, { paddingX: "lg", paddingTop: "lg", paddingBottom: "lg", children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "xs", children: [
       /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _heading.Heading, { level: 3, children: "Offer terms" }),
       /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _text.Text, { size: "sm", tone: "muted", children: [
         candidate,
@@ -247,8 +282,22 @@ function PlacementTermsBlock({ candidate, role, salary, fee, startDate }) {
   ] });
 }
 
+// src/recruit/application-pipeline-block.tsx
+
+
+function ApplicationPipelineBlock({
+  profile,
+  ...list
+}) {
+  if (!profile) return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidatePipelineList, { ...list });
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _resourcecard.ResourceCard, { children: [
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, WorkflowCandidateHeader, { name: profile.name, media: profile }),
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkGTQAORPNcjs.CandidatePipelineList, { ...list })
+  ] });
+}
 
 
 
 
-exports.ApplicationPipelineBlock = _chunkGTQAORPNcjs.CandidatePipelineList; exports.InterviewScheduler = InterviewScheduler; exports.JobStatusBlock = JobStatusBlock; exports.PlacementTermsBlock = PlacementTermsBlock;
+
+exports.ApplicationPipelineBlock = ApplicationPipelineBlock; exports.InterviewScheduler = InterviewScheduler; exports.JobStatusBlock = JobStatusBlock; exports.PlacementTermsBlock = PlacementTermsBlock;

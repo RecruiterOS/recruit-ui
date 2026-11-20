@@ -1,9 +1,15 @@
 import * as react from 'react';
-export { CandidatePipelineList as ApplicationPipelineBlock } from './recruit/candidate-pipeline-list.js';
+import { CandidatePipelineListProps } from './recruit/candidate-pipeline-list.js';
 import '@epicbagel/saas-kit/primitives/sentiment-dot';
 import './recruit/candidate-stage-select.js';
 import '@epicbagel/saas-kit/primitives/select';
 import './candidate-empty-copy-CZmg2ZoX.js';
+
+/** Profile media returned with a candidate. Missing images use the kit fallbacks. */
+interface WorkflowCandidateMedia {
+    photoUrl?: string | null;
+    bannerUrl?: string | null;
+}
 
 interface InterviewDetails {
     label: string;
@@ -26,6 +32,7 @@ type InterviewEdit = InterviewDetails | {
 };
 interface InterviewSchedulerProps {
     candidate: string;
+    candidateMedia?: WorkflowCandidateMedia;
     role: string;
     appointment: ScheduledInterview | null;
     defaults?: Partial<InterviewDetails>;
@@ -39,25 +46,33 @@ interface InterviewSchedulerProps {
     onUpdate?: (original: ScheduledInterview, edit: InterviewEdit) => void | Promise<void>;
 }
 /** One appointment on a candidate's application. The host owns persistence and invitations. */
-declare function InterviewScheduler({ candidate, role, appointment, defaults, timeZone, timeZoneLabel, locale, onSchedule, onUpdate }: InterviewSchedulerProps): react.JSX.Element;
+declare function InterviewScheduler({ candidate, candidateMedia, role, appointment, defaults, timeZone, timeZoneLabel, locale, onSchedule, onUpdate }: InterviewSchedulerProps): react.JSX.Element;
 
 interface JobStatusBlockProps {
     title: string;
     client: string;
     statusLabel: string;
     contact?: string;
+    contactPhotoUrl?: string | null;
     /** Supply only while closing is available. The host supplies the saved status. */
     onClose?: () => void | Promise<void>;
 }
-declare function JobStatusBlock({ title, client, statusLabel, contact, onClose }: JobStatusBlockProps): react.JSX.Element;
+declare function JobStatusBlock({ title, client, statusLabel, contact, contactPhotoUrl, onClose }: JobStatusBlockProps): react.JSX.Element;
 interface PlacementTermsBlockProps {
     candidate: string;
+    candidateMedia?: WorkflowCandidateMedia;
     role: string;
     /** Amounts already formatted in the offer currency. */
     salary: string;
     fee: string;
     startDate?: string;
 }
-declare function PlacementTermsBlock({ candidate, role, salary, fee, startDate }: PlacementTermsBlockProps): react.JSX.Element;
+declare function PlacementTermsBlock({ candidate, candidateMedia, role, salary, fee, startDate }: PlacementTermsBlockProps): react.JSX.Element;
 
-export { type InterviewDetails, InterviewScheduler, type InterviewSchedulerProps, JobStatusBlock, type JobStatusBlockProps, PlacementTermsBlock, type PlacementTermsBlockProps, type ScheduledInterview };
+declare function ApplicationPipelineBlock<TStage extends string = string>({ profile, ...list }: CandidatePipelineListProps<TStage> & {
+    profile?: WorkflowCandidateMedia & {
+        name: string;
+    };
+}): react.JSX.Element;
+
+export { ApplicationPipelineBlock, type InterviewDetails, InterviewScheduler, type InterviewSchedulerProps, JobStatusBlock, type JobStatusBlockProps, PlacementTermsBlock, type PlacementTermsBlockProps, type ScheduledInterview, type WorkflowCandidateMedia };
