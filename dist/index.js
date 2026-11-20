@@ -99,7 +99,7 @@ import {
 } from "./chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "./chunk-Y3MV42LO.js";
+} from "./chunk-V766GHRW.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -110,7 +110,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "./chunk-ZESIMTNH.js";
+} from "./chunk-VF222ICD.js";
 import {
   CurrentCompanyLabel
 } from "./chunk-XTAH2XJR.js";
@@ -131,12 +131,6 @@ import {
   CandidateProfileLinkButton
 } from "./chunk-MQMPVZLZ.js";
 import {
-  CandidateProfile,
-  CandidateProfileBody,
-  CandidateProfileFooter,
-  CandidateProfileHeader
-} from "./chunk-BQ4XXGLP.js";
-import {
   CandidateQuote
 } from "./chunk-2TU6TCNM.js";
 import {
@@ -144,7 +138,7 @@ import {
 } from "./chunk-LL2XCMR7.js";
 import {
   CandidateInlineCard
-} from "./chunk-I5YVTDWF.js";
+} from "./chunk-4DUAZ46V.js";
 import {
   CandidateJobEvidence
 } from "./chunk-43WWASGQ.js";
@@ -221,11 +215,6 @@ import {
   CandidateDefinitionSection
 } from "./chunk-ESIFTU4K.js";
 import {
-  CandidateCoverHeader,
-  CandidateCoverImage,
-  candidateCoverSeed
-} from "./chunk-WJ22QD5G.js";
-import {
   CandidateDecisionBar
 } from "./chunk-TMC65IQ7.js";
 import {
@@ -240,7 +229,7 @@ import {
 import "./chunk-TR6R7XYB.js";
 import {
   CandidateAssessment
-} from "./chunk-3YBBZCZD.js";
+} from "./chunk-WRIYWX2V.js";
 import {
   CandidateCallCard
 } from "./chunk-N75IMABN.js";
@@ -265,11 +254,22 @@ import {
   CandidateChannelActions
 } from "./chunk-AXIHZVR6.js";
 import "./chunk-YKEE5RQG.js";
+import {
+  CandidateProfile,
+  CandidateProfileBody,
+  CandidateProfileFooter,
+  CandidateProfileHeader
+} from "./chunk-BQ4XXGLP.js";
 import "./chunk-WMD6M2IP.js";
+import {
+  CandidateCoverHeader,
+  CandidateCoverImage,
+  candidateCoverSeed
+} from "./chunk-WJ22QD5G.js";
 import {
   CandidatePipelineList,
   CandidateSummaryBullets
-} from "./chunk-TFPDLQYX.js";
+} from "./chunk-ERWPC67G.js";
 import {
   CandidateStageSelect
 } from "./chunk-VOKP2HLR.js";

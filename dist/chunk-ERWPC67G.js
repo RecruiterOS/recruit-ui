@@ -50,42 +50,51 @@ function CandidatePipelineList({
         padding: "sm",
         interaction: "group-hover-accent",
         children: [
-          /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", children: [
-            /* @__PURE__ */ jsx(
-              Button,
-              {
-                type: "button",
-                variant: "ghost",
-                onClick: () => row.onOpen?.(),
-                size: "bare",
-                minWidth: "zero",
-                grow: true,
-                align: "start",
-                textAlign: "start",
-                title: openLabel,
-                children: /* @__PURE__ */ jsxs(Stack, { gap: "none", width: "full", children: [
-                  /* @__PURE__ */ jsxs(Text, { size: "sm", weight: "medium", truncate: true, display: "inline-flex", children: [
-                    row.title,
-                    row.grade,
-                    /* @__PURE__ */ jsx(Icon, { icon: ChevronRight, size: "xs", tone: "muted", visibility: "parent-hover" })
-                  ] }),
-                  present(row.subtitle) && /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", truncate: true, children: row.subtitle })
-                ] })
-              }
-            ),
-            /* @__PURE__ */ jsx(
-              CandidateStageSelect,
-              {
-                value: row.stage.value,
-                options: row.stage.options,
-                onChange: row.stage.onChange,
-                controlSize: "compact",
-                width: "compact",
-                textSize: "xs",
-                shrink: false
-              }
-            )
-          ] }),
+          /* @__PURE__ */ jsxs(
+            Stack,
+            {
+              direction: "horizontal",
+              gap: "sm",
+              align: "center",
+              className: "@max-xs/application:flex-col @max-xs/application:items-start",
+              children: [
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    type: "button",
+                    variant: "ghost",
+                    onClick: () => row.onOpen?.(),
+                    size: "bare",
+                    minWidth: "zero",
+                    grow: true,
+                    align: "start",
+                    textAlign: "start",
+                    title: openLabel,
+                    children: /* @__PURE__ */ jsxs(Stack, { gap: "none", width: "full", children: [
+                      /* @__PURE__ */ jsxs(Text, { size: "sm", weight: "medium", truncate: true, display: "inline-flex", children: [
+                        row.title,
+                        row.grade,
+                        /* @__PURE__ */ jsx(Icon, { icon: ChevronRight, size: "xs", tone: "muted", visibility: "parent-hover" })
+                      ] }),
+                      present(row.subtitle) && /* @__PURE__ */ jsx(Text, { size: "xs", tone: "muted", truncate: true, children: row.subtitle })
+                    ] })
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  CandidateStageSelect,
+                  {
+                    value: row.stage.value,
+                    options: row.stage.options,
+                    onChange: row.stage.onChange,
+                    controlSize: "compact",
+                    width: "compact",
+                    textSize: "xs",
+                    shrink: false
+                  }
+                )
+              ]
+            }
+          ),
           row.children
         ]
       },

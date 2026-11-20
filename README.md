@@ -170,3 +170,8 @@ on the booked appointment. Supply the saved appointment after `onSchedule`
 or `onUpdate` succeeds. Updates receive the original version for concurrency
 checks. Reject the callback with a user-facing error to keep the draft open.
 Key the scheduler by application and appointment when switching records.
+
+For the application pipeline, pass `profile={{ name, photoUrl, bannerUrl }}`.
+The scheduler and placement terms take the name in `candidate` and the two URLs
+in `candidateMedia`. Supply an empty media object to show initials and the
+name-seeded cover. Job status accepts `contactPhotoUrl` beside `contact`.

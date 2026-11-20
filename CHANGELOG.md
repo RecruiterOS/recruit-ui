@@ -5,6 +5,10 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.36.0
+
+The workflow blocks can now show a candidate photo and compact profile banner through the shared profile header. Job status can show the hiring contact’s photo. All media props are optional.
+
 ## 0.35.0
 
 The new `@recruiteros/recruit-ui/blocks` entry exports the interview scheduler, job status, application pipeline and placement terms blocks. Existing entry points and props are unchanged.

@@ -114,7 +114,8 @@ export function CandidatePipelineList<TStage extends string = string>({
               padding="sm"
               interaction="group-hover-accent"
             >
-              <Stack direction="horizontal" gap="sm" align="center">
+              <Stack direction="horizontal" gap="sm" align="center"
+                className="@max-xs/application:flex-col @max-xs/application:items-start">
                 <Button
                   type="button"
                   variant="ghost"

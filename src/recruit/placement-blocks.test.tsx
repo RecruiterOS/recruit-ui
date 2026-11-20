@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useState } from "react";
 import { describe, expect, it, vi } from "vitest";
-import { InterviewScheduler, JobStatusBlock, type ScheduledInterview } from "../blocks";
+import { ApplicationPipelineBlock, InterviewScheduler, JobStatusBlock, PlacementTermsBlock, type ScheduledInterview } from "../blocks";
 
 const defaults = {
   label: "Portfolio review", scheduledAt: "2027-01-12T16:30:00+02:00",
@@ -71,5 +71,37 @@ describe("the interview block", () => {
     press("Close job");
     expect(await screen.findByRole("alert")).toHaveTextContent("Couldn’t close");
     expect(screen.getByText("Open")).toBeVisible();
+  });
+});
+
+describe("workflow profile media", () => {
+  it("keeps the original pipeline until a candidate is supplied", () => {
+    const view = render(<ApplicationPipelineBlock rows={[]} />);
+    expect(view.container.querySelector('[data-slot="candidate-profile-header"]')).toBeNull();
+    view.rerender(<ApplicationPipelineBlock rows={[]} profile={{ name: base.candidate }} />);
+    expect(screen.getByRole("heading", { name: base.candidate })).toBeVisible();
+    expect(screen.getByText("SE")).toBeVisible();
+    expect(view.container.querySelector('[data-slot="candidate-cover-stock"]')).toBeInTheDocument();
+  });
+
+  it("shows a supplied profile banner, falls back on failure and can show a replacement", () => {
+    const media = (bannerUrl: string) => <PlacementTermsBlock candidate={base.candidate} role="Designer"
+      salary="£50,000" fee="£5,000" candidateMedia={{ bannerUrl }} />;
+    const view = render(media("/covers/one.jpg"));
+    const first = view.container.querySelector('img[src="/covers/one.jpg"]')!;
+    expect(first).toHaveAttribute("alt", "");
+    fireEvent.error(first);
+    expect(view.container.querySelector('[data-slot="candidate-cover-stock"]')).toBeVisible();
+    view.rerender(media("/covers/two.jpg"));
+    expect(view.container.querySelector('img[src="/covers/two.jpg"]')).toBeVisible();
+    expect(screen.getByText("£50,000")).toBeVisible();
+  });
+
+  it("keeps the candidate visible when editing an interview", () => {
+    render(<InterviewScheduler {...base} appointment={saved} candidateMedia={{}}
+      onSchedule={vi.fn()} onUpdate={vi.fn()} />);
+    press("Edit interview");
+    expect(screen.getByRole("heading", { name: base.candidate })).toBeVisible();
+    expect(screen.getByLabelText("Date (UTC)")).toBeVisible();
   });
 });
