@@ -1,10 +1,10 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
 
-var _chunkMPYFHE5Lcjs = require('./chunk-MPYFHE5L.cjs');
+var _chunkTN6LV7DRcjs = require('./chunk-TN6LV7DR.cjs');
 
 
-var _chunk6GJXBVDHcjs = require('./chunk-6GJXBVDH.cjs');
+var _chunk5DEY2CD6cjs = require('./chunk-5DEY2CD6.cjs');
 
 
 var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
@@ -40,7 +40,7 @@ function ClientSearchConversation({
   traceLabels,
   ...props
 }) {
-  const text = { ..._chunkMPYFHE5Lcjs.clientSearchLabels, ...labels };
+  const text = { ..._chunkTN6LV7DRcjs.clientSearchLabels, ...labels };
   const [staged, setStaged] = _react.useState.call(void 0, []);
   const [sending, setSending] = _react.useState.call(void 0, false);
   const [failure, setFailure] = _react.useState.call(void 0, null);
@@ -70,7 +70,7 @@ function ClientSearchConversation({
         // A card is not a reply: it takes none of a reply's actions.
         actions: false,
         content: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunk6GJXBVDHcjs.JobBriefCard,
+          _chunk5DEY2CD6cjs.JobBriefCard,
           {
             ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, version.brief, { ...briefOptions, current }),
             presentation: "preview",
@@ -87,7 +87,7 @@ function ClientSearchConversation({
       createdAt: delivery.deliveredAt,
       actions: false,
       content: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-        _chunkMPYFHE5Lcjs.ClientSearchDelivery,
+        _chunkTN6LV7DRcjs.ClientSearchDelivery,
         {
           title: delivery.title,
           description: delivery.description,

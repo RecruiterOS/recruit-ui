@@ -5,6 +5,10 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.35.0
+
+The new `@recruiteros/recruit-ui/blocks` entry exports the interview scheduler, job status, application pipeline and placement terms blocks. Existing entry points and props are unchanged.
+
 ## 0.34.0
 
 Candidate assessments can display host-supplied labels beside a grade. Use

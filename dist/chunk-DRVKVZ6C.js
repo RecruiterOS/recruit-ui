@@ -1,10 +1,10 @@
 import {
   ClientSearchDelivery,
   clientSearchLabels
-} from "./chunk-FQZYN5Z2.js";
+} from "./chunk-EX2WJVYR.js";
 import {
   JobBriefCard
-} from "./chunk-F353R6EY.js";
+} from "./chunk-UEPDO3XM.js";
 import {
   jobBriefView
 } from "./chunk-5F2DPU3C.js";

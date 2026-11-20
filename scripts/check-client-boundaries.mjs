@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const clientEntryBases = [
   "index",
+  "blocks",
   "recruit/index",
   "recruit/call-reconcile-card",
   "recruit/candidate-activity-timeline",

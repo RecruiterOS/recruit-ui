@@ -3,12 +3,12 @@ import {
   jobBriefVersionLabel
 } from "./chunk-5F2DPU3C.js";
 import {
-  usePendingCall
-} from "./chunk-WMD6M2IP.js";
-import {
   COARSE_POINTER_TOUCH_TARGET,
   COARSE_POINTER_TOUCH_TARGETS_WITHIN
 } from "./chunk-YKEE5RQG.js";
+import {
+  usePendingCall
+} from "./chunk-WMD6M2IP.js";
 
 // src/recruit/job-brief-card.tsx
 import { Alert, AlertDescription } from "@epicbagel/saas-kit/primitives/alert";

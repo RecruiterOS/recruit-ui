@@ -1,5 +1,5 @@
 import * as react from 'react';
-import { ReactNode, HTMLAttributes, Key } from 'react';
+import { HTMLAttributes, ReactNode, Key } from 'react';
 import { Sentiment } from '@epicbagel/saas-kit/primitives/sentiment-dot';
 import { CandidateStageOption } from './candidate-stage-select.cjs';
 import { C as CandidateEmptyCopy } from '../candidate-empty-copy-CZmg2ZoX.cjs';

@@ -85,6 +85,7 @@
     "src/recruit/current-company-popover.tsx",
     "src/recruit/dictation-support.ts",
     "src/recruit/document-list.tsx",
+    "src/recruit/interview-scheduler.tsx",
     "src/recruit/job-brief-card.tsx",
     "src/recruit/job-brief-changes.tsx",
     "src/recruit/job-brief-view.ts",
@@ -93,6 +94,7 @@
     "src/recruit/job-summary-card.tsx",
     "src/recruit/matched-call-card.tsx",
     "src/recruit/pending-action.ts",
+    "src/recruit/placement-summary-blocks.tsx",
     "src/recruit/shared-profile-attributes.ts",
     "src/recruit/sourcing-trace.tsx",
     "src/recruit/touch-targets.ts"
