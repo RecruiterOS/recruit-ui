@@ -149,6 +149,11 @@ interface CandidateDecisionReasonSheetProps {
  * chose in this browser session; `multipleReasons={false}` leaves the switch
  * out.
  *
+ * The switch is a segmented control: a pill-shaped track with the chosen
+ * option raised inside it, each option a radio to a screen reader. A ticked
+ * reason has a heavier border, bolder words and a tick. Rules set the
+ * reasons' heading row, the host's `outcome` and the bottom bar apart.
+ *
  * The mic and the composer are the kit's `Chat` in its voice-first empty
  * state, with the reasons under it, inside the kit's `Dialog`, so the sheet
  * keeps its focus when it opens from another dialog, such as a candidate's
@@ -175,5 +180,30 @@ interface CandidateDecisionReasonSheetProps {
  * `data-slot="candidate-decision-reason-sheet-footer"`.
  */
 declare function CandidateDecisionReasonSheet({ open, ...sheet }: CandidateDecisionReasonSheetProps): react.JSX.Element | null;
+/** One option of a `CandidateDecisionOutcomeChoice`. */
+interface CandidateDecisionOutcomeOption<TValue extends string = string> {
+    value: TValue;
+    label: ReactNode;
+}
+interface CandidateDecisionOutcomeChoiceProps<TValue extends string = string> {
+    /** The caption over the options, which also names them to a screen reader. */
+    label: ReactNode;
+    options: readonly CandidateDecisionOutcomeOption<TValue>[];
+    /** The chosen option. */
+    value: TValue;
+    /** Called with an option that isn't the chosen one. */
+    onChange: (value: TValue) => void;
+    disabled?: boolean;
+}
+/**
+ * A captioned choice for the sheet's `outcome`: what else the decision does,
+ * such as whether the person has been contacted already. One option is
+ * always chosen, drawn as a ticked reason is, with a heavier border and
+ * bolder words; each is a radio in a group the caption names. The host owns
+ * the options, their wording and what each one does.
+ *
+ * The root is marked `data-slot="candidate-decision-outcome-choice"`.
+ */
+declare function CandidateDecisionOutcomeChoice<TValue extends string = string>({ label, options, value, onChange, disabled, }: CandidateDecisionOutcomeChoiceProps<TValue>): react.JSX.Element;
 
-export { type CandidateDecisionReasonAnswer, type CandidateDecisionReasonSelection, CandidateDecisionReasonSheet, type CandidateDecisionReasonSheetLabels, type CandidateDecisionReasonSheetProps };
+export { CandidateDecisionOutcomeChoice, type CandidateDecisionOutcomeChoiceProps, type CandidateDecisionOutcomeOption, type CandidateDecisionReasonAnswer, type CandidateDecisionReasonSelection, CandidateDecisionReasonSheet, type CandidateDecisionReasonSheetLabels, type CandidateDecisionReasonSheetProps };

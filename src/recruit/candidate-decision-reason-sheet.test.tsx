@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CandidateDecisionButtons, type CandidateDecisionChoice } from "./candidate-decision-buttons";
 import {
+  CandidateDecisionOutcomeChoice,
   CandidateDecisionReasonSheet,
   type CandidateDecisionReasonSheetProps,
 } from "./candidate-decision-reason-sheet";
@@ -95,7 +96,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(within(dialog).getByRole("button", { name: "or type instead" })).toBeInTheDocument();
     expect(within(dialog).queryByRole("textbox")).toBeNull();
 
-    const reasons = within(dialog).getByRole("group", { name: "or pick a reason" });
+    const reasons = within(dialog).getByRole("group", { name: "Or pick a reason" });
     expect(within(reasons).getAllByRole("button").map((button) => button.textContent)).toEqual(REASONS);
 
     const footer = dialog.querySelector("[data-slot='candidate-decision-reason-sheet-footer']")!;
@@ -490,9 +491,9 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     const user = userEvent.setup();
     const { props, rerender, onConfirm } = renderSheet();
 
-    const selection = within(sheet()).getByRole("group", { name: "How many reasons" });
-    expect(within(selection).getByRole("button", { name: "Single" })).toHaveAttribute("aria-pressed", "true");
-    expect(within(selection).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "false");
+    const selection = within(sheet()).getByRole("radiogroup", { name: "How many reasons" });
+    expect(within(selection).getByRole("radio", { name: "Single" })).toBeChecked();
+    expect(within(selection).getByRole("radio", { name: "Multiple" })).not.toBeChecked();
     expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']")).toHaveAttribute("data-selection", "single");
     // In Single a reason is a plain button: a tap confirms with it, on its own.
     const reason = within(sheet()).getByRole("button", { name: "Too senior" });
@@ -502,9 +503,9 @@ describe("candidate decision reason sheet, where dictation can run", () => {
 
     // One reason leaves nothing to pick several of, and a host can leave the switch out.
     rerender(<CandidateDecisionReasonSheet {...props} reasons={["Too senior"]} />);
-    expect(within(sheet()).queryByRole("group", { name: "How many reasons" })).toBeNull();
+    expect(within(sheet()).queryByRole("radiogroup", { name: "How many reasons" })).toBeNull();
     rerender(<CandidateDecisionReasonSheet {...props} multipleReasons={false} />);
-    expect(within(sheet()).queryByRole("group", { name: "How many reasons" })).toBeNull();
+    expect(within(sheet()).queryByRole("radiogroup", { name: "How many reasons" })).toBeNull();
     expect(within(sheet()).getByRole("button", { name: "Too senior" })).not.toHaveAttribute("aria-pressed");
   });
 
@@ -513,12 +514,12 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     const { onConfirm } = renderSheet({ reasons: ["Too senior", "Wrong industry", "Outside salary band"] });
 
     expect(sheet()).toHaveAccessibleDescription("Give your reason for Fictional Person, or pick one.");
-    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    await user.click(within(sheet()).getByRole("radio", { name: "Multiple" }));
     expect(sheet()).toHaveAccessibleDescription("Give your reason for Fictional Person, or pick one or more.");
     expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']")).toHaveAttribute("data-selection", "multiple");
 
     // Each reason is a toggle now, and a tap confirms nothing.
-    const reasons = within(sheet()).getByRole("group", { name: "or pick a reason" });
+    const reasons = within(sheet()).getByRole("group", { name: "Or pick a reason" });
     for (const reason of within(reasons).getAllByRole("button")) expect(reason).toHaveAttribute("aria-pressed", "false");
     await user.click(within(reasons).getByRole("button", { name: "Outside salary band" }));
     await user.click(within(reasons).getByRole("button", { name: "Too senior" }));
@@ -591,8 +592,8 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     });
 
     expect(sheet()).toHaveAccessibleDescription("Pick a reason.");
-    const selection = within(sheet()).getByRole("group", { name: "Reasons to give" });
-    await user.click(within(selection).getByRole("button", { name: "Several" }));
+    const selection = within(sheet()).getByRole("radiogroup", { name: "Reasons to give" });
+    await user.click(within(selection).getByRole("radio", { name: "Several" }));
     expect(sheet()).toHaveAccessibleDescription("Pick one or more reasons.");
     expect(within(sheet()).getAllByText("Pick one or more reasons.")).toHaveLength(2);
 
@@ -606,18 +607,18 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     const user = userEvent.setup();
     const { props, rerender } = renderSheet();
 
-    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    await user.click(within(sheet()).getByRole("radio", { name: "Multiple" }));
     await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
 
     rerender(<CandidateDecisionReasonSheet {...props} open={false} />);
     rerender(<CandidateDecisionReasonSheet {...props} candidateName="Another Fictional Person" />);
-    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(sheet()).getByRole("radio", { name: "Multiple" })).toBeChecked();
     expect(within(sheet()).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "false");
 
     await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
-    await user.click(within(sheet()).getByRole("button", { name: "Single" }));
+    await user.click(within(sheet()).getByRole("radio", { name: "Single" }));
     expect(within(sheet()).getByRole("button", { name: "Skip — just mark No" })).toBeInTheDocument();
-    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    await user.click(within(sheet()).getByRole("radio", { name: "Multiple" }));
     expect(within(sheet()).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "false");
   });
 
@@ -626,15 +627,15 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     const onReasonSelectionChange = vi.fn();
     const { props, rerender } = renderSheet({ reasonSelection: "multiple", onReasonSelectionChange });
 
-    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
-    await user.click(within(sheet()).getByRole("button", { name: "Single" }));
+    expect(within(sheet()).getByRole("radio", { name: "Multiple" })).toBeChecked();
+    await user.click(within(sheet()).getByRole("radio", { name: "Single" }));
     expect(onReasonSelectionChange.mock.calls).toEqual([["single"]]);
     // The host hasn't changed it, and the sheet keeps nothing of its own.
-    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(sheet()).getByRole("radio", { name: "Multiple" })).toBeChecked();
     expect(window.sessionStorage.length).toBe(0);
 
     rerender(<CandidateDecisionReasonSheet {...props} reasonSelection="single" />);
-    expect(within(sheet()).getByRole("button", { name: "Single" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(sheet()).getByRole("radio", { name: "Single" })).toBeChecked();
   });
 
   it("where a reason is required, keeps a button in Multiple that waits for a tick", async () => {
@@ -771,5 +772,34 @@ describe("candidate decision reason sheet, with the host's dictation transport",
     render(<CandidateDecisionReasonSheet {...props} />);
     expect(within(sheet()).queryByRole("button", { name: "Start dictation" })).toBeNull();
     expect(within(sheet()).getByRole("textbox")).toBeInTheDocument();
+  });
+});
+
+describe("candidate decision outcome choice", () => {
+  it("offers its options as radios under the caption, one chosen, and reports another", async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const options = [
+      { value: "not-contacted", label: "Not contacted" },
+      { value: "contacted", label: "Contacted" },
+    ] as const;
+    const { container, rerender } = render(
+      <CandidateDecisionOutcomeChoice label="Contact status" options={options} value="not-contacted" onChange={onChange} />,
+    );
+
+    expect(container.firstElementChild).toHaveAttribute("data-slot", "candidate-decision-outcome-choice");
+    const group = screen.getByRole("radiogroup", { name: "Contact status" });
+    expect(within(group).getAllByRole("radio").map((radio) => radio.textContent)).toEqual(["Not contacted", "Contacted"]);
+    expect(within(group).getByRole("radio", { name: "Not contacted" })).toBeChecked();
+
+    // Pressing the chosen one leaves it chosen, and says nothing.
+    await user.click(within(group).getByRole("radio", { name: "Not contacted" }));
+    expect(onChange).not.toHaveBeenCalled();
+    await user.click(within(group).getByRole("radio", { name: "Contacted" }));
+    expect(onChange.mock.calls).toEqual([["contacted"]]);
+
+    rerender(<CandidateDecisionOutcomeChoice label="Contact status" options={options} value="contacted" onChange={onChange} disabled />);
+    expect(screen.getByRole("radio", { name: "Contacted" })).toBeChecked();
+    expect(screen.getByRole("radio", { name: "Not contacted" })).toBeDisabled();
   });
 });

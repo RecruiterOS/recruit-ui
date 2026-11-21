@@ -1,9 +1,6 @@
 import {
   useDictationSupport
 } from "./chunk-TR6R7XYB.js";
-import {
-  ChoiceChips
-} from "./chunk-P5VLMURO.js";
 
 // src/recruit/candidate-decision-reason-sheet.tsx
 import { Button } from "@epicbagel/saas-kit/primitives/button";
@@ -19,6 +16,7 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Suggestion, Suggestions } from "@epicbagel/saas-kit/primitives/suggestion";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
+import { ToggleGroup, ToggleGroupItem } from "@epicbagel/saas-kit/primitives/toggle-group";
 import { ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useId, useRef, useState } from "react";
 import { jsx, jsxs } from "react/jsx-runtime";
@@ -38,12 +36,15 @@ function rememberSelection(selection) {
   } catch {
   }
 }
-var TICKED_REASON = "aria-pressed:border-primary aria-pressed:bg-primary/10";
+var TICKED_REASON = "aria-pressed:border-foreground aria-pressed:font-semibold aria-pressed:ring-1 aria-pressed:ring-foreground";
+var CHOSEN_OPTION = "min-w-36 px-5 text-muted-foreground hover:text-foreground data-[state=on]:border-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:ring-1 data-[state=on]:ring-foreground";
+var SEGMENT_TRACK = "shrink-0 gap-0 rounded-full border bg-muted p-1";
+var SEGMENT = "relative h-8 rounded-full px-4 text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:shadow-sm data-[state=on]:hover:bg-background pointer-coarse:after:absolute pointer-coarse:after:inset-x-0 pointer-coarse:after:-inset-y-1.5 pointer-coarse:after:content-['']";
 var DEFAULT_LABELS = {
   cancel: "Cancel",
   speak: "Tap to speak",
   typeInstead: "or type instead",
-  reasons: "or pick a reason",
+  reasons: "Or pick a reason",
   selection: "How many reasons",
   single: "Single",
   multiple: "Multiple",
@@ -164,7 +165,7 @@ function OpenReasonSheet({
   const hasBottomButton = !reasonRequired || selection === "multiple";
   const hasBottomRow = shown(actions) || hasBottomButton;
   const confirmWords = typeof confirmLabel === "function" ? confirmLabel(picked) : confirmLabel;
-  const reasonChips = chips.length > 0 ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "sm", children: [
+  const reasonChips = chips.length > 0 ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "md", children: [
     /* @__PURE__ */ jsxs(
       Stack,
       {
@@ -173,19 +174,24 @@ function OpenReasonSheet({
         align: "center",
         justify: "between",
         wrap: true,
-        ...selectable ? { border: "bottom", paddingBottom: "sm" } : {},
+        ...selectable ? { border: "bottom", paddingBottom: "md" } : {},
         children: [
-          /* @__PURE__ */ jsx(Text, { as: "p", id: reasonsLabelId, size: "xs", tone: "muted", children: text.reasons }),
-          selectable ? /* @__PURE__ */ jsx(
-            ChoiceChips,
+          /* @__PURE__ */ jsx(Text, { as: "p", id: reasonsLabelId, size: "sm", tone: "muted", children: text.reasons }),
+          selectable ? /* @__PURE__ */ jsxs(
+            ToggleGroup,
             {
-              "aria-label": text.selection,
-              chips: [
-                { id: "single", label: text.single },
-                { id: "multiple", label: text.multiple }
-              ],
+              type: "single",
+              size: "sm",
               value: selection,
-              onChange: (id) => changeSelection(id === "multiple" ? "multiple" : "single")
+              onValueChange: (next) => {
+                if (next === "single" || next === "multiple") changeSelection(next);
+              },
+              "aria-label": text.selection,
+              className: SEGMENT_TRACK,
+              children: [
+                /* @__PURE__ */ jsx(ToggleGroupItem, { value: "single", className: SEGMENT, children: text.single }),
+                /* @__PURE__ */ jsx(ToggleGroupItem, { value: "multiple", className: SEGMENT, children: text.multiple })
+              ]
             }
           ) : null
         ]
@@ -321,7 +327,7 @@ function OpenReasonSheet({
                         Button,
                         {
                           type: "button",
-                          variant: armed ? "default" : "outline",
+                          variant: "outline",
                           size: "lg",
                           disabled: saving || reasonRequired && !armed,
                           onClick: () => void confirm().catch(() => void 0),
@@ -342,7 +348,36 @@ function OpenReasonSheet({
     }
   ) });
 }
+function CandidateDecisionOutcomeChoice({
+  label,
+  options,
+  value,
+  onChange,
+  disabled = false
+}) {
+  const labelId = useId();
+  return /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-decision-outcome-choice", gap: "sm", children: [
+    /* @__PURE__ */ jsx(Text, { as: "p", id: labelId, size: "sm", tone: "muted", children: label }),
+    /* @__PURE__ */ jsx(Stack, { direction: "horizontal", children: /* @__PURE__ */ jsx(
+      ToggleGroup,
+      {
+        type: "single",
+        variant: "outline",
+        value,
+        onValueChange: (next) => {
+          const option = options.find((candidate) => candidate.value === next);
+          if (option && option.value !== value) onChange(option.value);
+        },
+        disabled,
+        "aria-labelledby": labelId,
+        className: "flex-wrap justify-start gap-2",
+        children: options.map((option) => /* @__PURE__ */ jsx(ToggleGroupItem, { value: option.value, className: CHOSEN_OPTION, children: option.label }, option.value))
+      }
+    ) })
+  ] });
+}
 
 export {
-  CandidateDecisionReasonSheet
+  CandidateDecisionReasonSheet,
+  CandidateDecisionOutcomeChoice
 };
