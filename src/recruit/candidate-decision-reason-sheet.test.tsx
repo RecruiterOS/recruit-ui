@@ -34,8 +34,13 @@ class FakeRecognition {
 
 type SpeechWindow = { SpeechRecognition?: unknown };
 
+type Confirm = CandidateDecisionReasonSheetProps["onConfirm"];
+
+/** The one-line reason of each confirmation, in order. */
+const confirmed = (onConfirm: { mock: { calls: unknown[][] } }) => onConfirm.mock.calls.map(([reason]) => reason);
+
 function renderSheet(overrides: Partial<CandidateDecisionReasonSheetProps> = {}) {
-  const onConfirm = vi.fn<(reason?: string) => unknown>();
+  const onConfirm = vi.fn<Confirm>();
   const onClose = vi.fn();
   const props: CandidateDecisionReasonSheetProps = {
     open: true,
@@ -55,6 +60,8 @@ const sheet = () => screen.getByRole("dialog");
 afterEach(() => {
   recognitions.length = 0;
   delete (window as SpeechWindow).SpeechRecognition;
+  // The sheet remembers Single or Multiple for the browser session.
+  window.sessionStorage.clear();
 });
 
 describe("candidate decision reason sheet, where dictation can run", () => {
@@ -109,7 +116,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     act(() => recognitions[0]!.onresult?.({ resultIndex: 0, results: [heard] }));
     await user.click(within(overlay).getByRole("button", { name: /done/i }));
 
-    expect(onConfirm.mock.calls).toEqual([["Not enough fictional experience"]]);
+    expect(confirmed(onConfirm)).toEqual(["Not enough fictional experience"]);
   });
 
   it("confirms with a picked reason in one tap", async () => {
@@ -120,7 +127,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(within(sheet()).getAllByRole("button", { name: "Too senior" })).toHaveLength(1);
     await user.click(within(sheet()).getByRole("button", { name: "Outside salary band" }));
 
-    expect(onConfirm.mock.calls).toEqual([["Outside salary band"]]);
+    expect(confirmed(onConfirm)).toEqual(["Outside salary band"]);
   });
 
   it("confirms with a typed reason, trimmed", async () => {
@@ -133,7 +140,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     await waitFor(() => expect(field).toHaveFocus());
     await user.type(field, "  Sold to the same fictional buyers  {Enter}");
 
-    expect(onConfirm.mock.calls).toEqual([["Sold to the same fictional buyers"]]);
+    expect(confirmed(onConfirm)).toEqual(["Sold to the same fictional buyers"]);
   });
 
   it("skips with no reason, and closes without deciding", async () => {
@@ -141,7 +148,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     const { props, rerender, onConfirm, onClose } = renderSheet({ decision: "yes" });
 
     await user.click(within(sheet()).getByRole("button", { name: "Skip — just mark Yes" }));
-    expect(onConfirm.mock.calls).toEqual([[undefined]]);
+    expect(confirmed(onConfirm)).toEqual([undefined]);
     expect(onClose).not.toHaveBeenCalled();
 
     await user.click(within(sheet()).getByRole("button", { name: "Cancel" }));
@@ -271,7 +278,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
 
     await user.click(within(sheet()).getByRole("button", { name: "or type instead" }));
     await user.type(within(sheet()).getByRole("textbox"), "A fictional reason{Enter}");
-    expect(onConfirm.mock.calls).toEqual([["A fictional reason"]]);
+    expect(confirmed(onConfirm)).toEqual(["A fictional reason"]);
 
     // Saving, said aloud: nothing left to send a second time, though a
     // person can still leave if the save never comes back.
@@ -326,7 +333,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(await within(sheet()).findByRole("alert")).toHaveTextContent("Not saved.");
 
     await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
-    expect(onConfirm.mock.calls).toEqual([[undefined], ["Too senior"]]);
+    expect(confirmed(onConfirm)).toEqual([undefined, "Too senior"]);
     expect(within(sheet()).getByText("One moment")).toBeInTheDocument();
 
     await act(async () => settle());
@@ -385,7 +392,7 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(onConfirm).not.toHaveBeenCalled();
 
     await user.type(field, "{Enter}");
-    expect(onConfirm.mock.calls).toEqual([["A fictional reason"]]);
+    expect(confirmed(onConfirm)).toEqual(["A fictional reason"]);
     await user.click(within(sheet()).getByRole("button", { name: "Skip — just mark No" }));
     expect(onCardClick).not.toHaveBeenCalled();
     expect(onCardKey).not.toHaveBeenCalled();
@@ -479,6 +486,231 @@ describe("candidate decision reason sheet, where dictation can run", () => {
     expect(field).toHaveValue("A fictional reason");
   });
 
+  it("offers Single and Multiple over two or more reasons, and opens on Single", async () => {
+    const user = userEvent.setup();
+    const { props, rerender, onConfirm } = renderSheet();
+
+    const selection = within(sheet()).getByRole("group", { name: "How many reasons" });
+    expect(within(selection).getByRole("button", { name: "Single" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(selection).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "false");
+    expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']")).toHaveAttribute("data-selection", "single");
+    // In Single a reason is a plain button: a tap confirms with it, on its own.
+    const reason = within(sheet()).getByRole("button", { name: "Too senior" });
+    expect(reason).not.toHaveAttribute("aria-pressed");
+    await user.click(reason);
+    expect(onConfirm.mock.calls).toEqual([["Too senior", { reasons: ["Too senior"] }]]);
+
+    // One reason leaves nothing to pick several of, and a host can leave the switch out.
+    rerender(<CandidateDecisionReasonSheet {...props} reasons={["Too senior"]} />);
+    expect(within(sheet()).queryByRole("group", { name: "How many reasons" })).toBeNull();
+    rerender(<CandidateDecisionReasonSheet {...props} multipleReasons={false} />);
+    expect(within(sheet()).queryByRole("group", { name: "How many reasons" })).toBeNull();
+    expect(within(sheet()).getByRole("button", { name: "Too senior" })).not.toHaveAttribute("aria-pressed");
+  });
+
+  it("ticks several reasons in Multiple, and confirms with them from the bottom button", async () => {
+    const user = userEvent.setup();
+    const { onConfirm } = renderSheet({ reasons: ["Too senior", "Wrong industry", "Outside salary band"] });
+
+    expect(sheet()).toHaveAccessibleDescription("Give your reason for Fictional Person, or pick one.");
+    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    expect(sheet()).toHaveAccessibleDescription("Give your reason for Fictional Person, or pick one or more.");
+    expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']")).toHaveAttribute("data-selection", "multiple");
+
+    // Each reason is a toggle now, and a tap confirms nothing.
+    const reasons = within(sheet()).getByRole("group", { name: "or pick a reason" });
+    for (const reason of within(reasons).getAllByRole("button")) expect(reason).toHaveAttribute("aria-pressed", "false");
+    await user.click(within(reasons).getByRole("button", { name: "Outside salary band" }));
+    await user.click(within(reasons).getByRole("button", { name: "Too senior" }));
+    expect(within(reasons).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(reasons).getByRole("button", { name: "Wrong industry" })).toHaveAttribute("aria-pressed", "false");
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    // Ticked reasons arm the bottom button, in Skip's place.
+    const footer = sheet().querySelector("[data-slot='candidate-decision-reason-sheet-footer']") as HTMLElement;
+    expect(within(footer).queryByRole("button", { name: /skip/i })).toBeNull();
+    await user.click(within(footer).getByRole("button", { name: "Mark No" }));
+
+    // One line, and each reason on its own, in the order they are shown.
+    expect(onConfirm.mock.calls).toEqual([[
+      "Too senior; Outside salary band",
+      { reasons: ["Too senior", "Outside salary band"] },
+    ]]);
+  });
+
+  it("goes back to Skip when the last tick is taken off", async () => {
+    const user = userEvent.setup();
+    const { onConfirm } = renderSheet({ defaultReasonSelection: "multiple" });
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    expect(within(sheet()).getByRole("button", { name: "Mark No" })).toBeInTheDocument();
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Skip — just mark No" }));
+
+    expect(onConfirm.mock.calls).toEqual([[undefined, { reasons: [] }]]);
+  });
+
+  it("adds a typed reason to the ticked ones", async () => {
+    const user = userEvent.setup();
+    const { onConfirm } = renderSheet({ defaultReasonSelection: "multiple" });
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    await user.click(within(sheet()).getByRole("button", { name: "or type instead" }));
+    await user.type(within(sheet()).getByRole("textbox"), "Based in a fictional city{Enter}");
+
+    expect(onConfirm.mock.calls).toEqual([[
+      "Too senior; Based in a fictional city",
+      { reasons: ["Too senior", "Based in a fictional city"] },
+    ]]);
+  });
+
+  it("adds a spoken reason to the ticked ones", async () => {
+    const user = userEvent.setup();
+    const { onConfirm } = renderSheet({ defaultReasonSelection: "multiple" });
+
+    await user.click(within(sheet()).getByRole("button", { name: "Outside salary band" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Start dictation" }));
+    const overlay = await screen.findByRole("dialog", { name: "Voice dictation" });
+    const heard = Object.assign([{ transcript: "Wants a fictional title" }], { isFinal: true });
+    act(() => recognitions[0]!.onresult?.({ resultIndex: 0, results: [heard] }));
+    await user.click(within(overlay).getByRole("button", { name: /done/i }));
+
+    expect(onConfirm.mock.calls).toEqual([[
+      "Outside salary band; Wants a fictional title",
+      { reasons: ["Outside salary band", "Wants a fictional title"] },
+    ]]);
+  });
+
+  it("words the line and the confirm button from the host, for how reasons are picked", async () => {
+    const user = userEvent.setup();
+    const confirmLabel = vi.fn((reasons: readonly string[]) => `Reject with ${reasons.length} reasons`);
+    renderSheet({
+      subtitle: (selection) => (selection === "multiple" ? "Pick one or more reasons." : "Pick a reason."),
+      confirmLabel,
+      labels: { selection: "Reasons to give", single: "One", multiple: "Several" },
+    });
+
+    expect(sheet()).toHaveAccessibleDescription("Pick a reason.");
+    const selection = within(sheet()).getByRole("group", { name: "Reasons to give" });
+    await user.click(within(selection).getByRole("button", { name: "Several" }));
+    expect(sheet()).toHaveAccessibleDescription("Pick one or more reasons.");
+    expect(within(sheet()).getAllByText("Pick one or more reasons.")).toHaveLength(2);
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Outside salary band" }));
+    expect(within(sheet()).getByRole("button", { name: "Reject with 2 reasons" })).toBeInTheDocument();
+    expect(confirmLabel).toHaveBeenLastCalledWith(["Too senior", "Outside salary band"]);
+  });
+
+  it("opens on what was chosen last in the session, with nothing ticked, and Single clears the ticks", async () => {
+    const user = userEvent.setup();
+    const { props, rerender } = renderSheet();
+
+    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+
+    rerender(<CandidateDecisionReasonSheet {...props} open={false} />);
+    rerender(<CandidateDecisionReasonSheet {...props} candidateName="Another Fictional Person" />);
+    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(sheet()).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "false");
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Single" }));
+    expect(within(sheet()).getByRole("button", { name: "Skip — just mark No" })).toBeInTheDocument();
+    await user.click(within(sheet()).getByRole("button", { name: "Multiple" }));
+    expect(within(sheet()).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "false");
+  });
+
+  it("lets a host keep the choice of Single or Multiple", async () => {
+    const user = userEvent.setup();
+    const onReasonSelectionChange = vi.fn();
+    const { props, rerender } = renderSheet({ reasonSelection: "multiple", onReasonSelectionChange });
+
+    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(within(sheet()).getByRole("button", { name: "Single" }));
+    expect(onReasonSelectionChange.mock.calls).toEqual([["single"]]);
+    // The host hasn't changed it, and the sheet keeps nothing of its own.
+    expect(within(sheet()).getByRole("button", { name: "Multiple" })).toHaveAttribute("aria-pressed", "true");
+    expect(window.sessionStorage.length).toBe(0);
+
+    rerender(<CandidateDecisionReasonSheet {...props} reasonSelection="single" />);
+    expect(within(sheet()).getByRole("button", { name: "Single" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("where a reason is required, keeps a button in Multiple that waits for a tick", async () => {
+    const user = userEvent.setup();
+    const { onConfirm } = renderSheet({ reasonRequired: true, defaultReasonSelection: "multiple", confirmLabel: "Save reasons" });
+
+    expect(within(sheet()).queryByRole("button", { name: /skip/i })).toBeNull();
+    const save = within(sheet()).getByRole("button", { name: "Save reasons" });
+    expect(save).toBeDisabled();
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    expect(save).toBeEnabled();
+    await user.click(save);
+
+    expect(confirmed(onConfirm)).toEqual(["Too senior"]);
+  });
+
+  it("keeps the ticks when a save fails", async () => {
+    const user = userEvent.setup();
+    const onConfirm = vi.fn<Confirm>().mockRejectedValueOnce(new Error("offline")).mockResolvedValue(undefined);
+    renderSheet({ onConfirm, defaultReasonSelection: "multiple" });
+
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Outside salary band" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Mark No" }));
+
+    expect(await within(sheet()).findByRole("alert")).toHaveTextContent("That didn't save. Try again.");
+    expect(within(sheet()).getByRole("button", { name: "Too senior" })).toHaveAttribute("aria-pressed", "true");
+    expect(within(sheet()).getByRole("button", { name: "Outside salary band" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(within(sheet()).getByRole("button", { name: "Mark No" }));
+    expect(confirmed(onConfirm)).toEqual(["Too senior; Outside salary band", "Too senior; Outside salary band"]);
+  });
+
+  it("puts the host's outcome under the reasons, and reads its state on confirm", async () => {
+    const user = userEvent.setup();
+    const onDecide = vi.fn();
+
+    function Host() {
+      const [contacted, setContacted] = useState(false);
+      return (
+        <CandidateDecisionReasonSheet
+          open
+          decision="yes"
+          candidateName="Fictional Person"
+          reasons={REASONS}
+          onClose={() => undefined}
+          onConfirm={(reason) => onDecide(reason, contacted)}
+          outcome={(
+            <label>
+              <input type="checkbox" checked={contacted} onChange={(event) => setContacted(event.target.checked)} />
+              Already contacted
+            </label>
+          )}
+        />
+      );
+    }
+    render(<Host />);
+
+    const outcome = sheet().querySelector("[data-slot='candidate-decision-reason-sheet-outcome']") as HTMLElement;
+    const reasons = sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']") as HTMLElement;
+    // After the reasons, and out of the bottom bar.
+    expect(reasons.compareDocumentPosition(outcome) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-footer']")).not.toContainElement(outcome);
+
+    await user.click(within(outcome).getByRole("checkbox", { name: "Already contacted" }));
+    await user.click(within(sheet()).getByRole("button", { name: "Too senior" }));
+    expect(onDecide.mock.calls).toEqual([["Too senior", true]]);
+  });
+
+  it("shows the host's outcome with no reasons to pick", () => {
+    renderSheet({ reasons: [], outcome: <span>Host outcome</span> });
+
+    expect(sheet().querySelector("[data-slot='candidate-decision-reason-sheet-reasons']")).toBeNull();
+    const outcome = sheet().querySelector("[data-slot='candidate-decision-reason-sheet-outcome']") as HTMLElement;
+    expect(within(outcome).getByText("Host outcome")).toBeInTheDocument();
+  });
+
   it("leaves dictation out when the host turns it off", () => {
     renderSheet({ voice: false });
 
@@ -502,7 +734,7 @@ describe("candidate decision reason sheet, where dictation can't run", () => {
     expect(within(sheet()).getByRole("button", { name: "Skip — just mark No" })).toBeInTheDocument();
 
     await user.type(field, "A fictional reason{Enter}");
-    expect(onConfirm.mock.calls).toEqual([["A fictional reason"]]);
+    expect(confirmed(onConfirm)).toEqual(["A fictional reason"]);
   });
 });
 

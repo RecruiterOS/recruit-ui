@@ -112,11 +112,14 @@ function CandidateClientDecision({
         subtitle: _optionalChain([sheet, 'optionalAccess', _4 => _4.subtitle]),
         voiceTitle: _optionalChain([sheet, 'optionalAccess', _5 => _5.voiceTitle]),
         skipLabel: _optionalChain([sheet, 'optionalAccess', _6 => _6.skipLabel]),
-        footer: _optionalChain([sheet, 'optionalAccess', _7 => _7.footer]),
-        actions: _optionalChain([sheet, 'optionalAccess', _8 => _8.actions]),
-        voice: _optionalChain([sheet, 'optionalAccess', _9 => _9.voice]),
-        voiceLang: _optionalChain([sheet, 'optionalAccess', _10 => _10.voiceLang]),
-        labels: _optionalChain([sheet, 'optionalAccess', _11 => _11.labels]),
+        confirmLabel: _optionalChain([sheet, 'optionalAccess', _7 => _7.confirmLabel]),
+        multipleReasons: _optionalChain([sheet, 'optionalAccess', _8 => _8.multipleReasons]),
+        defaultReasonSelection: _optionalChain([sheet, 'optionalAccess', _9 => _9.defaultReasonSelection]),
+        footer: _optionalChain([sheet, 'optionalAccess', _10 => _10.footer]),
+        actions: _optionalChain([sheet, 'optionalAccess', _11 => _11.actions]),
+        voice: _optionalChain([sheet, 'optionalAccess', _12 => _12.voice]),
+        voiceLang: _optionalChain([sheet, 'optionalAccess', _13 => _13.voiceLang]),
+        labels: _optionalChain([sheet, 'optionalAccess', _14 => _14.labels]),
         onUnavailable: () => setSheetUnavailable(true),
         onConfirm: async (why) => {
           if (!asking) return;
@@ -140,13 +143,13 @@ function CandidateClientDecision({
     {
       open: asking !== null,
       title: asking === "no" ? text.noTitle(candidateName) : text.yesTitle(candidateName),
-      suggestions: asking === "no" ? _optionalChain([suggestions, 'optionalAccess', _12 => _12.no]) : _optionalChain([suggestions, 'optionalAccess', _13 => _13.yes]),
+      suggestions: asking === "no" ? _optionalChain([suggestions, 'optionalAccess', _15 => _15.no]) : _optionalChain([suggestions, 'optionalAccess', _16 => _16.yes]),
       placeholder: asking === "no" ? text.noPlaceholder : text.yesPlaceholder,
       confirmLabel: asking === "no" ? text.confirmNo : text.confirmYes,
       reasonOptional,
       onSubmit: submit,
       onClose: close,
-      labels: _optionalChain([labels, 'optionalAccess', _14 => _14.reason]) === void 0 ? void 0 : { reason: labels.reason }
+      labels: _optionalChain([labels, 'optionalAccess', _17 => _17.reason]) === void 0 ? void 0 : { reason: labels.reason }
     }
   );
   const recorded = decision !== null && (readOnly || !changing && !failed);

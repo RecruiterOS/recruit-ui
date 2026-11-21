@@ -17,7 +17,7 @@ export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOptio
 export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps, CandidateClientDecisionReasonPrompt, CandidateClientDecisionSheetProps } from './recruit/candidate-client-decision.cjs';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './recruit/candidate-decision-buttons.cjs';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './recruit/candidate-decision-reason-dialog.cjs';
-export { CandidateDecisionReasonSheet, CandidateDecisionReasonSheetLabels, CandidateDecisionReasonSheetProps } from './recruit/candidate-decision-reason-sheet.cjs';
+export { CandidateDecisionReasonAnswer, CandidateDecisionReasonSelection, CandidateDecisionReasonSheet, CandidateDecisionReasonSheetLabels, CandidateDecisionReasonSheetProps } from './recruit/candidate-decision-reason-sheet.cjs';
 export { CandidateDecisionSummary, CandidateDecisionSummaryAssessment, CandidateDecisionSummaryDecision, CandidateDecisionSummaryProps } from './recruit/candidate-decision-summary.cjs';
 export { CandidateDestinationAction, CandidateDestinationFact, CandidateDestinationState, CandidateDestinationStatus, CandidateDestinationStatusProps } from './recruit/candidate-destination-status.cjs';
 export { CandidateActionMenu, CandidateActionMenuItem, CandidateActionMenuProps, CandidateDetailHeader, CandidateDetailHeaderProps, CandidateDetailLayout, CandidateDetailLayoutProps, CandidateDetailTabItem, CandidateDetailTabs, CandidateDetailTabsProps, CandidateDetailVerified } from './recruit/candidate-detail-layout.cjs';
