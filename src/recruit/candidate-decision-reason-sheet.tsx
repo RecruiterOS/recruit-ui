@@ -13,11 +13,11 @@ import { Icon } from "@epicbagel/saas-kit/primitives/icon";
 import { Stack } from "@epicbagel/saas-kit/primitives/stack";
 import { Suggestion, Suggestions } from "@epicbagel/saas-kit/primitives/suggestion";
 import { Text } from "@epicbagel/saas-kit/primitives/text";
+import { ToggleGroup, ToggleGroupItem } from "@epicbagel/saas-kit/primitives/toggle-group";
 import { ArrowRight, Check, Loader2, X } from "lucide-react";
 import { useId, useRef, useState, type ReactNode } from "react";
 
 import type { CandidateDecisionChoice } from "./candidate-decision-buttons";
-import { ChoiceChips } from "./choice-chips";
 import { useDictationSupport } from "./dictation-support";
 
 /**
@@ -60,9 +60,20 @@ function rememberSelection(selection: CandidateDecisionReasonSelection) {
   }
 }
 
-// A ticked reason has the pressed chip's primary border and tint, as the
-// library's other chips do.
-const TICKED_REASON = "aria-pressed:border-primary aria-pressed:bg-primary/10";
+// A chosen option is drawn with a heavier, full-strength border and bolder
+// words on the same surface: the ring doubles the border without moving
+// anything. A ticked reason and a chosen outcome share it.
+const TICKED_REASON =
+  "aria-pressed:border-foreground aria-pressed:font-semibold aria-pressed:ring-1 aria-pressed:ring-foreground";
+const CHOSEN_OPTION =
+  "min-w-36 px-5 text-muted-foreground hover:text-foreground data-[state=on]:border-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:ring-1 data-[state=on]:ring-foreground";
+
+// The Single / Multiple switch is a segmented control: one pill-shaped
+// track, and the chosen option a raised pill inside it. On a touchscreen
+// each option's tap area reaches the track's edges, top and bottom.
+const SEGMENT_TRACK = "shrink-0 gap-0 rounded-full border bg-muted p-1";
+const SEGMENT =
+  "relative h-8 rounded-full px-4 text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:shadow-sm data-[state=on]:hover:bg-background pointer-coarse:after:absolute pointer-coarse:after:inset-x-0 pointer-coarse:after:-inset-y-1.5 pointer-coarse:after:content-['']";
 
 /** Host-owned wording for the sheet's fixed parts. */
 export interface CandidateDecisionReasonSheetLabels {
@@ -96,7 +107,7 @@ const DEFAULT_LABELS: CandidateDecisionReasonSheetLabels = {
   cancel: "Cancel",
   speak: "Tap to speak",
   typeInstead: "or type instead",
-  reasons: "or pick a reason",
+  reasons: "Or pick a reason",
   selection: "How many reasons",
   single: "Single",
   multiple: "Multiple",
@@ -257,6 +268,11 @@ function defaultConfirmLabel(decision: CandidateDecisionChoice | undefined): str
  * chose in this browser session; `multipleReasons={false}` leaves the switch
  * out.
  *
+ * The switch is a segmented control: a pill-shaped track with the chosen
+ * option raised inside it, each option a radio to a screen reader. A ticked
+ * reason has a heavier border, bolder words and a tick. Rules set the
+ * reasons' heading row, the host's `outcome` and the bottom bar apart.
+ *
  * The mic and the composer are the kit's `Chat` in its voice-first empty
  * state, with the reasons under it, inside the kit's `Dialog`, so the sheet
  * keeps its focus when it opens from another dialog, such as a candidate's
@@ -388,7 +404,7 @@ function OpenReasonSheet({
     }
   };
 
-  // Ticked reasons arm the bottom button, which then confirms with them.
+  // Ticked reasons arm the bottom button, which then confirms with them, under their own wording.
   const armed = picked.length > 0;
   // Where a reason is required there is no Skip, but ticked reasons still need their button.
   const hasBottomButton = !reasonRequired || selection === "multiple";
@@ -396,27 +412,32 @@ function OpenReasonSheet({
   const confirmWords = typeof confirmLabel === "function" ? confirmLabel(picked) : confirmLabel;
 
   const reasonChips = chips.length > 0 ? (
-    <Stack data-slot="candidate-decision-reason-sheet-reasons" data-selection={selection} gap="sm">
-      {/* On a rule of its own where the switch sits beside it, as a section's heading row. */}
+    <Stack data-slot="candidate-decision-reason-sheet-reasons" data-selection={selection} gap="md">
+      {/* The reasons' heading row, on a rule of its own where the switch sits beside it. */}
       <Stack
         direction="horizontal"
         gap="sm"
         align="center"
         justify="between"
         wrap
-        {...(selectable ? { border: "bottom" as const, paddingBottom: "sm" as const } : {})}
+        {...(selectable ? { border: "bottom" as const, paddingBottom: "md" as const } : {})}
       >
-        <Text as="p" id={reasonsLabelId} size="xs" tone="muted">{text.reasons}</Text>
+        <Text as="p" id={reasonsLabelId} size="sm" tone="muted">{text.reasons}</Text>
         {selectable ? (
-          <ChoiceChips
-            aria-label={text.selection}
-            chips={[
-              { id: "single", label: text.single },
-              { id: "multiple", label: text.multiple },
-            ]}
+          <ToggleGroup
+            type="single"
+            size="sm"
             value={selection}
-            onChange={(id) => changeSelection(id === "multiple" ? "multiple" : "single")}
-          />
+            // Pressing the chosen one again leaves it chosen.
+            onValueChange={(next) => {
+              if (next === "single" || next === "multiple") changeSelection(next);
+            }}
+            aria-label={text.selection}
+            className={SEGMENT_TRACK}
+          >
+            <ToggleGroupItem value="single" className={SEGMENT}>{text.single}</ToggleGroupItem>
+            <ToggleGroupItem value="multiple" className={SEGMENT}>{text.multiple}</ToggleGroupItem>
+          </ToggleGroup>
         ) : null}
       </Stack>
       <Suggestions role="group" aria-labelledby={reasonsLabelId} layout="wrap">
@@ -582,7 +603,7 @@ function OpenReasonSheet({
                   {hasBottomButton ? (
                     <Button
                       type="button"
-                      variant={armed ? "default" : "outline"}
+                      variant="outline"
                       size="lg"
                       // Where a reason is required, the button waits for one to be ticked.
                       disabled={saving || (reasonRequired && !armed)}
@@ -602,5 +623,67 @@ function OpenReasonSheet({
         </Stack>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** One option of a `CandidateDecisionOutcomeChoice`. */
+export interface CandidateDecisionOutcomeOption<TValue extends string = string> {
+  value: TValue;
+  label: ReactNode;
+}
+
+export interface CandidateDecisionOutcomeChoiceProps<TValue extends string = string> {
+  /** The caption over the options, which also names them to a screen reader. */
+  label: ReactNode;
+  options: readonly CandidateDecisionOutcomeOption<TValue>[];
+  /** The chosen option. */
+  value: TValue;
+  /** Called with an option that isn't the chosen one. */
+  onChange: (value: TValue) => void;
+  disabled?: boolean;
+}
+
+/**
+ * A captioned choice for the sheet's `outcome`: what else the decision does,
+ * such as whether the person has been contacted already. One option is
+ * always chosen, drawn as a ticked reason is, with a heavier border and
+ * bolder words; each is a radio in a group the caption names. The host owns
+ * the options, their wording and what each one does.
+ *
+ * The root is marked `data-slot="candidate-decision-outcome-choice"`.
+ */
+export function CandidateDecisionOutcomeChoice<TValue extends string = string>({
+  label,
+  options,
+  value,
+  onChange,
+  disabled = false,
+}: CandidateDecisionOutcomeChoiceProps<TValue>) {
+  const labelId = useId();
+  return (
+    <Stack data-slot="candidate-decision-outcome-choice" gap="sm">
+      <Text as="p" id={labelId} size="sm" tone="muted">{label}</Text>
+      <Stack direction="horizontal">
+        <ToggleGroup
+          type="single"
+          variant="outline"
+          value={value}
+          // Pressing the chosen one again leaves it chosen.
+          onValueChange={(next) => {
+            const option = options.find((candidate) => candidate.value === next);
+            if (option && option.value !== value) onChange(option.value);
+          }}
+          disabled={disabled}
+          aria-labelledby={labelId}
+          className="flex-wrap justify-start gap-2"
+        >
+          {options.map((option) => (
+            <ToggleGroupItem key={option.value} value={option.value} className={CHOSEN_OPTION}>
+              {option.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </Stack>
+    </Stack>
   );
 }

@@ -5,6 +5,33 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.38.0
+
+`CandidateDecisionReasonSheet` is drawn as its design: no change to what it
+does or to its props.
+
+### Changed
+
+- The Single / Multiple switch is a segmented control: one pill-shaped
+  track, the chosen option a raised pill inside it. It was two separate
+  chips. To a screen reader it is a radio group now (`radiogroup` with two
+  `radio` options), where it was a group of pressed buttons: a test that
+  finds the options by `button` finds them by `radio`.
+- A ticked reason has a heavier, full-strength border and bolder words on
+  the same surface, with its tick. It had a tinted fill.
+- The bottom button stays an outline button once reasons are ticked; only
+  its words change. It turned solid.
+- The reasons' heading is the size of the sheet's other captions and sits
+  further from its rule. `labels.reasons` defaults to "Or pick a reason",
+  capitalised now that it heads a row of its own.
+
+### Added
+
+- `CandidateDecisionOutcomeChoice`: a captioned choice for the sheet's
+  `outcome` slot, such as "Contact status" with Not contacted and
+  Contacted. One option is always chosen, drawn as a ticked reason is; each
+  is a radio in a group the caption names.
+
 ## 0.37.1
 
 ### Fixed

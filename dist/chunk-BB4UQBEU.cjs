@@ -2,9 +2,6 @@
 
 var _chunkLIC3YNUNcjs = require('./chunk-LIC3YNUN.cjs');
 
-
-var _chunkL2JVZDKScjs = require('./chunk-L2JVZDKS.cjs');
-
 // src/recruit/candidate-decision-reason-sheet.tsx
 var _button = require('@epicbagel/saas-kit/primitives/button');
 var _chat = require('@epicbagel/saas-kit/primitives/chat');
@@ -19,6 +16,7 @@ var _icon = require('@epicbagel/saas-kit/primitives/icon');
 var _stack = require('@epicbagel/saas-kit/primitives/stack');
 var _suggestion = require('@epicbagel/saas-kit/primitives/suggestion');
 var _text = require('@epicbagel/saas-kit/primitives/text');
+var _togglegroup = require('@epicbagel/saas-kit/primitives/toggle-group');
 var _lucidereact = require('lucide-react');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
@@ -38,12 +36,15 @@ function rememberSelection(selection) {
   } catch (e2) {
   }
 }
-var TICKED_REASON = "aria-pressed:border-primary aria-pressed:bg-primary/10";
+var TICKED_REASON = "aria-pressed:border-foreground aria-pressed:font-semibold aria-pressed:ring-1 aria-pressed:ring-foreground";
+var CHOSEN_OPTION = "min-w-36 px-5 text-muted-foreground hover:text-foreground data-[state=on]:border-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:ring-1 data-[state=on]:ring-foreground";
+var SEGMENT_TRACK = "shrink-0 gap-0 rounded-full border bg-muted p-1";
+var SEGMENT = "relative h-8 rounded-full px-4 text-muted-foreground hover:bg-transparent hover:text-foreground data-[state=on]:bg-background data-[state=on]:font-semibold data-[state=on]:text-foreground data-[state=on]:shadow-sm data-[state=on]:hover:bg-background pointer-coarse:after:absolute pointer-coarse:after:inset-x-0 pointer-coarse:after:-inset-y-1.5 pointer-coarse:after:content-['']";
 var DEFAULT_LABELS = {
   cancel: "Cancel",
   speak: "Tap to speak",
   typeInstead: "or type instead",
-  reasons: "or pick a reason",
+  reasons: "Or pick a reason",
   selection: "How many reasons",
   single: "Single",
   multiple: "Multiple",
@@ -164,7 +165,7 @@ function OpenReasonSheet({
   const hasBottomButton = !reasonRequired || selection === "multiple";
   const hasBottomRow = shown(actions) || hasBottomButton;
   const confirmWords = typeof confirmLabel === "function" ? confirmLabel(picked) : confirmLabel;
-  const reasonChips = chips.length > 0 ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "sm", children: [
+  const reasonChips = chips.length > 0 ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "md", children: [
     /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
       _stack.Stack,
       {
@@ -173,19 +174,24 @@ function OpenReasonSheet({
         align: "center",
         justify: "between",
         wrap: true,
-        ...selectable ? { border: "bottom", paddingBottom: "sm" } : {},
+        ...selectable ? { border: "bottom", paddingBottom: "md" } : {},
         children: [
-          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "p", id: reasonsLabelId, size: "xs", tone: "muted", children: text.reasons }),
-          selectable ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-            _chunkL2JVZDKScjs.ChoiceChips,
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "p", id: reasonsLabelId, size: "sm", tone: "muted", children: text.reasons }),
+          selectable ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+            _togglegroup.ToggleGroup,
             {
-              "aria-label": text.selection,
-              chips: [
-                { id: "single", label: text.single },
-                { id: "multiple", label: text.multiple }
-              ],
+              type: "single",
+              size: "sm",
               value: selection,
-              onChange: (id) => changeSelection(id === "multiple" ? "multiple" : "single")
+              onValueChange: (next) => {
+                if (next === "single" || next === "multiple") changeSelection(next);
+              },
+              "aria-label": text.selection,
+              className: SEGMENT_TRACK,
+              children: [
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _togglegroup.ToggleGroupItem, { value: "single", className: SEGMENT, children: text.single }),
+                /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _togglegroup.ToggleGroupItem, { value: "multiple", className: SEGMENT, children: text.multiple })
+              ]
             }
           ) : null
         ]
@@ -321,7 +327,7 @@ function OpenReasonSheet({
                         _button.Button,
                         {
                           type: "button",
-                          variant: armed ? "default" : "outline",
+                          variant: "outline",
                           size: "lg",
                           disabled: saving || reasonRequired && !armed,
                           onClick: () => void confirm().catch(() => void 0),
@@ -342,7 +348,36 @@ function OpenReasonSheet({
     }
   ) });
 }
+function CandidateDecisionOutcomeChoice({
+  label,
+  options,
+  value,
+  onChange,
+  disabled = false
+}) {
+  const labelId = _react.useId.call(void 0, );
+  return /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "candidate-decision-outcome-choice", gap: "sm", children: [
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "p", id: labelId, size: "sm", tone: "muted", children: label }),
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "horizontal", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+      _togglegroup.ToggleGroup,
+      {
+        type: "single",
+        variant: "outline",
+        value,
+        onValueChange: (next) => {
+          const option = options.find((candidate) => candidate.value === next);
+          if (option && option.value !== value) onChange(option.value);
+        },
+        disabled,
+        "aria-labelledby": labelId,
+        className: "flex-wrap justify-start gap-2",
+        children: options.map((option) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _togglegroup.ToggleGroupItem, { value: option.value, className: CHOSEN_OPTION, children: option.label }, option.value))
+      }
+    ) })
+  ] });
+}
 
 
 
-exports.CandidateDecisionReasonSheet = CandidateDecisionReasonSheet;
+
+exports.CandidateDecisionReasonSheet = CandidateDecisionReasonSheet; exports.CandidateDecisionOutcomeChoice = CandidateDecisionOutcomeChoice;

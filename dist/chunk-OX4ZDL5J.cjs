@@ -18,7 +18,7 @@ var _chunkI53Z6SAJcjs = require('./chunk-I53Z6SAJ.cjs');
 var _chunk5C5H3GLMcjs = require('./chunk-5C5H3GLM.cjs');
 
 
-var _chunkOBPSHXH7cjs = require('./chunk-OBPSHXH7.cjs');
+var _chunkBXMVVGJNcjs = require('./chunk-BXMVVGJN.cjs');
 
 
 var _chunkD5BXTRVNcjs = require('./chunk-D5BXTRVN.cjs');
@@ -305,7 +305,7 @@ function ClientSearchDelivery({
               value: person.evidence.map((line, index) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "span", variant: "inherit", display: "block", children: line }, index))
             } : void 0,
             actions: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-              _chunkOBPSHXH7cjs.CandidateClientDecision,
+              _chunkBXMVVGJNcjs.CandidateClientDecision,
               {
                 candidateName: person.name,
                 decision: person.decision,
