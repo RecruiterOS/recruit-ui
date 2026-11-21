@@ -14,7 +14,7 @@ import {
 } from "../chunk-7LO4BH5R.js";
 import {
   ClientSearchPage
-} from "../chunk-GQM2S63Q.js";
+} from "../chunk-RLBPOTRZ.js";
 import {
   CurrentCompanyPopover
 } from "../chunk-QXRY3PXD.js";
@@ -38,7 +38,7 @@ import {
 } from "../chunk-VYIPKB27.js";
 import {
   ClientSearchConversation
-} from "../chunk-DRVKVZ6C.js";
+} from "../chunk-JO5QBDUU.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +49,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "../chunk-EX2WJVYR.js";
+} from "../chunk-JIMWJEEH.js";
 import {
   JobSearchProgress
 } from "../chunk-TPB2PWPX.js";
@@ -99,7 +99,7 @@ import {
 } from "../chunk-3PLNO5JF.js";
 import {
   CandidateSharedProfile
-} from "../chunk-V766GHRW.js";
+} from "../chunk-DTD7E56W.js";
 import {
   CandidateSharedProfileAnswer,
   CandidateSharedProfileFit,
@@ -110,7 +110,7 @@ import {
   CandidateSharedProfileSwitcher,
   CandidateSharedProfileVoiceNote,
   candidateSharedProfileLabels
-} from "../chunk-VF222ICD.js";
+} from "../chunk-CQLULSHE.js";
 import {
   CurrentCompanyLabel
 } from "../chunk-XTAH2XJR.js";
@@ -187,7 +187,6 @@ import {
 import {
   CandidateFilterChips
 } from "../chunk-XA2B7TH2.js";
-import "../chunk-P5VLMURO.js";
 import {
   CandidateAssessmentPills,
   CandidateGradeBadge,
@@ -202,7 +201,7 @@ import {
 } from "../chunk-6DUL7U2Q.js";
 import {
   CandidateClientDecision
-} from "../chunk-BSPHJDGR.js";
+} from "../chunk-CQCLIMD5.js";
 import {
   CandidateReviewActionRow
 } from "../chunk-Z63PQB6T.js";
@@ -225,8 +224,9 @@ import {
 } from "../chunk-JNUWDHFV.js";
 import {
   CandidateDecisionReasonSheet
-} from "../chunk-EJIZ2IHY.js";
+} from "../chunk-CO7OC7P7.js";
 import "../chunk-TR6R7XYB.js";
+import "../chunk-P5VLMURO.js";
 import {
   CandidateAssessment
 } from "../chunk-WRIYWX2V.js";

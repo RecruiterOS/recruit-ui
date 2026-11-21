@@ -13,17 +13,17 @@ var _chunkSUDJGWV2cjs = require('./chunk-SUDJGWV2.cjs');
 var _chunkKDK5CYGScjs = require('./chunk-KDK5CYGS.cjs');
 
 
-var _chunkL2JVZDKScjs = require('./chunk-L2JVZDKS.cjs');
-
-
 
 var _chunkYBUOBNBZcjs = require('./chunk-YBUOBNBZ.cjs');
 
 
-var _chunkANK2TWM2cjs = require('./chunk-ANK2TWM2.cjs');
+var _chunkLTFEAP2Scjs = require('./chunk-LTFEAP2S.cjs');
 
 
 var _chunkLIC3YNUNcjs = require('./chunk-LIC3YNUN.cjs');
+
+
+var _chunkL2JVZDKScjs = require('./chunk-L2JVZDKS.cjs');
 
 
 
@@ -401,7 +401,7 @@ function CandidateSharedProfileAnswer({
           }
         ),
         /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkANK2TWM2cjs.CandidateClientDecision,
+          _chunkLTFEAP2Scjs.CandidateClientDecision,
           {
             padding: "none",
             candidateName,

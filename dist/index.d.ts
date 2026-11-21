@@ -17,7 +17,7 @@ export { CandidateDecisionBar, CandidateDecisionBarProps, CandidateDecisionOptio
 export { CandidateClientDecision, CandidateClientDecisionLabels, CandidateClientDecisionProps, CandidateClientDecisionReasonPrompt, CandidateClientDecisionSheetProps } from './recruit/candidate-client-decision.js';
 export { CandidateDecisionButtons, CandidateDecisionButtonsLabels, CandidateDecisionButtonsProps, CandidateDecisionChoice } from './recruit/candidate-decision-buttons.js';
 export { CandidateDecisionReasonDialog, CandidateDecisionReasonDialogLabels, CandidateDecisionReasonDialogProps } from './recruit/candidate-decision-reason-dialog.js';
-export { CandidateDecisionReasonSheet, CandidateDecisionReasonSheetLabels, CandidateDecisionReasonSheetProps } from './recruit/candidate-decision-reason-sheet.js';
+export { CandidateDecisionReasonAnswer, CandidateDecisionReasonSelection, CandidateDecisionReasonSheet, CandidateDecisionReasonSheetLabels, CandidateDecisionReasonSheetProps } from './recruit/candidate-decision-reason-sheet.js';
 export { CandidateDecisionSummary, CandidateDecisionSummaryAssessment, CandidateDecisionSummaryDecision, CandidateDecisionSummaryProps } from './recruit/candidate-decision-summary.js';
 export { CandidateDestinationAction, CandidateDestinationFact, CandidateDestinationState, CandidateDestinationStatus, CandidateDestinationStatusProps } from './recruit/candidate-destination-status.js';
 export { CandidateActionMenu, CandidateActionMenuItem, CandidateActionMenuProps, CandidateDetailHeader, CandidateDetailHeaderProps, CandidateDetailLayout, CandidateDetailLayoutProps, CandidateDetailTabItem, CandidateDetailTabs, CandidateDetailTabsProps, CandidateDetailVerified } from './recruit/candidate-detail-layout.js';

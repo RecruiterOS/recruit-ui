@@ -104,13 +104,24 @@ export type CandidateClientDecisionReasonPrompt = "dialog" | "sheet";
 
 /**
  * The voice-first sheet's own settings, for a row that asks through it
- * (`reasonPrompt="sheet"`): its wording, what sits in its footer, and its
- * dictation. The row itself supplies the answer, the candidate's name, the
+ * (`reasonPrompt="sheet"`): its wording, whether several reasons can be
+ * picked at once, what sits in its footer, and its dictation. The row itself supplies the answer, the candidate's name, the
  * one-tap reasons and whether a reason is required.
  */
 export type CandidateClientDecisionSheetProps = Pick<
   CandidateDecisionReasonSheetProps,
-  "title" | "subtitle" | "voiceTitle" | "skipLabel" | "footer" | "actions" | "voice" | "voiceLang" | "labels"
+  | "title"
+  | "subtitle"
+  | "voiceTitle"
+  | "skipLabel"
+  | "confirmLabel"
+  | "multipleReasons"
+  | "defaultReasonSelection"
+  | "footer"
+  | "actions"
+  | "voice"
+  | "voiceLang"
+  | "labels"
 >;
 
 export interface CandidateClientDecisionProps {
@@ -281,6 +292,9 @@ export function CandidateClientDecision({
           subtitle={sheet?.subtitle}
           voiceTitle={sheet?.voiceTitle}
           skipLabel={sheet?.skipLabel}
+          confirmLabel={sheet?.confirmLabel}
+          multipleReasons={sheet?.multipleReasons}
+          defaultReasonSelection={sheet?.defaultReasonSelection}
           footer={sheet?.footer}
           actions={sheet?.actions}
           voice={sheet?.voice}

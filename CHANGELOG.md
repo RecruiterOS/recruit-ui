@@ -5,6 +5,38 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.37.0
+
+`CandidateDecisionReasonSheet` takes several reasons at once. No breaking
+change: a host that passes nothing new gets the switch, and a tap on a
+reason still confirms with it until someone chooses Multiple.
+
+### Added
+
+- With two or more `reasons`, a Single / Multiple switch sits over them. In
+  Single a tap on a reason confirms with it, as before. In Multiple a tap
+  ticks or unticks a reason, and once any are ticked the bottom button
+  confirms with them in Skip's place; a spoken or typed reason is added to
+  the ticked ones. `multipleReasons={false}` leaves the switch out.
+- The sheet opens on Single, or on `defaultReasonSelection`, then on
+  whichever the person last chose in the browser session. A host that keeps
+  the choice itself passes `reasonSelection` and `onReasonSelectionChange`.
+- `onConfirm` is given a second argument, `{ reasons }`: every reason on its
+  own, the ticked ones in the order they are shown, then what was spoken or
+  typed. Its first argument is still one line, several reasons joined with
+  "; ".
+- `confirmLabel` words the bottom button once reasons are ticked ("Mark Yes"
+  or "Mark No" without it), as a node or a function of the ticked reasons.
+  Where `reasonRequired` takes Skip away, Multiple keeps the button, disabled
+  until a reason is ticked.
+- `subtitle` may be a function of how reasons are being picked, for a line
+  that says "pick a reason" or "pick one or more".
+- `outcome` puts host controls for what the decision does under the reasons,
+  over a rule, such as whether the person has been contacted already.
+- `labels.selection`, `labels.single` and `labels.multiple` word the switch.
+- `CandidateClientDecision`'s `reasonSheet` takes `confirmLabel`,
+  `multipleReasons` and `defaultReasonSelection` for its sheet.
+
 ## 0.36.0
 
 The workflow blocks can now show a candidate photo and compact profile banner through the shared profile header. Job status can show the hiring contact’s photo. All media props are optional.

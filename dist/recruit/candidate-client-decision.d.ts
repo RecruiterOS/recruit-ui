@@ -40,11 +40,11 @@ interface CandidateClientDecisionLabels {
 type CandidateClientDecisionReasonPrompt = "dialog" | "sheet";
 /**
  * The voice-first sheet's own settings, for a row that asks through it
- * (`reasonPrompt="sheet"`): its wording, what sits in its footer, and its
- * dictation. The row itself supplies the answer, the candidate's name, the
+ * (`reasonPrompt="sheet"`): its wording, whether several reasons can be
+ * picked at once, what sits in its footer, and its dictation. The row itself supplies the answer, the candidate's name, the
  * one-tap reasons and whether a reason is required.
  */
-type CandidateClientDecisionSheetProps = Pick<CandidateDecisionReasonSheetProps, "title" | "subtitle" | "voiceTitle" | "skipLabel" | "footer" | "actions" | "voice" | "voiceLang" | "labels">;
+type CandidateClientDecisionSheetProps = Pick<CandidateDecisionReasonSheetProps, "title" | "subtitle" | "voiceTitle" | "skipLabel" | "confirmLabel" | "multipleReasons" | "defaultReasonSelection" | "footer" | "actions" | "voice" | "voiceLang" | "labels">;
 interface CandidateClientDecisionProps {
     /** The candidate's name as the dialog should say it. */
     candidateName: string;
