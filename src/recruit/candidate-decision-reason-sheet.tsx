@@ -510,9 +510,15 @@ function OpenReasonSheet({
             </Button>
           </Stack>
 
-          <Stack direction="vertical" gap="none" justify="center" grow overflow="y-auto" paddingX="md">
-            {/* A centred column: the composer would otherwise run edge to edge on a wide screen. */}
-            <Stack gap="none" centered width="full" maxWidth="xl">
+          <Stack direction="vertical" gap="none" grow overflow="y-auto" paddingX="md">
+            {/*
+              A centred column: the composer would otherwise run edge to edge
+              on a wide screen. Its own margins centre it in the height while
+              there is room and give way once it is taller than the sheet, so
+              its top can always be scrolled to; centring it from the scroller
+              would put a tall column's heading out of reach.
+            */}
+            <Stack gap="none" centered width="full" maxWidth="xl" paddingBottom="md" className="my-auto">
               {dictation === null ? null : (
                 <Chat
                   messages={[]}

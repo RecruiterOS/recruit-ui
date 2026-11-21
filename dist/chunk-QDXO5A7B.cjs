@@ -1,41 +1,41 @@
-import {
-  useDictationSupport
-} from "./chunk-TR6R7XYB.js";
-import {
-  ChoiceChips
-} from "./chunk-P5VLMURO.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+var _chunkLIC3YNUNcjs = require('./chunk-LIC3YNUN.cjs');
+
+
+var _chunkL2JVZDKScjs = require('./chunk-L2JVZDKS.cjs');
 
 // src/recruit/candidate-decision-reason-sheet.tsx
-import { Button } from "@epicbagel/saas-kit/primitives/button";
-import { Chat } from "@epicbagel/saas-kit/primitives/chat";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTitle
-} from "@epicbagel/saas-kit/primitives/dialog";
-import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
-import { Icon } from "@epicbagel/saas-kit/primitives/icon";
-import { Stack } from "@epicbagel/saas-kit/primitives/stack";
-import { Suggestion, Suggestions } from "@epicbagel/saas-kit/primitives/suggestion";
-import { Text } from "@epicbagel/saas-kit/primitives/text";
-import { ArrowRight, Check, Loader2, X } from "lucide-react";
-import { useId, useRef, useState } from "react";
-import { jsx, jsxs } from "react/jsx-runtime";
+var _button = require('@epicbagel/saas-kit/primitives/button');
+var _chat = require('@epicbagel/saas-kit/primitives/chat');
+
+
+
+
+
+var _dialog = require('@epicbagel/saas-kit/primitives/dialog');
+var _emptystate = require('@epicbagel/saas-kit/primitives/empty-state');
+var _icon = require('@epicbagel/saas-kit/primitives/icon');
+var _stack = require('@epicbagel/saas-kit/primitives/stack');
+var _suggestion = require('@epicbagel/saas-kit/primitives/suggestion');
+var _text = require('@epicbagel/saas-kit/primitives/text');
+var _lucidereact = require('lucide-react');
+var _react = require('react');
+var _jsxruntime = require('react/jsx-runtime');
 var REASON_SEPARATOR = "; ";
 var SELECTION_KEY = "recruit-ui:decision-reason-selection";
 function rememberedSelection() {
   try {
     const stored = window.sessionStorage.getItem(SELECTION_KEY);
     return stored === "single" || stored === "multiple" ? stored : null;
-  } catch {
+  } catch (e) {
     return null;
   }
 }
 function rememberSelection(selection) {
   try {
     window.sessionStorage.setItem(SELECTION_KEY, selection);
-  } catch {
+  } catch (e2) {
   }
 }
 var TICKED_REASON = "aria-pressed:border-primary aria-pressed:bg-primary/10";
@@ -83,7 +83,7 @@ function defaultConfirmLabel(decision) {
 }
 function CandidateDecisionReasonSheet({ open, ...sheet }) {
   if (!open) return null;
-  return /* @__PURE__ */ jsx(OpenReasonSheet, { ...sheet });
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, OpenReasonSheet, { ...sheet });
 }
 function OpenReasonSheet({
   onClose,
@@ -109,19 +109,19 @@ function OpenReasonSheet({
   labels
 }) {
   const text = { ...DEFAULT_LABELS, ...labels };
-  const dictation = useDictationSupport();
-  const reasonsLabelId = useId();
-  const opener = useRef(null);
-  const [saving, setSaving] = useState(false);
-  const [failure, setFailure] = useState(null);
-  const inFlight = useRef(false);
-  const [ownSelection, setOwnSelection] = useState(
-    () => rememberedSelection() ?? defaultReasonSelection
+  const dictation = _chunkLIC3YNUNcjs.useDictationSupport.call(void 0, );
+  const reasonsLabelId = _react.useId.call(void 0, );
+  const opener = _react.useRef.call(void 0, null);
+  const [saving, setSaving] = _react.useState.call(void 0, false);
+  const [failure, setFailure] = _react.useState.call(void 0, null);
+  const inFlight = _react.useRef.call(void 0, false);
+  const [ownSelection, setOwnSelection] = _react.useState.call(void 0,
+    () => _nullishCoalesce(rememberedSelection(), () => ( defaultReasonSelection))
   );
-  const [ticked, setTicked] = useState(() => /* @__PURE__ */ new Set());
+  const [ticked, setTicked] = _react.useState.call(void 0, () => /* @__PURE__ */ new Set());
   const chips = [...new Set(reasons.map((reason) => reason.trim()).filter(Boolean))];
   const selectable = multipleReasons && chips.length > 1;
-  const selection = selectable ? reasonSelection ?? ownSelection : "single";
+  const selection = selectable ? _nullishCoalesce(reasonSelection, () => ( ownSelection)) : "single";
   const picked = selection === "multiple" ? chips.filter((reason) => ticked.has(reason)) : [];
   const heading = shown(title) ? title : defaultTitle(decision);
   const description = typeof subtitle === "function" ? subtitle(selection) : subtitle === void 0 ? defaultSubtitle(candidateName, chips.length > 0, selection) : subtitle;
@@ -132,7 +132,7 @@ function OpenReasonSheet({
       setOwnSelection(next);
       rememberSelection(next);
     }
-    onReasonSelectionChange?.(next);
+    _optionalChain([onReasonSelectionChange, 'optionalCall', _ => _(next)]);
   };
   const toggle = (reason) => {
     setTicked((current) => {
@@ -164,9 +164,9 @@ function OpenReasonSheet({
   const hasBottomButton = !reasonRequired || selection === "multiple";
   const hasBottomRow = shown(actions) || hasBottomButton;
   const confirmWords = typeof confirmLabel === "function" ? confirmLabel(picked) : confirmLabel;
-  const reasonChips = chips.length > 0 ? /* @__PURE__ */ jsxs(Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "sm", children: [
-    /* @__PURE__ */ jsxs(
-      Stack,
+  const reasonChips = chips.length > 0 ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { "data-slot": "candidate-decision-reason-sheet-reasons", "data-selection": selection, gap: "sm", children: [
+    /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+      _stack.Stack,
       {
         direction: "horizontal",
         gap: "sm",
@@ -175,9 +175,9 @@ function OpenReasonSheet({
         wrap: true,
         ...selectable ? { border: "bottom", paddingBottom: "sm" } : {},
         children: [
-          /* @__PURE__ */ jsx(Text, { as: "p", id: reasonsLabelId, size: "xs", tone: "muted", children: text.reasons }),
-          selectable ? /* @__PURE__ */ jsx(
-            ChoiceChips,
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { as: "p", id: reasonsLabelId, size: "xs", tone: "muted", children: text.reasons }),
+          selectable ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+            _chunkL2JVZDKScjs.ChoiceChips,
             {
               "aria-label": text.selection,
               chips: [
@@ -191,10 +191,10 @@ function OpenReasonSheet({
         ]
       }
     ),
-    /* @__PURE__ */ jsx(Suggestions, { role: "group", "aria-labelledby": reasonsLabelId, layout: "wrap", children: chips.map((reason) => selection === "multiple" ? (
+    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _suggestion.Suggestions, { role: "group", "aria-labelledby": reasonsLabelId, layout: "wrap", children: chips.map((reason) => selection === "multiple" ? (
       // A toggle: ticked reasons wait for the bottom button.
-      /* @__PURE__ */ jsxs(
-        Suggestion,
+      /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+        _suggestion.Suggestion,
         {
           suggestion: reason,
           "aria-pressed": ticked.has(reason),
@@ -202,13 +202,13 @@ function OpenReasonSheet({
           onClick: toggle,
           children: [
             reason,
-            ticked.has(reason) ? /* @__PURE__ */ jsx(Icon, { icon: Check, size: "sm" }) : null
+            ticked.has(reason) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icon.Icon, { icon: _lucidereact.Check, size: "sm" }) : null
           ]
         },
         reason
       )
-    ) : /* @__PURE__ */ jsx(
-      Suggestion,
+    ) : /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+      _suggestion.Suggestion,
       {
         suggestion: reason,
         onClick: (tapped) => void confirm(tapped).catch(() => void 0)
@@ -216,10 +216,10 @@ function OpenReasonSheet({
       reason
     )) })
   ] }) : null;
-  return /* @__PURE__ */ jsx(Dialog, { open: true, onOpenChange: (next) => {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _dialog.Dialog, { open: true, onOpenChange: (next) => {
     if (!next) onClose();
-  }, children: /* @__PURE__ */ jsxs(
-    DialogContent,
+  }, children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+    _dialog.DialogContent,
     {
       size: "wide",
       height: "viewport-lg",
@@ -240,10 +240,10 @@ function OpenReasonSheet({
       onClick: (event) => event.stopPropagation(),
       onKeyDown: (event) => event.stopPropagation(),
       children: [
-        /* @__PURE__ */ jsx(DialogTitle, { visuallyHidden: true, asChild: true, children: /* @__PURE__ */ jsx("span", { "aria-hidden": "true", children: heading }) }),
-        described ? /* @__PURE__ */ jsx(DialogDescription, { visuallyHidden: true, asChild: true, children: /* @__PURE__ */ jsx("span", { "aria-hidden": "true", children: description }) }) : null,
-        /* @__PURE__ */ jsxs(
-          Stack,
+        /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _dialog.DialogTitle, { visuallyHidden: true, asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { "aria-hidden": "true", children: heading }) }),
+        described ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _dialog.DialogDescription, { visuallyHidden: true, asChild: true, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, "span", { "aria-hidden": "true", children: description }) }) : null,
+        /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+          _stack.Stack,
           {
             "data-slot": "candidate-decision-reason-sheet",
             "data-decision": decision,
@@ -252,8 +252,8 @@ function OpenReasonSheet({
             grow: true,
             minHeight: "zero",
             children: [
-              /* @__PURE__ */ jsx(
-                Stack,
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                _stack.Stack,
                 {
                   direction: "horizontal",
                   gap: "none",
@@ -262,11 +262,11 @@ function OpenReasonSheet({
                   paddingX: "md",
                   paddingTop: "safe",
                   paddingBottom: "sm",
-                  children: /* @__PURE__ */ jsx(Button, { type: "button", variant: "ghost", size: "icon-md", title: text.cancel, onClick: onClose, children: /* @__PURE__ */ jsx(Icon, { icon: X, size: "lg" }) })
+                  children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _button.Button, { type: "button", variant: "ghost", size: "icon-md", title: text.cancel, onClick: onClose, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icon.Icon, { icon: _lucidereact.X, size: "lg" }) })
                 }
               ),
-              /* @__PURE__ */ jsx(Stack, { direction: "vertical", gap: "none", justify: "center", grow: true, overflow: "y-auto", paddingX: "md", children: /* @__PURE__ */ jsx(Stack, { gap: "none", centered: true, width: "full", maxWidth: "xl", children: dictation === null ? null : /* @__PURE__ */ jsx(
-                Chat,
+              /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { direction: "vertical", gap: "none", grow: true, overflow: "y-auto", paddingX: "md", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { gap: "none", centered: true, width: "full", maxWidth: "xl", paddingBottom: "md", className: "my-auto", children: dictation === null ? null : /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                _chat.Chat,
                 {
                   messages: [],
                   onSend: (reason) => confirm(reason.trim() || void 0),
@@ -274,12 +274,12 @@ function OpenReasonSheet({
                   pending: saving,
                   emptyPendingContent: (
                     // The composer is gone while this shows, so it is said aloud.
-                    /* @__PURE__ */ jsx(Stack, { role: "status", gap: "none", width: "full", children: /* @__PURE__ */ jsx(
-                      EmptyState,
+                    /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { role: "status", gap: "none", width: "full", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+                      _emptystate.EmptyState,
                       {
                         variant: "empty",
                         size: "md",
-                        icon: Loader2,
+                        icon: _lucidereact.Loader2,
                         iconMotion: "spin",
                         surface: "plain",
                         title: text.saving,
@@ -291,20 +291,20 @@ function OpenReasonSheet({
                   defaultMode: voice && dictation ? "voice" : "text",
                   voice,
                   voiceLang,
-                  voiceTitle: voiceTitle ?? defaultVoiceTitle(decision, candidateName, heading),
+                  voiceTitle: _nullishCoalesce(voiceTitle, () => ( defaultVoiceTitle(decision, candidateName, heading))),
                   voiceHeroLabel: text.speak,
                   voiceHeroSwitchLabel: text.typeInstead,
                   emptyTitle: heading,
                   emptySubtitle: described ? description : void 0,
                   placeholder: text.placeholder,
-                  emptyFooter: reasonChips || shown(outcome) ? /* @__PURE__ */ jsxs(Stack, { gap: "md", children: [
+                  emptyFooter: reasonChips || shown(outcome) ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { gap: "md", children: [
                     reasonChips,
-                    shown(outcome) ? /* @__PURE__ */ jsx(Stack, { "data-slot": "candidate-decision-reason-sheet-outcome", border: "top", paddingTop: "md", children: outcome }) : null
+                    shown(outcome) ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { "data-slot": "candidate-decision-reason-sheet-outcome", border: "top", paddingTop: "md", children: outcome }) : null
                   ] }) : void 0
                 }
               ) }) }),
-              shown(footer) || hasBottomRow ? /* @__PURE__ */ jsxs(
-                Stack,
+              shown(footer) || hasBottomRow ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+                _stack.Stack,
                 {
                   "data-slot": "candidate-decision-reason-sheet-footer",
                   direction: "vertical",
@@ -315,10 +315,10 @@ function OpenReasonSheet({
                   paddingY: "md",
                   children: [
                     footer,
-                    hasBottomRow ? /* @__PURE__ */ jsxs(Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "center", wrap: true, children: [
+                    hasBottomRow ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _stack.Stack, { direction: "horizontal", gap: "sm", align: "center", justify: "center", wrap: true, children: [
                       actions,
-                      hasBottomButton ? /* @__PURE__ */ jsxs(
-                        Button,
+                      hasBottomButton ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0,
+                        _button.Button,
                         {
                           type: "button",
                           variant: armed ? "default" : "outline",
@@ -327,7 +327,7 @@ function OpenReasonSheet({
                           onClick: () => void confirm().catch(() => void 0),
                           children: [
                             armed || reasonRequired ? shown(confirmWords) ? confirmWords : defaultConfirmLabel(decision) : shown(skipLabel) ? skipLabel : defaultSkipLabel(decision),
-                            /* @__PURE__ */ jsx(Icon, { icon: ArrowRight, size: "md", marginStart: "sm" })
+                            /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _icon.Icon, { icon: _lucidereact.ArrowRight, size: "md", marginStart: "sm" })
                           ]
                         }
                       ) : null
@@ -343,6 +343,6 @@ function OpenReasonSheet({
   ) });
 }
 
-export {
-  CandidateDecisionReasonSheet
-};
+
+
+exports.CandidateDecisionReasonSheet = CandidateDecisionReasonSheet;

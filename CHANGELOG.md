@@ -5,6 +5,16 @@ from a GitHub commit, so pin the commit that carries the version you want.
 Until 1.0, a minor release may change the public API; each such change is
 listed under **Breaking**, with what to do instead.
 
+## 0.37.1
+
+### Fixed
+
+- `CandidateDecisionReasonSheet` on a short window: once the reasons and a
+  host's `outcome` made the sheet's content taller than the sheet, its
+  heading scrolled out of reach, and the last control sat against the
+  bottom bar's rule. The content is centred while there is room and starts
+  at the top once there isn't, with space under it.
+
 ## 0.37.0
 
 `CandidateDecisionReasonSheet` takes several reasons at once. No breaking
