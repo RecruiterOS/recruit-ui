@@ -42,7 +42,8 @@ export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './c
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './candidate-quote.cjs';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './candidate-relationship-card.cjs';
 export { CandidateReviewActionRow, CandidateReviewActionRowProps } from './candidate-review-action-row.cjs';
-export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } from './candidate-review-card.cjs';
+export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact, RecordReviewCard } from './candidate-review-card.cjs';
+export { ClientProspectCard, ClientProspectCardProps, ProspectMatch, ShortlistPreviewCard, ShortlistPreviewCardProps } from './prospect-card.cjs';
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './candidate-role-matches.cjs';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './candidate-selectable-avatar.cjs';
 export { CandidateShareAudience, CandidateShareChoices, CandidateShareDialog, CandidateShareDialogLabels, CandidateShareDialogProps, CandidateShareNoteFormat, candidateShareDialogLabels, candidateShareLinkText } from './candidate-share-dialog.cjs';

@@ -43,7 +43,8 @@ export { CandidateProfileLinkButton, CandidateProfileLinkButtonProps } from './r
 export { CandidateQuote, CandidateQuoteCollapsible, CandidateQuoteProps } from './recruit/candidate-quote.js';
 export { CandidateRelationshipCard, CandidateRelationshipCardProps, CandidateRelationshipFact, CandidateRelationshipNote, CandidateRelationshipSignal, CandidateRelationshipSuggestion } from './recruit/candidate-relationship-card.js';
 export { CandidateReviewActionRow, CandidateReviewActionRowProps } from './recruit/candidate-review-action-row.js';
-export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact } from './recruit/candidate-review-card.js';
+export { CandidateReviewCard, CandidateReviewCardProps, CandidateReviewFact, RecordReviewCard } from './recruit/candidate-review-card.js';
+export { ClientProspectCard, ClientProspectCardProps, ProspectMatch, ShortlistPreviewCard, ShortlistPreviewCardProps } from './recruit/prospect-card.js';
 export { CandidateRoleMatchConfirm, CandidateRoleMatchId, CandidateRoleMatchList, CandidateRoleMatchListItem, CandidateRoleMatchListLabels, CandidateRoleMatchListProps, CandidateRoleMatchSummary, CandidateRoleMatchSummaryItem, CandidateRoleMatchSummaryProps } from './recruit/candidate-role-matches.js';
 export { CandidateSelectableAvatar, CandidateSelectableAvatarProps } from './recruit/candidate-selectable-avatar.js';
 export { CandidateShareAudience, CandidateShareChoices, CandidateShareDialog, CandidateShareDialogLabels, CandidateShareDialogProps, CandidateShareNoteFormat, candidateShareDialogLabels, candidateShareLinkText } from './recruit/candidate-share-dialog.js';

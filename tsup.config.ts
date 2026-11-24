@@ -52,6 +52,7 @@ export default defineConfig({
     "src/recruit/candidate-relationship-card.tsx",
     "src/recruit/candidate-review-action-row.tsx",
     "src/recruit/candidate-review-card.tsx",
+    "src/recruit/prospect-card.tsx",
     "src/recruit/candidate-role-matches.tsx",
     "src/recruit/candidate-selectable-avatar.tsx",
     "src/recruit/candidate-share-dialog.tsx",

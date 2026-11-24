@@ -15,7 +15,7 @@ import {
 } from "./chunk-J6AD2LEO.js";
 import {
   CandidateReviewCard
-} from "./chunk-JGTRPYES.js";
+} from "./chunk-46LWWQYQ.js";
 import {
   CandidateClientDecision
 } from "./chunk-SEM4JFXM.js";

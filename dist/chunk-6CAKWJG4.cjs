@@ -20,7 +20,10 @@ var _text = require('@epicbagel/saas-kit/primitives/text');
 var _react = require('react');
 var _jsxruntime = require('react/jsx-runtime');
 var SUPPRESS_ACTION_ROW_KEYLINE = "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0 [&_[data-slot=candidate-review-action-row-controls]]:pt-0";
-function CandidateReviewCard({
+function CandidateReviewCard(props) {
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, RecordReviewCard, { "data-slot": "candidate-review-card", selectLabel: "Open candidate review", ...props });
+}
+function RecordReviewCard({
   name,
   avatar,
   cover,
@@ -35,7 +38,7 @@ function CandidateReviewCard({
   selected = false,
   subdued = false,
   onSelect,
-  selectLabel = "Open candidate review",
+  selectLabel = "Open record",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -48,7 +51,7 @@ function CandidateReviewCard({
     _interactivecard.InteractiveCard,
     {
       as: "article",
-      "data-slot": "candidate-review-card",
+      "data-slot": "record-review-card",
       selected,
       borderWidth: "thin",
       clip: true,
@@ -151,4 +154,5 @@ function CandidateReviewCard({
 
 
 
-exports.CandidateReviewCard = CandidateReviewCard;
+
+exports.CandidateReviewCard = CandidateReviewCard; exports.RecordReviewCard = RecordReviewCard;
