@@ -522,6 +522,11 @@
           "type": "registry:ui"
         },
         {
+          "path": "src/recruit/prospect-card.tsx",
+          "target": "components/recruit-ui/recruit/prospect-card.tsx",
+          "type": "registry:ui"
+        },
+        {
           "path": "src/recruit/shared-profile-attributes.ts",
           "target": "components/recruit-ui/recruit/shared-profile-attributes.ts",
           "type": "registry:ui"

@@ -1,5 +1,5 @@
 "use client";
-import "../chunk-BD7GX4W6.js";
+import "../chunk-OJ6HOGSH.js";
 import {
   JobBriefChanges
 } from "../chunk-E7ENIJVS.js";
@@ -13,8 +13,12 @@ import {
   MatchedCallCard
 } from "../chunk-7LO4BH5R.js";
 import {
+  ClientProspectCard,
+  ShortlistPreviewCard
+} from "../chunk-PKKH3NTY.js";
+import {
   ClientSearchPage
-} from "../chunk-PH6SMQY7.js";
+} from "../chunk-2SCVG352.js";
 import {
   CurrentCompanyPopover
 } from "../chunk-QXRY3PXD.js";
@@ -38,7 +42,7 @@ import {
 } from "../chunk-VYIPKB27.js";
 import {
   ClientSearchConversation
-} from "../chunk-RGEX5NTH.js";
+} from "../chunk-3GBN2Y43.js";
 import {
   ClientSearchBriefPanel,
   ClientSearchCallButton,
@@ -49,7 +53,7 @@ import {
   ClientSearchProgressPanel,
   ClientSearchQuestion,
   clientSearchLabels
-} from "../chunk-RWW4SPP5.js";
+} from "../chunk-OLQ64BJK.js";
 import {
   JobSearchProgress
 } from "../chunk-TPB2PWPX.js";
@@ -80,8 +84,9 @@ import {
   CandidateShortlist
 } from "../chunk-J6AD2LEO.js";
 import {
-  CandidateReviewCard
-} from "../chunk-JGTRPYES.js";
+  CandidateReviewCard,
+  RecordReviewCard
+} from "../chunk-46LWWQYQ.js";
 import {
   CandidateRoleMatchList,
   CandidateRoleMatchSummary
@@ -371,6 +376,7 @@ export {
   CandidateSuggestedRolesPanel,
   CandidateSummaryBullets,
   CareerDateRange,
+  ClientProspectCard,
   ClientSearchBriefPanel,
   ClientSearchCallButton,
   ClientSearchCallPrompt,
@@ -392,6 +398,8 @@ export {
   JobSearchProgress,
   JobSummaryCard,
   MatchedCallCard,
+  RecordReviewCard,
+  ShortlistPreviewCard,
   SourcingTrace,
   candidateCoverSeed,
   candidateGradeDisplay,

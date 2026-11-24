@@ -1,25 +1,25 @@
-import {
-  ClientSearchDelivery,
-  clientSearchLabels
-} from "./chunk-RWW4SPP5.js";
-import {
-  JobBriefCard
-} from "./chunk-UEPDO3XM.js";
-import {
-  jobBriefView
-} from "./chunk-5F2DPU3C.js";
+"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
+
+
+var _chunkQ2NTVF5Scjs = require('./chunk-Q2NTVF5S.cjs');
+
+
+var _chunk5DEY2CD6cjs = require('./chunk-5DEY2CD6.cjs');
+
+
+var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
 
 // src/recruit/client-search-conversation.tsx
-import {
-  Chat,
-  ChatThread
-} from "@epicbagel/saas-kit/primitives/chat";
-import { EmptyState } from "@epicbagel/saas-kit/primitives/empty-state";
-import { FlexItem } from "@epicbagel/saas-kit/primitives/flex-item";
-import { Stack } from "@epicbagel/saas-kit/primitives/stack";
-import { MessagesSquare } from "lucide-react";
-import { useRef, useState } from "react";
-import { jsx } from "react/jsx-runtime";
+
+
+
+var _chat = require('@epicbagel/saas-kit/primitives/chat');
+var _emptystate = require('@epicbagel/saas-kit/primitives/empty-state');
+var _flexitem = require('@epicbagel/saas-kit/primitives/flex-item');
+var _stack = require('@epicbagel/saas-kit/primitives/stack');
+var _lucidereact = require('lucide-react');
+var _react = require('react');
+var _jsxruntime = require('react/jsx-runtime');
 var DEFAULT_MAX_FILES = 5;
 function ClientSearchConversation({
   thread,
@@ -40,12 +40,12 @@ function ClientSearchConversation({
   traceLabels,
   ...props
 }) {
-  const text = { ...clientSearchLabels, ...labels };
-  const [staged, setStaged] = useState([]);
-  const [sending, setSending] = useState(false);
-  const [failure, setFailure] = useState(null);
-  const [notice, setNotice] = useState(null);
-  const fileIds = useRef(0);
+  const text = { ..._chunkQ2NTVF5Scjs.clientSearchLabels, ...labels };
+  const [staged, setStaged] = _react.useState.call(void 0, []);
+  const [sending, setSending] = _react.useState.call(void 0, false);
+  const [failure, setFailure] = _react.useState.call(void 0, null);
+  const [notice, setNotice] = _react.useState.call(void 0, null);
+  const fileIds = _react.useRef.call(void 0, 0);
   const reply = readOnly ? void 0 : onReply;
   const fileLimit = Math.max(0, Math.floor(maxFiles));
   const messages = thread.map((item) => {
@@ -56,7 +56,7 @@ function ClientSearchConversation({
         role: turn.from === "client" ? "user" : "assistant",
         createdAt: turn.createdAt,
         text: turn.body,
-        attachments: (turn.files ?? []).map((name, index) => ({ id: `${turn.id}-${index}`, name })),
+        attachments: (_nullishCoalesce(turn.files, () => ( []))).map((name, index) => ({ id: `${turn.id}-${index}`, name })),
         author: turn.from === "agency" ? { id: "agency", name: agentName } : void 0
       };
     }
@@ -69,10 +69,10 @@ function ClientSearchConversation({
         createdAt: version.createdAt,
         // A card is not a reply: it takes none of a reply's actions.
         actions: false,
-        content: /* @__PURE__ */ jsx(
-          JobBriefCard,
+        content: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _chunk5DEY2CD6cjs.JobBriefCard,
           {
-            ...jobBriefView(version.brief, { ...briefOptions, current }),
+            ..._chunkCP5HCQPWcjs.jobBriefView.call(void 0, version.brief, { ...briefOptions, current }),
             presentation: "preview",
             version: { number: version.revision, current }
           }
@@ -86,8 +86,8 @@ function ClientSearchConversation({
       width: "full",
       createdAt: delivery.deliveredAt,
       actions: false,
-      content: /* @__PURE__ */ jsx(
-        ClientSearchDelivery,
+      content: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+        _chunkQ2NTVF5Scjs.ClientSearchDelivery,
         {
           title: delivery.title,
           description: delivery.description,
@@ -107,8 +107,8 @@ function ClientSearchConversation({
     };
   });
   if (!reply) {
-    return /* @__PURE__ */ jsx(
-      Stack,
+    return /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+      _stack.Stack,
       {
         "data-slot": "client-search-conversation",
         "data-read-only": true,
@@ -117,32 +117,32 @@ function ClientSearchConversation({
         height: "full",
         minHeight: "zero",
         ...props,
-        children: messages.length === 0 && !awaitingReply ? /* @__PURE__ */ jsx(
-          EmptyState,
+        children: messages.length === 0 && !awaitingReply ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+          _emptystate.EmptyState,
           {
             variant: "empty",
             size: "md",
-            icon: MessagesSquare,
+            icon: _lucidereact.MessagesSquare,
             title: text.conversationEmpty.title,
-            description: text.conversationEmpty.description ?? ""
+            description: _nullishCoalesce(text.conversationEmpty.description, () => ( ""))
           }
         ) : (
           // The thread fills what the page leaves it and scrolls there.
-          /* @__PURE__ */ jsx(FlexItem, { grow: true, minHeight: "zero", children: /* @__PURE__ */ jsx(
-            ChatThread,
+          /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _flexitem.FlexItem, { grow: true, minHeight: "zero", children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+            _chat.ChatThread,
             {
               messages,
               pending: awaitingReply,
               pendingLabel: text.reading,
               appearance: "workspace",
               maxHeight: "none",
-              markdownComponents: chat?.markdownComponents ?? markdownComponents,
-              onOpenAttachment: chat?.onOpenAttachment,
-              attachmentAction: chat?.attachmentAction,
-              messageActions: chat?.messageActions,
-              scrollButtonLabel: chat?.scrollButtonLabel,
-              uploadingLabel: chat?.uploadingLabel,
-              footer: chat?.threadFooter
+              markdownComponents: _nullishCoalesce(_optionalChain([chat, 'optionalAccess', _ => _.markdownComponents]), () => ( markdownComponents)),
+              onOpenAttachment: _optionalChain([chat, 'optionalAccess', _2 => _2.onOpenAttachment]),
+              attachmentAction: _optionalChain([chat, 'optionalAccess', _3 => _3.attachmentAction]),
+              messageActions: _optionalChain([chat, 'optionalAccess', _4 => _4.messageActions]),
+              scrollButtonLabel: _optionalChain([chat, 'optionalAccess', _5 => _5.scrollButtonLabel]),
+              uploadingLabel: _optionalChain([chat, 'optionalAccess', _6 => _6.uploadingLabel]),
+              footer: _optionalChain([chat, 'optionalAccess', _7 => _7.threadFooter])
             }
           ) })
         )
@@ -170,8 +170,8 @@ function ClientSearchConversation({
     setNotice(staged.length + files.length > fileLimit ? text.tooManyFiles(fileLimit) : null);
     setFailure(null);
   };
-  return /* @__PURE__ */ jsx(Stack, { "data-slot": "client-search-conversation", gap: "none", grow: true, height: "full", minHeight: "zero", ...props, children: /* @__PURE__ */ jsx(
-    Chat,
+  return /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _stack.Stack, { "data-slot": "client-search-conversation", gap: "none", grow: true, height: "full", minHeight: "zero", ...props, children: /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
+    _chat.Chat,
     {
       mobileCompactComposer: true,
       markdownComponents,
@@ -201,6 +201,6 @@ function ClientSearchConversation({
   ) });
 }
 
-export {
-  ClientSearchConversation
-};
+
+
+exports.ClientSearchConversation = ClientSearchConversation;

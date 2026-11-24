@@ -15,7 +15,7 @@ var _chunkCP5HCQPWcjs = require('./chunk-CP5HCQPW.cjs');
 var _chunkI53Z6SAJcjs = require('./chunk-I53Z6SAJ.cjs');
 
 
-var _chunk5C5H3GLMcjs = require('./chunk-5C5H3GLM.cjs');
+var _chunk6CAKWJG4cjs = require('./chunk-6CAKWJG4.cjs');
 
 
 var _chunkBXMVVGJNcjs = require('./chunk-BXMVVGJN.cjs');
@@ -289,7 +289,7 @@ function ClientSearchDelivery({
         count: people.length,
         empty: text.deliveryEmpty,
         children: people.map((person) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunk5C5H3GLMcjs.CandidateReviewCard,
+          _chunk6CAKWJG4cjs.CandidateReviewCard,
           {
             name: person.name,
             avatar: person.avatar,

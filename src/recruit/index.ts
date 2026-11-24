@@ -45,6 +45,7 @@ export * from "./candidate-quote";
 export * from "./candidate-relationship-card";
 export * from "./candidate-review-action-row";
 export * from "./candidate-review-card";
+export * from "./prospect-card";
 export * from "./candidate-role-matches";
 export * from "./candidate-selectable-avatar";
 export * from "./candidate-share-dialog";

@@ -20,7 +20,10 @@ import { Text } from "@epicbagel/saas-kit/primitives/text";
 import { useId } from "react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 var SUPPRESS_ACTION_ROW_KEYLINE = "[&_[data-slot=candidate-review-action-row-controls]]:border-t-0 [&_[data-slot=candidate-review-action-row-controls]]:pt-0";
-function CandidateReviewCard({
+function CandidateReviewCard(props) {
+  return /* @__PURE__ */ jsx(RecordReviewCard, { "data-slot": "candidate-review-card", selectLabel: "Open candidate review", ...props });
+}
+function RecordReviewCard({
   name,
   avatar,
   cover,
@@ -35,7 +38,7 @@ function CandidateReviewCard({
   selected = false,
   subdued = false,
   onSelect,
-  selectLabel = "Open candidate review",
+  selectLabel = "Open record",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -48,7 +51,7 @@ function CandidateReviewCard({
     InteractiveCard,
     {
       as: "article",
-      "data-slot": "candidate-review-card",
+      "data-slot": "record-review-card",
       selected,
       borderWidth: "thin",
       clip: true,
@@ -150,5 +153,6 @@ function CandidateReviewCard({
 }
 
 export {
-  CandidateReviewCard
+  CandidateReviewCard,
+  RecordReviewCard
 };

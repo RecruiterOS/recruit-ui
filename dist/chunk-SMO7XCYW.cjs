@@ -1,6 +1,6 @@
 "use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _nullishCoalesce(lhs, rhsFn) { if (lhs != null) { return lhs; } else { return rhsFn(); } } function _optionalChain(ops) { let lastAccessLHS = undefined; let value = ops[0]; let i = 1; while (i < ops.length) { const op = ops[i]; const fn = ops[i + 1]; i += 2; if ((op === 'optionalAccess' || op === 'optionalCall') && value == null) { return undefined; } if (op === 'access' || op === 'optionalAccess') { lastAccessLHS = value; value = fn(value); } else if (op === 'call' || op === 'optionalCall') { value = fn((...args) => value.call(lastAccessLHS, ...args)); lastAccessLHS = undefined; } } return value; }
 
-var _chunkZA4ETKNQcjs = require('./chunk-ZA4ETKNQ.cjs');
+var _chunkA23HEP7Wcjs = require('./chunk-A23HEP7W.cjs');
 
 
 
@@ -11,7 +11,7 @@ var _chunkZA4ETKNQcjs = require('./chunk-ZA4ETKNQ.cjs');
 
 
 
-var _chunkOX4ZDL5Jcjs = require('./chunk-OX4ZDL5J.cjs');
+var _chunkQ2NTVF5Scjs = require('./chunk-Q2NTVF5S.cjs');
 
 
 var _chunkTAFMPPOTcjs = require('./chunk-TAFMPPOT.cjs');
@@ -92,7 +92,7 @@ function ClientSearchPage({
   progressLabels,
   ...props
 }) {
-  const text = { ..._chunkOX4ZDL5Jcjs.clientSearchLabels, ...labels };
+  const text = { ..._chunkQ2NTVF5Scjs.clientSearchLabels, ...labels };
   const [busy, track] = useInFlight();
   const [promptState, setPromptState] = _react.useState.call(void 0, false);
   const promptOpen = _nullishCoalesce(callPromptOpen, () => ( promptState));
@@ -116,7 +116,7 @@ function ClientSearchPage({
     if (draft && bookable && step.state === "current" && step.action == null && present(text.callInstead)) {
       return {
         ...step,
-        action: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOX4ZDL5Jcjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.callInstead })
+        action: /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkQ2NTVF5Scjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.callInstead })
       };
     }
     return step;
@@ -152,14 +152,14 @@ function ClientSearchPage({
             title,
             description,
             children: hasHeaderActions ? /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _jsxruntime.Fragment, { children: [
-              brief ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOX4ZDL5Jcjs.ClientSearchBriefPanel, { brief, briefOptions, labels }) : null,
-              showsCall && bookable ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOX4ZDL5Jcjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.call }) : null,
-              steps.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkOX4ZDL5Jcjs.ClientSearchProgressPanel, { steps: progressSteps, labels, progressLabels }) : null
+              brief ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkQ2NTVF5Scjs.ClientSearchBriefPanel, { brief, briefOptions, labels }) : null,
+              showsCall && bookable ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkQ2NTVF5Scjs.ClientSearchCallButton, { call: bookable, variant: "outline", size: "sm", children: text.call }) : null,
+              steps.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _chunkQ2NTVF5Scjs.ClientSearchProgressPanel, { steps: progressSteps, labels, progressLabels }) : null
             ] }) : null
           }
         ) }),
         draft ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkZA4ETKNQcjs.ClientSearchConversation,
+          _chunkA23HEP7Wcjs.ClientSearchConversation,
           {
             thread,
             agentName,
@@ -192,7 +192,7 @@ function ClientSearchPage({
               tabIndex: 0,
               children: /* @__PURE__ */ _jsxruntime.jsxs.call(void 0, _pageshell.PageShell, { as: "div", width: "narrow", children: [
                 question ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                  _chunkOX4ZDL5Jcjs.ClientSearchQuestion,
+                  _chunkQ2NTVF5Scjs.ClientSearchQuestion,
                   {
                     question,
                     agentName,
@@ -205,7 +205,7 @@ function ClientSearchPage({
                   }
                 ) : awaitingReply ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0, _text.Text, { tone: "muted", role: "status", children: text.reading }) : null,
                 searching || liveSteps && liveSteps.length > 0 ? /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                  _chunkOX4ZDL5Jcjs.ClientSearchLive,
+                  _chunkQ2NTVF5Scjs.ClientSearchLive,
                   {
                     agentName,
                     steps: liveSteps,
@@ -216,7 +216,7 @@ function ClientSearchPage({
                   }
                 ) : null,
                 /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                  _chunkOX4ZDL5Jcjs.ClientSearchNextActions,
+                  _chunkQ2NTVF5Scjs.ClientSearchNextActions,
                   {
                     actions,
                     onAction: ask,
@@ -226,7 +226,7 @@ function ClientSearchPage({
                   }
                 ),
                 [...deliveries].reverse().map((delivery) => /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-                  _chunkOX4ZDL5Jcjs.ClientSearchDelivery,
+                  _chunkQ2NTVF5Scjs.ClientSearchDelivery,
                   {
                     title: delivery.title,
                     description: delivery.description,
@@ -260,7 +260,7 @@ function ClientSearchPage({
           )
         ),
         draft || readOnly ? null : /* @__PURE__ */ _jsxruntime.jsx.call(void 0,
-          _chunkOX4ZDL5Jcjs.ClientSearchCallPrompt,
+          _chunkQ2NTVF5Scjs.ClientSearchCallPrompt,
           {
             open: promptOpen,
             onOpenChange: setPromptOpen,

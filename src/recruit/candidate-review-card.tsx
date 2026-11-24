@@ -64,7 +64,12 @@ export interface CandidateReviewCardProps
 }
 
 /** A slot-driven human-review card with no knowledge of records or decisions. */
-export function CandidateReviewCard({
+export function CandidateReviewCard(props: CandidateReviewCardProps) {
+  return <RecordReviewCard data-slot="candidate-review-card" selectLabel="Open candidate review" {...props} />;
+}
+
+/** Shared record layout for a person under review or a prospective client. */
+export function RecordReviewCard({
   name,
   avatar,
   cover,
@@ -79,7 +84,7 @@ export function CandidateReviewCard({
   selected = false,
   subdued = false,
   onSelect,
-  selectLabel = "Open candidate review",
+  selectLabel = "Open record",
   "aria-expanded": ariaExpanded,
   className,
   ...props
@@ -92,7 +97,7 @@ export function CandidateReviewCard({
   return (
     <InteractiveCard
       as="article"
-      data-slot="candidate-review-card"
+      data-slot="record-review-card"
       selected={selected}
       borderWidth="thin"
       clip

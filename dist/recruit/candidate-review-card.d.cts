@@ -39,6 +39,8 @@ interface CandidateReviewCardProps extends Omit<HTMLAttributes<HTMLElement>, "on
     selectLabel?: string;
 }
 /** A slot-driven human-review card with no knowledge of records or decisions. */
-declare function CandidateReviewCard({ name, avatar, cover, coverSeed, coverSize, headline, headerActions, beforeFacts, facts, insight, actions, selected, subdued, onSelect, selectLabel, "aria-expanded": ariaExpanded, className, ...props }: CandidateReviewCardProps): react.JSX.Element;
+declare function CandidateReviewCard(props: CandidateReviewCardProps): react.JSX.Element;
+/** Shared record layout for a person under review or a prospective client. */
+declare function RecordReviewCard({ name, avatar, cover, coverSeed, coverSize, headline, headerActions, beforeFacts, facts, insight, actions, selected, subdued, onSelect, selectLabel, "aria-expanded": ariaExpanded, className, ...props }: CandidateReviewCardProps): react.JSX.Element;
 
-export { CandidateReviewCard, type CandidateReviewCardProps, type CandidateReviewFact };
+export { CandidateReviewCard, type CandidateReviewCardProps, type CandidateReviewFact, RecordReviewCard };
